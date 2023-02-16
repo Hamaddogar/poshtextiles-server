@@ -1,0 +1,131 @@
+#left-bar {
+  /* background-color: #1E1E1E; */
+  width: 9%;
+  margin-left: 1%;
+  min-width: 100px;
+  position: relative;
+  text-align: right;
+}
+
+@media only screen and (max-width: 1200px) {
+  /*Tablets [601px -> 1200px]*/
+}
+
+@media only screen and (max-width: 600px) {
+  /*Big smartphones [426px -> 600px]*/
+}
+
+
+#holder {
+  display: flex;
+  direction: column;
+  justify-content: space-between
+}
+
+
+
+
+
+
+#displayer {
+  width: 89.5%;
+  padding: 0px .5% 0px 0px;
+  overflow-y: auto;
+  min-height: calc(100vh - 70px);
+  max-height: calc(100vh - 70px);
+  scroll-behavior: smooth !important;
+}
+
+#displayer::-webkit-scrollbar {
+  width: 6px;
+}
+#displayer::-webkit-scrollbar-thumb:horizontal  {
+  height: 2px;
+}
+#displayer::-webkit-scrollbar-thumb {
+  background-color: #A0A3A5;
+  width: 6px;
+  border-radius: 20px;
+}
+
+@media only screen and (max-width: 600px) {
+
+  /*Small smartphones [325px -> 425px]*/
+  #left-bar {
+    display: none;
+  }
+
+  #displayer {
+    width: 97%;
+    margin: auto;
+  }
+}
+
+/* .table-Container{
+  max-height: 450px;
+} */
+
+.table-Container::-webkit-scrollbar {
+  width: 0px;
+  display: none;
+}
+
+.table-Container::-webkit-scrollbar-thumb {
+  background-color: #A0A3A5;
+  width: 6px;
+  border-radius: 20px;
+  /* display: none; */
+}
+
+#partial-view {
+  position: absolute;
+  background-color: #495BD6;
+  top: 15vh;
+  z-index: 9999;
+  transition: 0.3s;
+  padding: 10px 10px 10px 0px;
+  border-radius: 0px 20px 20px 0px;
+  cursor: pointer;
+  /* min-height: 300px;
+  overflow: scroll; */
+}
+
+.partial-view-open {
+  left: 0px;
+}
+.partial-view-close {
+  left: -64px;
+}
+
+
+
+
+#title-section {
+  writing-mode: vertical-lr;
+  float: right;
+  margin-top: 50%;
+  transform: rotate(180deg);
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 96px;
+  line-height: 115px;
+  color: rgba(109, 109, 109, 0.2);
+  text-transform: uppercase;
+}
+
+
+
+
+.scroll {
+  overflow: auto; 
+  scrollbar-width: thin;
+}
+
+.scroll::-webkit-scrollbar:vertical {
+  width: 6px;
+}
+.scroll::-webkit-scrollbar-thumb:horizontal  {
+  height: 2px !important;
+  width: 2px !important;
+}
