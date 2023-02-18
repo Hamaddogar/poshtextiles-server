@@ -1,0 +1,1126 @@
+{
+	"info": {
+		"_postman_id": "f86fd653-7db1-4c4c-a361-1ba705a31e6c",
+		"name": "Hamadd",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Contacts",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "clientId",
+							"value": "da8dc534-e642-46e2-8f28-57bc71d854c0",
+							"type": "string"
+						},
+						{
+							"key": "clientSecret",
+							"value": "ON28Q~OqZy40.c5XZXac1yHYhM0Jp9MNAKoADbrO",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "https://login.microsoftonline.com/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/oauth2/v2.0/token",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "https://api.businesscentral.dynamics.com/.default",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "Token01",
+							"type": "string"
+						},
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "string"
+						},
+						{
+							"key": "useBrowser",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "tokenType",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://api.businesscentral.dynamics.com",
+							"type": "string"
+						},
+						{
+							"key": "client_authentication",
+							"value": "body",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "https://login.windows.net/dynamicslancer.net/oauth2/authorize?resource=https://api.businesscentral.dynamics.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)/edcContacts",
+					"protocol": "https",
+					"host": [
+						"api",
+						"businesscentral",
+						"dynamics",
+						"com"
+					],
+					"path": [
+						"v2.0",
+						"a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2",
+						"Sandbox",
+						"api",
+						"Edhate",
+						"silkapi",
+						"v2.0",
+						"companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)",
+						"edcContacts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Customers",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "clientId",
+							"value": "da8dc534-e642-46e2-8f28-57bc71d854c0",
+							"type": "string"
+						},
+						{
+							"key": "clientSecret",
+							"value": "ON28Q~OqZy40.c5XZXac1yHYhM0Jp9MNAKoADbrO",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "https://login.microsoftonline.com/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/oauth2/v2.0/token",
+							"type": "string"
+						},
+						{
+							"key": "tokenType",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "accessToken",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyIsImtpZCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyJ9.eyJhdWQiOiJodHRwczovL2FwaS5idXNpbmVzc2NlbnRyYWwuZHluYW1pY3MuY29tIiwiaXNzIjoiaHR0cHM6Ly9zdHMud2luZG93cy5uZXQvZmUyNzJiZTYtYzk5ZC00NTEyLTlmZTUtNzE5NDQ4MjgzYzYxLyIsImlhdCI6MTY1MzQ1OTY2MSwibmJmIjoxNjUzNDU5NjYxLCJleHAiOjE2NTM0NjM1NjEsImFpbyI6IkUyWmdZTkF6eWZ2VGtYVjF4ZG1yRzlwbXptcWNDUUE9IiwiYXBwaWQiOiI4YTlhYTI5Mi05OGE3LTRkZmItOWI5NC0zYzQyYjBlZWQzZDIiLCJhcHBpZGFjciI6IjEiLCJpZHAiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9mZTI3MmJlNi1jOTlkLTQ1MTItOWZlNS03MTk0NDgyODNjNjEvIiwiaWR0eXAiOiJhcHAiLCJvaWQiOiJmM2VmNmZkOC1iYzAzLTQ1YjMtOGJkZi1mMDk4Njc4ZTAwNzMiLCJyaCI6IjAuQVNzQTVpc25fcDNKRWtXZjVYR1VTQ2c4WVQzdmJabHNzMU5CaGdlbV9Ud0J1SjhyQUFBLiIsInJvbGVzIjpbIkF1dG9tYXRpb24uUmVhZFdyaXRlLkFsbCIsImFwcF9hY2Nlc3MiLCJBUEkuUmVhZFdyaXRlLkFsbCJdLCJzdWIiOiJmM2VmNmZkOC1iYzAzLTQ1YjMtOGJkZi1mMDk4Njc4ZTAwNzMiLCJ0aWQiOiJmZTI3MmJlNi1jOTlkLTQ1MTItOWZlNS03MTk0NDgyODNjNjEiLCJ1dGkiOiJaMXJyNTFkQU1FT1I5SXFaQ2FMWEFBIiwidmVyIjoiMS4wIn0.n649m70sxcCrsPHW6ivKY2lEVEgkAv0OsmOWSgz3IExUhNlafpMcwf4BZ9NlXBiYEbg7dOLluo0_cuuejG5pFytPRLCLwrqV4iw66lilnRUi0QBDYU8MtHO_uF8w9kHK5yPc28qlFzjhF925b9kmDWYe17bTDKurzFJ0QXKD0t35deFoJVjsJK7Qv5c1LH1isy9a081B1V_P_2RR8jUynVZ1swvjEzTduwoNNgaxhO8YCA341wcYy9WYYpHBzNCfAND2MtRNUNVCm7KAYNxp5mpkcyQd8YvcHI3hwgcQbMi3DX-yCty9jnh5slOSmmvNMzLdlPRkEv3c4Gh2cJRjgg",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "https://api.businesscentral.dynamics.com/.default",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "Token01",
+							"type": "string"
+						},
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "string"
+						},
+						{
+							"key": "useBrowser",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://api.businesscentral.dynamics.com",
+							"type": "string"
+						},
+						{
+							"key": "client_authentication",
+							"value": "body",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "https://login.windows.net/dynamicslancer.net/oauth2/authorize?resource=https://api.businesscentral.dynamics.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)/edcCustomers?$expand=edcCustContacts&$top=10&$count=true",
+					"protocol": "https",
+					"host": [
+						"api",
+						"businesscentral",
+						"dynamics",
+						"com"
+					],
+					"path": [
+						"v2.0",
+						"a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2",
+						"Sandbox",
+						"api",
+						"Edhate",
+						"silkapi",
+						"v2.0",
+						"companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)",
+						"edcCustomers"
+					],
+					"query": [
+						{
+							"key": "$expand",
+							"value": "edcCustContacts"
+						},
+						{
+							"key": "$top",
+							"value": "10"
+						},
+						{
+							"key": "$count",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Companies",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "clientId",
+							"value": "da8dc534-e642-46e2-8f28-57bc71d854c0",
+							"type": "string"
+						},
+						{
+							"key": "clientSecret",
+							"value": "ON28Q~OqZy40.c5XZXac1yHYhM0Jp9MNAKoADbrO",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "https://login.microsoftonline.com/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/oauth2/v2.0/token",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "https://api.businesscentral.dynamics.com/.default",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "Token01",
+							"type": "string"
+						},
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "string"
+						},
+						{
+							"key": "useBrowser",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "tokenType",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://api.businesscentral.dynamics.com",
+							"type": "string"
+						},
+						{
+							"key": "client_authentication",
+							"value": "body",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "https://login.windows.net/dynamicslancer.net/oauth2/authorize?resource=https://api.businesscentral.dynamics.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies",
+					"protocol": "https",
+					"host": [
+						"api",
+						"businesscentral",
+						"dynamics",
+						"com"
+					],
+					"path": [
+						"v2.0",
+						"a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2",
+						"Sandbox",
+						"api",
+						"Edhate",
+						"silkapi",
+						"v2.0",
+						"companies"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Inventory",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "clientId",
+							"value": "da8dc534-e642-46e2-8f28-57bc71d854c0",
+							"type": "string"
+						},
+						{
+							"key": "clientSecret",
+							"value": "ON28Q~OqZy40.c5XZXac1yHYhM0Jp9MNAKoADbrO",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "https://login.microsoftonline.com/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/oauth2/v2.0/token",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "https://api.businesscentral.dynamics.com/.default",
+							"type": "string"
+						},
+						{
+							"key": "tokenType",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "accessToken",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyIsImtpZCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyJ9.eyJhdWQiOiJodHRwczovL2FwaS5idXNpbmVzc2NlbnRyYWwuZHluYW1pY3MuY29tIiwiaXNzIjoiaHR0cHM6Ly9zdHMud2luZG93cy5uZXQvZmUyNzJiZTYtYzk5ZC00NTEyLTlmZTUtNzE5NDQ4MjgzYzYxLyIsImlhdCI6MTY1MzQ1OTY2MSwibmJmIjoxNjUzNDU5NjYxLCJleHAiOjE2NTM0NjM1NjEsImFpbyI6IkUyWmdZTkF6eWZ2VGtYVjF4ZG1yRzlwbXptcWNDUUE9IiwiYXBwaWQiOiI4YTlhYTI5Mi05OGE3LTRkZmItOWI5NC0zYzQyYjBlZWQzZDIiLCJhcHBpZGFjciI6IjEiLCJpZHAiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9mZTI3MmJlNi1jOTlkLTQ1MTItOWZlNS03MTk0NDgyODNjNjEvIiwiaWR0eXAiOiJhcHAiLCJvaWQiOiJmM2VmNmZkOC1iYzAzLTQ1YjMtOGJkZi1mMDk4Njc4ZTAwNzMiLCJyaCI6IjAuQVNzQTVpc25fcDNKRWtXZjVYR1VTQ2c4WVQzdmJabHNzMU5CaGdlbV9Ud0J1SjhyQUFBLiIsInJvbGVzIjpbIkF1dG9tYXRpb24uUmVhZFdyaXRlLkFsbCIsImFwcF9hY2Nlc3MiLCJBUEkuUmVhZFdyaXRlLkFsbCJdLCJzdWIiOiJmM2VmNmZkOC1iYzAzLTQ1YjMtOGJkZi1mMDk4Njc4ZTAwNzMiLCJ0aWQiOiJmZTI3MmJlNi1jOTlkLTQ1MTItOWZlNS03MTk0NDgyODNjNjEiLCJ1dGkiOiJaMXJyNTFkQU1FT1I5SXFaQ2FMWEFBIiwidmVyIjoiMS4wIn0.n649m70sxcCrsPHW6ivKY2lEVEgkAv0OsmOWSgz3IExUhNlafpMcwf4BZ9NlXBiYEbg7dOLluo0_cuuejG5pFytPRLCLwrqV4iw66lilnRUi0QBDYU8MtHO_uF8w9kHK5yPc28qlFzjhF925b9kmDWYe17bTDKurzFJ0QXKD0t35deFoJVjsJK7Qv5c1LH1isy9a081B1V_P_2RR8jUynVZ1swvjEzTduwoNNgaxhO8YCA341wcYy9WYYpHBzNCfAND2MtRNUNVCm7KAYNxp5mpkcyQd8YvcHI3hwgcQbMi3DX-yCty9jnh5slOSmmvNMzLdlPRkEv3c4Gh2cJRjgg",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "Token01",
+							"type": "string"
+						},
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "string"
+						},
+						{
+							"key": "useBrowser",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://api.businesscentral.dynamics.com",
+							"type": "string"
+						},
+						{
+							"key": "client_authentication",
+							"value": "body",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "https://login.windows.net/dynamicslancer.net/oauth2/authorize?resource=https://api.businesscentral.dynamics.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies(0f8bab00-aede-ec11-82f8-0022482fff55)/edcStockBalances?$top=10",
+					"protocol": "https",
+					"host": [
+						"api",
+						"businesscentral",
+						"dynamics",
+						"com"
+					],
+					"path": [
+						"v2.0",
+						"a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2",
+						"Sandbox",
+						"api",
+						"Edhate",
+						"silkapi",
+						"v2.0",
+						"companies(0f8bab00-aede-ec11-82f8-0022482fff55)",
+						"edcStockBalances"
+					],
+					"query": [
+						{
+							"key": "$top",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Location",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "clientId",
+							"value": "da8dc534-e642-46e2-8f28-57bc71d854c0",
+							"type": "string"
+						},
+						{
+							"key": "clientSecret",
+							"value": "ON28Q~OqZy40.c5XZXac1yHYhM0Jp9MNAKoADbrO",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "https://api.businesscentral.dynamics.com/.default",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "https://login.microsoftonline.com/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/oauth2/v2.0/token",
+							"type": "string"
+						},
+						{
+							"key": "tokenType",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "accessToken",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyIsImtpZCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyJ9.eyJhdWQiOiJodHRwczovL2FwaS5idXNpbmVzc2NlbnRyYWwuZHluYW1pY3MuY29tIiwiaXNzIjoiaHR0cHM6Ly9zdHMud2luZG93cy5uZXQvZmUyNzJiZTYtYzk5ZC00NTEyLTlmZTUtNzE5NDQ4MjgzYzYxLyIsImlhdCI6MTY1MzQ1OTY2MSwibmJmIjoxNjUzNDU5NjYxLCJleHAiOjE2NTM0NjM1NjEsImFpbyI6IkUyWmdZTkF6eWZ2VGtYVjF4ZG1yRzlwbXptcWNDUUE9IiwiYXBwaWQiOiI4YTlhYTI5Mi05OGE3LTRkZmItOWI5NC0zYzQyYjBlZWQzZDIiLCJhcHBpZGFjciI6IjEiLCJpZHAiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9mZTI3MmJlNi1jOTlkLTQ1MTItOWZlNS03MTk0NDgyODNjNjEvIiwiaWR0eXAiOiJhcHAiLCJvaWQiOiJmM2VmNmZkOC1iYzAzLTQ1YjMtOGJkZi1mMDk4Njc4ZTAwNzMiLCJyaCI6IjAuQVNzQTVpc25fcDNKRWtXZjVYR1VTQ2c4WVQzdmJabHNzMU5CaGdlbV9Ud0J1SjhyQUFBLiIsInJvbGVzIjpbIkF1dG9tYXRpb24uUmVhZFdyaXRlLkFsbCIsImFwcF9hY2Nlc3MiLCJBUEkuUmVhZFdyaXRlLkFsbCJdLCJzdWIiOiJmM2VmNmZkOC1iYzAzLTQ1YjMtOGJkZi1mMDk4Njc4ZTAwNzMiLCJ0aWQiOiJmZTI3MmJlNi1jOTlkLTQ1MTItOWZlNS03MTk0NDgyODNjNjEiLCJ1dGkiOiJaMXJyNTFkQU1FT1I5SXFaQ2FMWEFBIiwidmVyIjoiMS4wIn0.n649m70sxcCrsPHW6ivKY2lEVEgkAv0OsmOWSgz3IExUhNlafpMcwf4BZ9NlXBiYEbg7dOLluo0_cuuejG5pFytPRLCLwrqV4iw66lilnRUi0QBDYU8MtHO_uF8w9kHK5yPc28qlFzjhF925b9kmDWYe17bTDKurzFJ0QXKD0t35deFoJVjsJK7Qv5c1LH1isy9a081B1V_P_2RR8jUynVZ1swvjEzTduwoNNgaxhO8YCA341wcYy9WYYpHBzNCfAND2MtRNUNVCm7KAYNxp5mpkcyQd8YvcHI3hwgcQbMi3DX-yCty9jnh5slOSmmvNMzLdlPRkEv3c4Gh2cJRjgg",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "Token01",
+							"type": "string"
+						},
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "string"
+						},
+						{
+							"key": "useBrowser",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://api.businesscentral.dynamics.com",
+							"type": "string"
+						},
+						{
+							"key": "client_authentication",
+							"value": "body",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "https://login.windows.net/dynamicslancer.net/oauth2/authorize?resource=https://api.businesscentral.dynamics.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies(0f8bab00-aede-ec11-82f8-0022482fff55)/edcLocations",
+					"protocol": "https",
+					"host": [
+						"api",
+						"businesscentral",
+						"dynamics",
+						"com"
+					],
+					"path": [
+						"v2.0",
+						"a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2",
+						"Sandbox",
+						"api",
+						"Edhate",
+						"silkapi",
+						"v2.0",
+						"companies(0f8bab00-aede-ec11-82f8-0022482fff55)",
+						"edcLocations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ItemCategories",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "clientId",
+							"value": "da8dc534-e642-46e2-8f28-57bc71d854c0",
+							"type": "string"
+						},
+						{
+							"key": "clientSecret",
+							"value": "ON28Q~OqZy40.c5XZXac1yHYhM0Jp9MNAKoADbrO",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "https://api.businesscentral.dynamics.com/.default",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "https://login.microsoftonline.com/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/oauth2/v2.0/token",
+							"type": "string"
+						},
+						{
+							"key": "tokenType",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "accessToken",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyIsImtpZCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyJ9.eyJhdWQiOiJodHRwczovL2FwaS5idXNpbmVzc2NlbnRyYWwuZHluYW1pY3MuY29tIiwiaXNzIjoiaHR0cHM6Ly9zdHMud2luZG93cy5uZXQvZmUyNzJiZTYtYzk5ZC00NTEyLTlmZTUtNzE5NDQ4MjgzYzYxLyIsImlhdCI6MTY1MzQ1OTY2MSwibmJmIjoxNjUzNDU5NjYxLCJleHAiOjE2NTM0NjM1NjEsImFpbyI6IkUyWmdZTkF6eWZ2VGtYVjF4ZG1yRzlwbXptcWNDUUE9IiwiYXBwaWQiOiI4YTlhYTI5Mi05OGE3LTRkZmItOWI5NC0zYzQyYjBlZWQzZDIiLCJhcHBpZGFjciI6IjEiLCJpZHAiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9mZTI3MmJlNi1jOTlkLTQ1MTItOWZlNS03MTk0NDgyODNjNjEvIiwiaWR0eXAiOiJhcHAiLCJvaWQiOiJmM2VmNmZkOC1iYzAzLTQ1YjMtOGJkZi1mMDk4Njc4ZTAwNzMiLCJyaCI6IjAuQVNzQTVpc25fcDNKRWtXZjVYR1VTQ2c4WVQzdmJabHNzMU5CaGdlbV9Ud0J1SjhyQUFBLiIsInJvbGVzIjpbIkF1dG9tYXRpb24uUmVhZFdyaXRlLkFsbCIsImFwcF9hY2Nlc3MiLCJBUEkuUmVhZFdyaXRlLkFsbCJdLCJzdWIiOiJmM2VmNmZkOC1iYzAzLTQ1YjMtOGJkZi1mMDk4Njc4ZTAwNzMiLCJ0aWQiOiJmZTI3MmJlNi1jOTlkLTQ1MTItOWZlNS03MTk0NDgyODNjNjEiLCJ1dGkiOiJaMXJyNTFkQU1FT1I5SXFaQ2FMWEFBIiwidmVyIjoiMS4wIn0.n649m70sxcCrsPHW6ivKY2lEVEgkAv0OsmOWSgz3IExUhNlafpMcwf4BZ9NlXBiYEbg7dOLluo0_cuuejG5pFytPRLCLwrqV4iw66lilnRUi0QBDYU8MtHO_uF8w9kHK5yPc28qlFzjhF925b9kmDWYe17bTDKurzFJ0QXKD0t35deFoJVjsJK7Qv5c1LH1isy9a081B1V_P_2RR8jUynVZ1swvjEzTduwoNNgaxhO8YCA341wcYy9WYYpHBzNCfAND2MtRNUNVCm7KAYNxp5mpkcyQd8YvcHI3hwgcQbMi3DX-yCty9jnh5slOSmmvNMzLdlPRkEv3c4Gh2cJRjgg",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "Token01",
+							"type": "string"
+						},
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "string"
+						},
+						{
+							"key": "useBrowser",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://api.businesscentral.dynamics.com",
+							"type": "string"
+						},
+						{
+							"key": "client_authentication",
+							"value": "body",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "https://login.windows.net/dynamicslancer.net/oauth2/authorize?resource=https://api.businesscentral.dynamics.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies(0f8bab00-aede-ec11-82f8-0022482fff55)/edcItemCategories",
+					"protocol": "https",
+					"host": [
+						"api",
+						"businesscentral",
+						"dynamics",
+						"com"
+					],
+					"path": [
+						"v2.0",
+						"a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2",
+						"Sandbox",
+						"api",
+						"Edhate",
+						"silkapi",
+						"v2.0",
+						"companies(0f8bab00-aede-ec11-82f8-0022482fff55)",
+						"edcItemCategories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Items",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "clientId",
+							"value": "da8dc534-e642-46e2-8f28-57bc71d854c0",
+							"type": "string"
+						},
+						{
+							"key": "clientSecret",
+							"value": "ON28Q~OqZy40.c5XZXac1yHYhM0Jp9MNAKoADbrO",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "https://api.businesscentral.dynamics.com/.default",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "https://login.microsoftonline.com/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/oauth2/v2.0/token",
+							"type": "string"
+						},
+						{
+							"key": "tokenType",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "accessToken",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyIsImtpZCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyJ9.eyJhdWQiOiJodHRwczovL2FwaS5idXNpbmVzc2NlbnRyYWwuZHluYW1pY3MuY29tIiwiaXNzIjoiaHR0cHM6Ly9zdHMud2luZG93cy5uZXQvZmUyNzJiZTYtYzk5ZC00NTEyLTlmZTUtNzE5NDQ4MjgzYzYxLyIsImlhdCI6MTY1MzQ1OTY2MSwibmJmIjoxNjUzNDU5NjYxLCJleHAiOjE2NTM0NjM1NjEsImFpbyI6IkUyWmdZTkF6eWZ2VGtYVjF4ZG1yRzlwbXptcWNDUUE9IiwiYXBwaWQiOiI4YTlhYTI5Mi05OGE3LTRkZmItOWI5NC0zYzQyYjBlZWQzZDIiLCJhcHBpZGFjciI6IjEiLCJpZHAiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9mZTI3MmJlNi1jOTlkLTQ1MTItOWZlNS03MTk0NDgyODNjNjEvIiwiaWR0eXAiOiJhcHAiLCJvaWQiOiJmM2VmNmZkOC1iYzAzLTQ1YjMtOGJkZi1mMDk4Njc4ZTAwNzMiLCJyaCI6IjAuQVNzQTVpc25fcDNKRWtXZjVYR1VTQ2c4WVQzdmJabHNzMU5CaGdlbV9Ud0J1SjhyQUFBLiIsInJvbGVzIjpbIkF1dG9tYXRpb24uUmVhZFdyaXRlLkFsbCIsImFwcF9hY2Nlc3MiLCJBUEkuUmVhZFdyaXRlLkFsbCJdLCJzdWIiOiJmM2VmNmZkOC1iYzAzLTQ1YjMtOGJkZi1mMDk4Njc4ZTAwNzMiLCJ0aWQiOiJmZTI3MmJlNi1jOTlkLTQ1MTItOWZlNS03MTk0NDgyODNjNjEiLCJ1dGkiOiJaMXJyNTFkQU1FT1I5SXFaQ2FMWEFBIiwidmVyIjoiMS4wIn0.n649m70sxcCrsPHW6ivKY2lEVEgkAv0OsmOWSgz3IExUhNlafpMcwf4BZ9NlXBiYEbg7dOLluo0_cuuejG5pFytPRLCLwrqV4iw66lilnRUi0QBDYU8MtHO_uF8w9kHK5yPc28qlFzjhF925b9kmDWYe17bTDKurzFJ0QXKD0t35deFoJVjsJK7Qv5c1LH1isy9a081B1V_P_2RR8jUynVZ1swvjEzTduwoNNgaxhO8YCA341wcYy9WYYpHBzNCfAND2MtRNUNVCm7KAYNxp5mpkcyQd8YvcHI3hwgcQbMi3DX-yCty9jnh5slOSmmvNMzLdlPRkEv3c4Gh2cJRjgg",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "Token01",
+							"type": "string"
+						},
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "string"
+						},
+						{
+							"key": "useBrowser",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://api.businesscentral.dynamics.com",
+							"type": "string"
+						},
+						{
+							"key": "client_authentication",
+							"value": "body",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "https://login.windows.net/dynamicslancer.net/oauth2/authorize?resource=https://api.businesscentral.dynamics.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies(0f8bab00-aede-ec11-82f8-0022482fff55)/edcItems",
+					"protocol": "https",
+					"host": [
+						"api",
+						"businesscentral",
+						"dynamics",
+						"com"
+					],
+					"path": [
+						"v2.0",
+						"a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2",
+						"Sandbox",
+						"api",
+						"Edhate",
+						"silkapi",
+						"v2.0",
+						"companies(0f8bab00-aede-ec11-82f8-0022482fff55)",
+						"edcItems"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AuthToken",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "clientId",
+							"value": "da8dc534-e642-46e2-8f28-57bc71d854c0",
+							"type": "string"
+						},
+						{
+							"key": "clientSecret",
+							"value": "ON28Q~OqZy40.c5XZXac1yHYhM0Jp9MNAKoADbrO",
+							"type": "string"
+						},
+						{
+							"key": "tokenType",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "accessToken",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6IjJaUXBKM1VwYmpBWVhZR2FYRUpsOGxWMFRPSSIsImtpZCI6IjJaUXBKM1VwYmpBWVhZR2FYRUpsOGxWMFRPSSJ9.eyJhdWQiOiJodHRwczovL2FwaS5idXNpbmVzc2NlbnRyYWwuZHluYW1pY3MuY29tIiwiaXNzIjoiaHR0cHM6Ly9zdHMud2luZG93cy5uZXQvYThmMWE1ZjktZjhiOC00MDBjLTg3YTEtYTcwNGJlMmQ3ZGMyLyIsImlhdCI6MTY1NzU0ODk5NCwibmJmIjoxNjU3NTQ4OTk0LCJleHAiOjE2NTc1NTI4OTQsImFpbyI6IkUyWmdZQWh4aS9QSjJaVWZzZmFNaG5IZU01ZmJBQT09IiwiYXBwaWQiOiI3NDNjMmViOS1mMTczLTRjMzEtYTkyZC04ZDUxNGViN2VjZTgiLCJhcHBpZGFjciI6IjEiLCJpZHAiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9hOGYxYTVmOS1mOGI4LTQwMGMtODdhMS1hNzA0YmUyZDdkYzIvIiwiaWR0eXAiOiJhcHAiLCJvaWQiOiI1YmVmOGRkYy1kZTQzLTQ1YzktOTU0Yy0xNTRlOWZkMTg0MzQiLCJyaCI6IjAuQVZvQS1hWHhxTGo0REVDSG9hY0V2aTE5d2ozdmJabHNzMU5CaGdlbV9Ud0J1SjlhQUFBLiIsInJvbGVzIjpbIkFQSS5SZWFkV3JpdGUuQWxsIl0sInN1YiI6IjViZWY4ZGRjLWRlNDMtNDVjOS05NTRjLTE1NGU5ZmQxODQzNCIsInRpZCI6ImE4ZjFhNWY5LWY4YjgtNDAwYy04N2ExLWE3MDRiZTJkN2RjMiIsInV0aSI6ImVqYjZqalp4RGtPN3cwbDdIdHdsQVEiLCJ2ZXIiOiIxLjAifQ.Vb466nI7e5FFbFsg1Bjv7xiVn7aJ8e94qadsrDVf_QEje-EU-3gZg4O_K9BLeETr_lMINRArfUHAiTJB-ikSsBEDi7qn5U8bje4nW619iXWeRl5bqhMH4e0t5HM3FVDhgY5OvBZnKyvKa0yMxX8GX1R6hhxjGkYTjkc21xXecPNqdZXLqTvnudCXgQxJYmo0-uH5dCeRIfCZFZVhW_2Xb0AII_uNH7qwQLkCfa4EfzNpmlgMHH5wfhRqL0cf7aUxBwHy9he2CJcVmK0Vc_A1_82FrU7Ym2_17l8Mqow0RH6cp8dRIEeOwxQx6sKING-O0UjUukb8XyBnm-_0XO74uQ",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "https://api.businesscentral.dynamics.com/.default",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "https://login.microsoftonline.com/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/oauth2/v2.0/token",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "SilkToken01",
+							"type": "string"
+						},
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "string"
+						},
+						{
+							"key": "useBrowser",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://api.businesscentral.dynamics.com",
+							"type": "string"
+						},
+						{
+							"key": "client_authentication",
+							"value": "body",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "https://login.windows.net/dynamicslancer.net/oauth2/authorize?resource=https://api.businesscentral.dynamics.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"warning": "This is a duplicate header and will be overridden by the Content-Type header generated by Postman.",
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "743c2eb9-f173-4c31-a92d-8d514eb7ece8",
+							"type": "text"
+						},
+						{
+							"key": "scope",
+							"value": "https://graph.microsoft.com/.default",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "wrN8Q~vvX2FDmt_Sf.7ltpQta41eABkoaq.j0bBS",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://login.microsoftonline.com/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/oauth2/v2.0/token",
+					"protocol": "https",
+					"host": [
+						"login",
+						"microsoftonline",
+						"com"
+					],
+					"path": [
+						"a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2",
+						"oauth2",
+						"v2.0",
+						"token"
+					],
+					"query": [
+						{
+							"key": "Content-Type",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SalesOrderMany",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "clientId",
+							"value": "da8dc534-e642-46e2-8f28-57bc71d854c0",
+							"type": "string"
+						},
+						{
+							"key": "clientSecret",
+							"value": "ON28Q~OqZy40.c5XZXac1yHYhM0Jp9MNAKoADbrO",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "https://login.microsoftonline.com/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/oauth2/v2.0/token",
+							"type": "string"
+						},
+						{
+							"key": "tokenType",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "accessToken",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyIsImtpZCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyJ9.eyJhdWQiOiJodHRwczovL2FwaS5idXNpbmVzc2NlbnRyYWwuZHluYW1pY3MuY29tIiwiaXNzIjoiaHR0cHM6Ly9zdHMud2luZG93cy5uZXQvZmUyNzJiZTYtYzk5ZC00NTEyLTlmZTUtNzE5NDQ4MjgzYzYxLyIsImlhdCI6MTY1MzQ1OTY2MSwibmJmIjoxNjUzNDU5NjYxLCJleHAiOjE2NTM0NjM1NjEsImFpbyI6IkUyWmdZTkF6eWZ2VGtYVjF4ZG1yRzlwbXptcWNDUUE9IiwiYXBwaWQiOiI4YTlhYTI5Mi05OGE3LTRkZmItOWI5NC0zYzQyYjBlZWQzZDIiLCJhcHBpZGFjciI6IjEiLCJpZHAiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9mZTI3MmJlNi1jOTlkLTQ1MTItOWZlNS03MTk0NDgyODNjNjEvIiwiaWR0eXAiOiJhcHAiLCJvaWQiOiJmM2VmNmZkOC1iYzAzLTQ1YjMtOGJkZi1mMDk4Njc4ZTAwNzMiLCJyaCI6IjAuQVNzQTVpc25fcDNKRWtXZjVYR1VTQ2c4WVQzdmJabHNzMU5CaGdlbV9Ud0J1SjhyQUFBLiIsInJvbGVzIjpbIkF1dG9tYXRpb24uUmVhZFdyaXRlLkFsbCIsImFwcF9hY2Nlc3MiLCJBUEkuUmVhZFdyaXRlLkFsbCJdLCJzdWIiOiJmM2VmNmZkOC1iYzAzLTQ1YjMtOGJkZi1mMDk4Njc4ZTAwNzMiLCJ0aWQiOiJmZTI3MmJlNi1jOTlkLTQ1MTItOWZlNS03MTk0NDgyODNjNjEiLCJ1dGkiOiJaMXJyNTFkQU1FT1I5SXFaQ2FMWEFBIiwidmVyIjoiMS4wIn0.n649m70sxcCrsPHW6ivKY2lEVEgkAv0OsmOWSgz3IExUhNlafpMcwf4BZ9NlXBiYEbg7dOLluo0_cuuejG5pFytPRLCLwrqV4iw66lilnRUi0QBDYU8MtHO_uF8w9kHK5yPc28qlFzjhF925b9kmDWYe17bTDKurzFJ0QXKD0t35deFoJVjsJK7Qv5c1LH1isy9a081B1V_P_2RR8jUynVZ1swvjEzTduwoNNgaxhO8YCA341wcYy9WYYpHBzNCfAND2MtRNUNVCm7KAYNxp5mpkcyQd8YvcHI3hwgcQbMi3DX-yCty9jnh5slOSmmvNMzLdlPRkEv3c4Gh2cJRjgg",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "https://api.businesscentral.dynamics.com/.default",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "Token01",
+							"type": "string"
+						},
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "string"
+						},
+						{
+							"key": "useBrowser",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://api.businesscentral.dynamics.com",
+							"type": "string"
+						},
+						{
+							"key": "client_authentication",
+							"value": "body",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "https://login.windows.net/dynamicslancer.net/oauth2/authorize?resource=https://api.businesscentral.dynamics.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies(0f8bab00-aede-ec11-82f8-0022482fff55)/edcSalesOrders?$expand=edcSalesLines,edcCustomers,edcWhseShipments&$count=true&$filter=no eq 'SO34571'",
+					"protocol": "https",
+					"host": [
+						"api",
+						"businesscentral",
+						"dynamics",
+						"com"
+					],
+					"path": [
+						"v2.0",
+						"a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2",
+						"Sandbox",
+						"api",
+						"Edhate",
+						"silkapi",
+						"v2.0",
+						"companies(0f8bab00-aede-ec11-82f8-0022482fff55)",
+						"edcSalesOrders"
+					],
+					"query": [
+						{
+							"key": "$expand",
+							"value": "edcSalesLines,edcCustomers,edcWhseShipments"
+						},
+						{
+							"key": "$top",
+							"value": "10",
+							"disabled": true
+						},
+						{
+							"key": "$count",
+							"value": "true"
+						},
+						{
+							"key": "$expand",
+							"value": "edcWhseShipments",
+							"disabled": true
+						},
+						{
+							"key": "$filter",
+							"value": "no eq 'SO34571'"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SalesOrderDetailsOne",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "clientId",
+							"value": "da8dc534-e642-46e2-8f28-57bc71d854c0",
+							"type": "string"
+						},
+						{
+							"key": "clientSecret",
+							"value": "ON28Q~OqZy40.c5XZXac1yHYhM0Jp9MNAKoADbrO",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "https://login.microsoftonline.com/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/oauth2/v2.0/token",
+							"type": "string"
+						},
+						{
+							"key": "tokenType",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "accessToken",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyIsImtpZCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyJ9.eyJhdWQiOiJodHRwczovL2FwaS5idXNpbmVzc2NlbnRyYWwuZHluYW1pY3MuY29tIiwiaXNzIjoiaHR0cHM6Ly9zdHMud2luZG93cy5uZXQvZmUyNzJiZTYtYzk5ZC00NTEyLTlmZTUtNzE5NDQ4MjgzYzYxLyIsImlhdCI6MTY1MzQ1OTY2MSwibmJmIjoxNjUzNDU5NjYxLCJleHAiOjE2NTM0NjM1NjEsImFpbyI6IkUyWmdZTkF6eWZ2VGtYVjF4ZG1yRzlwbXptcWNDUUE9IiwiYXBwaWQiOiI4YTlhYTI5Mi05OGE3LTRkZmItOWI5NC0zYzQyYjBlZWQzZDIiLCJhcHBpZGFjciI6IjEiLCJpZHAiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9mZTI3MmJlNi1jOTlkLTQ1MTItOWZlNS03MTk0NDgyODNjNjEvIiwiaWR0eXAiOiJhcHAiLCJvaWQiOiJmM2VmNmZkOC1iYzAzLTQ1YjMtOGJkZi1mMDk4Njc4ZTAwNzMiLCJyaCI6IjAuQVNzQTVpc25fcDNKRWtXZjVYR1VTQ2c4WVQzdmJabHNzMU5CaGdlbV9Ud0J1SjhyQUFBLiIsInJvbGVzIjpbIkF1dG9tYXRpb24uUmVhZFdyaXRlLkFsbCIsImFwcF9hY2Nlc3MiLCJBUEkuUmVhZFdyaXRlLkFsbCJdLCJzdWIiOiJmM2VmNmZkOC1iYzAzLTQ1YjMtOGJkZi1mMDk4Njc4ZTAwNzMiLCJ0aWQiOiJmZTI3MmJlNi1jOTlkLTQ1MTItOWZlNS03MTk0NDgyODNjNjEiLCJ1dGkiOiJaMXJyNTFkQU1FT1I5SXFaQ2FMWEFBIiwidmVyIjoiMS4wIn0.n649m70sxcCrsPHW6ivKY2lEVEgkAv0OsmOWSgz3IExUhNlafpMcwf4BZ9NlXBiYEbg7dOLluo0_cuuejG5pFytPRLCLwrqV4iw66lilnRUi0QBDYU8MtHO_uF8w9kHK5yPc28qlFzjhF925b9kmDWYe17bTDKurzFJ0QXKD0t35deFoJVjsJK7Qv5c1LH1isy9a081B1V_P_2RR8jUynVZ1swvjEzTduwoNNgaxhO8YCA341wcYy9WYYpHBzNCfAND2MtRNUNVCm7KAYNxp5mpkcyQd8YvcHI3hwgcQbMi3DX-yCty9jnh5slOSmmvNMzLdlPRkEv3c4Gh2cJRjgg",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "https://api.businesscentral.dynamics.com/.default",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "Token01",
+							"type": "string"
+						},
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "string"
+						},
+						{
+							"key": "useBrowser",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://api.businesscentral.dynamics.com",
+							"type": "string"
+						},
+						{
+							"key": "client_authentication",
+							"value": "body",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "https://login.windows.net/dynamicslancer.net/oauth2/authorize?resource=https://api.businesscentral.dynamics.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies(0f8bab00-aede-ec11-82f8-0022482fff55)/edcSalesOrderDeatils?$expand=edcSalesLines&$top=10&$count=true&$filter=no eq 'SO34571'",
+					"protocol": "https",
+					"host": [
+						"api",
+						"businesscentral",
+						"dynamics",
+						"com"
+					],
+					"path": [
+						"v2.0",
+						"a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2",
+						"Sandbox",
+						"api",
+						"Edhate",
+						"silkapi",
+						"v2.0",
+						"companies(0f8bab00-aede-ec11-82f8-0022482fff55)",
+						"edcSalesOrderDeatils"
+					],
+					"query": [
+						{
+							"key": "$expand",
+							"value": "edcSalesLines"
+						},
+						{
+							"key": "$top",
+							"value": "10"
+						},
+						{
+							"key": "$count",
+							"value": "true"
+						},
+						{
+							"key": "$expand",
+							"value": "edcWhseShipments",
+							"disabled": true
+						},
+						{
+							"key": "$filter",
+							"value": "no eq 'SO34571'"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "KGAURAV",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
