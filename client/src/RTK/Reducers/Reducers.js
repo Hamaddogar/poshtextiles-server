@@ -193,9 +193,9 @@ const mainSlice = createSlice({
       state.idToken = payload.idToken;
     },
     UPDATE_TOKEN: (state, { payload }) => {
-      state.accessToken = payload;
-      toast.success('Token Updated', { autoClose: 3000 });
-      document.getElementById('token').reset()
+      state.accessToken = payload.token;
+      if (payload.notify) toast.success('Token Updated', { autoClose: 3000 });
+      // document.getElementById('token').reset()
     },
     USE_POSTMAN_TOKEN: (state) => {
       state.postMan = !(state.postMan);
@@ -225,6 +225,7 @@ const mainSlice = createSlice({
         else { alert('error is found') }
       })
       .addCase(saleOrderNoFilter.rejected, (state, actions) => {
+        console.log('ssss',actions);
         state.loading = false;
         if (actions.error.code === "ERR_BAD_REQUEST") Swal.fire({ icon: 'error', title: actions.error.code, text: `Please Use New Token` })
         else Swal.fire({ icon: 'error', title: actions.error.code, text: `${actions.error.message}` })

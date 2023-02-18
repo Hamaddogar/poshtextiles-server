@@ -25,7 +25,10 @@ const TokenUpdate = () => {
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        dispatch(UPDATE_TOKEN(data.get('newtoken')))
+        dispatch(UPDATE_TOKEN({
+            token: data.get('newtoken'),
+            notify: true
+        }));
     };
 
     React.useEffect(() => {
@@ -37,7 +40,7 @@ const TokenUpdate = () => {
             .then((response) => {
                 setAccountToken(response.accessToken)
             }).catch((e) => { console.log("-error ", e) });
-            //eslint-disable-next-line
+        //eslint-disable-next-line
     }, []);
 
 

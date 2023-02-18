@@ -1,35 +1,29 @@
 import axios from "axios";
-import { API, FEDEXP_CLIENT_ID, FEDEXP_CLIENT_SECRET, CORS_Proxy, FEDEXP_Sandbox_Server } from "./confidential";
+import { API, CORS_Proxy, FEDEXP_Sandbox_Server } from "./confidential";
 
 
 
 // Access Token 
 export const requestAccessToken_FEDEXP = async () => {
-    const config = {
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        }
-    };
-
-    const body = {
-        grant_type: 'client_credentials',
-        client_id: FEDEXP_CLIENT_ID,
-        client_secret: FEDEXP_CLIENT_SECRET
-    };
-
     try {
-        const response = await axios.post(
-            CORS_Proxy + FEDEXP_Sandbox_Server + API.fedexp.token,
-            new URLSearchParams(body).toString(),
-            config
-        );
-
-        const { access_token } = response.data;
-        return access_token;
+        const response = await axios.get('http://localhost:8080/fedexp_token');
+        return response.data;
     } catch (error) {
         throw new Error('Failed to retrieve access token');
     }
 };
+
+
+// 
+export const requestAccessToken_MICROSOFT = async () => {
+    try {
+        const response = await axios.get('http://localhost:8080/token_microsoft');
+        return response.data;
+    } catch (error) {
+        throw new Error('Failed to retrieve access token');
+    }
+};
+
 
 
 // Track Pasrsels Multiple 
