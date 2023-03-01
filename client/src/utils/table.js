@@ -12,6 +12,21 @@ export const table = {
     Ecom_Product_List: 'Ecom_Product_List',
 };
 
+export const APIS = {
+    token_fed: 'http://localhost:8080/fedexp_token',
+    token_micro: 'http://localhost:8080/token_microsoft',
+
+    // fedexp
+    create_shipment : 'http://localhost:8080/shipment',
+    create_shipment_ups: 'http://localhost:8080/ups_shipment',
+
+
+    // microsoft
+    sale_orders_micro: 'http://localhost:8080/sales',
+    history_micro: 'http://localhost:8080/history',
+}
+
+
 
 
 

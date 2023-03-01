@@ -11,12 +11,12 @@ import SearchIcon from '@mui/icons-material/Search';
 import Shipfrom from './Shipfrom'
 import { useSelector } from 'react-redux'
 import { BackButton, headInputStyle, styleSlect } from '../reUseAbles/ReuseAbles'
-import { createShipment_FEDEXP } from '../../../../utils/FEDEXP_API_HELPERS'
+import { createShipment_FEDEXP, createShipment_UPS, requestAccessToken_FEDEXP } from '../../../../utils/FEDEXP_API_HELPERS'
 import ShipReportDialog from './ShipReportDialog'
 
 
 const ShippingQuote = () => {
-    const { saleOrderDetails, FEDEXP_TOKEN } = useSelector(store => store.mainReducer);
+    const { saleOrderDetails } = useSelector(store => store.mainReducer);
     const navigate = useNavigate();
     const [billfrom, setbillfrom] = React.useState(false);
     const [shipfrom, setshipfrom] = React.useState(false);
@@ -46,7 +46,7 @@ const ShippingQuote = () => {
         ...selections,
         [event.target.name]: [event.target.value]
     });
-
+    console.log("ddddddd", saleOrderDetails);
     const handleSubmit = event => {
         event.preventDefault();
         // const data = new FormData(event.currentTarget)
@@ -58,8 +58,9 @@ const ShippingQuote = () => {
         SetShipReport({ open: true });
 
 
-        if (FEDEXP_TOKEN && saleOrderDetails?.shippingAgentCode === "FEDEX") {
-            const payload_Data = {
+
+        if (saleOrderDetails?.shippingAgentCode === "FEDEX") {
+            let payload_Data = {
                 "labelResponseOptions": "URL_ONLY",
                 "requestedShipment": {
                     "shipper": {
@@ -78,22 +79,6 @@ const ShippingQuote = () => {
                             "countryCode": "US"
                         }
                     },
-                    // "shipper": {
-                    //     "contact": {
-                    //         "personName": "SHIPPER NAME",
-                    //         "phoneNumber": 1234567890,
-                    //         "companyName": "Shipper Company Name"
-                    //     },
-                    //     "address": {
-                    //         "streetLines": [
-                    //             "SHIPPER STREET LINE 1"
-                    //         ],
-                    //         "city": "HARRISON",
-                    //         "stateOrProvinceCode": "AR",
-                    //         "postalCode": 72601,
-                    //         "countryCode": "US"
-                    //     }
-                    // },
                     "recipients": [
                         {
                             "contact": {
@@ -139,22 +124,238 @@ const ShippingQuote = () => {
                 }
             };
 
-            createShipment_FEDEXP(payload_Data, FEDEXP_TOKEN)
+
+            payload_Data = {
+                "labelResponseOptions": "URL_ONLY",
+                "requestedShipment": {
+                    "shipper": {
+                        "contact": {
+                            "personName": "Muhammad Hamad",
+                            "phoneNumber": 1234567890,
+                            "companyName": "Posh Textiles"
+                        },
+                        "address": {
+                            "streetLines": [
+                                "7670 N.W. 6th Avenue"
+                            ],
+                            "city": "India",
+                            "stateOrProvinceCode": "AR",
+                            "postalCode": 72601,
+                            "countryCode": "US"
+                        }
+                    },
+                    "recipients": [
+                        {
+                            "contact": {
+                                "personName": saleOrderDetails?.shipToName,
+                                "phoneNumber": saleOrderDetails?.edcCustomers[0]?.phoneNo,
+                                "companyName": saleOrderDetails?.edcCustomers[0]?.contact
+                            },
+                            "address": {
+                                "streetLines": [
+                                    saleOrderDetails?.edcCustomers[0]?.address,
+                                    saleOrderDetails?.edcCustomers[0]?.address2
+                                ],
+                                "city": saleOrderDetails?.edcCustomers[0]?.city,
+                                "stateOrProvinceCode": saleOrderDetails?.shipToCounty,
+                                "postalCode": saleOrderDetails?.edcCustomers[0]?.postCode,
+                                "countryCode": saleOrderDetails?.shipToCountryRegionCode
+                            }
+                        }
+                    ],
+                    "shipDatestamp": saleOrderDetails?.shipmentDate,
+                    "serviceType": "STANDARD_OVERNIGHT",
+                    "packagingType": "FEDEX_SMALL_BOX",
+                    "pickupType": "USE_SCHEDULED_PICKUP",
+                    "blockInsightVisibility": false,
+                    "shippingChargesPayment": {
+                        "paymentType": "SENDER"
+                    },
+                    "shipmentSpecialServices": {
+                        "specialServiceTypes": [
+                            "FEDEX_ONE_RATE"
+                        ]
+                    },
+                    "labelSpecification": {
+                        "imageType": "PDF",
+                        "labelStockType": "PAPER_85X11_TOP_HALF_LABEL"
+                    },
+                    "requestedPackageLineItems": ((saleOrderDetails?.edcSalesLines).map((item, index) => {
+                        return {
+                            "weight": {
+                                "value": 10,
+                                "units": "LB"
+                            },
+                            "dimensions": {
+                                "length": 12,
+                                "width": 8,
+                                "height": 6,
+                                "units": "IN"
+                            },
+                            "physicalPackaging": "BOX",
+                            "sequenceNumber": index + 1
+                        }
+                    })),
+
+                },
+                "accountNumber": {
+                    "value": "740561073"
+                }
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            requestAccessToken_FEDEXP()
+                .then(token => {
+                    createShipment_FEDEXP(payload_Data, token)
+                        .then(res => {
+                            SetShipReport({
+                                open: true,
+                                response: res,
+                                error: null,
+                                type: "FEDEX"
+                            })
+                        })
+                        .catch(error => {
+                            SetShipReport({
+                                open: true,
+                                response: null,
+                                error: error.statusText,
+                                type: "FEDEX"
+                            });
+                        })
+                });
+
+        } else if (saleOrderDetails?.shippingAgentCode === "UPS") {
+
+            const body = {
+                "ShipmentRequest": {
+                    "Shipment": {
+                        "Description": "1206 PTR",
+                        "Shipper": {
+                            "Name": "Muhammad Hamad",
+                            "ShipperNumber": "V78944",
+                            "Address": {
+                                "AddressLine": "1234 Main St",
+                                "City": "Anytown",
+                                "StateProvinceCode": "CA",
+                                "PostalCode": "90503",
+                                "CountryCode": "US"
+                            }
+                        },
+                        "ShipTo": {
+                            "Name": saleOrderDetails?.shipToName,
+                            "AttentionName": saleOrderDetails?.shipToName,
+                            "PostalCode": "90503",
+                            "Phone": {
+                                "Number": `${saleOrderDetails?.edcCustomers[0]?.phoneNo}`,
+                            },
+                            "FaxNumber": saleOrderDetails?.edcCustomers[0]?.faxNo,
+                            "TaxIdentificationNumber": "456999",
+                            "Address": {
+                                "AddressLine": saleOrderDetails?.edcCustomers[0]?.address,
+                                "City": saleOrderDetails?.edcCustomers[0]?.city,
+                                "StateProvinceCode": saleOrderDetails?.shipToCounty,
+                                "PostalCode": saleOrderDetails?.edcCustomers[0]?.postCode,
+                                "CountryCode": saleOrderDetails?.shipToCountryRegionCode
+                            }
+                        },
+                        "ShipFrom": {
+                            "Name": "Muhammad Hamd",
+                            "AttentionName": "Muhammad Hamd",
+                            "Phone": {
+                                "Number": "1234567890"
+                            },
+                            "FaxNumber": "1234567999",
+                            "TaxIdentificationNumber": "456999",
+                            "Address": {
+                                "AddressLine": "1234 Main St",
+                                "City": "Anytown",
+                                "StateProvinceCode": "CA",
+                                "PostalCode": "90503",
+                                "CountryCode": "US"
+                            }
+                        },
+                        "PaymentInformation": {
+                            "ShipmentCharge": {
+                                "Type": "01",
+                                "BillShipper": {
+                                    "AccountNumber": "V78944"
+                                }
+                            }
+                        },
+                        "Service": {
+                            "Code": "01",
+                            "Description": "Expedited"
+                        },
+
+                        "Package": ((saleOrderDetails?.edcSalesLines).map(item => {
+                            return {
+                                "Description": item.description,
+                                "Packaging": {
+                                    "Code": "02"
+                                },
+                                "PackageWeight": {
+                                    "UnitOfMeasurement": {
+                                        "Code": "LBS"
+                                    },
+                                    "Weight": "10"
+                                },
+                                "PackageServiceOptions": ""
+                            }
+                        })),
+                        "ItemizedChargesRequestedIndicator": "",
+                        "RatingMethodRequestedIndicator": "",
+                        "TaxInformationIndicator": "",
+                        "ShipmentRatingOptions": {
+                            "NegotiatedRatesIndicator": ""
+                        }
+                    },
+                    "LabelSpecification": {
+                        "LabelImageFormat": {
+                            "Code": "PNG"
+                        }
+                    }
+                }
+            };
+
+            createShipment_UPS(body)
                 .then(res => {
-                    if (res?.response?.status) {
+                    if (res.response?.status >= 400) {
                         SetShipReport({
                             open: true,
                             response: null,
-                            error: res.response.statusText
+                            error: res.response.data.error,
+                            type: "UPS"
                         });
                     } else {
                         SetShipReport({
                             open: true,
                             response: res,
-                            error: null
-                        });
+                            error: null,
+                            type: "UPS"
+                        })
                     }
-                });
+                })
+                .catch(error => {
+                    SetShipReport({
+                        open: true,
+                        response: null,
+                        error: error.statusText,
+                        type: "UPS"
+                    });
+                })
 
         } else {
             SetShipReport({

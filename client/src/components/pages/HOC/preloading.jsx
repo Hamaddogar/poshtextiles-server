@@ -3,7 +3,6 @@ import { Box } from '@mui/material';
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { FEDEXP_TOEKN_SETTER, historyGetter, LOG_OUT, saleOrderNoFilter, UPDATE_TOKEN } from '../../../RTK/Reducers/Reducers';
-import { loginRequest } from '../../../utils/authConfig';
 import { API } from '../../../utils/confidential';
 import { requestAccessToken_FEDEXP, requestAccessToken_MICROSOFT } from '../../../utils/FEDEXP_API_HELPERS';
 import preloader from '../../assets/images/preloader.gif'
@@ -14,7 +13,7 @@ const Preloading = ({ children }) => {
     const { accessToken, postMan } = useSelector(store => store.mainReducer);
     const dispatch = useDispatch();
 
-    const { accounts, instance } = useMsal();
+    const { accounts } = useMsal();
     const [preloading, setPreloading] = React.useState(true)
 
 
@@ -27,45 +26,22 @@ const Preloading = ({ children }) => {
             requestAccessToken_MICROSOFT()
                 .then(res => {
                     dispatch(UPDATE_TOKEN({
-                        token: postMan ? accessToken : res,
+                        token: res,
                         notify: false
                     }))
                     dispatch(saleOrderNoFilter({
                         token: res,
-                        endpoint: API.microsoft.saleOrderFull,
                         toastPermission: true
                     }));
-                    dispatch(historyGetter({
-                        token: postMan ? accessToken : res,
-                        endpoint: API.microsoft.saleOrderFull,
-                        toastPermission: true
-                    }));
+                    // dispatch(historyGetter({
+                    //     token: res,
+                    //     toastPermission: true
+                    // }));
                 });
-
-
-
-
-            // instance
-            //     .acquireTokenSilent({
-            //         ...loginRequest,
-            //         account: accounts[0],
-            //     })
-            //     .then((response) => {
-            //         dispatch(saleOrderNoFilter({
-            //             token: postMan ? accessToken : response.accessToken,
-            //             endpoint: API.microsoft.saleOrderFull,
-            //             toastPermission: false
-            //         }));
-            //         dispatch(historyGetter({
-            //             token: postMan ? accessToken : response.accessToken,
-            //             endpoint: API.microsoft.saleOrderFull,
-            //             toastPermission: false
-            //         }));
-            //     }).catch((e) => { console.log("-error ", e) });
 
             setTimeout(() => {
                 setPreloading(false)
-            }, 5000);
+            }, 4000);
 
         } else dispatch(LOG_OUT());
         //eslint-disable-next-line

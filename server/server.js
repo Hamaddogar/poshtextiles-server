@@ -1,12 +1,17 @@
 // require('dotenv').config()
 require('dotenv').config();
 const express = require('express');
+const fs = require('fs');
+const PDFDocument = require('pdfkit');
+const { Buffer } = require('buffer');
+const { promisify } = require('util');
+const { pipeline } = require('stream');
 const cron = require('node-cron');
 const axios = require('axios');
 const path = require("path");
 const cors = require('cors');
 const { SECRETS } = require('./environment/credentials');
-const { API_FEDEXP, SERVERS, API_MICROSOFT } = require('./environment/APIs');
+const { API_FEDEXP, SERVERS, API_MICROSOFT, API_UPS } = require('./environment/APIs');
 const app = express();
 
 // useage
@@ -19,7 +24,9 @@ app.use(express.urlencoded({ limit: '200mb', extended: true }));
 
 
 // ---------------- MiddleWares -------------- //
-const cache = {};
+let cache = {
+    '/token_microsoft': "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyIsImtpZCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyJ9.eyJhdWQiOiJodHRwczovL2FwaS5idXNpbmVzc2NlbnRyYWwuZHluYW1pY3MuY29tIiwiaXNzIjoiaHR0cHM6Ly9zdHMud2luZG93cy5uZXQvYThmMWE1ZjktZjhiOC00MDBjLTg3YTEtYTcwNGJlMmQ3ZGMyLyIsImlhdCI6MTY3NzY0MjM0NCwibmJmIjoxNjc3NjQyMzQ0LCJleHAiOjE2Nzc2NDYyNDQsImFpbyI6IkUyWmdZT0Q5ZGtlMklIQUNlMnAxV1h3czE5Y1hBQT09IiwiYXBwaWQiOiJkYThkYzUzNC1lNjQyLTQ2ZTItOGYyOC01N2JjNzFkODU0YzAiLCJhcHBpZGFjciI6IjEiLCJpZHAiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9hOGYxYTVmOS1mOGI4LTQwMGMtODdhMS1hNzA0YmUyZDdkYzIvIiwiaWR0eXAiOiJhcHAiLCJvaWQiOiJiMDZjMTliOC01YTAzLTQ0MjQtYWNjMy04OThhODQwYWMwMWYiLCJyaCI6IjAuQVZvQS1hWHhxTGo0REVDSG9hY0V2aTE5d2ozdmJabHNzMU5CaGdlbV9Ud0J1SjlhQUFBLiIsInJvbGVzIjpbIkFQSS5SZWFkV3JpdGUuQWxsIl0sInN1YiI6ImIwNmMxOWI4LTVhMDMtNDQyNC1hY2MzLTg5OGE4NDBhYzAxZiIsInRpZCI6ImE4ZjFhNWY5LWY4YjgtNDAwYy04N2ExLWE3MDRiZTJkN2RjMiIsInV0aSI6IjRvNzAzV2x5MjBXVFNwaDlGOE1ZQUEiLCJ2ZXIiOiIxLjAifQ.FGTEb-dtwYVtR1HyZ1diJOH8EQM_crMgvkSidVKlXdqlK8NU080hLXSNmjWAZTHFwX6RjWFVsobPME5vg13Qpzdptlo8upJOZsnVSguFQEvtwcL_33SRT4vE6grfa7q8TRgaPrqpRZwU8it23hjP8p5-x6ZCg1L_EKyd4YQ9gJc-GaL_73E4Yj3QfO3Wi_FTXcVaQFI1UgEsZM_97zE1SNV1KHCJict6zx5ALNS440vWBqGgDKC8kAnx2y_Ts1jvs8J8V4QpyK7pQFCRIRWgs1KP_t-LnieXuVCVTUHEVbpj4-Ywc9mFJ2hWOrswoIY5akBeJd7D0qterOpO8MeX2Q"
+};
 
 
 // cacheHandler
@@ -30,14 +37,23 @@ const cacheHandler = async (req, res, next) => {
 };
 // ---------------- Routes -------------- //
 const routeStrings = {
+    // tokens
     token_fed: '/fedexp_token',
     token_micro: '/token_microsoft',
 
+    // fedexp
+    shipment_fedexp: '/shipment',
+
+    // UPS
+    shipment_ups: '/ups_shipment',
+
+    // microsoft
     sale_orders_micro: '/sales',
     history_micro: '/history',
 }
 
 // ---------------- Routes -------------- //
+// ---------------- FedExp Routes -------------- //
 
 // FedExp-Token
 app.get(routeStrings.token_fed, cacheHandler, async (req, res) => {
@@ -50,7 +66,6 @@ app.get(routeStrings.token_fed, cacheHandler, async (req, res) => {
         client_id: SECRETS.CLIENT_ID_FEDEXP,
         client_secret: SECRETS.CLIENT_SECRET_FEDEXP
     };
-
     try {
         const response = await axios.post(
             SERVERS.FEDEXP_Sandbox_Server + API_FEDEXP.Token,
@@ -61,16 +76,240 @@ app.get(routeStrings.token_fed, cacheHandler, async (req, res) => {
         if (response?.data?.access_token) {
             cache[routeStrings.token_fed] = response.data.access_token
             res.status(response.status).send(response.data.access_token);
-        }
-        else {
-            throw new Error('Server Error');
+        } else {
+            throw ({
+                response: {
+                    "message": "Server Error!",
+                    "name": "Error",
+                    "status": 500
+                }
+            });
         }
 
 
     } catch (error) {
-        res.send(error)
+        if (error?.status) res.status(error.status).send({ error: error.message });
+        else if (error?.response?.status) res.status(error.response.status).send({ error: error.response.message });
+        else if (error?.arg1?.response?.status) res.status(error.arg1.response.status).send({ error: error.arg1.response.message });
+        else res.status(500).send({ error: error.message });
     }
 });
+
+// FedExp shipment order
+app.post(routeStrings.shipment_fedexp, async (req, res) => {
+    const config = {
+        headers: {
+            "Content-Type": "application/json",
+            "X-locale": "en_US",
+            "Authorization": `Bearer ${req.body.token}`,
+        }
+    };
+    try {
+        const response = await axios.post(
+            SERVERS.FEDEXP_Sandbox_Server + API_FEDEXP.Create_Shipment,
+            req.body.body,
+            config
+        );
+        // console.log(response, 'fmm');
+
+        if (response?.data?.output?.transactionShipments[0]?.pieceResponses[0]?.packageDocuments[0]?.url) {
+
+            // const links = ((response.data.output.transactionShipments[0].pieceResponses).map(item => {
+            //     return item.packageDocuments[0].url;
+            // }))
+
+            // const pdfs = [];
+
+            // // Create an array of PDF buffers from the links
+            // Promise.all(links.map(link => new Promise((resolve, reject) => {
+            //     axios({ url: link, encoding: null }, (error, response, body) => {
+            //         if (error) {
+            //             reject(error);
+            //         } else if (response.statusCode !== 200) {
+            //             reject(`HTTP status ${response.statusCode}`);
+            //         } else {
+            //             resolve(body);
+            //         }
+            //     });
+            // })))
+            //     .then(bodies => {
+            //         // Combine the PDF buffers into a single PDF
+            //         const doc = new PDFDocument();
+            //         const stream = doc.pipe(fs.createWriteStream(path.join(__dirname, 'pdfs', 'fedexp_report.pdf')));
+            //         bodies.forEach(body => {
+            //             const pdf = new PDFDocument({ autoFirstPage: false });
+            //             pdf.pipe(stream);
+            //             pdf.load(body);
+            //             pdf.end();
+            //         });
+            //         doc.end();
+            //         // When the PDF has been saved, send it as a response to the frontend
+            //         stream.on('finish', () => {
+            //             const filePath = path.join(__dirname, 'pdfs', 'fedexp_report.pdf');
+            //             const fileStream = fs.createReadStream(filePath);
+            //             fileStream.pipe(res);
+            //         });
+            //     })
+            //     .catch(error => {
+            //         console.error(error);
+            //         res.status(500).send('Error combining PDFs');
+            //     });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            res.status(response.status).send({ file: response.data.output.transactionShipments[0].pieceResponses[0].packageDocuments[0].url })
+        }
+        else throw ({
+            response: {
+                "message": "Server Error!",
+                "name": "Error",
+                "status": 500
+            }
+        });
+
+    } catch (error) {
+        if (error?.status) res.status(error.status).send({ error: error.message });
+        else if (error?.response?.status) res.status(error.response.status).send({ error: error.response.message });
+        else if (error?.arg1?.response?.status) res.status(error.arg1.response.status).send({ error: error.arg1.response.message });
+        else res.status(500).send({ error: error.message });
+    }
+});
+
+
+// ---------------------- UPS Routes ------------------- //
+
+// UPS shipment order
+app.post(routeStrings.shipment_ups, async (req, res) => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json',
+            'AccessLicenseNumber': '4D849373AACE547D',
+            'Username': 'parveendhawan',
+            'Password': 'praveen#123'
+        }
+    };
+
+    try {
+
+        const response = await axios.post(
+            SERVERS.UPS_Sandbox_Server + API_UPS.Create_Shipment,
+            req.body.body,
+            config
+        );
+        if (response?.data?.ShipmentResponse?.ShipmentResults?.PackageResults) {
+            let images = [];
+            if (Array.isArray(response.data.ShipmentResponse.ShipmentResults.PackageResults)) {
+                images = (response.data.ShipmentResponse.ShipmentResults.PackageResults).map((item) => item.ShippingLabel.GraphicImage)
+            } else {
+                images = [response.data.ShipmentResponse.ShipmentResults.PackageResults.ShippingLabel.GraphicImage]
+            }
+
+            const doc = new PDFDocument();
+            images.forEach((base64, index) => {
+                const buffer = Buffer.from(base64, 'base64');
+                doc.image(buffer, {
+                    fit: [500, 500],
+                    align: 'center',
+                    valign: 'center',
+                })
+
+                if (index < images.length - 1) {
+                    doc.addPage();
+                }
+            });
+            const outputPath = path.join(__dirname, '/reports/report.pdf');
+
+            doc.pipe(fs.createWriteStream(outputPath));
+            doc.end();
+
+            fs.readFile(outputPath, (err, data) => {
+                if (err) {
+                    console.error(err);
+                    return;
+                }
+                const base64 = Buffer.from(data).toString('base64');
+                const pdf = {
+                    filename: 'report.pdf',
+                    contentType: 'application/pdf',
+                    file: "http://localhost:8080/report_ups"
+                };
+
+                res.send(pdf)
+            });
+
+        } else {
+            throw ({
+                response: {
+                    "message": "Server Error!",
+                    "name": "Error",
+                    "status": 500
+                }
+            });
+        }
+
+    } catch (error) {
+        if (error?.status) res.status(error.status).send({ error: error.message });
+        else if (error?.response?.status) res.status(error.response.status).send({ error: error.response.data.response.errors[0].message });
+        else if (error?.arg1?.response?.status) res.status(error.arg1.response.status).send({ error: error.arg1.response.message });
+        else res.status(500).send({ error: error.message });
+    }
+});
+
+// 
+// Serve the PDF file at '/download'
+app.get('/report_ups', (req, res) => {
+    const file = path.join(__dirname, '/reports/report.pdf');
+    res.download(file)
+});
+
+
+
+
+
+
+// -----------------Microsoft Routes --------------------- //
+
+
 
 // microsoft token
 app.get(routeStrings.token_micro, cacheHandler, async (req, res) => {
@@ -97,65 +336,52 @@ app.get(routeStrings.token_micro, cacheHandler, async (req, res) => {
             res.status(response.status).send(response.data.access_token);
         }
         else {
-            throw new Error('Server Error');
+            throw ({
+                response: {
+                    "message": "Server Error!",
+                    "name": "Error",
+                    "status": 500
+                }
+            });
         }
 
 
     } catch (error) {
-        res.send(error)
+        if (error?.status) res.status(error.status).send({ error: error.message });
+        else if (error?.response?.status) res.status(error.response.status).send({ error: error.response.message });
+        else if (error?.arg1?.response?.status) res.status(error.arg1.response.status).send({ error: error.arg1.response.message });
+        else res.status(500).send({ error: error.message });
     }
 });
 
-
-app.get(routeStrings.sale_orders_micro, async (req, res) => {
-    const ttk = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyIsImtpZCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyJ9.eyJhdWQiOiJodHRwczovL2FwaS5idXNpbmVzc2NlbnRyYWwuZHluYW1pY3MuY29tIiwiaXNzIjoiaHR0cHM6Ly9zdHMud2luZG93cy5uZXQvYThmMWE1ZjktZjhiOC00MDBjLTg3YTEtYTcwNGJlMmQ3ZGMyLyIsImlhdCI6MTY3NjcxOTgwMSwibmJmIjoxNjc2NzE5ODAxLCJleHAiOjE2NzY3MjM3MDEsImFpbyI6IkUyWmdZTWg0c3JyNWlkQ1VwZnN6MWFZVk1uODdCZ0E9IiwiYXBwaWQiOiJkYThkYzUzNC1lNjQyLTQ2ZTItOGYyOC01N2JjNzFkODU0YzAiLCJhcHBpZGFjciI6IjEiLCJpZHAiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9hOGYxYTVmOS1mOGI4LTQwMGMtODdhMS1hNzA0YmUyZDdkYzIvIiwiaWR0eXAiOiJhcHAiLCJvaWQiOiJiMDZjMTliOC01YTAzLTQ0MjQtYWNjMy04OThhODQwYWMwMWYiLCJyaCI6IjAuQVZvQS1hWHhxTGo0REVDSG9hY0V2aTE5d2ozdmJabHNzMU5CaGdlbV9Ud0J1SjlhQUFBLiIsInJvbGVzIjpbIkFQSS5SZWFkV3JpdGUuQWxsIl0sInN1YiI6ImIwNmMxOWI4LTVhMDMtNDQyNC1hY2MzLTg5OGE4NDBhYzAxZiIsInRpZCI6ImE4ZjFhNWY5LWY4YjgtNDAwYy04N2ExLWE3MDRiZTJkN2RjMiIsInV0aSI6IlRSUkx1SUJ2WGtxTXc1b2RSdDg2QUEiLCJ2ZXIiOiIxLjAifQ.ofsBQ_Ru7b0lFZpzOPpcywA_FAtSR7plLBQ3Cfb3XF825biN9SU2I3eFSOL_Nc03mF5jp2sG4SY3ypB0zyqLavO6OA9sZvMe3OnxRuh5JpwQzyQ_5BeKwSHxxLjhoy3e2bw6ZVIegdi13mLtGdaQl0MVV0XmG8AVuiX2KCijJmJmTr9MkTGuaNxe1r7KUwWud_qNPi4sqlxLCb98V-y7LV2E9jNnvXj8SsgtyP0jv9Z8mgiqQAAhZmbguJ9TQzTixEZ5bx25fJZRSNL2zAUBU-sTJLvrmUMXhMJcVQuVu_9UBRJyXxXt9H8koxH99Y4QfVq36txllj5E8nAC8JOAhw'
-    const api = "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies(0f8bab00-aede-ec11-82f8-0022482fff55)/edcSalesOrders?$expand=edcSalesLines,edcCustomers,edcWhseShipments&$count=true"
+// microsoft all sales orders
+app.post(routeStrings.sale_orders_micro, cacheHandler, async (req, res) => {
     const config = {
         headers: {
-            // "Authorization": `Bearer ${cache[routeStrings.token_micro]}`,
-            "Authorization": `Bearer ${ttk}`,
+            "Authorization": `Bearer ${req.body.token}`,
         }
     };
     try {
         const response = await axios.get(
-            // SERVERS.MICROSOFT_Sandbox_Server + API_MICROSOFT.Sales_Orders,
-            api,
+            SERVERS.MICROSOFT_Sandbox_Server + API_MICROSOFT.Sales_Orders,
             config
         );
-
-
-        // const response = await axios.get(api,
-        //     {
-        //         method: "GET",
-        //         headers: {
-        //             "Authorization": `Bearer ${ttk}`,
-        //         }
-        //     });
-
-
-
-
-
-
-
-
-
-        console.log("---------------response--------------");
-        console.log(response);
-        // if (response?.data?.access_token) {
-        //     cache[routeStrings.token_micro] = response.data.access_token
-        //     res.status(response.status).send(response.data.access_token);
-        // }
-        // else {
-        //     throw new Error('Server Error');
-        // }
-
-        res.status(response.status).send(response.data);
+        if (response?.data?.value) {
+            cache[routeStrings.sale_orders_micro] = response.data.value;
+            res.status(response.status).send(response.data.value);
+        } else throw ({
+            response: {
+                "message": "Server Error!",
+                "name": "Error",
+                "status": 500
+            }
+        });
 
     } catch (error) {
-        console.log("---------------error--------------");
-        console.log(error);
-        res.send(error);
+        if (error?.status) res.status(error.status).send({ error: error.message });
+        else if (error?.response?.status) res.status(error.response.status).send({ error: error.response.message });
+        else if (error?.arg1?.response?.status) res.status(error.arg1.response.status).send({ error: error.arg1.response.message });
+        else res.status(500).send({ error: error.message });
     }
 });
 
@@ -166,20 +392,36 @@ app.get(routeStrings.sale_orders_micro, async (req, res) => {
 
 
 // ------------------- Configurations----------------- //
+app.get("/setter", async (req, res) => {
+    const config = {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    };
+
+    const body = {
+        grant_type: SECRETS.GRANT_TYPE_FEDEXP,
+        client_id: SECRETS.CLIENT_ID_FEDEXP,
+        client_secret: SECRETS.CLIENT_SECRET_FEDEXP
+    };
+    try {
+        const response = await axios.post(
+            SERVERS.FEDEXP_Sandbox_Server + API_FEDEXP.Token,
+            new URLSearchParams(body).toString(),
+            config
+        );
+
+        if (response?.data?.access_token) cache[routeStrings.token_fed] = response.data.access_token
 
 
-// // Set up a cron job to run the route every day at 9:00 AM
-// const schedule_daily_9am = '0 9 * * *';
+    } catch (error) {
+        console.error(error);
+    }
+});
 
-// // Set up a cron job to run the route every 50 minumtes
-// const schedule_fivr_minutes = '*/50 * * * *';
+// Set up a cron job to run the route every day at 9:00 AM
 
-
-// cron.schedule(schedule_fivr_minutes, () => {
-//     console.log('Running the cron job...');
-//     axios.get('http://localhost:3000/fedexp_token');
-//     axios.get('http://localhost:3000/fedexp_token');
-// });
+cron.schedule('*/50 * * * *', () => {
+    axios.get('http://localhost:8080/setter');
+});
 
 
 // server configuration

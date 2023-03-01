@@ -1,5 +1,6 @@
 import axios from "axios";
 import { API, CORS_Proxy, FEDEXP_Sandbox_Server } from "./confidential";
+import { APIS } from "./table";
 
 
 
@@ -50,25 +51,35 @@ export const getMultiplePackageTrackingInfo_FEDEXP = async (body, token) => {
 };
 
 
-// create shipment tag
+// create shipment FEDEXP
 export const createShipment_FEDEXP = async (body, token) => {
-    const config = {
-        headers: {
-            "Content-Type": "application/json",
-            "X-locale": "en_US",
-            "Authorization": `Bearer ${token}`,
-        }
-    };
-
     try {
         const response = await axios.post(
-            CORS_Proxy + FEDEXP_Sandbox_Server + API.fedexp.create_Shipment,
-            body,
-            config
-        );
-        return response.data;
+            APIS.create_shipment,
+            {
+                token: token,
+                body: body,
+            });
+        return response;
     } catch (error) {
         return error
     }
 };
 
+// create shipment UPS
+export const createShipment_UPS = async (body) => {
+    try {
+        const response = await axios.post(
+            APIS.create_shipment_ups,
+            {
+                body: body,
+            });
+            if (response.status >=400) {
+                throw (response)
+            } else {
+                return response
+            }
+    } catch (error) {
+        return error
+    }
+};

@@ -3,6 +3,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 import axios from 'axios';
+import { APIS } from '../../utils/table';
 
 
 // ------------------All Asyn Reducers are below ------------------//
@@ -42,9 +43,9 @@ let initialState = {
 // saleOrderNoFilter
 export const saleOrderNoFilter = createAsyncThunk(
   'mainSlice/saleOrderNoFilter',
-  async ({ token, endpoint, toastPermission }) => {
+  async ({ token, toastPermission }) => {
     const data = await toast.promise(
-      axios.get(endpoint, { method: "GET", headers: { "Authorization": `Bearer ${token}`, "Accept": `application/json` } }),
+      axios.post(APIS.sale_orders_micro, { token: token }),
       toastPermission ? { pending: 'Loading Please Wait...', success: 'Successfully Loaded', error: 'Something Went Wrong' } : { error: 'Something Went Wrong' },
       { autoClose: 1500, hideProgressBar: true }
     );
@@ -55,9 +56,9 @@ export const saleOrderNoFilter = createAsyncThunk(
 // History
 export const historyGetter = createAsyncThunk(
   'mainSlice/historyGetter',
-  async ({ token, endpoint, toastPermission }) => {
+  async ({ token, toastPermission }) => {
     const data = await toast.promise(
-      axios.get(endpoint, { method: "GET", headers: { "Authorization": `Bearer ${token}`, "Accept": `application/json` } }),
+      axios.post(APIS.sale_orders_micro, { token: token }),
       toastPermission ? { pending: 'Loading Please Wait...', success: 'Successfully Loaded', error: 'Something Went Wrong' } : { error: 'Something Went Wrong' },
       { autoClose: 1500, hideProgressBar: true }
     );
@@ -221,14 +222,12 @@ const mainSlice = createSlice({
       })
       .addCase(saleOrderNoFilter.fulfilled, (state, { payload }) => {
         state.loading = false;
-        if (payload && payload.value) state.allOrders = payload.value;
-        else { alert('error is found') }
+        console.log(payload);
+        if (payload) state.allOrders = payload;
       })
-      .addCase(saleOrderNoFilter.rejected, (state, actions) => {
-        console.log('ssss',actions);
+      .addCase(saleOrderNoFilter.rejected, (state, { error }) => {
         state.loading = false;
-        if (actions.error.code === "ERR_BAD_REQUEST") Swal.fire({ icon: 'error', title: actions.error.code, text: `Please Use New Token` })
-        else Swal.fire({ icon: 'error', title: actions.error.code, text: `${actions.error.message}` })
+        Swal.fire({ icon: 'error', title: error.code, text: error.message })
       })
 
       // historyGetter
@@ -237,13 +236,12 @@ const mainSlice = createSlice({
       })
       .addCase(historyGetter.fulfilled, (state, { payload }) => {
         state.loading = false;
-        if (payload && payload.value) state.historyData = payload.value;
-        else { alert('error is found') }
+        console.log(payload);
+        if (payload) state.allOrders = payload;
       })
-      .addCase(historyGetter.rejected, (state, actions) => {
+      .addCase(historyGetter.rejected, (state, { error }) => {
         state.loading = false;
-        if (actions.error.code === "ERR_BAD_REQUEST") Swal.fire({ icon: 'error', title: actions.error.code, text: `Please Use New Token` })
-        else Swal.fire({ icon: 'error', title: actions.error.code, text: `${actions.error.message}` })
+        Swal.fire({ icon: 'error', title: error.code, text: error.message })
       })
 
       // inventoryGetter cases

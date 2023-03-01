@@ -8,6 +8,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import { CircularProgress, Grid, Typography } from '@mui/material';
 import { Box } from '@mui/system';
+import File from "../../../assets/icons/file.svg";
 
 export default function ShipReportDialog({ shipReport, SetShipReport }) {
     const theme = useTheme();
@@ -28,18 +29,15 @@ export default function ShipReportDialog({ shipReport, SetShipReport }) {
                     {
                         shipReport.error && 'Something went wrong!'
                     }
-                    { shipReport.response && !shipReport.error && 'Your Report is Ready.'}
+                    {shipReport.response && !shipReport.error && 'Your Report is Ready.'}
                 </DialogTitle>
                 <DialogContent>
                     <Grid container alignItems={'center'} >
                         {
                             shipReport.response && !shipReport.error ?
-                                <Grid item xs={12}>
-                                    <iframe
-                                        title="FEDEXP"
-                                        src={shipReport.response?.output?.transactionShipments[0]?.pieceResponses[0]?.packageDocuments[0]?.url}
-                                    ></iframe>
-                                </Grid>
+                            <Grid item xs={12} sx={{textAlign:'center'}}>
+                            <Box component='img' src={File} alt="report file" sx={{width:'95%', maxWidth:'250px',  textAlign:'center'}} />
+                        </Grid>
                                 :
                                 <>
                                     {
@@ -66,7 +64,7 @@ export default function ShipReportDialog({ shipReport, SetShipReport }) {
                             style={{ textDecoration: 'none' }}
                             target={"_blank"}
                             rel="noreferrer"
-                            href={shipReport.response?.output?.transactionShipments[0]?.pieceResponses[0]?.packageDocuments[0]?.url}
+                            href={shipReport?.response?.data?.file}
                             download="shipment-label.pdf"
                         >
                             <Button color='success' variant='contained'>Download PDF</Button>

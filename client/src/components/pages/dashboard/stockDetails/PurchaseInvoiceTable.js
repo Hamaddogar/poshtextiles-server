@@ -7,7 +7,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Pagination from 'react-responsive-pagination';
 import 'bootstrap/dist/css/bootstrap.css';
-import { Typography, useMediaQuery } from '@mui/material';
+import { useMediaQuery } from '@mui/material';
 import { Box, Stack } from '@mui/system';
 import { BackButton } from '../reUseAbles/ReuseAbles';
 import { useNavigate } from 'react-router-dom';

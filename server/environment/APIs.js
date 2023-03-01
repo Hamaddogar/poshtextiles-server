@@ -3,8 +3,11 @@ module.exports = {
         FEDEXP_Production_Server: "https://apis.fedex.com",
         FEDEXP_Sandbox_Server: "https://apis-sandbox.fedex.com",
 
-        MICROSOFT_Sandbox_Server: "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies(0f8bab00-aede-ec11-82f8-0022482fff55)"
-
+        MICROSOFT_Sandbox_Server: "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies(0f8bab00-aede-ec11-82f8-0022482fff55)",
+        
+        UPS_Sandbox_Server: "https://wwwcie.ups.com",
+        UPS_Production_Server: "https://onlinetools.ups.com",
+        
     },
 
     API_FEDEXP: {
@@ -23,5 +26,9 @@ module.exports = {
         History: "/edcSalesOrders?$top=300",
 
     },
+
+    API_UPS : {
+        Create_Shipment: "/ship/v1/shipments",
+    }
 
 };
