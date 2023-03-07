@@ -18,6 +18,7 @@ import ShipReportDialog from './ShipReportDialog'
 const ShippingQuote = () => {
     const { saleOrderDetails } = useSelector(store => store.mainReducer);
     const navigate = useNavigate();
+    const [allowShipment, setAllowShipment] = React.useState(false);
     const [billfrom, setbillfrom] = React.useState(false);
     const [shipfrom, setshipfrom] = React.useState(false);
     const [shipReport, SetShipReport] = React.useState({
@@ -25,7 +26,6 @@ const ShippingQuote = () => {
         response: null,
         error: null
     });
-
     const [validatedAddress, setValidatedAddress] = React.useState({
         companyName: saleOrderDetails.shipToName,
         addressLine1: saleOrderDetails.shipToAddress,
@@ -33,8 +33,10 @@ const ShippingQuote = () => {
         state: saleOrderDetails.shipToCounty,
         city: saleOrderDetails.shipToCity,
         country: saleOrderDetails.shipToCounty,
+        countryCode: saleOrderDetails.shipToCountryRegionCode,
         postalCode: saleOrderDetails.shipToPostCode,
         addressValidated: saleOrderDetails.addressValidated,
+        courier: saleOrderDetails?.shippingAgentCode
     });
     const [selections, setSelections] = React.useState({
         printOn: "No Option Avaliable",
@@ -46,7 +48,6 @@ const ShippingQuote = () => {
         ...selections,
         [event.target.name]: [event.target.value]
     });
-    console.log("ddddddd", saleOrderDetails);
     const handleSubmit = event => {
         event.preventDefault();
         // const data = new FormData(event.currentTarget)
@@ -369,12 +370,34 @@ const ShippingQuote = () => {
     };
 
 
+
+
+    // address
+    const [drawerStateAddress, setdrawerStateAddress] = React.useState(false);
+
+    const toggleDrawer = (open) => (event) => {
+        if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) { return; }
+        setdrawerStateAddress(open);
+    };
+
+    // rate
+    const [drawerstateRate, setdrawerstateRate] = React.useState(false);
+
+    const toggleDrawerRate = (open) => (event) => {
+        if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) { return; }
+        setdrawerstateRate(open);
+    };
+
+    console.log("order", saleOrderDetails);
+
     return (
         <div>
             <Box component={'form'} onSubmit={handleSubmit}>
                 <Billfrom billfrom={billfrom} setbillfrom={setbillfrom} />
                 <Shipfrom shipfrom={shipfrom} setshipfrom={setshipfrom} />
                 <ShipReportDialog shipReport={shipReport} SetShipReport={SetShipReport} />
+                <AddressValidateDrawer setAllowShipment={setAllowShipment} toggleDrawer={toggleDrawer} drawerStateAddress={drawerStateAddress} validatedAddress={validatedAddress} setValidatedAddress={setValidatedAddress} />
+                <RateQuoteDrawer toggleDrawerRate={toggleDrawerRate} drawerstateRate={drawerstateRate} />
                 <Grid container >
 
                     {/* left section */}
@@ -564,12 +587,10 @@ const ShippingQuote = () => {
                     <Grid item container mt={.5}>
                         <Grid item xs={6}>
                             <Box>
-                                <Box>
-                                    <AddressValidateDrawer
-                                        validatedAddress={validatedAddress}
-                                        setValidatedAddress={setValidatedAddress}
-                                    />
-                                </Box>
+                                <Button
+                                    style={{ background: "#4B5AD8", marginTop: "15px", padding: "0px 6px", color: "white" }}
+                                    onClick={toggleDrawer(true)}>Validate Address</Button>
+
                                 <Box sx={{ marginTop: "10px" }}>
                                     <BackButton onClick={() => navigate(-1)} />
                                 </Box>
@@ -577,12 +598,13 @@ const ShippingQuote = () => {
                         </Grid>
                         <Grid item xs={6}>
                             <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                                <RateQuoteDrawer />
+                                <Button style={{ background: "#4B5AD8", marginTop: "15px", padding: "2px 6px", color: "white" }} onClick={toggleDrawerRate(true)}>RATE QUOTE</Button>
                                 <Button
+                                    disabled={!allowShipment}
                                     type='submit'
                                     variant='contained'
                                     sx={{ marginLeft: "6px", background: "#4B5AD8", marginTop: "15px", padding: "0px 6px", color: 'white' }}
-                                >Ship</Button>
+                                > Ship </Button>
                             </Box>
                         </Grid>
 

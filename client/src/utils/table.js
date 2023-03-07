@@ -15,16 +15,22 @@ export const table = {
 export const APIS = {
     token_fed: 'http://localhost:8080/fedexp_token',
     token_micro: 'http://localhost:8080/token_microsoft',
+    
 
-    // fedexp
+    // fedexp 
     create_shipment : 'http://localhost:8080/shipment',
-    create_shipment_ups: 'http://localhost:8080/ups_shipment',
+    check_address_fedexp: 'http://localhost:8080/address_validate_fedexp',
 
+
+    // ups
+    create_shipment_ups: 'http://localhost:8080/ups_shipment',
+    check_address_ups: 'http://localhost:8080/address_validate_ups',
 
     // microsoft
     sale_orders_micro: 'http://localhost:8080/sales',
     history_micro: 'http://localhost:8080/history',
 }
+
 
 
 

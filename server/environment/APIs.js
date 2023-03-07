@@ -10,15 +10,7 @@ module.exports = {
         
     },
 
-    API_FEDEXP: {
-        Token: "/oauth/token",
-        Create_Shipment: "/ship/v1/shipments",
-        Cancel_Shipment: '/ship/v1/shipments/cancel',
-        Validate_Shipment: "/ship/v1/shipments/packages/validate",
-        Create_Tag: "/ship/v1/shipments/tag",
-        Track_Multiple: "/track/v1/associatedshipments",
-    },
-
+    
     API_MICROSOFT: {
         Token: "https://login.microsoftonline.com/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/oauth2/v2.0/token",
         Sales_Orders: "/edcSalesOrders?$expand=edcSalesLines,edcCustomers,edcWhseShipments&$count=true",
@@ -27,8 +19,20 @@ module.exports = {
 
     },
 
+    API_FEDEXP: {
+        Token: "/oauth/token",
+        Create_Shipment: "/ship/v1/shipments",
+        Cancel_Shipment: '/ship/v1/shipments/cancel',
+        Validate_Shipment: "/ship/v1/shipments/packages/validate",
+        Create_Tag: "/ship/v1/shipments/tag",
+        Track_Multiple: "/track/v1/associatedshipments",
+        Validate_Address: "/address/v1/addresses/resolve",
+    },
+    
+    // /addressvalidation/v1/1?regionalrequestindicator=true&maximumcandidatelistsize=10
     API_UPS : {
         Create_Shipment: "/ship/v1/shipments",
+        Validate_Address: "/addressvalidation/v1/1",
     }
 
 };

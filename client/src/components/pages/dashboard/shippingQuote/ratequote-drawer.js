@@ -13,13 +13,7 @@ function valuetext2(value) {
     return `${value}`;
 }
 
-export default function RateQuoteDrawer() {
-    const [drawerstate, setDrawerState] = React.useState(false);
-
-    const toggleDrawer = (open) => (event) => {
-        if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) { return; }
-        setDrawerState(open);
-    };
+export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate }) {
 
     // List Data For Drawer
 
@@ -66,15 +60,21 @@ export default function RateQuoteDrawer() {
         setValue2(newValue);
     };
 
+    // handleClickProduct
+    const handleClickProduct = (item) => {
+        console.log('handleClickProduct', item);
+    }
+
+
+
     return (
         <div>
             <React.Fragment >
-                <Button style={{ background: "#4B5AD8", marginTop: "15px", padding: "2px 6px", color: "white" }} onClick={toggleDrawer(true)}>RATE QUOTE</Button>
                 <SwipeableDrawer
                     anchor={"left"}
-                    open={drawerstate}
-                    onClose={toggleDrawer(false)}
-                    onOpen={toggleDrawer(true)}
+                    open={drawerstateRate}
+                    onClose={toggleDrawerRate(false)}
+                    onOpen={toggleDrawerRate(true)}
                 >
                     <Box
                         sx={{ width: 500, height: "100vh", padding: "20px 15px 0px 15px", background: "#E9EDF1" }}
@@ -156,20 +156,22 @@ export default function RateQuoteDrawer() {
                                                                     <Box>
                                                                         <img alt=" " src={item.img} style={{ width: "50px" }} />
                                                                     </Box>
-                                                                    <Typography sx={{fontSize:'14px'}}>{item.company}</Typography>
+                                                                    <Typography sx={{ fontSize: '14px' }}>{item.company}</Typography>
                                                                 </Stack>
                                                             </Grid>
                                                             <Grid item xs={6}>
                                                                 <Stack direction={"row"} alignItems={"center"} justifyContent={"flex-end"}>
-                                                                    <Typography sx={{ marginRight: "5px",fontSize:'14px' }}>
+                                                                    <Typography sx={{ marginRight: "5px", fontSize: '14px' }}>
                                                                         {item.time}
                                                                     </Typography>
                                                                     <Box >
-                                                                        <Button size='small' sx={{
-                                                                            background: "dodgerBlue", color: "white", "&:hover": {
-                                                                                backgroundColor: 'dodgerBlue'
-                                                                            }
-                                                                        }}>${item.value}</Button>
+                                                                        <Button
+                                                                            onClick={() => handleClickProduct(item)}
+                                                                            size='small' sx={{
+                                                                                background: "dodgerBlue", color: "white", "&:hover": {
+                                                                                    backgroundColor: 'dodgerBlue'
+                                                                                }
+                                                                            }}>${item.value}</Button>
                                                                     </Box>
 
                                                                 </Stack>

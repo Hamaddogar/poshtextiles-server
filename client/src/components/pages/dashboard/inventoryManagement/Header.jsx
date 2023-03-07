@@ -4,7 +4,6 @@ import NavMenu from '../../../header/NavMenu';
 import { ButtonBase, FormControl, MenuItem, Select, Stack } from '@mui/material';
 import { btnSm, styleSlect } from '../reUseAbles/ReuseAbles';
 import { useDispatch, useSelector } from 'react-redux';
-import { inventoryGetter } from '../../../../RTK/Reducers/Reducers';
 import { API } from '../../../../utils/confidential';
 // import OAuth2Login from 'react-simple-oauth2-login';
 // import { generaterToken } from '../../../../utils/OauthToken';
@@ -17,15 +16,15 @@ import { API } from '../../../../utils/confidential';
 
 
 const Header = () => {
-    const dispatch = useDispatch();
-    const { accessToken } = useSelector(store => store.mainReducer)
+    // const dispatch = useDispatch();
+    // const { accessToken } = useSelector(store => store.mainReducer)
     // const ci = `client_id=da8dc534-e642-46e2-8f28-57bc71d854c0&scope=https%3A%2F%2Fgraph.microsoft.com%2F.default&client_secret=wrN8Q~vvX2FDmt_Sf.7ltpQta41eABkoaq.j0bBS`
     const inventoryDataGetter = () => {
-        dispatch(inventoryGetter({
-            token: accessToken,
-            endpoint: API.inventory,
-            toastPermission: true,
-        }));
+        // dispatch(inventoryGetter({
+        //     token: accessToken,
+        //     endpoint: API.inventory,
+        //     toastPermission: true,
+        // }));
     };
 
     // const tokener = () => {
