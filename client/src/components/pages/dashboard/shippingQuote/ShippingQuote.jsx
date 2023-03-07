@@ -388,7 +388,7 @@ const ShippingQuote = () => {
         setdrawerstateRate(open);
     };
 
-    console.log("order", saleOrderDetails);
+    // console.log("order", saleOrderDetails);
 
     return (
         <div>
@@ -396,7 +396,7 @@ const ShippingQuote = () => {
                 <Billfrom billfrom={billfrom} setbillfrom={setbillfrom} />
                 <Shipfrom shipfrom={shipfrom} setshipfrom={setshipfrom} />
                 <ShipReportDialog shipReport={shipReport} SetShipReport={SetShipReport} />
-                <AddressValidateDrawer setAllowShipment={setAllowShipment} toggleDrawer={toggleDrawer} drawerStateAddress={drawerStateAddress} validatedAddress={validatedAddress} setValidatedAddress={setValidatedAddress} />
+                <AddressValidateDrawer allowShipment={allowShipment} setAllowShipment={setAllowShipment} toggleDrawer={toggleDrawer} drawerStateAddress={drawerStateAddress} validatedAddress={validatedAddress} setValidatedAddress={setValidatedAddress} />
                 <RateQuoteDrawer toggleDrawerRate={toggleDrawerRate} drawerstateRate={drawerstateRate} />
                 <Grid container >
 

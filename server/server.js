@@ -25,7 +25,7 @@ app.use(express.urlencoded({ limit: '200mb', extended: true }));
 
 // ---------------- MiddleWares -------------- //
 let cache = {
-    '/token_microsoft': "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyIsImtpZCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyJ9.eyJhdWQiOiJodHRwczovL2FwaS5idXNpbmVzc2NlbnRyYWwuZHluYW1pY3MuY29tIiwiaXNzIjoiaHR0cHM6Ly9zdHMud2luZG93cy5uZXQvYThmMWE1ZjktZjhiOC00MDBjLTg3YTEtYTcwNGJlMmQ3ZGMyLyIsImlhdCI6MTY3ODE0NDU4NSwibmJmIjoxNjc4MTQ0NTg1LCJleHAiOjE2NzgxNDg0ODUsImFpbyI6IkUyWmdZT0Q5ZGtlMklIQUNlMnAxV1h3czE5Y1hBQT09IiwiYXBwaWQiOiJkYThkYzUzNC1lNjQyLTQ2ZTItOGYyOC01N2JjNzFkODU0YzAiLCJhcHBpZGFjciI6IjEiLCJpZHAiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9hOGYxYTVmOS1mOGI4LTQwMGMtODdhMS1hNzA0YmUyZDdkYzIvIiwiaWR0eXAiOiJhcHAiLCJvaWQiOiJiMDZjMTliOC01YTAzLTQ0MjQtYWNjMy04OThhODQwYWMwMWYiLCJyaCI6IjAuQVZvQS1hWHhxTGo0REVDSG9hY0V2aTE5d2ozdmJabHNzMU5CaGdlbV9Ud0J1SjlhQUFBLiIsInJvbGVzIjpbIkFQSS5SZWFkV3JpdGUuQWxsIl0sInN1YiI6ImIwNmMxOWI4LTVhMDMtNDQyNC1hY2MzLTg5OGE4NDBhYzAxZiIsInRpZCI6ImE4ZjFhNWY5LWY4YjgtNDAwYy04N2ExLWE3MDRiZTJkN2RjMiIsInV0aSI6IlhKUkdNY2trS2tHakdnVktkWDlvQUEiLCJ2ZXIiOiIxLjAifQ.lLreYXvrAG7xUzyR3nU2AyS4nzoOV_CDm4-cMhiadQS3cSFCFhbseQ7CrXoSo3o3rcUEITP8sjHbx3-l_Pg9T4HSLMxtTTQwyljOGTfG1pjxwgWwymlpLeE1BnbAp0aWve1gfPHnnB0fG-P9VV0Yu-zUFAXh7gn2agmDWhjeA-_sYoih5J4fsFRtndyW4iRWnbKIYj5baeRF5ikdyUH1qnnzn7gLwncP4OaPR90jAHyPzARO6tihoLHnR5EAurLv1mA-6yuyRZidGp7Sw0PwuDYckVEtvVmPk5mDeE00OA1qIFGc7oRVoaPTSsz9jYOE7L9uRi6lVDKNA1aeCqMRrA"
+    '/token_microsoft': "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyIsImtpZCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyJ9.eyJhdWQiOiJodHRwczovL2FwaS5idXNpbmVzc2NlbnRyYWwuZHluYW1pY3MuY29tIiwiaXNzIjoiaHR0cHM6Ly9zdHMud2luZG93cy5uZXQvYThmMWE1ZjktZjhiOC00MDBjLTg3YTEtYTcwNGJlMmQ3ZGMyLyIsImlhdCI6MTY3ODIwMTg1NSwibmJmIjoxNjc4MjAxODU1LCJleHAiOjE2NzgyMDU3NTUsImFpbyI6IkUyWmdZT2krM21wenpucWR6M1FERDZObjFRdFRBUT09IiwiYXBwaWQiOiJkYThkYzUzNC1lNjQyLTQ2ZTItOGYyOC01N2JjNzFkODU0YzAiLCJhcHBpZGFjciI6IjEiLCJpZHAiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9hOGYxYTVmOS1mOGI4LTQwMGMtODdhMS1hNzA0YmUyZDdkYzIvIiwiaWR0eXAiOiJhcHAiLCJvaWQiOiJiMDZjMTliOC01YTAzLTQ0MjQtYWNjMy04OThhODQwYWMwMWYiLCJyaCI6IjAuQVZvQS1hWHhxTGo0REVDSG9hY0V2aTE5d2ozdmJabHNzMU5CaGdlbV9Ud0J1SjlhQUFBLiIsInJvbGVzIjpbIkFQSS5SZWFkV3JpdGUuQWxsIl0sInN1YiI6ImIwNmMxOWI4LTVhMDMtNDQyNC1hY2MzLTg5OGE4NDBhYzAxZiIsInRpZCI6ImE4ZjFhNWY5LWY4YjgtNDAwYy04N2ExLWE3MDRiZTJkN2RjMiIsInV0aSI6IkZZVjhneXVhQkV5M1Nua0JkMHlBQUEiLCJ2ZXIiOiIxLjAifQ.RyiJUj22XO7d9Q63G5YvB_LrKrVUW4Rujkz1pUbyHKeTBy0MhHEY9S5wGwKKdfMrfMEAt9hFEP1UGXhmfN9IzktYDH5wd9OQPXQ8p_1WiSTgJCTSBhKCP8MQkQNXtvnvW3rS4WE2Xkz_cjuQFk1z07BjYZOXH-LaMHJeA8p8c5XepNbSjXB-lgwdUNN-9i_ObiKSHmfrZoFVyTjrvsOw-y0FPe5Q7LruzqhMHWoRgcCVDXF4SUYyaSJ_ObcXZHh_tR5T7KDKsj8RdzgG2Th084wGFKLiI5OjT9URQGUVnFKLGolVOFjEnDkZUoWc3vC-yKXgRPFVv1mB4vrqxHbSjQ"
 };
 
 
@@ -117,16 +117,17 @@ app.post(routeStrings.shipment_fedexp, async (req, res) => {
 
             const pdfUrls = ((response.data.output.transactionShipments[0].pieceResponses).map(item => {
                 return item.packageDocuments[0].url;
-            }))
+            }));
 
             async function mergePdfs(pdfUrls) {
                 const merger = new PDFMerger();
+
                 for (const pdfUrl of pdfUrls) {
                     const { data } = await axios.get(pdfUrl, { responseType: 'arraybuffer' });
-                    merger.add(data);
+                    await merger.add(data);
                 }
-                const mergedPdf = await merger.saveAsBuffer();
 
+                const mergedPdf = await merger.saveAsBuffer();
                 const filePath = path.join(__dirname, '/reports/fedexp/fedexp_labels_report.pdf');
                 fs.writeFileSync(filePath, mergedPdf);
 
@@ -135,7 +136,7 @@ app.post(routeStrings.shipment_fedexp, async (req, res) => {
 
             mergePdfs(pdfUrls).then(respp => {
                 const pdf = {
-                    filename: 'report.pdf',
+                    filename: 'fedexp_labels_report.pdf',
                     contentType: 'application/pdf',
                     file: "http://localhost:8080/report_fedexp"
                 };
@@ -184,7 +185,10 @@ app.post(routeStrings.address_validate_fedexp, async (req, res) => {
             )
         ) {
 
-            res.status(response.status).send(response.data.output.resolvedAddresses[0].attributes.Resolved);
+            res.status(response.status).send({
+                message: response.data.output.resolvedAddresses[0].attributes.Resolved,
+                error: false
+            });
         }
         else throw ({
             response: {
@@ -195,9 +199,14 @@ app.post(routeStrings.address_validate_fedexp, async (req, res) => {
         });
 
     } catch (error) {
-        if (error?.status) res.send({ code: error.status, message: error.response.data.response.errors[0].message, error: true });
-        else if (error?.response?.status) res.send({ code: error.response?.status, message: error.response.data.response.errors[0].message, error: true });
-        else if (error?.arg1?.response?.status) res.send({ code: error.arg1?.response?.status, message: error.arg1.response.data.response.errors[0].message, error: true });
+        console.log(error.response.data);
+        if (error?.status) res.send({ code: error.status, message: error.message, error: true });
+        else if (error?.response?.status) res.send({
+            code: error.response?.status,
+            message: ((error?.response?.data?.errors[0]?.code) || (error?.response?.data?.response?.errors[0]?.message)),
+            error: true
+        });
+        else if (error?.arg1?.response?.status) res.send({ code: error.arg1?.response?.status, message: error.arg1.response.data, error: true });
         else res.send({ code: error.status, message: error.message, error: true });
     }
 });
@@ -334,7 +343,10 @@ app.post(routeStrings.address_validate_ups, async (req, res) => {
             (response?.data?.XAVResponse?.Response?.ResponseStatus?.Description === "Success")
         ) {
 
-            res.status(response.status).send(response.data.XAVResponse.Response.ResponseStatus.Description);
+            res.status(response.status).send({
+                message: true,
+                error: false
+            });
         }
         else throw ({
             response: {
@@ -345,8 +357,15 @@ app.post(routeStrings.address_validate_ups, async (req, res) => {
         });
 
     } catch (error) {
-        if (error?.status) res.send({ code: error.status, message: error.response.data.response.errors[0].message, error: true });
-        else if (error?.response?.status) res.send({ code: error.response?.status, message: error.response.data.response.errors[0].message, error: true });
+
+        console.log(error.response.data);
+        // res.send(error)
+        if (error?.status) res.send({ code: error.status, message: ((error?.response?.data?.errors[0]?.code) || (error?.response?.data?.response?.errors[0]?.message)), error: true });
+        else if (error?.response?.status) res.send({
+            code: error.response?.status,
+            message: ( (error?.response?.data?.response?.errors[0]?.message) || (error?.response?.data?.errors[0]?.code)),
+            error: true
+        });
         else if (error?.arg1?.response?.status) res.send({ code: error.arg1?.response?.status, message: error.arg1.response.data.response.errors[0].message, error: true });
         else res.send({ code: error.status, message: error.message, error: true });
     }

@@ -73,7 +73,7 @@ export const validateAddressFEDEXP = createAsyncThunk(
   async ({ token, body, toastPermission }) => {
     const data = await toast.promise(
       axios.post(APIS.check_address_fedexp, { token, body }),
-      toastPermission ? { pending: 'Loading Please Wait...', success: 'Successfully Loaded', error: 'Something Went Wrong' } : { error: 'Something Went Wrong' },
+      toastPermission ? { pending: 'Loading Please Wait...', success: 'Response Loaded', error: 'Something Went Wrong' } : { error: 'Something Went Wrong' },
       { autoClose: 1500, hideProgressBar: true }
     );
     return data.data;
@@ -86,7 +86,7 @@ export const validateAddressUPS = createAsyncThunk(
   async ({ body, toastPermission }) => {
     const data = await toast.promise(
       axios.post(APIS.check_address_ups, { body }),
-      toastPermission ? { pending: 'Loading Please Wait...', success: 'Successfully Loaded', error: 'Something Went Wrong' } : { error: 'Something Went Wrong' },
+      toastPermission ? { pending: 'Loading Please Wait...', success: 'Response Loaded', error: 'Something Went Wrong' } : { error: 'Something Went Wrong' },
       { autoClose: 1500, hideProgressBar: true }
     );
     return data.data;
@@ -195,14 +195,14 @@ const mainSlice = createSlice({
       // validateAddressFEDEXP cases
       .addCase(validateAddressFEDEXP.pending, (state) => {
         state.loading = true;
+        state.fedexpAddressValid = false;
       })
       .addCase(validateAddressFEDEXP.fulfilled, (state, { payload }) => {
         state.loading = false;
-
-        if (payload.error) {
-          Swal.fire({ icon: 'error', title: payload.code, text: `${payload.message}` })
-        } else {
+        if (!(payload.error)) {
           state.fedexpAddressValid = true;
+        } else {
+          Swal.fire({ icon: 'error', title: payload.code, text: `${payload.message}` })
         }
       })
       .addCase(validateAddressFEDEXP.rejected, (state, actions) => {
@@ -214,17 +214,15 @@ const mainSlice = createSlice({
       // validateAddress UPS cases
       .addCase(validateAddressUPS.pending, (state) => {
         state.loading = true;
+        state.fedexpAddressValid = false;
       })
       .addCase(validateAddressUPS.fulfilled, (state, { payload }) => {
         state.loading = false;
-
-        if (payload.error) {
-          Swal.fire({ icon: 'error', title: payload.code, text: `${payload.message}` })
-        } else {
+        if (!(payload.error)) {
           state.fedexpAddressValid = true;
+        } else {
+          Swal.fire({ icon: 'error', title: payload.code, text: `${payload.message}` })
         }
-
-
 
       })
       .addCase(validateAddressUPS.rejected, (state, actions) => {

@@ -10,7 +10,7 @@ import { validateAddressFEDEXP, validateAddressUPS } from '../../../../RTK/Reduc
 import { useDispatch, useSelector } from 'react-redux';
 
 export default function AddressValidateDrawer({ toggleDrawer,
-    drawerStateAddress, validatedAddress, setAllowShipment }) {
+    drawerStateAddress, validatedAddress, setAllowShipment, allowShipment }) {
 
     const dispatch = useDispatch();
     const { loading } = useSelector(store => store.mainReducer)
@@ -50,14 +50,7 @@ export default function AddressValidateDrawer({ toggleDrawer,
                         body: payload,
                         toastPermission: true
                     })).then(res => {
-                        if (res.payload) setAllowShipment(res.payload)
-                        else dispatch(validateAddressFEDEXP({
-                            token,
-                            body: payload,
-                            toastPermission: true
-                        })).then(res => {
-                            if (res.payload) setAllowShipment(res.payload)
-                        });
+                        if (!(res.payload.error)) setAllowShipment(true)
                     })
                 })
         } else if (validatedAddress.courier === "UPS") {
@@ -83,11 +76,7 @@ export default function AddressValidateDrawer({ toggleDrawer,
                 body: payload,
                 toastPermission: true
             })).then(res => {
-                if (res.payload) setAllowShipment(res.payload)
-                else dispatch(validateAddressUPS({
-                    body: payload,
-                    toastPermission: true
-                }))
+                if (!(res.payload.error) || true) setAllowShipment(true)
             })
         };
 
@@ -158,14 +147,14 @@ export default function AddressValidateDrawer({ toggleDrawer,
                                     <LoadingButton
                                         sx={{ marginTop: "15px", fontSize: '14px' }}
                                         loading={loading}
-                                        color={validatedAddress.addressValidated ? "success" : 'primary'}
+                                        color={allowShipment ? "success" : 'primary'}
                                         // disabled={validatedAddress.addressValidated}
                                         loadingPosition="start"
                                         variant="outlined"
                                         type='submit'
                                     >
                                         {
-                                            validatedAddress.addressValidated ?
+                                            allowShipment ?
                                                 "Addess is Valid"
                                                 :
                                                 "Validate Now"

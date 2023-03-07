@@ -172,7 +172,7 @@ const AllOrders = () => {
                                     >
                                         <TableCell sx={{ maxWidth: '140px' }}> {row.no} </TableCell>
                                         <TableCell sx={{ maxWidth: '140px' }}> {row.shipToName} </TableCell>
-                                        <TableCell sx={{ maxWidth: '140px' }}>PO-{row.shipToPostCode} </TableCell>
+                                        <TableCell sx={{ maxWidth: '140px' }}>{row.externalDocumentNo} </TableCell>
                                         <TableCell sx={{ maxWidth: '140px' }}>
                                             <Chip sx={{
                                                 '&.MuiChip-root': {
