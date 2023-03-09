@@ -114,7 +114,7 @@ const mainSlice = createSlice({
     },
     LOG_IN: (state, { payload }) => {
       state.isAuthorised = true;
-      state.client_Info = payload;
+      state.accessToken = payload;
     },
     SELECTED_SALE_ORDER_DATA: (state, { payload }) => {
       state.saleOrderDetails = payload;

@@ -8,8 +8,11 @@ import NavMenu from '../../../header/NavMenu';
 import { useDispatch } from 'react-redux';
 import { saleOrderNoFilter } from '../../../../RTK/Reducers/Reducers';
 import { requestAccessToken_MICROSOFT } from '../../../../utils/FEDEXP_API_HELPERS';
+import { useMsal } from "@azure/msal-react";
+import { loginRequest } from '../../../../utils/authConfig';
 
 const Header = () => {
+    const { instance, accounts } = useMsal();
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [route, setRoute] = React.useState("");
@@ -20,13 +23,24 @@ const Header = () => {
     }, [route]);
 
     const dataGetter = () => {
-        requestAccessToken_MICROSOFT()
-            .then(res => {
-                dispatch(saleOrderNoFilter({
-                    token: res,
-                    toastPermission: true
-                }));
-            })
+        instance
+        .acquireTokenSilent({
+            ...loginRequest,
+            account: accounts[0],
+        })
+        .then((response) => {
+            dispatch(saleOrderNoFilter({
+                            token: response.accessToken,
+                            toastPermission: true
+                        }));
+        }).catch((e) => { console.log("-error ", e) });
+        // requestAccessToken_MICROSOFT()
+        //     .then(res => {
+        //         dispatch(saleOrderNoFilter({
+        //             token: res,
+        //             toastPermission: true
+        //         }));
+        //     })
     };
 
 

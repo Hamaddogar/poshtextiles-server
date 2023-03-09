@@ -42,7 +42,16 @@ const Login = () => {
 
     React.useEffect(() => {
         if (accounts.length > 0 && !isAuthorised) {
-            dispatch(LOG_IN(accounts[0]))
+            
+            instance
+            .acquireTokenSilent({
+                ...loginRequest,
+                account: accounts[0],
+            })
+            .then((response) => {
+                dispatch(LOG_IN(response.accessToken))
+                
+            }).catch((e) => { console.log("-error ", e) });
         }
         //eslint-disable-next-line
     }, [accounts])

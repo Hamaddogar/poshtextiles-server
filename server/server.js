@@ -447,13 +447,14 @@ app.post(routeStrings.sale_orders_micro, cacheHandler, async (req, res) => {
             "Authorization": `Bearer ${req.body.token}`,
         }
     };
+    // console.log( `Bearer ${req.body.token}`);
     try {
         const response = await axios.get(
             SERVERS.MICROSOFT_Sandbox_Server + API_MICROSOFT.Sales_Orders,
             config
         );
         if (response?.data?.value) {
-            cache[routeStrings.sale_orders_micro] = response.data.value;
+            // cache[routeStrings.sale_orders_micro] = response.data.value;
             res.status(response.status).send(response.data.value);
         } else throw ({
             response: {
@@ -464,6 +465,7 @@ app.post(routeStrings.sale_orders_micro, cacheHandler, async (req, res) => {
         });
 
     } catch (error) {
+        console.log("error",error.response.data.error.message);
         if (error?.status) res.status(error.status).send({ error: error.message });
         else if (error?.response?.status) res.status(error.response.status).send({ error: error.response.message });
         else if (error?.arg1?.response?.status) res.status(error.arg1.response.status).send({ error: error.arg1.response.message });

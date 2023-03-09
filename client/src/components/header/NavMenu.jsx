@@ -144,14 +144,14 @@ const NavMenu = ({ children }) => {
                     </Box>
 
                     <Stack direction='row' alignItems={'center'} spacing={2} >  {children}
-                        <Link style={lnk} to='/token'>
+                        {/* <Link style={lnk} to='/token'>
                             <ButtonBase sx={btnSm} size='small' > Update_Token </ButtonBase>
                         </Link>
                         <ButtonBase sx={btnSm} size='small'
                             onClick={() => {
                                 dispatch(USE_POSTMAN_TOKEN())
                             }}
-                        > {postMan ? "Using Post-Man Token" : "Using Account Token"} </ButtonBase>
+                        > {postMan ? "Using Post-Man Token" : "Using Account Token"} </ButtonBase> */}
                     </Stack>
                 </Stack>
                 <Box>
