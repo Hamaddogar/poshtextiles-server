@@ -23,10 +23,9 @@ app.use(express.urlencoded({ limit: '200mb', extended: true }));
 
 
 
+
 // ---------------- MiddleWares -------------- //
-let cache = {
-    '/token_microsoft': "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyIsImtpZCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyJ9.eyJhdWQiOiJodHRwczovL2FwaS5idXNpbmVzc2NlbnRyYWwuZHluYW1pY3MuY29tIiwiaXNzIjoiaHR0cHM6Ly9zdHMud2luZG93cy5uZXQvYThmMWE1ZjktZjhiOC00MDBjLTg3YTEtYTcwNGJlMmQ3ZGMyLyIsImlhdCI6MTY3ODIwMTg1NSwibmJmIjoxNjc4MjAxODU1LCJleHAiOjE2NzgyMDU3NTUsImFpbyI6IkUyWmdZT2krM21wenpucWR6M1FERDZObjFRdFRBUT09IiwiYXBwaWQiOiJkYThkYzUzNC1lNjQyLTQ2ZTItOGYyOC01N2JjNzFkODU0YzAiLCJhcHBpZGFjciI6IjEiLCJpZHAiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9hOGYxYTVmOS1mOGI4LTQwMGMtODdhMS1hNzA0YmUyZDdkYzIvIiwiaWR0eXAiOiJhcHAiLCJvaWQiOiJiMDZjMTliOC01YTAzLTQ0MjQtYWNjMy04OThhODQwYWMwMWYiLCJyaCI6IjAuQVZvQS1hWHhxTGo0REVDSG9hY0V2aTE5d2ozdmJabHNzMU5CaGdlbV9Ud0J1SjlhQUFBLiIsInJvbGVzIjpbIkFQSS5SZWFkV3JpdGUuQWxsIl0sInN1YiI6ImIwNmMxOWI4LTVhMDMtNDQyNC1hY2MzLTg5OGE4NDBhYzAxZiIsInRpZCI6ImE4ZjFhNWY5LWY4YjgtNDAwYy04N2ExLWE3MDRiZTJkN2RjMiIsInV0aSI6IkZZVjhneXVhQkV5M1Nua0JkMHlBQUEiLCJ2ZXIiOiIxLjAifQ.RyiJUj22XO7d9Q63G5YvB_LrKrVUW4Rujkz1pUbyHKeTBy0MhHEY9S5wGwKKdfMrfMEAt9hFEP1UGXhmfN9IzktYDH5wd9OQPXQ8p_1WiSTgJCTSBhKCP8MQkQNXtvnvW3rS4WE2Xkz_cjuQFk1z07BjYZOXH-LaMHJeA8p8c5XepNbSjXB-lgwdUNN-9i_ObiKSHmfrZoFVyTjrvsOw-y0FPe5Q7LruzqhMHWoRgcCVDXF4SUYyaSJ_ObcXZHh_tR5T7KDKsj8RdzgG2Th084wGFKLiI5OjT9URQGUVnFKLGolVOFjEnDkZUoWc3vC-yKXgRPFVv1mB4vrqxHbSjQ"
-};
+let cache = {};
 
 
 // cacheHandler
@@ -52,6 +51,12 @@ const routeStrings = {
     // microsoft
     sale_orders_micro: '/sales',
     history_micro: '/history',
+
+    // HTTP routes
+    hello: '/',
+
+    // Socket.io route
+    socket: '/socket'
 }
 
 // ---------------- Routes -------------- //
@@ -363,7 +368,7 @@ app.post(routeStrings.address_validate_ups, async (req, res) => {
         if (error?.status) res.send({ code: error.status, message: ((error?.response?.data?.errors[0]?.code) || (error?.response?.data?.response?.errors[0]?.message)), error: true });
         else if (error?.response?.status) res.send({
             code: error.response?.status,
-            message: ( (error?.response?.data?.response?.errors[0]?.message) || (error?.response?.data?.errors[0]?.code)),
+            message: ((error?.response?.data?.response?.errors[0]?.message) || (error?.response?.data?.errors[0]?.code)),
             error: true
         });
         else if (error?.arg1?.response?.status) res.send({ code: error.arg1?.response?.status, message: error.arg1.response.data.response.errors[0].message, error: true });
@@ -440,6 +445,36 @@ app.get(routeStrings.token_micro, cacheHandler, async (req, res) => {
     }
 });
 
+app.post(routeStrings.token_micro, async (req, res) => {
+
+    try {
+        if (req.body.token) {
+            cache[routeStrings.token_micro] = req.body.token
+            res.status(200).send({
+                error:false,
+                message: cache[routeStrings.token_micro],
+                code : 200
+            });
+        }
+        else {
+            throw ({
+                response: {
+                    "message": "Server Error!",
+                    "name": "Error",
+                    "status": 500
+                }
+            });
+        }
+
+
+    } catch (error) {
+        if (error?.status) res.status(error.status).send({ error: error.message });
+        else if (error?.response?.status) res.status(error.response.status).send({ error: error.response.message });
+        else if (error?.arg1?.response?.status) res.status(error.arg1.response.status).send({ error: error.arg1.response.message });
+        else res.status(500).send({ error: error.message });
+    }
+});
+
 // microsoft all sales orders
 app.post(routeStrings.sale_orders_micro, cacheHandler, async (req, res) => {
     const config = {
@@ -465,7 +500,7 @@ app.post(routeStrings.sale_orders_micro, cacheHandler, async (req, res) => {
         });
 
     } catch (error) {
-        console.log("error",error.response.data.error.message);
+        console.log("error", error.response.data);
         if (error?.status) res.status(error.status).send({ error: error.message });
         else if (error?.response?.status) res.status(error.response.status).send({ error: error.response.message });
         else if (error?.arg1?.response?.status) res.status(error.arg1.response.status).send({ error: error.arg1.response.message });
@@ -512,6 +547,11 @@ cron.schedule('*/50 * * * *', () => {
 });
 
 
+
+
+
+
+
 // server configuration
 const PORT = process.env.PORT || 8080;
 
@@ -522,4 +562,4 @@ if (process.env.NODE_ENV === "production") {
         res.sendFile(path.resolve(__dirname, 'build', 'index.html'));
     })
 }
-app.listen(PORT, () => { console.log('server is running'); })
+app.listen(PORT, () => { console.log(`Server listening on port ${PORT}`); })

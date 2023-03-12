@@ -1,17 +1,16 @@
 import { useMsal } from '@azure/msal-react';
 import { Box } from '@mui/material';
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux';
-import { FEDEXP_TOEKN_SETTER, historyGetter, LOG_OUT, saleOrderNoFilter, UPDATE_TOKEN } from '../../../RTK/Reducers/Reducers';
+import { useDispatch } from 'react-redux';
+import { FEDEXP_TOEKN_SETTER, LOG_OUT, saleOrderNoFilter, saveTokenServer } from '../../../RTK/Reducers/Reducers';
 import { loginRequest } from '../../../utils/authConfig';
-import { API } from '../../../utils/confidential';
-import { requestAccessToken_FEDEXP, requestAccessToken_MICROSOFT } from '../../../utils/FEDEXP_API_HELPERS';
+import { requestAccessToken_FEDEXP } from '../../../utils/FEDEXP_API_HELPERS';
 import preloader from '../../assets/images/preloader.gif'
 
 
 
 const Preloading = ({ children }) => {
-    const { accessToken, postMan } = useSelector(store => store.mainReducer);
+    // const { accessToken, postMan } = useSelector(store => store.mainReducer);
     const dispatch = useDispatch();
 
     const { accounts, instance } = useMsal();
@@ -25,21 +24,22 @@ const Preloading = ({ children }) => {
                     dispatch(FEDEXP_TOEKN_SETTER(res))
                 });
 
-
+            // onLoad calling Api
             instance
                 .acquireTokenSilent({
                     ...loginRequest,
                     account: accounts[0],
                 })
                 .then((response) => {
-                    dispatch(UPDATE_TOKEN({
-                        token: response.accessToken,
-                        notify: false
-                    }))
                     dispatch(saleOrderNoFilter({
                         token: response.accessToken,
-                        toastPermission: true
+                        toastPermission: false
                     }));
+
+                    dispatch(saveTokenServer({
+                        token: response.accessToken,
+                        toastPermission: false
+                    }))
 
                 }).catch((e) => { console.log("-error ", e) });
 
@@ -69,7 +69,6 @@ const Preloading = ({ children }) => {
         } else dispatch(LOG_OUT());
         //eslint-disable-next-line
     }, [accounts])
-
 
 
     return (

@@ -54,6 +54,22 @@ export const saleOrderNoFilter = createAsyncThunk(
   }
 );
 
+
+// save token microsoft UPS
+export const saveTokenServer = createAsyncThunk(
+  'mainSlice/saveTokenServer',
+  async ({ token, toastPermission }) => {
+    const data = await toast.promise(
+      axios.post(APIS.token_micro, { token }),
+      toastPermission ? { pending: 'Loading Please Wait...', success: 'Response Loaded', error: 'Something Went Wrong' } : { error: 'Something Went Wrong' },
+      { autoClose: 1500, hideProgressBar: true }
+    );
+    return data.data;
+  }
+);
+
+
+
 // History
 export const historyGetter = createAsyncThunk(
   'mainSlice/historyGetter',
@@ -228,6 +244,12 @@ const mainSlice = createSlice({
       .addCase(validateAddressUPS.rejected, (state, actions) => {
         console.log('rejected', actions);
         state.loading = false;
+        Swal.fire({ icon: 'error', title: actions.error.code, text: `${actions.error.message}` })
+      })
+
+      
+      // save token microsoft cases
+      .addCase(saveTokenServer.rejected, (state, actions) => {
         Swal.fire({ icon: 'error', title: actions.error.code, text: `${actions.error.message}` })
       })
 
