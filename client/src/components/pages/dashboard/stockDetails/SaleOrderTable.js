@@ -15,8 +15,6 @@ import NoRecord from '../../HOC/NoRecord';
 
 const SaleOrderTable = ({ data, perPage }) => {
 
-    console.log(data,'--------------');
-
     perPage += 10;
     const [copy, setCopy] = React.useState([]);
     const [rows, setRows] = React.useState([]);
@@ -66,7 +64,7 @@ const SaleOrderTable = ({ data, perPage }) => {
                                     <TableCell sx={{ maxWidth: '140px' }}>{row.no}</TableCell>
                                     <TableCell sx={{ maxWidth: '140px' }}>{row.date}</TableCell>
                                     <TableCell sx={{ maxWidth: '140px' }}>{row.cus_name}</TableCell>
-                                    <TableCell sx={{ maxWidth: '140px' }}>{row.qty == 0 ? row.qty * row.price : row.qty}</TableCell>
+                                    <TableCell sx={{ maxWidth: '140px' }}>{row.qty === 0 ? row.qty * row.price : row.qty}</TableCell>
                                     <TableCell sx={{ maxWidth: '140px' }}>${row.price}</TableCell>
                                 </TableRow>
                             ))}

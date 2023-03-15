@@ -1,54 +1,11 @@
 import React from 'react';
 import { Box } from '@mui/system';
 import NavMenu from '../../../header/NavMenu';
-import { ButtonBase, FormControl, MenuItem, Select, Stack } from '@mui/material';
-import { btnSm, styleSlect } from '../reUseAbles/ReuseAbles';
-import { useDispatch, useSelector } from 'react-redux';
-import { API } from '../../../../utils/confidential';
-import { requestAccessToken_MICROSOFT } from '../../../../utils/FEDEXP_API_HELPERS';
-import { inventoryDataFunction } from '../../../../RTK/Reducers/Reducers';
-// import OAuth2Login from 'react-simple-oauth2-login';
-// import { generaterToken } from '../../../../utils/OauthToken';
-// import { UseOAuth2 } from '../../../../utils/selfToken';
-// import { tokenGetter } from '../../../../utils/graph';
-// import { tokenGetter } from '../../../../utils/graph';
-
-
-
+import { FormControl, MenuItem, Select, Stack } from '@mui/material';
+import { styleSlect } from '../reUseAbles/ReuseAbles';
 
 
 const Header = () => {
-    const dispatch = useDispatch();
-    // const { accessToken } = useSelector(store => store.mainReducer)
-    // const ci = `client_id=da8dc534-e642-46e2-8f28-57bc71d854c0&scope=https%3A%2F%2Fgraph.microsoft.com%2F.default&client_secret=wrN8Q~vvX2FDmt_Sf.7ltpQta41eABkoaq.j0bBS`
-    const inventoryDataGetter = () => {
-        requestAccessToken_MICROSOFT().then((result) => {
-            dispatch(inventoryDataFunction({
-                token: result,
-                toastPermission: true,
-            }));
-        })
-
-
-    };
-
-    // const tokener = () => {
-    //     const st = generaterToken;
-    //     console.log(st);
-
-    //     UseOAuth2({
-    //         authorizeUrl: "https://login.microsoftonline.com/organizations",
-    //         clientId: "da8dc534-e642-46e2-8f28-57bc71d854c0",
-    //         redirectUri: "http://localhost:3000/",
-    //         scope: "https://api.businesscentral.dynamics.com/.default",
-    //     })
-    // };
-    // // const onSuccess = response => console.log(response);
-    // // const onFailure = response => console.error(response);
-
-    // const apiToken = () => {
-    //     tokenGetter()
-    // }
 
     return (
         <Box>
@@ -84,18 +41,6 @@ const Header = () => {
                             <MenuItem value={'transfer'} sx={{ fontSize: '12px' }}>Transfer</MenuItem>
                         </Select>
                     </FormControl>
-                    {/* <OAuth2Login
-                        authorizationUrl="https://login.microsoftonline.com/oauth2/v2.0/token"
-                        responseType="token"
-                        clientId={"da8dc534-e642-46e2-8f28-57bc71d854c0"}
-                        redirectUri="http://localhost:3000/oauth-callback"
-                        onSuccess={onSuccess}
-                        onFailure={onFailure}
-                        
-                        /> */}
-                    <ButtonBase sx={btnSm} size='small' onClick={inventoryDataGetter} > InventoryData </ButtonBase>
-                    {/* <ButtonBase sx={btnSm} size='small' onClick={apiToken} > apiToken </ButtonBase>
-                    <ButtonBase sx={btnSm} size='small' onClick={tokener} > Gen_Token </ButtonBase> */}
                 </Stack>
             </NavMenu>
         </Box>
