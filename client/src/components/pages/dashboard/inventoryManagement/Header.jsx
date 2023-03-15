@@ -5,6 +5,8 @@ import { ButtonBase, FormControl, MenuItem, Select, Stack } from '@mui/material'
 import { btnSm, styleSlect } from '../reUseAbles/ReuseAbles';
 import { useDispatch, useSelector } from 'react-redux';
 import { API } from '../../../../utils/confidential';
+import { requestAccessToken_MICROSOFT } from '../../../../utils/FEDEXP_API_HELPERS';
+import { inventoryDataFunction } from '../../../../RTK/Reducers/Reducers';
 // import OAuth2Login from 'react-simple-oauth2-login';
 // import { generaterToken } from '../../../../utils/OauthToken';
 // import { UseOAuth2 } from '../../../../utils/selfToken';
@@ -16,15 +18,18 @@ import { API } from '../../../../utils/confidential';
 
 
 const Header = () => {
-    // const dispatch = useDispatch();
+    const dispatch = useDispatch();
     // const { accessToken } = useSelector(store => store.mainReducer)
     // const ci = `client_id=da8dc534-e642-46e2-8f28-57bc71d854c0&scope=https%3A%2F%2Fgraph.microsoft.com%2F.default&client_secret=wrN8Q~vvX2FDmt_Sf.7ltpQta41eABkoaq.j0bBS`
     const inventoryDataGetter = () => {
-        // dispatch(inventoryGetter({
-        //     token: accessToken,
-        //     endpoint: API.inventory,
-        //     toastPermission: true,
-        // }));
+        requestAccessToken_MICROSOFT().then((result) => {
+            dispatch(inventoryDataFunction({
+                token: result,
+                toastPermission: true,
+            }));
+        })
+
+
     };
 
     // const tokener = () => {

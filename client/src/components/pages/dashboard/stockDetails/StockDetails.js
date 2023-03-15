@@ -55,6 +55,8 @@ export default function StockDetails() {
     const handleChange = (event, newTab) => setTabs(newTab);
     const handleChangeIndex = (tab) => setTabs(tab);
 
+
+
     return (
         <Box>
             {/* Top Content */}

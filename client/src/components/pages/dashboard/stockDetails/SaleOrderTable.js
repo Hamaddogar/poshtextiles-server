@@ -11,8 +11,12 @@ import { useMediaQuery } from '@mui/material';
 import { Box, Stack } from '@mui/system';
 import { BackButton } from '../reUseAbles/ReuseAbles';
 import { useNavigate } from 'react-router-dom';
+import NoRecord from '../../HOC/NoRecord';
 
 const SaleOrderTable = ({ data, perPage }) => {
+
+    console.log(data,'--------------');
+
     perPage += 10;
     const [copy, setCopy] = React.useState([]);
     const [rows, setRows] = React.useState([]);
@@ -59,23 +63,35 @@ const SaleOrderTable = ({ data, perPage }) => {
                                         }
                                     }}
                                 >
-                                    <TableCell>{row.no}</TableCell>
-                                    <TableCell>{row.dt}</TableCell>
-                                    <TableCell>{row.cn}</TableCell>
-                                    <TableCell>{row.qty}</TableCell>
-                                    <TableCell>${row.price}</TableCell>
+                                    <TableCell sx={{ maxWidth: '140px' }}>{row.no}</TableCell>
+                                    <TableCell sx={{ maxWidth: '140px' }}>{row.date}</TableCell>
+                                    <TableCell sx={{ maxWidth: '140px' }}>{row.cus_name}</TableCell>
+                                    <TableCell sx={{ maxWidth: '140px' }}>{row.qty == 0 ? row.qty * row.price : row.qty}</TableCell>
+                                    <TableCell sx={{ maxWidth: '140px' }}>${row.price}</TableCell>
                                 </TableRow>
                             ))}
                     </TableBody>
                 </Table>
             </TableContainer>
-
+            <Stack direction='row' mb={3} mt={2} justifyContent='space-between' alignItems={'flex-start'}>
+                <Box>
+                    <BackButton onClick={e => navigate(-1)} />
+                </Box>
+                <Box>
+                    <Pagination
+                        total={Math.ceil(copy.length / perPage)}
+                        current={currentPage}
+                        onPageChange={page => handlePageChange(page)}
+                    />
+                </Box>
+            </Stack>
+            <NoRecord backButton={false} size={rows.length} />
             {/* {
                 rows.length === 0 && <Box mt={3} textAlign='center' >
                     <Typography>No Record</Typography>
                 </Box>
             } */}
-            {
+            {/* {
                 rows.length > 0 &&
                 <Stack direction='row' textAlign='right' mt={2} justifyContent='space-between' alignItems={'center'}>
                     <Box>
@@ -87,7 +103,7 @@ const SaleOrderTable = ({ data, perPage }) => {
                         onPageChange={page => handlePageChange(page)}
                     />
                 </Stack>
-            }
+            } */}
         </Box>
     );
 }

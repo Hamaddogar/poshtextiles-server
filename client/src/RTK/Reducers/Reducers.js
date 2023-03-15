@@ -1,4 +1,4 @@
-import { chargeCard, inventoryAdjustment, inventoryData, stockDetails_Invoice, stockDetails_ledger, stockDetails_purchase, stockDetails_saleOrder } from './fakeData';
+import { chargeCard, inventoryAdjustment, stockDetails_Invoice, stockDetails_ledger, stockDetails_purchase } from './fakeData';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
@@ -13,7 +13,7 @@ let initialState = {
   loading: false,
   // original data
   allOrders: [],
-  inventoryData: inventoryData,
+  inventoryData: [],
   inventoryAdjustment: inventoryAdjustment,
   binTransfer: [],
   physicalInventory: [],
@@ -21,7 +21,7 @@ let initialState = {
   historyData: [],
   // dummy data
   chargeCardData: chargeCard,
-  stockDetails_saleOrder: stockDetails_saleOrder,
+  stockDetails_saleOrder: [],
   stockDetails_Invoice: stockDetails_Invoice,
   stockDetails_purchase: stockDetails_purchase,
   stockDetails_ledger: stockDetails_ledger,
@@ -32,7 +32,6 @@ let initialState = {
   firstTime: true,
   // client info
   client_Info: null,
-  accessToken: "yJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyIsImtpZCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyJ9.eyJhdWQiOiJodHRwczovL2FwaS5idXNpbmVzc2NlbnRyYWwuZHluYW1pY3MuY29tIiwiaXNzIjoiaHR0cHM6Ly9zdHMud2luZG93cy5uZXQvYThmMWE1ZjktZjhiOC00MDBjLTg3YTEtYTcwNGJlMmQ3ZGMyLyIsImlhdCI6MTY3NTg0MDA2NywibmJmIjoxNjc1ODQwMDY3LCJleHAiOjE2NzU4NDM5NjcsImFpbyI6IkUyWmdZSmhUR1A0aUt1Wi9CT1BVbzQ5NDMrektCd0E9IiwiYXBwaWQiOiJkYThkYzUzNC1lNjQyLTQ2ZTItOGYyOC01N2JjNzFkODU0YzAiLCJhcHBpZGFjciI6IjEiLCJpZHAiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9hOGYxYTVmOS1mOGI4LTQwMGMtODdhMS1hNzA0YmUyZDdkYzIvIiwiaWR0eXAiOiJhcHAiLCJvaWQiOiJiMDZjMTliOC01YTAzLTQ0MjQtYWNjMy04OThhODQwYWMwMWYiLCJyaCI6IjAuQVZvQS1hWHhxTGo0REVDSG9hY0V2aTE5d2ozdmJabHNzMU5CaGdlbV9Ud0J1SjlhQUFBLiIsInJvbGVzIjpbIkFQSS5SZWFkV3JpdGUuQWxsIl0sInN1YiI6ImIwNmMxOWI4LTVhMDMtNDQyNC1hY2MzLTg5OGE4NDBhYzAxZiIsInRpZCI6ImE4ZjFhNWY5LWY4YjgtNDAwYy04N2ExLWE3MDRiZTJkN2RjMiIsInV0aSI6IjZVb21SeU95amthaTY2RzN2aFh0QVEiLCJ2ZXIiOiIxLjAifQ.nlMhaU2Bhb9DFCZRMTAW4xQUTrL0_yL4sDC3DWGd02FhqZbBEkRW8JIuNoTYjCLiIsPwD967jMF8yfnGUtz7J9mA0CpnaJHX8S8SHcHUr-t7QYSUNZFSod7U1deU3amEBjN45dosxp2cKQM8NaYBnDexZAclJnz_l77CYuQiM268X0fDoGhrh4ctxFJjSd0QNMW8XV-CtqXRB-Jz9XrOnd4tje6YlKoLvPALInZPlPiJsr60zrnFGelazviwccClqpXfiAh6DMBwWfHl7QAEjdM-kdWwbXawlBOu00acfX90L6yXd4DaNi8hqGaBn4vCNYCvNN3uAk62HQJj_nVg0A",
   // FEDEXP
   FEDEXP_TOKEN: null,
   fedexpAddressValid: false,
@@ -47,6 +46,19 @@ export const saleOrderNoFilter = createAsyncThunk(
   async ({ token, toastPermission }) => {
     const data = await toast.promise(
       axios.post(APIS.sale_orders_micro, { token: token }),
+      toastPermission ? { pending: 'Loading Please Wait...', success: 'Successfully Loaded', error: 'Something Went Wrong' } : { error: 'Something Went Wrong' },
+      { autoClose: 1500, hideProgressBar: true }
+    );
+    return data.data;
+  }
+);
+
+// inventorydata 
+export const inventoryDataFunction = createAsyncThunk(
+  'mainSlice/inventoryDataFunction',
+  async ({ token, toastPermission }) => {
+    const data = await toast.promise(
+      axios.post(APIS.inventory_micro, { token: token }),
       toastPermission ? { pending: 'Loading Please Wait...', success: 'Successfully Loaded', error: 'Something Went Wrong' } : { error: 'Something Went Wrong' },
       { autoClose: 1500, hideProgressBar: true }
     );
@@ -187,9 +199,34 @@ const mainSlice = createSlice({
       .addCase(saleOrderNoFilter.fulfilled, (state, { payload }) => {
         state.loading = false;
         console.log(payload);
-        if (payload) state.allOrders = payload;
+        if (payload) {
+          state.allOrders = payload;
+          state.stockDetails_saleOrder = payload.flatMap(item => (item.edcSalesLines).map(lineItem => {
+            return {
+              no: lineItem.lineNo,
+              date: lineItem.promisedDeliveryDate,
+              cus_name: item.shipToName,
+              qty: lineItem.quantity,
+              price: lineItem.lineAmount
+            }
+          }))
+        }
       })
       .addCase(saleOrderNoFilter.rejected, (state, { error }) => {
+        state.loading = false;
+        Swal.fire({ icon: 'error', title: error.code, text: error.message })
+      })
+
+      // inventoryData
+      .addCase(inventoryDataFunction.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(inventoryDataFunction.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        console.log(payload);
+        if (payload) state.inventoryData = payload;
+      })
+      .addCase(inventoryDataFunction.rejected, (state, { error }) => {
         state.loading = false;
         Swal.fire({ icon: 'error', title: error.code, text: error.message })
       })
@@ -247,7 +284,7 @@ const mainSlice = createSlice({
         Swal.fire({ icon: 'error', title: actions.error.code, text: `${actions.error.message}` })
       })
 
-      
+
       // save token microsoft cases
       .addCase(saveTokenServer.rejected, (state, actions) => {
         Swal.fire({ icon: 'error', title: actions.error.code, text: `${actions.error.message}` })

@@ -51,6 +51,7 @@ const routeStrings = {
     // microsoft
     sale_orders_micro: '/sales',
     history_micro: '/history',
+    inventory_micro : '/inventory',
 
     // HTTP routes
     hello: '/',
@@ -449,7 +450,7 @@ app.post(routeStrings.token_micro, async (req, res) => {
 
     try {
         if (req.body.token) {
-            cache[routeStrings.token_micro] = req.body.token
+            cache[routeStrings.token_micro] = req.body.token;
             res.status(200).send({
                 error:false,
                 message: cache[routeStrings.token_micro],
@@ -501,6 +502,38 @@ app.post(routeStrings.sale_orders_micro, cacheHandler, async (req, res) => {
 
     } catch (error) {
         console.log("error", error.response.data);
+        if (error?.status) res.status(error.status).send({ error: error.message });
+        else if (error?.response?.status) res.status(error.response.status).send({ error: error.response.message });
+        else if (error?.arg1?.response?.status) res.status(error.arg1.response.status).send({ error: error.arg1.response.message });
+        else res.status(500).send({ error: error.message });
+    }
+});
+
+// microsoft all inventory 
+app.post(routeStrings.inventory_micro, cacheHandler, async (req, res) => {
+    const config = {
+        headers: {
+            "Authorization": `Bearer ${req.body.token}`,
+        }
+    };
+    try {
+        const response = await axios.get(
+            SERVERS.MICROSOFT_Sandbox_Server + API_MICROSOFT.Inventory,
+            config
+        );
+        if (response?.data?.value) {
+            // cache[routeStrings.sale_orders_micro] = response.data.value;
+            res.status(response.status).send(response.data.value);
+        } else throw ({
+            response: {
+                "message": "Server Error!",
+                "name": "Error",
+                "status": 500
+            }
+        });
+
+    } catch (error) {
+        console.log("error", error.response);
         if (error?.status) res.status(error.status).send({ error: error.message });
         else if (error?.response?.status) res.status(error.response.status).send({ error: error.response.message });
         else if (error?.arg1?.response?.status) res.status(error.arg1.response.status).send({ error: error.arg1.response.message });

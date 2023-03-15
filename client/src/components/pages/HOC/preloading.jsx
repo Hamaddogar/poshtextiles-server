@@ -2,7 +2,7 @@ import { useMsal } from '@azure/msal-react';
 import { Box } from '@mui/material';
 import React from 'react'
 import { useDispatch } from 'react-redux';
-import { FEDEXP_TOEKN_SETTER, LOG_OUT, saleOrderNoFilter, saveTokenServer } from '../../../RTK/Reducers/Reducers';
+import { FEDEXP_TOEKN_SETTER, inventoryDataFunction, LOG_OUT, saleOrderNoFilter, saveTokenServer } from '../../../RTK/Reducers/Reducers';
 import { loginRequest } from '../../../utils/authConfig';
 import { requestAccessToken_FEDEXP } from '../../../utils/FEDEXP_API_HELPERS';
 import preloader from '../../assets/images/preloader.gif'
@@ -34,6 +34,10 @@ const Preloading = ({ children }) => {
                     dispatch(saleOrderNoFilter({
                         token: response.accessToken,
                         toastPermission: false
+                    }));
+                    dispatch(inventoryDataFunction({
+                        token: response.accessToken,
+                        toastPermission: true
                     }));
 
                     dispatch(saveTokenServer({

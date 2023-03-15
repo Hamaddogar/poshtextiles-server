@@ -82,7 +82,14 @@ const AllOrders = () => {
 
     return (
         <div>
-            <Grid container alignItems={'center'} justifyContent='space-between' mb={2} rowGap={1} >
+            <Grid container alignItems={'center'} justifyContent='space-between' pb={2} rowGap={1}
+                sx={{
+                    position: 'sticky',
+                    top: 0,
+                    zIndex: 5,
+                    backgroundColor: '#E9EDF1'
+                }}
+            >
                 <Grid item xs={6} sm={4} md={6} >
                     <FormControl fullWidth>
                         <Select
@@ -144,7 +151,7 @@ const AllOrders = () => {
 
             <PreLoader>
                 <TableContainer component={Paper} sx={{ padding: '0px 4%' }} className='table-Container'>
-                    <Table sx={{ minWidth: 750 }} stickyHeader aria-label="table">
+                    <Table sx={{ minWidth: 750 }} stickyHeader aria-label="sticky table">
                         <TableHead>
                             <TableRow sx={{ 'td, th': { fontSize: deskTopView ? "13px" : '11px', fontWeight: 600 } }}>
                                 <TableCell>Sales Order No</TableCell>

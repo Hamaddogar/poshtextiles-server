@@ -600,7 +600,7 @@ const ShippingQuote = () => {
                             <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                                 <Button style={{ background: "#4B5AD8", marginTop: "15px", padding: "2px 6px", color: "white" }} onClick={toggleDrawerRate(true)}>RATE QUOTE</Button>
                                 <Button
-                                    disabled={!allowShipment}
+                                    disabled={!allowShipment || true}
                                     type='submit'
                                     variant='contained'
                                     sx={{ marginLeft: "6px", background: "#4B5AD8", marginTop: "15px", padding: "0px 6px", color: 'white' }}
