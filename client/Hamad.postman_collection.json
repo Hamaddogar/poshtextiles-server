@@ -1,0 +1,3322 @@
+{
+	"info": {
+		"_postman_id": "a90a7989-d651-4525-bb43-c98ebcc4fd2f",
+		"name": "Hamad",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Contacts",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "clientSecret",
+							"value": ".Tj8Q~T--p1GIsM_WfNt5Y6eSR6v4BrdZ.Lw1c~B",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "da8dc534-e642-46e2-8f28-57bc71d854c0",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "https://login.microsoftonline.com/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/oauth2/v2.0/token",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "https://api.businesscentral.dynamics.com/.default",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "Token01",
+							"type": "string"
+						},
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "string"
+						},
+						{
+							"key": "useBrowser",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "tokenType",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://api.businesscentral.dynamics.com",
+							"type": "string"
+						},
+						{
+							"key": "client_authentication",
+							"value": "body",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "https://login.windows.net/dynamicslancer.net/oauth2/authorize?resource=https://api.businesscentral.dynamics.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)/edcContacts",
+					"protocol": "https",
+					"host": [
+						"api",
+						"businesscentral",
+						"dynamics",
+						"com"
+					],
+					"path": [
+						"v2.0",
+						"a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2",
+						"Sandbox",
+						"api",
+						"Edhate",
+						"silkapi",
+						"v2.0",
+						"companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)",
+						"edcContacts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Customers",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "accessTokenUrl",
+							"value": "https://login.microsoftonline.com/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/oauth2/v2.0/token",
+							"type": "string"
+						},
+						{
+							"key": "clientSecret",
+							"value": ".Tj8Q~T--p1GIsM_WfNt5Y6eSR6v4BrdZ.Lw1c~B",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "da8dc534-e642-46e2-8f28-57bc71d854c0",
+							"type": "string"
+						},
+						{
+							"key": "tokenType",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "accessToken",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyIsImtpZCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyJ9.eyJhdWQiOiJodHRwczovL2FwaS5idXNpbmVzc2NlbnRyYWwuZHluYW1pY3MuY29tIiwiaXNzIjoiaHR0cHM6Ly9zdHMud2luZG93cy5uZXQvZmUyNzJiZTYtYzk5ZC00NTEyLTlmZTUtNzE5NDQ4MjgzYzYxLyIsImlhdCI6MTY1MzQ1OTY2MSwibmJmIjoxNjUzNDU5NjYxLCJleHAiOjE2NTM0NjM1NjEsImFpbyI6IkUyWmdZTkF6eWZ2VGtYVjF4ZG1yRzlwbXptcWNDUUE9IiwiYXBwaWQiOiI4YTlhYTI5Mi05OGE3LTRkZmItOWI5NC0zYzQyYjBlZWQzZDIiLCJhcHBpZGFjciI6IjEiLCJpZHAiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9mZTI3MmJlNi1jOTlkLTQ1MTItOWZlNS03MTk0NDgyODNjNjEvIiwiaWR0eXAiOiJhcHAiLCJvaWQiOiJmM2VmNmZkOC1iYzAzLTQ1YjMtOGJkZi1mMDk4Njc4ZTAwNzMiLCJyaCI6IjAuQVNzQTVpc25fcDNKRWtXZjVYR1VTQ2c4WVQzdmJabHNzMU5CaGdlbV9Ud0J1SjhyQUFBLiIsInJvbGVzIjpbIkF1dG9tYXRpb24uUmVhZFdyaXRlLkFsbCIsImFwcF9hY2Nlc3MiLCJBUEkuUmVhZFdyaXRlLkFsbCJdLCJzdWIiOiJmM2VmNmZkOC1iYzAzLTQ1YjMtOGJkZi1mMDk4Njc4ZTAwNzMiLCJ0aWQiOiJmZTI3MmJlNi1jOTlkLTQ1MTItOWZlNS03MTk0NDgyODNjNjEiLCJ1dGkiOiJaMXJyNTFkQU1FT1I5SXFaQ2FMWEFBIiwidmVyIjoiMS4wIn0.n649m70sxcCrsPHW6ivKY2lEVEgkAv0OsmOWSgz3IExUhNlafpMcwf4BZ9NlXBiYEbg7dOLluo0_cuuejG5pFytPRLCLwrqV4iw66lilnRUi0QBDYU8MtHO_uF8w9kHK5yPc28qlFzjhF925b9kmDWYe17bTDKurzFJ0QXKD0t35deFoJVjsJK7Qv5c1LH1isy9a081B1V_P_2RR8jUynVZ1swvjEzTduwoNNgaxhO8YCA341wcYy9WYYpHBzNCfAND2MtRNUNVCm7KAYNxp5mpkcyQd8YvcHI3hwgcQbMi3DX-yCty9jnh5slOSmmvNMzLdlPRkEv3c4Gh2cJRjgg",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "https://api.businesscentral.dynamics.com/.default",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "Token01",
+							"type": "string"
+						},
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "string"
+						},
+						{
+							"key": "useBrowser",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://api.businesscentral.dynamics.com",
+							"type": "string"
+						},
+						{
+							"key": "client_authentication",
+							"value": "body",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "https://login.windows.net/dynamicslancer.net/oauth2/authorize?resource=https://api.businesscentral.dynamics.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)/edcCustomers?$expand=edcCustContacts&$top=10&$count=true",
+					"protocol": "https",
+					"host": [
+						"api",
+						"businesscentral",
+						"dynamics",
+						"com"
+					],
+					"path": [
+						"v2.0",
+						"a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2",
+						"Sandbox",
+						"api",
+						"Edhate",
+						"silkapi",
+						"v2.0",
+						"companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)",
+						"edcCustomers"
+					],
+					"query": [
+						{
+							"key": "$expand",
+							"value": "edcCustContacts"
+						},
+						{
+							"key": "$top",
+							"value": "10"
+						},
+						{
+							"key": "$count",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateSyncCustmer",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "tokenType",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "accessToken",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyIsImtpZCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyJ9.eyJhdWQiOiJodHRwczovL2FwaS5idXNpbmVzc2NlbnRyYWwuZHluYW1pY3MuY29tIiwiaXNzIjoiaHR0cHM6Ly9zdHMud2luZG93cy5uZXQvZmUyNzJiZTYtYzk5ZC00NTEyLTlmZTUtNzE5NDQ4MjgzYzYxLyIsImlhdCI6MTY1MzM3MzI1OCwibmJmIjoxNjUzMzczMjU4LCJleHAiOjE2NTMzNzcxNTgsImFpbyI6IkUyWmdZTEJhdVduanBtdnNjYWJYSTk5Ykprd3NBUUE9IiwiYXBwaWQiOiI4YTlhYTI5Mi05OGE3LTRkZmItOWI5NC0zYzQyYjBlZWQzZDIiLCJhcHBpZGFjciI6IjEiLCJpZHAiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9mZTI3MmJlNi1jOTlkLTQ1MTItOWZlNS03MTk0NDgyODNjNjEvIiwiaWR0eXAiOiJhcHAiLCJvaWQiOiJmM2VmNmZkOC1iYzAzLTQ1YjMtOGJkZi1mMDk4Njc4ZTAwNzMiLCJyaCI6IjAuQVNzQTVpc25fcDNKRWtXZjVYR1VTQ2c4WVQzdmJabHNzMU5CaGdlbV9Ud0J1SjhyQUFBLiIsInJvbGVzIjpbIkF1dG9tYXRpb24uUmVhZFdyaXRlLkFsbCIsImFwcF9hY2Nlc3MiLCJBUEkuUmVhZFdyaXRlLkFsbCJdLCJzdWIiOiJmM2VmNmZkOC1iYzAzLTQ1YjMtOGJkZi1mMDk4Njc4ZTAwNzMiLCJ0aWQiOiJmZTI3MmJlNi1jOTlkLTQ1MTItOWZlNS03MTk0NDgyODNjNjEiLCJ1dGkiOiJfUXVRUUlVTXEwNlRPX2JvbG5lNUFBIiwidmVyIjoiMS4wIn0.OxytG_XMzjNv6qTbWralKD7TdHa9zMRkOGlDVmq1BvqETKc5Yl5ULH50PRfrHA_iBWItWDr13LmVQ-gQK5z_3TJoaD-KlCG6tOKM430mUXEbOoNng5OUcIwt02tWn8L457nEKS3QoYfFxPXjaunx5RZnebmjcpEumi-a4Rj6fma-NRHjzgX9JtUgGl5kULhu-e02PRk3PKCIZKqH1tcsMX2HTfhWOR628VKdjBOP36MLf_ojjQMTRadfATAbdxBCKdOXQlv4Z60DOCvqBPDI7F0-m3u2hDObXslgq8M_I0NGRrd_yc9nN2zmWtcYL5MmjcuIaLIsmQpfWD_RHUOT_Q",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "https://api.businesscentral.dynamics.com/.default",
+							"type": "string"
+						},
+						{
+							"key": "clientSecret",
+							"value": "SVF8Q~gsMgmxCkDku6QCATNM1cwk6fewg2jPTav5",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "8a9aa292-98a7-4dfb-9b94-3c42b0eed3d2",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "https://login.microsoftonline.com/fe272be6-c99d-4512-9fe5-719448283c61/oauth2/v2.0/token",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "Token01",
+							"type": "string"
+						},
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "string"
+						},
+						{
+							"key": "useBrowser",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://api.businesscentral.dynamics.com",
+							"type": "string"
+						},
+						{
+							"key": "client_authentication",
+							"value": "body",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "https://login.windows.net/dynamicslancer.net/oauth2/authorize?resource=https://api.businesscentral.dynamics.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "If-Match",
+						"value": "*",
+						"type": "text"
+					},
+					{
+						"key": "$filter",
+						"value": "no eq '10000'",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \r\n    \"apiSynced\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.businesscentral.dynamics.com/v2.0/fe272be6-c99d-4512-9fe5-719448283c61/SandboxUAT/api/Edhate/silkapi/v2.0/companies(c81137af-ebc7-ec11-bb8e-000d3abcdf0b)/updateSyncCustomers('10000')",
+					"protocol": "https",
+					"host": [
+						"api",
+						"businesscentral",
+						"dynamics",
+						"com"
+					],
+					"path": [
+						"v2.0",
+						"fe272be6-c99d-4512-9fe5-719448283c61",
+						"SandboxUAT",
+						"api",
+						"Edhate",
+						"silkapi",
+						"v2.0",
+						"companies(c81137af-ebc7-ec11-bb8e-000d3abcdf0b)",
+						"updateSyncCustomers('10000')"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "UpdateSyncCustmer01",
+					"originalRequest": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "If-Match",
+								"value": "*",
+								"type": "text"
+							},
+							{
+								"key": "$filter",
+								"value": "no eq '10000'",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \r\n    \"apiSynced\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.businesscentral.dynamics.com/v2.0/fe272be6-c99d-4512-9fe5-719448283c61/SandboxUAT/api/Edhate/silkapi/v2.0/companies(c81137af-ebc7-ec11-bb8e-000d3abcdf0b)/updateSyncCustomers('10000')",
+							"protocol": "https",
+							"host": [
+								"api",
+								"businesscentral",
+								"dynamics",
+								"com"
+							],
+							"path": [
+								"v2.0",
+								"fe272be6-c99d-4512-9fe5-719448283c61",
+								"SandboxUAT",
+								"api",
+								"Edhate",
+								"silkapi",
+								"v2.0",
+								"companies(c81137af-ebc7-ec11-bb8e-000d3abcdf0b)",
+								"updateSyncCustomers('10000')"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; odata.metadata=minimal; odata.streaming=true; charset=utf-8"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "br"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "Server",
+							"value": "Microsoft-HTTPAPI/2.0"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "Origin, X-Requested-With, Authorization"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "ms-correlation-x",
+							"value": "eb10a981-da2d-4e9a-892d-d84311f05654"
+						},
+						{
+							"key": "OData-Version",
+							"value": "4.0"
+						},
+						{
+							"key": "Access-Control-Expose-Headers",
+							"value": "Date, Content-Length, Server, OData-Version"
+						},
+						{
+							"key": "Access-Control-Expose-Headers",
+							"value": "ms-correlation-x"
+						},
+						{
+							"key": "request-id",
+							"value": "93a78a8e-1d6f-4682-8069-c554269da814"
+						},
+						{
+							"key": "x-content-type-options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=31536000; includeSubDomains"
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 30 May 2022 13:36:00 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"@odata.context\": \"https://api.businesscentral.dynamics.com/v2.0/fe272be6-c99d-4512-9fe5-719448283c61/SandboxUAT/api/Edhate/silkapi/v2.0/$metadata#companies(c81137af-ebc7-ec11-bb8e-000d3abcdf0b)/updateSyncCustomers/$entity\",\n    \"@odata.etag\": \"W/\\\"JzIwOzExMjQ2MDcxMDE5MjUxMDMxMjU2MTswMDsn\\\"\",\n    \"no\": \"10000\",\n    \"systemId\": \"696ec1d2-ebc7-ec11-bb8e-000d3abcdf0b\",\n    \"apiSynced\": true\n}"
+				}
+			]
+		},
+		{
+			"name": "Companies",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "clientSecret",
+							"value": ".Tj8Q~T--p1GIsM_WfNt5Y6eSR6v4BrdZ.Lw1c~B",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "da8dc534-e642-46e2-8f28-57bc71d854c0",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "https://login.microsoftonline.com/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/oauth2/v2.0/token",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "https://api.businesscentral.dynamics.com/.default",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "Token01",
+							"type": "string"
+						},
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "string"
+						},
+						{
+							"key": "useBrowser",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "tokenType",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://api.businesscentral.dynamics.com",
+							"type": "string"
+						},
+						{
+							"key": "client_authentication",
+							"value": "body",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "https://login.windows.net/dynamicslancer.net/oauth2/authorize?resource=https://api.businesscentral.dynamics.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies",
+					"protocol": "https",
+					"host": [
+						"api",
+						"businesscentral",
+						"dynamics",
+						"com"
+					],
+					"path": [
+						"v2.0",
+						"a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2",
+						"Sandbox",
+						"api",
+						"Edhate",
+						"silkapi",
+						"v2.0",
+						"companies"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Inventory",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "accessTokenUrl",
+							"value": "https://login.microsoftonline.com/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/oauth2/v2.0/token",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "da8dc534-e642-46e2-8f28-57bc71d854c0",
+							"type": "string"
+						},
+						{
+							"key": "clientSecret",
+							"value": ".Tj8Q~T--p1GIsM_WfNt5Y6eSR6v4BrdZ.Lw1c~B",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "https://api.businesscentral.dynamics.com/.default",
+							"type": "string"
+						},
+						{
+							"key": "tokenType",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "accessToken",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyIsImtpZCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyJ9.eyJhdWQiOiJodHRwczovL2FwaS5idXNpbmVzc2NlbnRyYWwuZHluYW1pY3MuY29tIiwiaXNzIjoiaHR0cHM6Ly9zdHMud2luZG93cy5uZXQvZmUyNzJiZTYtYzk5ZC00NTEyLTlmZTUtNzE5NDQ4MjgzYzYxLyIsImlhdCI6MTY1MzQ1OTY2MSwibmJmIjoxNjUzNDU5NjYxLCJleHAiOjE2NTM0NjM1NjEsImFpbyI6IkUyWmdZTkF6eWZ2VGtYVjF4ZG1yRzlwbXptcWNDUUE9IiwiYXBwaWQiOiI4YTlhYTI5Mi05OGE3LTRkZmItOWI5NC0zYzQyYjBlZWQzZDIiLCJhcHBpZGFjciI6IjEiLCJpZHAiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9mZTI3MmJlNi1jOTlkLTQ1MTItOWZlNS03MTk0NDgyODNjNjEvIiwiaWR0eXAiOiJhcHAiLCJvaWQiOiJmM2VmNmZkOC1iYzAzLTQ1YjMtOGJkZi1mMDk4Njc4ZTAwNzMiLCJyaCI6IjAuQVNzQTVpc25fcDNKRWtXZjVYR1VTQ2c4WVQzdmJabHNzMU5CaGdlbV9Ud0J1SjhyQUFBLiIsInJvbGVzIjpbIkF1dG9tYXRpb24uUmVhZFdyaXRlLkFsbCIsImFwcF9hY2Nlc3MiLCJBUEkuUmVhZFdyaXRlLkFsbCJdLCJzdWIiOiJmM2VmNmZkOC1iYzAzLTQ1YjMtOGJkZi1mMDk4Njc4ZTAwNzMiLCJ0aWQiOiJmZTI3MmJlNi1jOTlkLTQ1MTItOWZlNS03MTk0NDgyODNjNjEiLCJ1dGkiOiJaMXJyNTFkQU1FT1I5SXFaQ2FMWEFBIiwidmVyIjoiMS4wIn0.n649m70sxcCrsPHW6ivKY2lEVEgkAv0OsmOWSgz3IExUhNlafpMcwf4BZ9NlXBiYEbg7dOLluo0_cuuejG5pFytPRLCLwrqV4iw66lilnRUi0QBDYU8MtHO_uF8w9kHK5yPc28qlFzjhF925b9kmDWYe17bTDKurzFJ0QXKD0t35deFoJVjsJK7Qv5c1LH1isy9a081B1V_P_2RR8jUynVZ1swvjEzTduwoNNgaxhO8YCA341wcYy9WYYpHBzNCfAND2MtRNUNVCm7KAYNxp5mpkcyQd8YvcHI3hwgcQbMi3DX-yCty9jnh5slOSmmvNMzLdlPRkEv3c4Gh2cJRjgg",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "Token01",
+							"type": "string"
+						},
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "string"
+						},
+						{
+							"key": "useBrowser",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://api.businesscentral.dynamics.com",
+							"type": "string"
+						},
+						{
+							"key": "client_authentication",
+							"value": "body",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "https://login.windows.net/dynamicslancer.net/oauth2/authorize?resource=https://api.businesscentral.dynamics.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies(0f8bab00-aede-ec11-82f8-0022482fff55)/edcStockBalances?$top=10",
+					"protocol": "https",
+					"host": [
+						"api",
+						"businesscentral",
+						"dynamics",
+						"com"
+					],
+					"path": [
+						"v2.0",
+						"a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2",
+						"Sandbox",
+						"api",
+						"Edhate",
+						"silkapi",
+						"v2.0",
+						"companies(0f8bab00-aede-ec11-82f8-0022482fff55)",
+						"edcStockBalances"
+					],
+					"query": [
+						{
+							"key": "$top",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Location",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "clientSecret",
+							"value": ".Tj8Q~T--p1GIsM_WfNt5Y6eSR6v4BrdZ.Lw1c~B",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "da8dc534-e642-46e2-8f28-57bc71d854c0",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "https://login.microsoftonline.com/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/oauth2/v2.0/token",
+							"type": "string"
+						},
+						{
+							"key": "tokenType",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "accessToken",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyIsImtpZCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyJ9.eyJhdWQiOiJodHRwczovL2FwaS5idXNpbmVzc2NlbnRyYWwuZHluYW1pY3MuY29tIiwiaXNzIjoiaHR0cHM6Ly9zdHMud2luZG93cy5uZXQvZmUyNzJiZTYtYzk5ZC00NTEyLTlmZTUtNzE5NDQ4MjgzYzYxLyIsImlhdCI6MTY1MzQ1OTY2MSwibmJmIjoxNjUzNDU5NjYxLCJleHAiOjE2NTM0NjM1NjEsImFpbyI6IkUyWmdZTkF6eWZ2VGtYVjF4ZG1yRzlwbXptcWNDUUE9IiwiYXBwaWQiOiI4YTlhYTI5Mi05OGE3LTRkZmItOWI5NC0zYzQyYjBlZWQzZDIiLCJhcHBpZGFjciI6IjEiLCJpZHAiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9mZTI3MmJlNi1jOTlkLTQ1MTItOWZlNS03MTk0NDgyODNjNjEvIiwiaWR0eXAiOiJhcHAiLCJvaWQiOiJmM2VmNmZkOC1iYzAzLTQ1YjMtOGJkZi1mMDk4Njc4ZTAwNzMiLCJyaCI6IjAuQVNzQTVpc25fcDNKRWtXZjVYR1VTQ2c4WVQzdmJabHNzMU5CaGdlbV9Ud0J1SjhyQUFBLiIsInJvbGVzIjpbIkF1dG9tYXRpb24uUmVhZFdyaXRlLkFsbCIsImFwcF9hY2Nlc3MiLCJBUEkuUmVhZFdyaXRlLkFsbCJdLCJzdWIiOiJmM2VmNmZkOC1iYzAzLTQ1YjMtOGJkZi1mMDk4Njc4ZTAwNzMiLCJ0aWQiOiJmZTI3MmJlNi1jOTlkLTQ1MTItOWZlNS03MTk0NDgyODNjNjEiLCJ1dGkiOiJaMXJyNTFkQU1FT1I5SXFaQ2FMWEFBIiwidmVyIjoiMS4wIn0.n649m70sxcCrsPHW6ivKY2lEVEgkAv0OsmOWSgz3IExUhNlafpMcwf4BZ9NlXBiYEbg7dOLluo0_cuuejG5pFytPRLCLwrqV4iw66lilnRUi0QBDYU8MtHO_uF8w9kHK5yPc28qlFzjhF925b9kmDWYe17bTDKurzFJ0QXKD0t35deFoJVjsJK7Qv5c1LH1isy9a081B1V_P_2RR8jUynVZ1swvjEzTduwoNNgaxhO8YCA341wcYy9WYYpHBzNCfAND2MtRNUNVCm7KAYNxp5mpkcyQd8YvcHI3hwgcQbMi3DX-yCty9jnh5slOSmmvNMzLdlPRkEv3c4Gh2cJRjgg",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "https://api.businesscentral.dynamics.com/.default",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "Token01",
+							"type": "string"
+						},
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "string"
+						},
+						{
+							"key": "useBrowser",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://api.businesscentral.dynamics.com",
+							"type": "string"
+						},
+						{
+							"key": "client_authentication",
+							"value": "body",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "https://login.windows.net/dynamicslancer.net/oauth2/authorize?resource=https://api.businesscentral.dynamics.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies(0f8bab00-aede-ec11-82f8-0022482fff55)/edcLocations",
+					"protocol": "https",
+					"host": [
+						"api",
+						"businesscentral",
+						"dynamics",
+						"com"
+					],
+					"path": [
+						"v2.0",
+						"a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2",
+						"Sandbox",
+						"api",
+						"Edhate",
+						"silkapi",
+						"v2.0",
+						"companies(0f8bab00-aede-ec11-82f8-0022482fff55)",
+						"edcLocations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ItemCategories",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "clientSecret",
+							"value": ".Tj8Q~T--p1GIsM_WfNt5Y6eSR6v4BrdZ.Lw1c~B",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "da8dc534-e642-46e2-8f28-57bc71d854c0",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "https://login.microsoftonline.com/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/oauth2/v2.0/token",
+							"type": "string"
+						},
+						{
+							"key": "tokenType",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "accessToken",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyIsImtpZCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyJ9.eyJhdWQiOiJodHRwczovL2FwaS5idXNpbmVzc2NlbnRyYWwuZHluYW1pY3MuY29tIiwiaXNzIjoiaHR0cHM6Ly9zdHMud2luZG93cy5uZXQvZmUyNzJiZTYtYzk5ZC00NTEyLTlmZTUtNzE5NDQ4MjgzYzYxLyIsImlhdCI6MTY1MzQ1OTY2MSwibmJmIjoxNjUzNDU5NjYxLCJleHAiOjE2NTM0NjM1NjEsImFpbyI6IkUyWmdZTkF6eWZ2VGtYVjF4ZG1yRzlwbXptcWNDUUE9IiwiYXBwaWQiOiI4YTlhYTI5Mi05OGE3LTRkZmItOWI5NC0zYzQyYjBlZWQzZDIiLCJhcHBpZGFjciI6IjEiLCJpZHAiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9mZTI3MmJlNi1jOTlkLTQ1MTItOWZlNS03MTk0NDgyODNjNjEvIiwiaWR0eXAiOiJhcHAiLCJvaWQiOiJmM2VmNmZkOC1iYzAzLTQ1YjMtOGJkZi1mMDk4Njc4ZTAwNzMiLCJyaCI6IjAuQVNzQTVpc25fcDNKRWtXZjVYR1VTQ2c4WVQzdmJabHNzMU5CaGdlbV9Ud0J1SjhyQUFBLiIsInJvbGVzIjpbIkF1dG9tYXRpb24uUmVhZFdyaXRlLkFsbCIsImFwcF9hY2Nlc3MiLCJBUEkuUmVhZFdyaXRlLkFsbCJdLCJzdWIiOiJmM2VmNmZkOC1iYzAzLTQ1YjMtOGJkZi1mMDk4Njc4ZTAwNzMiLCJ0aWQiOiJmZTI3MmJlNi1jOTlkLTQ1MTItOWZlNS03MTk0NDgyODNjNjEiLCJ1dGkiOiJaMXJyNTFkQU1FT1I5SXFaQ2FMWEFBIiwidmVyIjoiMS4wIn0.n649m70sxcCrsPHW6ivKY2lEVEgkAv0OsmOWSgz3IExUhNlafpMcwf4BZ9NlXBiYEbg7dOLluo0_cuuejG5pFytPRLCLwrqV4iw66lilnRUi0QBDYU8MtHO_uF8w9kHK5yPc28qlFzjhF925b9kmDWYe17bTDKurzFJ0QXKD0t35deFoJVjsJK7Qv5c1LH1isy9a081B1V_P_2RR8jUynVZ1swvjEzTduwoNNgaxhO8YCA341wcYy9WYYpHBzNCfAND2MtRNUNVCm7KAYNxp5mpkcyQd8YvcHI3hwgcQbMi3DX-yCty9jnh5slOSmmvNMzLdlPRkEv3c4Gh2cJRjgg",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "https://api.businesscentral.dynamics.com/.default",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "Token01",
+							"type": "string"
+						},
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "string"
+						},
+						{
+							"key": "useBrowser",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://api.businesscentral.dynamics.com",
+							"type": "string"
+						},
+						{
+							"key": "client_authentication",
+							"value": "body",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "https://login.windows.net/dynamicslancer.net/oauth2/authorize?resource=https://api.businesscentral.dynamics.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies(0f8bab00-aede-ec11-82f8-0022482fff55)/edcItemCategories",
+					"protocol": "https",
+					"host": [
+						"api",
+						"businesscentral",
+						"dynamics",
+						"com"
+					],
+					"path": [
+						"v2.0",
+						"a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2",
+						"Sandbox",
+						"api",
+						"Edhate",
+						"silkapi",
+						"v2.0",
+						"companies(0f8bab00-aede-ec11-82f8-0022482fff55)",
+						"edcItemCategories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Items",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "clientSecret",
+							"value": ".Tj8Q~T--p1GIsM_WfNt5Y6eSR6v4BrdZ.Lw1c~B",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "da8dc534-e642-46e2-8f28-57bc71d854c0",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "https://login.microsoftonline.com/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/oauth2/v2.0/token",
+							"type": "string"
+						},
+						{
+							"key": "tokenType",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "accessToken",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyIsImtpZCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyJ9.eyJhdWQiOiJodHRwczovL2FwaS5idXNpbmVzc2NlbnRyYWwuZHluYW1pY3MuY29tIiwiaXNzIjoiaHR0cHM6Ly9zdHMud2luZG93cy5uZXQvZmUyNzJiZTYtYzk5ZC00NTEyLTlmZTUtNzE5NDQ4MjgzYzYxLyIsImlhdCI6MTY1MzQ1OTY2MSwibmJmIjoxNjUzNDU5NjYxLCJleHAiOjE2NTM0NjM1NjEsImFpbyI6IkUyWmdZTkF6eWZ2VGtYVjF4ZG1yRzlwbXptcWNDUUE9IiwiYXBwaWQiOiI4YTlhYTI5Mi05OGE3LTRkZmItOWI5NC0zYzQyYjBlZWQzZDIiLCJhcHBpZGFjciI6IjEiLCJpZHAiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9mZTI3MmJlNi1jOTlkLTQ1MTItOWZlNS03MTk0NDgyODNjNjEvIiwiaWR0eXAiOiJhcHAiLCJvaWQiOiJmM2VmNmZkOC1iYzAzLTQ1YjMtOGJkZi1mMDk4Njc4ZTAwNzMiLCJyaCI6IjAuQVNzQTVpc25fcDNKRWtXZjVYR1VTQ2c4WVQzdmJabHNzMU5CaGdlbV9Ud0J1SjhyQUFBLiIsInJvbGVzIjpbIkF1dG9tYXRpb24uUmVhZFdyaXRlLkFsbCIsImFwcF9hY2Nlc3MiLCJBUEkuUmVhZFdyaXRlLkFsbCJdLCJzdWIiOiJmM2VmNmZkOC1iYzAzLTQ1YjMtOGJkZi1mMDk4Njc4ZTAwNzMiLCJ0aWQiOiJmZTI3MmJlNi1jOTlkLTQ1MTItOWZlNS03MTk0NDgyODNjNjEiLCJ1dGkiOiJaMXJyNTFkQU1FT1I5SXFaQ2FMWEFBIiwidmVyIjoiMS4wIn0.n649m70sxcCrsPHW6ivKY2lEVEgkAv0OsmOWSgz3IExUhNlafpMcwf4BZ9NlXBiYEbg7dOLluo0_cuuejG5pFytPRLCLwrqV4iw66lilnRUi0QBDYU8MtHO_uF8w9kHK5yPc28qlFzjhF925b9kmDWYe17bTDKurzFJ0QXKD0t35deFoJVjsJK7Qv5c1LH1isy9a081B1V_P_2RR8jUynVZ1swvjEzTduwoNNgaxhO8YCA341wcYy9WYYpHBzNCfAND2MtRNUNVCm7KAYNxp5mpkcyQd8YvcHI3hwgcQbMi3DX-yCty9jnh5slOSmmvNMzLdlPRkEv3c4Gh2cJRjgg",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "https://api.businesscentral.dynamics.com/.default",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "Token01",
+							"type": "string"
+						},
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "string"
+						},
+						{
+							"key": "useBrowser",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://api.businesscentral.dynamics.com",
+							"type": "string"
+						},
+						{
+							"key": "client_authentication",
+							"value": "body",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "https://login.windows.net/dynamicslancer.net/oauth2/authorize?resource=https://api.businesscentral.dynamics.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies(0f8bab00-aede-ec11-82f8-0022482fff55)/edcItems",
+					"protocol": "https",
+					"host": [
+						"api",
+						"businesscentral",
+						"dynamics",
+						"com"
+					],
+					"path": [
+						"v2.0",
+						"a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2",
+						"Sandbox",
+						"api",
+						"Edhate",
+						"silkapi",
+						"v2.0",
+						"companies(0f8bab00-aede-ec11-82f8-0022482fff55)",
+						"edcItems"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AuthToken",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "tokenType",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "accessToken",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6IjJaUXBKM1VwYmpBWVhZR2FYRUpsOGxWMFRPSSIsImtpZCI6IjJaUXBKM1VwYmpBWVhZR2FYRUpsOGxWMFRPSSJ9.eyJhdWQiOiJodHRwczovL2FwaS5idXNpbmVzc2NlbnRyYWwuZHluYW1pY3MuY29tIiwiaXNzIjoiaHR0cHM6Ly9zdHMud2luZG93cy5uZXQvYThmMWE1ZjktZjhiOC00MDBjLTg3YTEtYTcwNGJlMmQ3ZGMyLyIsImlhdCI6MTY1NzU0ODk5NCwibmJmIjoxNjU3NTQ4OTk0LCJleHAiOjE2NTc1NTI4OTQsImFpbyI6IkUyWmdZQWh4aS9QSjJaVWZzZmFNaG5IZU01ZmJBQT09IiwiYXBwaWQiOiI3NDNjMmViOS1mMTczLTRjMzEtYTkyZC04ZDUxNGViN2VjZTgiLCJhcHBpZGFjciI6IjEiLCJpZHAiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9hOGYxYTVmOS1mOGI4LTQwMGMtODdhMS1hNzA0YmUyZDdkYzIvIiwiaWR0eXAiOiJhcHAiLCJvaWQiOiI1YmVmOGRkYy1kZTQzLTQ1YzktOTU0Yy0xNTRlOWZkMTg0MzQiLCJyaCI6IjAuQVZvQS1hWHhxTGo0REVDSG9hY0V2aTE5d2ozdmJabHNzMU5CaGdlbV9Ud0J1SjlhQUFBLiIsInJvbGVzIjpbIkFQSS5SZWFkV3JpdGUuQWxsIl0sInN1YiI6IjViZWY4ZGRjLWRlNDMtNDVjOS05NTRjLTE1NGU5ZmQxODQzNCIsInRpZCI6ImE4ZjFhNWY5LWY4YjgtNDAwYy04N2ExLWE3MDRiZTJkN2RjMiIsInV0aSI6ImVqYjZqalp4RGtPN3cwbDdIdHdsQVEiLCJ2ZXIiOiIxLjAifQ.Vb466nI7e5FFbFsg1Bjv7xiVn7aJ8e94qadsrDVf_QEje-EU-3gZg4O_K9BLeETr_lMINRArfUHAiTJB-ikSsBEDi7qn5U8bje4nW619iXWeRl5bqhMH4e0t5HM3FVDhgY5OvBZnKyvKa0yMxX8GX1R6hhxjGkYTjkc21xXecPNqdZXLqTvnudCXgQxJYmo0-uH5dCeRIfCZFZVhW_2Xb0AII_uNH7qwQLkCfa4EfzNpmlgMHH5wfhRqL0cf7aUxBwHy9he2CJcVmK0Vc_A1_82FrU7Ym2_17l8Mqow0RH6cp8dRIEeOwxQx6sKING-O0UjUukb8XyBnm-_0XO74uQ",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "https://api.businesscentral.dynamics.com/.default",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "https://login.microsoftonline.com/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/oauth2/v2.0/token",
+							"type": "string"
+						},
+						{
+							"key": "clientSecret",
+							"value": "9AK8Q~pbAP58rVKah_wQQM4KQjXa0Wr_JETgvaWx",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "743c2eb9-f173-4c31-a92d-8d514eb7ece8",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "SilkToken01",
+							"type": "string"
+						},
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "string"
+						},
+						{
+							"key": "useBrowser",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://api.businesscentral.dynamics.com",
+							"type": "string"
+						},
+						{
+							"key": "client_authentication",
+							"value": "body",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "https://login.windows.net/dynamicslancer.net/oauth2/authorize?resource=https://api.businesscentral.dynamics.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"warning": "This is a duplicate header and will be overridden by the Content-Type header generated by Postman.",
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "743c2eb9-f173-4c31-a92d-8d514eb7ece8",
+							"type": "text"
+						},
+						{
+							"key": "scope",
+							"value": "https://graph.microsoft.com/.default",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "wrN8Q~vvX2FDmt_Sf.7ltpQta41eABkoaq.j0bBS",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://login.microsoftonline.com/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/oauth2/v2.0/token",
+					"protocol": "https",
+					"host": [
+						"login",
+						"microsoftonline",
+						"com"
+					],
+					"path": [
+						"a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2",
+						"oauth2",
+						"v2.0",
+						"token"
+					],
+					"query": [
+						{
+							"key": "Content-Type",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SalesOrder",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "clientSecret",
+							"value": ".Tj8Q~T--p1GIsM_WfNt5Y6eSR6v4BrdZ.Lw1c~B",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "da8dc534-e642-46e2-8f28-57bc71d854c0",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "https://login.microsoftonline.com/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/oauth2/v2.0/token",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "https://api.businesscentral.dynamics.com/.default",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "Token01",
+							"type": "string"
+						},
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "string"
+						},
+						{
+							"key": "useBrowser",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "tokenType",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://api.businesscentral.dynamics.com",
+							"type": "string"
+						},
+						{
+							"key": "client_authentication",
+							"value": "body",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "https://login.windows.net/dynamicslancer.net/oauth2/authorize?resource=https://api.businesscentral.dynamics.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)/edcSalesOrders?$filter=no eq 'SO11008'&$expand=edcSalesLines,edcWhseShipments($expand=edcBoxDetails),edcCustomers,edcShipToAdds",
+					"protocol": "https",
+					"host": [
+						"api",
+						"businesscentral",
+						"dynamics",
+						"com"
+					],
+					"path": [
+						"v2.0",
+						"a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2",
+						"Sandbox",
+						"api",
+						"Edhate",
+						"silkapi",
+						"v2.0",
+						"companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)",
+						"edcSalesOrders"
+					],
+					"query": [
+						{
+							"key": "$filter",
+							"value": "no eq 'SO11008'"
+						},
+						{
+							"key": "$expand",
+							"value": "edcSalesLines,edcWhseShipments($expand=edcBoxDetails),edcCustomers,edcShipToAdds"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SalesOrderMany",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "clientSecret",
+							"value": ".Tj8Q~T--p1GIsM_WfNt5Y6eSR6v4BrdZ.Lw1c~B",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "da8dc534-e642-46e2-8f28-57bc71d854c0",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "https://login.microsoftonline.com/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/oauth2/v2.0/token",
+							"type": "string"
+						},
+						{
+							"key": "tokenType",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "accessToken",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyIsImtpZCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyJ9.eyJhdWQiOiJodHRwczovL2FwaS5idXNpbmVzc2NlbnRyYWwuZHluYW1pY3MuY29tIiwiaXNzIjoiaHR0cHM6Ly9zdHMud2luZG93cy5uZXQvZmUyNzJiZTYtYzk5ZC00NTEyLTlmZTUtNzE5NDQ4MjgzYzYxLyIsImlhdCI6MTY1MzQ1OTY2MSwibmJmIjoxNjUzNDU5NjYxLCJleHAiOjE2NTM0NjM1NjEsImFpbyI6IkUyWmdZTkF6eWZ2VGtYVjF4ZG1yRzlwbXptcWNDUUE9IiwiYXBwaWQiOiI4YTlhYTI5Mi05OGE3LTRkZmItOWI5NC0zYzQyYjBlZWQzZDIiLCJhcHBpZGFjciI6IjEiLCJpZHAiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9mZTI3MmJlNi1jOTlkLTQ1MTItOWZlNS03MTk0NDgyODNjNjEvIiwiaWR0eXAiOiJhcHAiLCJvaWQiOiJmM2VmNmZkOC1iYzAzLTQ1YjMtOGJkZi1mMDk4Njc4ZTAwNzMiLCJyaCI6IjAuQVNzQTVpc25fcDNKRWtXZjVYR1VTQ2c4WVQzdmJabHNzMU5CaGdlbV9Ud0J1SjhyQUFBLiIsInJvbGVzIjpbIkF1dG9tYXRpb24uUmVhZFdyaXRlLkFsbCIsImFwcF9hY2Nlc3MiLCJBUEkuUmVhZFdyaXRlLkFsbCJdLCJzdWIiOiJmM2VmNmZkOC1iYzAzLTQ1YjMtOGJkZi1mMDk4Njc4ZTAwNzMiLCJ0aWQiOiJmZTI3MmJlNi1jOTlkLTQ1MTItOWZlNS03MTk0NDgyODNjNjEiLCJ1dGkiOiJaMXJyNTFkQU1FT1I5SXFaQ2FMWEFBIiwidmVyIjoiMS4wIn0.n649m70sxcCrsPHW6ivKY2lEVEgkAv0OsmOWSgz3IExUhNlafpMcwf4BZ9NlXBiYEbg7dOLluo0_cuuejG5pFytPRLCLwrqV4iw66lilnRUi0QBDYU8MtHO_uF8w9kHK5yPc28qlFzjhF925b9kmDWYe17bTDKurzFJ0QXKD0t35deFoJVjsJK7Qv5c1LH1isy9a081B1V_P_2RR8jUynVZ1swvjEzTduwoNNgaxhO8YCA341wcYy9WYYpHBzNCfAND2MtRNUNVCm7KAYNxp5mpkcyQd8YvcHI3hwgcQbMi3DX-yCty9jnh5slOSmmvNMzLdlPRkEv3c4Gh2cJRjgg",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "https://api.businesscentral.dynamics.com/.default",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "Token01",
+							"type": "string"
+						},
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "string"
+						},
+						{
+							"key": "useBrowser",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://api.businesscentral.dynamics.com",
+							"type": "string"
+						},
+						{
+							"key": "client_authentication",
+							"value": "body",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "https://login.windows.net/dynamicslancer.net/oauth2/authorize?resource=https://api.businesscentral.dynamics.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies(0f8bab00-aede-ec11-82f8-0022482fff55)/edcSalesOrders?$expand=edcSalesLines,edcCustomers,edcWhseShipments&$count=true&$filter=no eq 'SO34571'",
+					"protocol": "https",
+					"host": [
+						"api",
+						"businesscentral",
+						"dynamics",
+						"com"
+					],
+					"path": [
+						"v2.0",
+						"a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2",
+						"Sandbox",
+						"api",
+						"Edhate",
+						"silkapi",
+						"v2.0",
+						"companies(0f8bab00-aede-ec11-82f8-0022482fff55)",
+						"edcSalesOrders"
+					],
+					"query": [
+						{
+							"key": "$expand",
+							"value": "edcSalesLines,edcCustomers,edcWhseShipments"
+						},
+						{
+							"key": "$top",
+							"value": "10",
+							"disabled": true
+						},
+						{
+							"key": "$count",
+							"value": "true"
+						},
+						{
+							"key": "$expand",
+							"value": "edcWhseShipments",
+							"disabled": true
+						},
+						{
+							"key": "$filter",
+							"value": "no eq 'SO34571'"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SalesOrderDetailsOne",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "clientSecret",
+							"value": ".Tj8Q~T--p1GIsM_WfNt5Y6eSR6v4BrdZ.Lw1c~B",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "da8dc534-e642-46e2-8f28-57bc71d854c0",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "https://login.microsoftonline.com/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/oauth2/v2.0/token",
+							"type": "string"
+						},
+						{
+							"key": "tokenType",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "accessToken",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyIsImtpZCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyJ9.eyJhdWQiOiJodHRwczovL2FwaS5idXNpbmVzc2NlbnRyYWwuZHluYW1pY3MuY29tIiwiaXNzIjoiaHR0cHM6Ly9zdHMud2luZG93cy5uZXQvZmUyNzJiZTYtYzk5ZC00NTEyLTlmZTUtNzE5NDQ4MjgzYzYxLyIsImlhdCI6MTY1MzQ1OTY2MSwibmJmIjoxNjUzNDU5NjYxLCJleHAiOjE2NTM0NjM1NjEsImFpbyI6IkUyWmdZTkF6eWZ2VGtYVjF4ZG1yRzlwbXptcWNDUUE9IiwiYXBwaWQiOiI4YTlhYTI5Mi05OGE3LTRkZmItOWI5NC0zYzQyYjBlZWQzZDIiLCJhcHBpZGFjciI6IjEiLCJpZHAiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9mZTI3MmJlNi1jOTlkLTQ1MTItOWZlNS03MTk0NDgyODNjNjEvIiwiaWR0eXAiOiJhcHAiLCJvaWQiOiJmM2VmNmZkOC1iYzAzLTQ1YjMtOGJkZi1mMDk4Njc4ZTAwNzMiLCJyaCI6IjAuQVNzQTVpc25fcDNKRWtXZjVYR1VTQ2c4WVQzdmJabHNzMU5CaGdlbV9Ud0J1SjhyQUFBLiIsInJvbGVzIjpbIkF1dG9tYXRpb24uUmVhZFdyaXRlLkFsbCIsImFwcF9hY2Nlc3MiLCJBUEkuUmVhZFdyaXRlLkFsbCJdLCJzdWIiOiJmM2VmNmZkOC1iYzAzLTQ1YjMtOGJkZi1mMDk4Njc4ZTAwNzMiLCJ0aWQiOiJmZTI3MmJlNi1jOTlkLTQ1MTItOWZlNS03MTk0NDgyODNjNjEiLCJ1dGkiOiJaMXJyNTFkQU1FT1I5SXFaQ2FMWEFBIiwidmVyIjoiMS4wIn0.n649m70sxcCrsPHW6ivKY2lEVEgkAv0OsmOWSgz3IExUhNlafpMcwf4BZ9NlXBiYEbg7dOLluo0_cuuejG5pFytPRLCLwrqV4iw66lilnRUi0QBDYU8MtHO_uF8w9kHK5yPc28qlFzjhF925b9kmDWYe17bTDKurzFJ0QXKD0t35deFoJVjsJK7Qv5c1LH1isy9a081B1V_P_2RR8jUynVZ1swvjEzTduwoNNgaxhO8YCA341wcYy9WYYpHBzNCfAND2MtRNUNVCm7KAYNxp5mpkcyQd8YvcHI3hwgcQbMi3DX-yCty9jnh5slOSmmvNMzLdlPRkEv3c4Gh2cJRjgg",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "https://api.businesscentral.dynamics.com/.default",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "Token01",
+							"type": "string"
+						},
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "string"
+						},
+						{
+							"key": "useBrowser",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://api.businesscentral.dynamics.com",
+							"type": "string"
+						},
+						{
+							"key": "client_authentication",
+							"value": "body",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "https://login.windows.net/dynamicslancer.net/oauth2/authorize?resource=https://api.businesscentral.dynamics.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies(0f8bab00-aede-ec11-82f8-0022482fff55)/edcSalesOrderDeatils?$expand=edcSalesLines&$top=10&$count=true&$filter=no eq 'SO34571'",
+					"protocol": "https",
+					"host": [
+						"api",
+						"businesscentral",
+						"dynamics",
+						"com"
+					],
+					"path": [
+						"v2.0",
+						"a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2",
+						"Sandbox",
+						"api",
+						"Edhate",
+						"silkapi",
+						"v2.0",
+						"companies(0f8bab00-aede-ec11-82f8-0022482fff55)",
+						"edcSalesOrderDeatils"
+					],
+					"query": [
+						{
+							"key": "$expand",
+							"value": "edcSalesLines"
+						},
+						{
+							"key": "$top",
+							"value": "10"
+						},
+						{
+							"key": "$count",
+							"value": "true"
+						},
+						{
+							"key": "$expand",
+							"value": "edcWhseShipments",
+							"disabled": true
+						},
+						{
+							"key": "$filter",
+							"value": "no eq 'SO34571'"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SalesOrder-HeaderUpdate",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "clientSecret",
+							"value": ".Tj8Q~T--p1GIsM_WfNt5Y6eSR6v4BrdZ.Lw1c~B",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "da8dc534-e642-46e2-8f28-57bc71d854c0",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "https://login.microsoftonline.com/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/oauth2/v2.0/token",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "https://api.businesscentral.dynamics.com/.default",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "Token01",
+							"type": "string"
+						},
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "string"
+						},
+						{
+							"key": "useBrowser",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "tokenType",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://api.businesscentral.dynamics.com",
+							"type": "string"
+						},
+						{
+							"key": "client_authentication",
+							"value": "body",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "https://login.windows.net/dynamicslancer.net/oauth2/authorize?resource=https://api.businesscentral.dynamics.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"orderNo\" : \"SO34577\",\r\n    \"createWarehouseShipment\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies(0f8bab00-aede-ec11-82f8-0022482fff55)/edcCreateWhseShipments",
+					"protocol": "https",
+					"host": [
+						"api",
+						"businesscentral",
+						"dynamics",
+						"com"
+					],
+					"path": [
+						"v2.0",
+						"a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2",
+						"Sandbox",
+						"api",
+						"Edhate",
+						"silkapi",
+						"v2.0",
+						"companies(0f8bab00-aede-ec11-82f8-0022482fff55)",
+						"edcCreateWhseShipments"
+					],
+					"query": [
+						{
+							"key": "$filter",
+							"value": "no eq 'SO11008'",
+							"disabled": true
+						},
+						{
+							"key": "$expand",
+							"value": "edcSalesLines,edcWhseShipments($expand=edcBoxDetails),edcCustomers",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "SalesOrder-1",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)/edcSalesOrders?$filter=no eq 'SO11008'&$expand=edcSalesLines,edcWhseShipments($expand=edcBoxDetails),edcCustomers",
+							"protocol": "https",
+							"host": [
+								"api",
+								"businesscentral",
+								"dynamics",
+								"com"
+							],
+							"path": [
+								"v2.0",
+								"a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2",
+								"Sandbox",
+								"api",
+								"Edhate",
+								"silkapi",
+								"v2.0",
+								"companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)",
+								"edcSalesOrders"
+							],
+							"query": [
+								{
+									"key": "$filter",
+									"value": "no eq 'SO11008'"
+								},
+								{
+									"key": "$expand",
+									"value": "edcSalesLines,edcWhseShipments($expand=edcBoxDetails),edcCustomers"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; odata.metadata=minimal; odata.streaming=true; charset=utf-8"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "br"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "Server",
+							"value": "Microsoft-HTTPAPI/2.0"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "Origin, X-Requested-With, Authorization"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "ms-correlation-x",
+							"value": "0a1574b8-c0ee-43db-b618-ed119a209139"
+						},
+						{
+							"key": "mise-correlation-id",
+							"value": "f62f16a4-7d2b-4c98-906c-43d26fc84230"
+						},
+						{
+							"key": "OData-Version",
+							"value": "4.0"
+						},
+						{
+							"key": "Access-Control-Expose-Headers",
+							"value": "Date, Content-Length, Server, OData-Version"
+						},
+						{
+							"key": "Access-Control-Expose-Headers",
+							"value": "ms-correlation-x"
+						},
+						{
+							"key": "request-id",
+							"value": "b96f722a-b780-40b9-9ac0-7516fd8646bf"
+						},
+						{
+							"key": "x-content-type-options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=31536000; includeSubDomains"
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 02 Jan 2023 14:23:42 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"@odata.context\": \"https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/$metadata#companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)/edcSalesOrders\",\n    \"value\": [\n        {\n            \"@odata.etag\": \"W/\\\"JzE5OzU1NDA0MzQ5NjYxMTk0MDkzMzMxOzAwOyc=\\\"\",\n            \"SystemId\": \"3579dd29-90f4-ec11-b2d6-00155d019d14\",\n            \"no\": \"SO11008\",\n            \"sellToContactNo\": \"CT010356\",\n            \"sellToContact\": \"LIBRARY \",\n            \"shippingAgentCode\": \"FEDEX\",\n            \"shipToPostCode\": \"21117\",\n            \"shipToContact\": \"BEVERLY JEROME \",\n            \"shipToAddress\": \"11704 HUNTSWORTH LN \",\n            \"shipToAddress2\": \"\",\n            \"shipToCity\": \"Owings Mills\",\n            \"shipToCounty\": \"MD\",\n            \"shipToCountryRegionCode\": \"US\",\n            \"shipToEmail\": \"beverly@jerome-group.com\",\n            \"ShipToPhoneNo\": \"(410) 581 8696\",\n            \"shippingAgentServiceCode\": \"GROUND\",\n            \"shipmentMethodCode\": \"\",\n            \"shipToName\": \"THE JEROME GROUP\",\n            \"externalDocumentNo\": \"BEVERLY EMAIL 5-24\",\n            \"locationCode\": \"SYOSSET\",\n            \"sellToPhoneNo\": \"\",\n            \"sellToEMail\": \"\",\n            \"trackingNo\": \"273750454999\",\n            \"addressValidated\": false,\n            \"residential\": false,\n            \"edcSalesLines\": [\n                {\n                    \"@odata.etag\": \"W/\\\"JzIwOzE3NTU2MTI1NzY1NjIxMzkxMzQ4MTswMDsn\\\"\",\n                    \"systemId\": \"e213be4d-90f4-ec11-b2d6-00155d019d14\",\n                    \"documentNo\": \"SO11008\",\n                    \"lineNo\": 10000,\n                    \"type\": \"Item\",\n                    \"no\": \"S10017-007\",\n                    \"description\": \"RIVERDALE-IRIS MEMO\",\n                    \"description2\": \"SAMPLE\",\n                    \"unitOfMeasureCode\": \"EACH\",\n                    \"unitPrice\": 24,\n                    \"itemCategoryCode\": \"SAMPLES1\",\n                    \"quantity\": 1,\n                    \"outstandingQuantity\": 1,\n                    \"promisedDeliveryDate\": \"0001-01-01\",\n                    \"requestedDeliveryDate\": \"0001-01-01\",\n                    \"lineAmount\": 0,\n                    \"lineDiscountAmount\": 24,\n                    \"amountIncludingVAT\": 0\n                },\n                {\n                    \"@odata.etag\": \"W/\\\"JzIwOzE0NjI4MjA2NTgxOTIzNDI4NDkxMTswMDsn\\\"\",\n                    \"systemId\": \"e313be4d-90f4-ec11-b2d6-00155d019d14\",\n                    \"documentNo\": \"SO11008\",\n                    \"lineNo\": 20000,\n                    \"type\": \"Item\",\n                    \"no\": \"S10017-003\",\n                    \"description\": \"RIVERDALE-DENIM MEMO\",\n                    \"description2\": \"SAMPLE\",\n                    \"unitOfMeasureCode\": \"EACH\",\n                    \"unitPrice\": 24,\n                    \"itemCategoryCode\": \"SAMPLES1\",\n                    \"quantity\": 1,\n                    \"outstandingQuantity\": 1,\n                    \"promisedDeliveryDate\": \"0001-01-01\",\n                    \"requestedDeliveryDate\": \"0001-01-01\",\n                    \"lineAmount\": 0,\n                    \"lineDiscountAmount\": 24,\n                    \"amountIncludingVAT\": 0\n                },\n                {\n                    \"@odata.etag\": \"W/\\\"JzE5OzI0NDk2NTMzODEzNjQ4NzM0NTYxOzAwOyc=\\\"\",\n                    \"systemId\": \"e413be4d-90f4-ec11-b2d6-00155d019d14\",\n                    \"documentNo\": \"SO11008\",\n                    \"lineNo\": 30000,\n                    \"type\": \"Item\",\n                    \"no\": \"S10058-004\",\n                    \"description\": \"SKIPPER-TEAL MEMO\",\n                    \"description2\": \"SAMPLE\",\n                    \"unitOfMeasureCode\": \"EACH\",\n                    \"unitPrice\": 28,\n                    \"itemCategoryCode\": \"SAMPLES2\",\n                    \"quantity\": 1,\n                    \"outstandingQuantity\": 1,\n                    \"promisedDeliveryDate\": \"0001-01-01\",\n                    \"requestedDeliveryDate\": \"0001-01-01\",\n                    \"lineAmount\": 0,\n                    \"lineDiscountAmount\": 28,\n                    \"amountIncludingVAT\": 0\n                },\n                {\n                    \"@odata.etag\": \"W/\\\"JzE5OzMzNjg1NDQ0NDM1Nzc5NTI0NTYxOzAwOyc=\\\"\",\n                    \"systemId\": \"e513be4d-90f4-ec11-b2d6-00155d019d14\",\n                    \"documentNo\": \"SO11008\",\n                    \"lineNo\": 40000,\n                    \"type\": \"Item\",\n                    \"no\": \"S10007-003\",\n                    \"description\": \"ELLIS-KIWI MEMO\",\n                    \"description2\": \"SAMPLE\",\n                    \"unitOfMeasureCode\": \"EACH\",\n                    \"unitPrice\": 29,\n                    \"itemCategoryCode\": \"SAMPLES2\",\n                    \"quantity\": 1,\n                    \"outstandingQuantity\": 1,\n                    \"promisedDeliveryDate\": \"0001-01-01\",\n                    \"requestedDeliveryDate\": \"0001-01-01\",\n                    \"lineAmount\": 0,\n                    \"lineDiscountAmount\": 29,\n                    \"amountIncludingVAT\": 0\n                },\n                {\n                    \"@odata.etag\": \"W/\\\"JzIwOzE3NjQ3Nzc0MzQxNTgxMDg4ODQ0MTswMDsn\\\"\",\n                    \"systemId\": \"e613be4d-90f4-ec11-b2d6-00155d019d14\",\n                    \"documentNo\": \"SO11008\",\n                    \"lineNo\": 50000,\n                    \"type\": \"Item\",\n                    \"no\": \"S10011-007\",\n                    \"description\": \"HELENA-NATURAL MEMO\",\n                    \"description2\": \"SAMPLE\",\n                    \"unitOfMeasureCode\": \"EACH\",\n                    \"unitPrice\": 45,\n                    \"itemCategoryCode\": \"SAMPLES2\",\n                    \"quantity\": 1,\n                    \"outstandingQuantity\": 1,\n                    \"promisedDeliveryDate\": \"0001-01-01\",\n                    \"requestedDeliveryDate\": \"0001-01-01\",\n                    \"lineAmount\": 0,\n                    \"lineDiscountAmount\": 45,\n                    \"amountIncludingVAT\": 0\n                },\n                {\n                    \"@odata.etag\": \"W/\\\"JzIwOzE0NzYyNjI2NDg4NDk2NDkxODA5MTswMDsn\\\"\",\n                    \"systemId\": \"e713be4d-90f4-ec11-b2d6-00155d019d14\",\n                    \"documentNo\": \"SO11008\",\n                    \"lineNo\": 60000,\n                    \"type\": \"Resource\",\n                    \"no\": \"FREIGHT\",\n                    \"description\": \"Against Warehouse shipment No. SH002870\",\n                    \"description2\": \"\",\n                    \"unitOfMeasureCode\": \"EACH\",\n                    \"unitPrice\": 41.94,\n                    \"itemCategoryCode\": \"\",\n                    \"quantity\": 1,\n                    \"outstandingQuantity\": 0,\n                    \"promisedDeliveryDate\": \"0001-01-01\",\n                    \"requestedDeliveryDate\": \"0001-01-01\",\n                    \"lineAmount\": 0,\n                    \"lineDiscountAmount\": 41.94,\n                    \"amountIncludingVAT\": 0\n                }\n            ],\n            \"edcWhseShipments\": [\n                {\n                    \"@odata.etag\": \"W/\\\"JzIwOzEwNDI1NzA0NDQyNzQ0NzY2NjA1MTswMDsn\\\"\",\n                    \"orderNo\": \"SO11008\",\n                    \"whseShipNo\": \"SH002870\",\n                    \"CodAmount\": 0,\n                    \"CashOnDelivery\": false,\n                    \"CharegesPayBy\": \"SENDER\",\n                    \"GrossWeight\": 5,\n                    \"InsuranceAmount\": 500,\n                    \"ShippingAccountNo\": \"\",\n                    \"SignatureRequired\": false,\n                    \"ThirdParty\": false,\n                    \"ThirdPartyAccountNo\": \"\",\n                    \"BoxCode\": \"DEFAULT\",\n                    \"NoofBoxes\": 1,\n                    \"edcBoxDetails\": [\n                        {\n                            \"@odata.etag\": \"W/\\\"JzIwOzEzOTQxMTI0NzU5NTI2NTEzOTM2MTswMDsn\\\"\",\n                            \"boxCode\": \"DEFAULT\",\n                            \"length\": 3,\n                            \"width\": 3,\n                            \"height\": 60,\n                            \"boxWeight\": 0,\n                            \"description\": \"\"\n                        }\n                    ]\n                }\n            ],\n            \"edcCustomers\": [\n                {\n                    \"@odata.etag\": \"W/\\\"JzE4OzQzMDAxNzMwNzE1NjU1MTI5NzE7MDA7Jw==\\\"\",\n                    \"systemId\": \"96192396-8ff4-ec11-b2d6-00155d019d14\",\n                    \"no\": \"C0003647\",\n                    \"name\": \"INTERIOR CONCEPTS, INC\",\n                    \"name2\": \"\",\n                    \"searchName\": \"INTERIOR CONCEPTS, INC\",\n                    \"address\": \"2560 RIVA RD \",\n                    \"address2\": \"\",\n                    \"city\": \"Annapolis\",\n                    \"postCode\": \"21401\",\n                    \"county\": \"MD\",\n                    \"countryRegionCode\": \"US\",\n                    \"currencyCode\": \"\",\n                    \"eMail\": \"Library@interiorconceptsinc.com\",\n                    \"faxNo\": \"\",\n                    \"mobilePhoneNo\": \"\",\n                    \"vatRegistrationNo\": \"\",\n                    \"territoryCode\": \"\",\n                    \"salespersonCode\": \"BEVERLY J\",\n                    \"phoneNo\": \"(410) 224 7366\",\n                    \"homePage\": \"https://www.interiorconceptsinc.com\",\n                    \"creditLimitLCY\": 0,\n                    \"contact\": \"LIBRARY \",\n                    \"contactID\": \"00000000-0000-0000-0000-000000000000\",\n                    \"balanceLCY\": 0,\n                    \"paymentTermsCode\": \"\",\n                    \"customerPriceGroup\": \"SPECIFIER\",\n                    \"paymentMethodCode\": \"\",\n                    \"locationCode\": \"SYOSSET\",\n                    \"apiSync\": false\n                }\n            ]\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "CompaniesDetails",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "clientSecret",
+							"value": ".Tj8Q~T--p1GIsM_WfNt5Y6eSR6v4BrdZ.Lw1c~B",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "da8dc534-e642-46e2-8f28-57bc71d854c0",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "https://login.microsoftonline.com/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/oauth2/v2.0/token",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "https://api.businesscentral.dynamics.com/.default",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "Token01",
+							"type": "string"
+						},
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "string"
+						},
+						{
+							"key": "useBrowser",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "tokenType",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://api.businesscentral.dynamics.com",
+							"type": "string"
+						},
+						{
+							"key": "client_authentication",
+							"value": "body",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "https://login.windows.net/dynamicslancer.net/oauth2/authorize?resource=https://api.businesscentral.dynamics.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"orderNo\" : \"SO34578\",\r\n    \"createWarehouseShipment\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies",
+					"protocol": "https",
+					"host": [
+						"api",
+						"businesscentral",
+						"dynamics",
+						"com"
+					],
+					"path": [
+						"v2.0",
+						"a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2",
+						"Sandbox",
+						"api",
+						"Edhate",
+						"silkapi",
+						"v2.0",
+						"companies"
+					],
+					"query": [
+						{
+							"key": "$filter",
+							"value": "no eq 'SO34578'",
+							"disabled": true
+						},
+						{
+							"key": "$expand",
+							"value": "edcSalesLines,edcWhseShipments($expand=edcBoxDetails),edcCustomers",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "SalesOrder-1",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)/edcSalesOrders?$filter=no eq 'SO11008'&$expand=edcSalesLines,edcWhseShipments($expand=edcBoxDetails),edcCustomers",
+							"protocol": "https",
+							"host": [
+								"api",
+								"businesscentral",
+								"dynamics",
+								"com"
+							],
+							"path": [
+								"v2.0",
+								"a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2",
+								"Sandbox",
+								"api",
+								"Edhate",
+								"silkapi",
+								"v2.0",
+								"companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)",
+								"edcSalesOrders"
+							],
+							"query": [
+								{
+									"key": "$filter",
+									"value": "no eq 'SO11008'"
+								},
+								{
+									"key": "$expand",
+									"value": "edcSalesLines,edcWhseShipments($expand=edcBoxDetails),edcCustomers"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; odata.metadata=minimal; odata.streaming=true; charset=utf-8"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "br"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "Server",
+							"value": "Microsoft-HTTPAPI/2.0"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "Origin, X-Requested-With, Authorization"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "ms-correlation-x",
+							"value": "0a1574b8-c0ee-43db-b618-ed119a209139"
+						},
+						{
+							"key": "mise-correlation-id",
+							"value": "f62f16a4-7d2b-4c98-906c-43d26fc84230"
+						},
+						{
+							"key": "OData-Version",
+							"value": "4.0"
+						},
+						{
+							"key": "Access-Control-Expose-Headers",
+							"value": "Date, Content-Length, Server, OData-Version"
+						},
+						{
+							"key": "Access-Control-Expose-Headers",
+							"value": "ms-correlation-x"
+						},
+						{
+							"key": "request-id",
+							"value": "b96f722a-b780-40b9-9ac0-7516fd8646bf"
+						},
+						{
+							"key": "x-content-type-options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=31536000; includeSubDomains"
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 02 Jan 2023 14:23:42 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"@odata.context\": \"https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/$metadata#companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)/edcSalesOrders\",\n    \"value\": [\n        {\n            \"@odata.etag\": \"W/\\\"JzE5OzU1NDA0MzQ5NjYxMTk0MDkzMzMxOzAwOyc=\\\"\",\n            \"SystemId\": \"3579dd29-90f4-ec11-b2d6-00155d019d14\",\n            \"no\": \"SO11008\",\n            \"sellToContactNo\": \"CT010356\",\n            \"sellToContact\": \"LIBRARY \",\n            \"shippingAgentCode\": \"FEDEX\",\n            \"shipToPostCode\": \"21117\",\n            \"shipToContact\": \"BEVERLY JEROME \",\n            \"shipToAddress\": \"11704 HUNTSWORTH LN \",\n            \"shipToAddress2\": \"\",\n            \"shipToCity\": \"Owings Mills\",\n            \"shipToCounty\": \"MD\",\n            \"shipToCountryRegionCode\": \"US\",\n            \"shipToEmail\": \"beverly@jerome-group.com\",\n            \"ShipToPhoneNo\": \"(410) 581 8696\",\n            \"shippingAgentServiceCode\": \"GROUND\",\n            \"shipmentMethodCode\": \"\",\n            \"shipToName\": \"THE JEROME GROUP\",\n            \"externalDocumentNo\": \"BEVERLY EMAIL 5-24\",\n            \"locationCode\": \"SYOSSET\",\n            \"sellToPhoneNo\": \"\",\n            \"sellToEMail\": \"\",\n            \"trackingNo\": \"273750454999\",\n            \"addressValidated\": false,\n            \"residential\": false,\n            \"edcSalesLines\": [\n                {\n                    \"@odata.etag\": \"W/\\\"JzIwOzE3NTU2MTI1NzY1NjIxMzkxMzQ4MTswMDsn\\\"\",\n                    \"systemId\": \"e213be4d-90f4-ec11-b2d6-00155d019d14\",\n                    \"documentNo\": \"SO11008\",\n                    \"lineNo\": 10000,\n                    \"type\": \"Item\",\n                    \"no\": \"S10017-007\",\n                    \"description\": \"RIVERDALE-IRIS MEMO\",\n                    \"description2\": \"SAMPLE\",\n                    \"unitOfMeasureCode\": \"EACH\",\n                    \"unitPrice\": 24,\n                    \"itemCategoryCode\": \"SAMPLES1\",\n                    \"quantity\": 1,\n                    \"outstandingQuantity\": 1,\n                    \"promisedDeliveryDate\": \"0001-01-01\",\n                    \"requestedDeliveryDate\": \"0001-01-01\",\n                    \"lineAmount\": 0,\n                    \"lineDiscountAmount\": 24,\n                    \"amountIncludingVAT\": 0\n                },\n                {\n                    \"@odata.etag\": \"W/\\\"JzIwOzE0NjI4MjA2NTgxOTIzNDI4NDkxMTswMDsn\\\"\",\n                    \"systemId\": \"e313be4d-90f4-ec11-b2d6-00155d019d14\",\n                    \"documentNo\": \"SO11008\",\n                    \"lineNo\": 20000,\n                    \"type\": \"Item\",\n                    \"no\": \"S10017-003\",\n                    \"description\": \"RIVERDALE-DENIM MEMO\",\n                    \"description2\": \"SAMPLE\",\n                    \"unitOfMeasureCode\": \"EACH\",\n                    \"unitPrice\": 24,\n                    \"itemCategoryCode\": \"SAMPLES1\",\n                    \"quantity\": 1,\n                    \"outstandingQuantity\": 1,\n                    \"promisedDeliveryDate\": \"0001-01-01\",\n                    \"requestedDeliveryDate\": \"0001-01-01\",\n                    \"lineAmount\": 0,\n                    \"lineDiscountAmount\": 24,\n                    \"amountIncludingVAT\": 0\n                },\n                {\n                    \"@odata.etag\": \"W/\\\"JzE5OzI0NDk2NTMzODEzNjQ4NzM0NTYxOzAwOyc=\\\"\",\n                    \"systemId\": \"e413be4d-90f4-ec11-b2d6-00155d019d14\",\n                    \"documentNo\": \"SO11008\",\n                    \"lineNo\": 30000,\n                    \"type\": \"Item\",\n                    \"no\": \"S10058-004\",\n                    \"description\": \"SKIPPER-TEAL MEMO\",\n                    \"description2\": \"SAMPLE\",\n                    \"unitOfMeasureCode\": \"EACH\",\n                    \"unitPrice\": 28,\n                    \"itemCategoryCode\": \"SAMPLES2\",\n                    \"quantity\": 1,\n                    \"outstandingQuantity\": 1,\n                    \"promisedDeliveryDate\": \"0001-01-01\",\n                    \"requestedDeliveryDate\": \"0001-01-01\",\n                    \"lineAmount\": 0,\n                    \"lineDiscountAmount\": 28,\n                    \"amountIncludingVAT\": 0\n                },\n                {\n                    \"@odata.etag\": \"W/\\\"JzE5OzMzNjg1NDQ0NDM1Nzc5NTI0NTYxOzAwOyc=\\\"\",\n                    \"systemId\": \"e513be4d-90f4-ec11-b2d6-00155d019d14\",\n                    \"documentNo\": \"SO11008\",\n                    \"lineNo\": 40000,\n                    \"type\": \"Item\",\n                    \"no\": \"S10007-003\",\n                    \"description\": \"ELLIS-KIWI MEMO\",\n                    \"description2\": \"SAMPLE\",\n                    \"unitOfMeasureCode\": \"EACH\",\n                    \"unitPrice\": 29,\n                    \"itemCategoryCode\": \"SAMPLES2\",\n                    \"quantity\": 1,\n                    \"outstandingQuantity\": 1,\n                    \"promisedDeliveryDate\": \"0001-01-01\",\n                    \"requestedDeliveryDate\": \"0001-01-01\",\n                    \"lineAmount\": 0,\n                    \"lineDiscountAmount\": 29,\n                    \"amountIncludingVAT\": 0\n                },\n                {\n                    \"@odata.etag\": \"W/\\\"JzIwOzE3NjQ3Nzc0MzQxNTgxMDg4ODQ0MTswMDsn\\\"\",\n                    \"systemId\": \"e613be4d-90f4-ec11-b2d6-00155d019d14\",\n                    \"documentNo\": \"SO11008\",\n                    \"lineNo\": 50000,\n                    \"type\": \"Item\",\n                    \"no\": \"S10011-007\",\n                    \"description\": \"HELENA-NATURAL MEMO\",\n                    \"description2\": \"SAMPLE\",\n                    \"unitOfMeasureCode\": \"EACH\",\n                    \"unitPrice\": 45,\n                    \"itemCategoryCode\": \"SAMPLES2\",\n                    \"quantity\": 1,\n                    \"outstandingQuantity\": 1,\n                    \"promisedDeliveryDate\": \"0001-01-01\",\n                    \"requestedDeliveryDate\": \"0001-01-01\",\n                    \"lineAmount\": 0,\n                    \"lineDiscountAmount\": 45,\n                    \"amountIncludingVAT\": 0\n                },\n                {\n                    \"@odata.etag\": \"W/\\\"JzIwOzE0NzYyNjI2NDg4NDk2NDkxODA5MTswMDsn\\\"\",\n                    \"systemId\": \"e713be4d-90f4-ec11-b2d6-00155d019d14\",\n                    \"documentNo\": \"SO11008\",\n                    \"lineNo\": 60000,\n                    \"type\": \"Resource\",\n                    \"no\": \"FREIGHT\",\n                    \"description\": \"Against Warehouse shipment No. SH002870\",\n                    \"description2\": \"\",\n                    \"unitOfMeasureCode\": \"EACH\",\n                    \"unitPrice\": 41.94,\n                    \"itemCategoryCode\": \"\",\n                    \"quantity\": 1,\n                    \"outstandingQuantity\": 0,\n                    \"promisedDeliveryDate\": \"0001-01-01\",\n                    \"requestedDeliveryDate\": \"0001-01-01\",\n                    \"lineAmount\": 0,\n                    \"lineDiscountAmount\": 41.94,\n                    \"amountIncludingVAT\": 0\n                }\n            ],\n            \"edcWhseShipments\": [\n                {\n                    \"@odata.etag\": \"W/\\\"JzIwOzEwNDI1NzA0NDQyNzQ0NzY2NjA1MTswMDsn\\\"\",\n                    \"orderNo\": \"SO11008\",\n                    \"whseShipNo\": \"SH002870\",\n                    \"CodAmount\": 0,\n                    \"CashOnDelivery\": false,\n                    \"CharegesPayBy\": \"SENDER\",\n                    \"GrossWeight\": 5,\n                    \"InsuranceAmount\": 500,\n                    \"ShippingAccountNo\": \"\",\n                    \"SignatureRequired\": false,\n                    \"ThirdParty\": false,\n                    \"ThirdPartyAccountNo\": \"\",\n                    \"BoxCode\": \"DEFAULT\",\n                    \"NoofBoxes\": 1,\n                    \"edcBoxDetails\": [\n                        {\n                            \"@odata.etag\": \"W/\\\"JzIwOzEzOTQxMTI0NzU5NTI2NTEzOTM2MTswMDsn\\\"\",\n                            \"boxCode\": \"DEFAULT\",\n                            \"length\": 3,\n                            \"width\": 3,\n                            \"height\": 60,\n                            \"boxWeight\": 0,\n                            \"description\": \"\"\n                        }\n                    ]\n                }\n            ],\n            \"edcCustomers\": [\n                {\n                    \"@odata.etag\": \"W/\\\"JzE4OzQzMDAxNzMwNzE1NjU1MTI5NzE7MDA7Jw==\\\"\",\n                    \"systemId\": \"96192396-8ff4-ec11-b2d6-00155d019d14\",\n                    \"no\": \"C0003647\",\n                    \"name\": \"INTERIOR CONCEPTS, INC\",\n                    \"name2\": \"\",\n                    \"searchName\": \"INTERIOR CONCEPTS, INC\",\n                    \"address\": \"2560 RIVA RD \",\n                    \"address2\": \"\",\n                    \"city\": \"Annapolis\",\n                    \"postCode\": \"21401\",\n                    \"county\": \"MD\",\n                    \"countryRegionCode\": \"US\",\n                    \"currencyCode\": \"\",\n                    \"eMail\": \"Library@interiorconceptsinc.com\",\n                    \"faxNo\": \"\",\n                    \"mobilePhoneNo\": \"\",\n                    \"vatRegistrationNo\": \"\",\n                    \"territoryCode\": \"\",\n                    \"salespersonCode\": \"BEVERLY J\",\n                    \"phoneNo\": \"(410) 224 7366\",\n                    \"homePage\": \"https://www.interiorconceptsinc.com\",\n                    \"creditLimitLCY\": 0,\n                    \"contact\": \"LIBRARY \",\n                    \"contactID\": \"00000000-0000-0000-0000-000000000000\",\n                    \"balanceLCY\": 0,\n                    \"paymentTermsCode\": \"\",\n                    \"customerPriceGroup\": \"SPECIFIER\",\n                    \"paymentMethodCode\": \"\",\n                    \"locationCode\": \"SYOSSET\",\n                    \"apiSync\": false\n                }\n            ]\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "CreateOrder",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "accessTokenUrl",
+							"value": "https://login.microsoftonline.com/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/oauth2/v2.0/token",
+							"type": "string"
+						},
+						{
+							"key": "clientSecret",
+							"value": ".Tj8Q~T--p1GIsM_WfNt5Y6eSR6v4BrdZ.Lw1c~B",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "da8dc534-e642-46e2-8f28-57bc71d854c0",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "https://api.businesscentral.dynamics.com/.default",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "Token01",
+							"type": "string"
+						},
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "string"
+						},
+						{
+							"key": "useBrowser",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "tokenType",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://api.businesscentral.dynamics.com",
+							"type": "string"
+						},
+						{
+							"key": "client_authentication",
+							"value": "body",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "https://login.windows.net/dynamicslancer.net/oauth2/authorize?resource=https://api.businesscentral.dynamics.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "If-Match",
+						"value": "*",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"shipmentDate\": \"2023-06-10\",\r\n\t\"priority\": \"Sea 1\",\r\n    \"contact\": \"Mr. Saurabh\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)/edcCreateSalesOrders('Order','SO12693')?$expand=edcSalesComments,edcSalesLines($expand=edcSalesComments)",
+					"protocol": "https",
+					"host": [
+						"api",
+						"businesscentral",
+						"dynamics",
+						"com"
+					],
+					"path": [
+						"v2.0",
+						"a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2",
+						"Sandbox",
+						"api",
+						"Edhate",
+						"silkapi",
+						"v2.0",
+						"companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)",
+						"edcCreateSalesOrders('Order','SO12693')"
+					],
+					"query": [
+						{
+							"key": "$filter",
+							"value": "no eq 'SO12692'",
+							"disabled": true
+						},
+						{
+							"key": "$expand",
+							"value": "edcSalesComments,edcSalesLines($expand=edcSalesComments)"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "CreateOrder-1-Post",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"no\": \"\",\r\n\t\"sellToCustomerNo\": \"C0003647\",\r\n\t\"shipToCode\": \"01\",\r\n\t\"projectName\": \"LIBRARY\",\r\n\t\"specifier\": \"\",\r\n\t\"orderDate\": \"2022-05-25\",\r\n\t\"salespersonCode\": \"BEVERLY J\",\r\n\t\"campaignNo\": \"\",\r\n\t\"requestedDeliveryDate\": \"2023-06-01\",\r\n\t\"contact\": \"LIBRARY \",\r\n\t\"shippingAgentCode\": \"FEDEX\",\r\n\t\"externalDocumentNo\": \"KG-TEST-001\",\r\n\t\"shipmentDate\": \"2023-06-02\",\r\n\t\"priority\": \"Sea 3\",\r\n\t\"edcSalesLines\": [{\r\n\t\t\t\"lineNo\": 10000,\r\n\t\t\t\"type\": \"Item\",\r\n\t\t\t\"no\": \"S10017-007\",\r\n\t\t\t\"quantity\": 1,\r\n\t\t\t\"dropShipment\": false\r\n\t\t},\r\n\t\t{\r\n\t\t\t\"lineNo\": 20000,\r\n\t\t\t\"type\": \"Item\",\r\n\t\t\t\"no\": \"S10017-003\",\r\n\t\t\t\"quantity\": 1,\r\n\t\t\t\"dropShipment\": false\r\n\t\t}\r\n\t]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)/edcCreateSalesOrders?$expand=edcSalesLines",
+							"protocol": "https",
+							"host": [
+								"api",
+								"businesscentral",
+								"dynamics",
+								"com"
+							],
+							"path": [
+								"v2.0",
+								"a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2",
+								"Sandbox",
+								"api",
+								"Edhate",
+								"silkapi",
+								"v2.0",
+								"companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)",
+								"edcCreateSalesOrders"
+							],
+							"query": [
+								{
+									"key": "$filter",
+									"value": "no eq 'SO11008'",
+									"disabled": true
+								},
+								{
+									"key": "$expand",
+									"value": "edcSalesLines"
+								}
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; odata.metadata=minimal; odata.streaming=true; charset=utf-8"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "br"
+						},
+						{
+							"key": "Location",
+							"value": "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)/edcCreateSalesOrders(documentType%3D%27Order%27,no%3D%27SO12692%27)"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "Server",
+							"value": "Microsoft-HTTPAPI/2.0"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "Origin, X-Requested-With, Authorization"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "ms-correlation-x",
+							"value": "fbd29e12-7284-432a-dbb8-079a73f91716"
+						},
+						{
+							"key": "mise-correlation-id",
+							"value": "22a088f3-0d88-4bd5-838d-a76a091d258f"
+						},
+						{
+							"key": "OData-Version",
+							"value": "4.0"
+						},
+						{
+							"key": "Access-Control-Expose-Headers",
+							"value": "Date, Content-Length, Server, OData-Version"
+						},
+						{
+							"key": "Access-Control-Expose-Headers",
+							"value": "ms-correlation-x"
+						},
+						{
+							"key": "request-id",
+							"value": "be4f1d7f-29ba-4c29-8e39-5bcdbf80ff34"
+						},
+						{
+							"key": "x-content-type-options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=31536000; includeSubDomains"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 14 Mar 2023 16:29:00 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"@odata.context\": \"https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/$metadata#companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)/edcCreateSalesOrders/$entity\",\n    \"@odata.etag\": \"W/\\\"JzE5OzgzNjE2NTI1NTYzNjQ1MDk2NjYxOzAwOyc=\\\"\",\n    \"documentType\": \"Order\",\n    \"no\": \"SO12692\",\n    \"sellToCustomerNo\": \"C0003647\",\n    \"shipToCode\": \"01\",\n    \"projectName\": \"LIBRARY\",\n    \"specifier\": \"\",\n    \"orderDate\": \"2023-03-14\",\n    \"salespersonCode\": \"BEVERLY J\",\n    \"campaignNo\": \"\",\n    \"requestedDeliveryDate\": \"2023-06-01\",\n    \"contact\": \"LIBRARY \",\n    \"shippingAgentCode\": \"FEDEX\",\n    \"externalDocumentNo\": \"KG-TEST-001\",\n    \"shipmentDate\": \"2023-03-14\",\n    \"priority\": \"Sea 3\",\n    \"edcSalesLines\": [\n        {\n            \"@odata.etag\": \"W/\\\"JzIwOzE3MjA2NzA5Nzk3OTk4NTkyNzE1MTswMDsn\\\"\",\n            \"systemId\": \"0b7da84d-85c2-ed11-9a88-6045bdbadc99\",\n            \"documentNo\": \"SO12692\",\n            \"lineNo\": 10000,\n            \"type\": \"Item\",\n            \"no\": \"S10017-007\",\n            \"description\": \"RIVERDALE-IRIS MEMO\",\n            \"description2\": \"SAMPLE\",\n            \"unitOfMeasureCode\": \"EACH\",\n            \"unitPrice\": 0.49,\n            \"itemCategoryCode\": \"SAMPLES1\",\n            \"quantity\": 1,\n            \"outstandingQuantity\": 1,\n            \"promisedDeliveryDate\": \"0001-01-01\",\n            \"requestedDeliveryDate\": \"2023-06-01\",\n            \"lineAmount\": 0.49,\n            \"lineDiscountAmount\": 0,\n            \"amountIncludingVAT\": 0.49,\n            \"dropShipment\": false\n        },\n        {\n            \"@odata.etag\": \"W/\\\"JzE5OzY0Mjk0NDYxOTkxMjA5MjU2MzMxOzAwOyc=\\\"\",\n            \"systemId\": \"0c7da84d-85c2-ed11-9a88-6045bdbadc99\",\n            \"documentNo\": \"SO12692\",\n            \"lineNo\": 20000,\n            \"type\": \"Item\",\n            \"no\": \"S10017-003\",\n            \"description\": \"RIVERDALE-DENIM MEMO\",\n            \"description2\": \"SAMPLE\",\n            \"unitOfMeasureCode\": \"EACH\",\n            \"unitPrice\": 0.49,\n            \"itemCategoryCode\": \"SAMPLES1\",\n            \"quantity\": 1,\n            \"outstandingQuantity\": 1,\n            \"promisedDeliveryDate\": \"0001-01-01\",\n            \"requestedDeliveryDate\": \"2023-06-01\",\n            \"lineAmount\": 0.49,\n            \"lineDiscountAmount\": 0,\n            \"amountIncludingVAT\": 0.49,\n            \"dropShipment\": false\n        }\n    ]\n}"
+				},
+				{
+					"name": "CreateOrder-2-Patch",
+					"originalRequest": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "If-Match",
+								"value": "*",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"shipmentDate\": \"2023-06-10\",\r\n\t\"priority\": \"Sea 1\",\r\n    \"contact\": \"Mr. Saurabh\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)/edcCreateSalesOrders('Order','SO12692')",
+							"protocol": "https",
+							"host": [
+								"api",
+								"businesscentral",
+								"dynamics",
+								"com"
+							],
+							"path": [
+								"v2.0",
+								"a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2",
+								"Sandbox",
+								"api",
+								"Edhate",
+								"silkapi",
+								"v2.0",
+								"companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)",
+								"edcCreateSalesOrders('Order','SO12692')"
+							],
+							"query": [
+								{
+									"key": "$filter",
+									"value": "no eq 'SO12692'",
+									"disabled": true
+								},
+								{
+									"key": "$expand",
+									"value": "edcSalesLines",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; odata.metadata=minimal; odata.streaming=true; charset=utf-8"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "br"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "Server",
+							"value": "Microsoft-HTTPAPI/2.0"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "Origin, X-Requested-With, Authorization"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "ms-correlation-x",
+							"value": "f46eccd6-095e-63c6-d962-412d762e5350"
+						},
+						{
+							"key": "mise-correlation-id",
+							"value": "f0a44a1a-b830-431f-bfc0-88369b568f48"
+						},
+						{
+							"key": "OData-Version",
+							"value": "4.0"
+						},
+						{
+							"key": "Access-Control-Expose-Headers",
+							"value": "Date, Content-Length, Server, OData-Version"
+						},
+						{
+							"key": "Access-Control-Expose-Headers",
+							"value": "ms-correlation-x"
+						},
+						{
+							"key": "request-id",
+							"value": "d37ca948-160f-4faa-abbc-2d4128f287cb"
+						},
+						{
+							"key": "x-content-type-options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=31536000; includeSubDomains"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 14 Mar 2023 16:38:12 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"@odata.context\": \"https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/$metadata#companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)/edcCreateSalesOrders/$entity\",\n    \"@odata.etag\": \"W/\\\"JzE5OzgzNzY4ODA3NTgxMTczMDc4MjExOzAwOyc=\\\"\",\n    \"documentType\": \"Order\",\n    \"no\": \"SO12692\",\n    \"sellToCustomerNo\": \"C0003647\",\n    \"shipToCode\": \"01\",\n    \"projectName\": \"LIBRARY\",\n    \"specifier\": \"\",\n    \"orderDate\": \"2023-03-14\",\n    \"salespersonCode\": \"BEVERLY J\",\n    \"campaignNo\": \"\",\n    \"requestedDeliveryDate\": \"2023-06-01\",\n    \"contact\": \"Mr. Saurabh\",\n    \"shippingAgentCode\": \"FEDEX\",\n    \"externalDocumentNo\": \"KG-TEST-001\",\n    \"shipmentDate\": \"2023-06-10\",\n    \"priority\": \"Sea 1\"\n}"
+				},
+				{
+					"name": "CreateOrder-3-Get",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "If-Match",
+								"value": "*",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)/edcCreateSalesOrders('Order','SO12692')?$expand=edcSalesLines",
+							"protocol": "https",
+							"host": [
+								"api",
+								"businesscentral",
+								"dynamics",
+								"com"
+							],
+							"path": [
+								"v2.0",
+								"a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2",
+								"Sandbox",
+								"api",
+								"Edhate",
+								"silkapi",
+								"v2.0",
+								"companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)",
+								"edcCreateSalesOrders('Order','SO12692')"
+							],
+							"query": [
+								{
+									"key": "$filter",
+									"value": "no eq 'SO12692'",
+									"disabled": true
+								},
+								{
+									"key": "$expand",
+									"value": "edcSalesLines"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; odata.metadata=minimal; odata.streaming=true; charset=utf-8"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "br"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "Server",
+							"value": "Microsoft-HTTPAPI/2.0"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "Origin, X-Requested-With, Authorization"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "ms-correlation-x",
+							"value": "65ed83df-cac5-97aa-de69-675e4908d9f9"
+						},
+						{
+							"key": "mise-correlation-id",
+							"value": "dcf0b805-7307-4a18-88f2-9687bd1c6a0b"
+						},
+						{
+							"key": "OData-Version",
+							"value": "4.0"
+						},
+						{
+							"key": "Access-Control-Expose-Headers",
+							"value": "Date, Content-Length, Server, OData-Version"
+						},
+						{
+							"key": "Access-Control-Expose-Headers",
+							"value": "ms-correlation-x"
+						},
+						{
+							"key": "request-id",
+							"value": "d549dee1-1fac-4f1d-96dd-1e5d10c8b6d7"
+						},
+						{
+							"key": "x-content-type-options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=31536000; includeSubDomains"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 14 Mar 2023 16:39:19 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"@odata.context\": \"https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/$metadata#companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)/edcCreateSalesOrders/$entity\",\n    \"@odata.etag\": \"W/\\\"JzE5OzgzNzY4ODA3NTgxMTczMDc4MjExOzAwOyc=\\\"\",\n    \"documentType\": \"Order\",\n    \"no\": \"SO12692\",\n    \"sellToCustomerNo\": \"C0003647\",\n    \"shipToCode\": \"01\",\n    \"projectName\": \"LIBRARY\",\n    \"specifier\": \"\",\n    \"orderDate\": \"2023-03-14\",\n    \"salespersonCode\": \"BEVERLY J\",\n    \"campaignNo\": \"\",\n    \"requestedDeliveryDate\": \"2023-06-01\",\n    \"contact\": \"Mr. Saurabh\",\n    \"shippingAgentCode\": \"FEDEX\",\n    \"externalDocumentNo\": \"KG-TEST-001\",\n    \"shipmentDate\": \"2023-06-10\",\n    \"priority\": \"Sea 1\",\n    \"edcSalesLines\": [\n        {\n            \"@odata.etag\": \"W/\\\"JzIwOzE3MjA2NzA5Nzk3OTk4NTkyNzE1MTswMDsn\\\"\",\n            \"systemId\": \"0b7da84d-85c2-ed11-9a88-6045bdbadc99\",\n            \"documentNo\": \"SO12692\",\n            \"lineNo\": 10000,\n            \"type\": \"Item\",\n            \"no\": \"S10017-007\",\n            \"description\": \"RIVERDALE-IRIS MEMO\",\n            \"description2\": \"SAMPLE\",\n            \"unitOfMeasureCode\": \"EACH\",\n            \"unitPrice\": 0.49,\n            \"itemCategoryCode\": \"SAMPLES1\",\n            \"quantity\": 1,\n            \"outstandingQuantity\": 1,\n            \"promisedDeliveryDate\": \"0001-01-01\",\n            \"requestedDeliveryDate\": \"2023-06-01\",\n            \"lineAmount\": 0.49,\n            \"lineDiscountAmount\": 0,\n            \"amountIncludingVAT\": 0.49,\n            \"dropShipment\": false\n        },\n        {\n            \"@odata.etag\": \"W/\\\"JzE5OzY0Mjk0NDYxOTkxMjA5MjU2MzMxOzAwOyc=\\\"\",\n            \"systemId\": \"0c7da84d-85c2-ed11-9a88-6045bdbadc99\",\n            \"documentNo\": \"SO12692\",\n            \"lineNo\": 20000,\n            \"type\": \"Item\",\n            \"no\": \"S10017-003\",\n            \"description\": \"RIVERDALE-DENIM MEMO\",\n            \"description2\": \"SAMPLE\",\n            \"unitOfMeasureCode\": \"EACH\",\n            \"unitPrice\": 0.49,\n            \"itemCategoryCode\": \"SAMPLES1\",\n            \"quantity\": 1,\n            \"outstandingQuantity\": 1,\n            \"promisedDeliveryDate\": \"0001-01-01\",\n            \"requestedDeliveryDate\": \"2023-06-01\",\n            \"lineAmount\": 0.49,\n            \"lineDiscountAmount\": 0,\n            \"amountIncludingVAT\": 0.49,\n            \"dropShipment\": false\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "UpdateSalesLine",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "clientSecret",
+							"value": ".Tj8Q~T--p1GIsM_WfNt5Y6eSR6v4BrdZ.Lw1c~B",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "da8dc534-e642-46e2-8f28-57bc71d854c0",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "https://login.microsoftonline.com/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/oauth2/v2.0/token",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "https://api.businesscentral.dynamics.com/.default",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "Token01",
+							"type": "string"
+						},
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "string"
+						},
+						{
+							"key": "useBrowser",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "tokenType",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://api.businesscentral.dynamics.com",
+							"type": "string"
+						},
+						{
+							"key": "client_authentication",
+							"value": "body",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "https://login.windows.net/dynamicslancer.net/oauth2/authorize?resource=https://api.businesscentral.dynamics.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "If-Match",
+						"value": "*",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n            \"quantity\": 100,\r\n            \"unitPrice\": 0.56,\r\n            \"promisedDeliveryDate\": \"2023-06-05\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)/edcSalesLines(0b7da84d-85c2-ed11-9a88-6045bdbadc99)",
+					"protocol": "https",
+					"host": [
+						"api",
+						"businesscentral",
+						"dynamics",
+						"com"
+					],
+					"path": [
+						"v2.0",
+						"a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2",
+						"Sandbox",
+						"api",
+						"Edhate",
+						"silkapi",
+						"v2.0",
+						"companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)",
+						"edcSalesLines(0b7da84d-85c2-ed11-9a88-6045bdbadc99)"
+					],
+					"query": [
+						{
+							"key": "$filter",
+							"value": "no eq 'SO12692'",
+							"disabled": true
+						},
+						{
+							"key": "$expand",
+							"value": "edcSalesLines",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "UpdateSalesLine-1",
+					"originalRequest": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "If-Match",
+								"value": "*",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n            \"quantity\": 100,\r\n            \"unitPrice\": 0.56,\r\n            \"promisedDeliveryDate\": \"2023-06-05\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)/edcSalesLines(0b7da84d-85c2-ed11-9a88-6045bdbadc99)",
+							"protocol": "https",
+							"host": [
+								"api",
+								"businesscentral",
+								"dynamics",
+								"com"
+							],
+							"path": [
+								"v2.0",
+								"a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2",
+								"Sandbox",
+								"api",
+								"Edhate",
+								"silkapi",
+								"v2.0",
+								"companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)",
+								"edcSalesLines(0b7da84d-85c2-ed11-9a88-6045bdbadc99)"
+							],
+							"query": [
+								{
+									"key": "$filter",
+									"value": "no eq 'SO12692'",
+									"disabled": true
+								},
+								{
+									"key": "$expand",
+									"value": "edcSalesLines",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; odata.metadata=minimal; odata.streaming=true; charset=utf-8"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "br"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "Server",
+							"value": "Microsoft-HTTPAPI/2.0"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "Origin, X-Requested-With, Authorization"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "ms-correlation-x",
+							"value": "c0fc3a4e-0541-69ab-06bc-bc4fac1b69fb"
+						},
+						{
+							"key": "mise-correlation-id",
+							"value": "2512e21d-4931-407d-836f-637807324417"
+						},
+						{
+							"key": "OData-Version",
+							"value": "4.0"
+						},
+						{
+							"key": "Access-Control-Expose-Headers",
+							"value": "Date, Content-Length, Server, OData-Version"
+						},
+						{
+							"key": "Access-Control-Expose-Headers",
+							"value": "ms-correlation-x"
+						},
+						{
+							"key": "request-id",
+							"value": "fadc27d4-4aa6-403b-9efb-b70426ed2cd8"
+						},
+						{
+							"key": "x-content-type-options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=31536000; includeSubDomains"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 14 Mar 2023 16:50:58 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"@odata.context\": \"https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/$metadata#companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)/edcSalesLines/$entity\",\n    \"@odata.etag\": \"W/\\\"JzIwOzEwODQ0OTYyOTAwNTYwNjA4MTA4MTswMDsn\\\"\",\n    \"systemId\": \"0b7da84d-85c2-ed11-9a88-6045bdbadc99\",\n    \"documentNo\": \"SO12692\",\n    \"lineNo\": 10000,\n    \"type\": \"Item\",\n    \"no\": \"S10017-007\",\n    \"description\": \"RIVERDALE-IRIS MEMO\",\n    \"description2\": \"SAMPLE\",\n    \"unitOfMeasureCode\": \"EACH\",\n    \"unitPrice\": 0.49,\n    \"itemCategoryCode\": \"SAMPLES1\",\n    \"quantity\": 100,\n    \"outstandingQuantity\": 100,\n    \"promisedDeliveryDate\": \"2023-06-05\",\n    \"requestedDeliveryDate\": \"2023-06-01\",\n    \"lineAmount\": 49,\n    \"lineDiscountAmount\": 0,\n    \"amountIncludingVAT\": 49,\n    \"dropShipment\": false\n}"
+				}
+			]
+		},
+		{
+			"name": "OrderWithCommentAndLines",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "accessTokenUrl",
+							"value": "https://login.microsoftonline.com/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/oauth2/v2.0/token",
+							"type": "string"
+						},
+						{
+							"key": "clientSecret",
+							"value": ".Tj8Q~T--p1GIsM_WfNt5Y6eSR6v4BrdZ.Lw1c~B",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "da8dc534-e642-46e2-8f28-57bc71d854c0",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "https://api.businesscentral.dynamics.com/.default",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "Token01",
+							"type": "string"
+						},
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "string"
+						},
+						{
+							"key": "useBrowser",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "tokenType",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://api.businesscentral.dynamics.com",
+							"type": "string"
+						},
+						{
+							"key": "client_authentication",
+							"value": "body",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "https://login.windows.net/dynamicslancer.net/oauth2/authorize?resource=https://api.businesscentral.dynamics.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"no\": \"\",\r\n    \"sellToCustomerNo\": \"C0003647\",\r\n    \"shipToCode\": \"01\",\r\n    \"projectName\": \"LIBRARY\",\r\n    \"specifier\": \"\",\r\n    \"orderDate\": \"2022-05-25\",\r\n    \"salespersonCode\": \"BEVERLY J\",\r\n    \"campaignNo\": \"\",\r\n    \"requestedDeliveryDate\": \"2023-06-01\",\r\n    \"contact\": \"LIBRARY \",\r\n    \"shippingAgentCode\": \"FEDEX\",\r\n    \"externalDocumentNo\": \"KG-TEST-003\",\r\n    \"shipmentDate\": \"2023-06-02\",\r\n    \"priority\": \"Sea 3\",\r\n    \"edcSalesComments\": [\r\n        {\r\n            \"date\": \"2023-03-14\",\r\n            \"comment\": \"Order Header Comment\"\r\n        }\r\n    ],\r\n    \"edcSalesLines\": [\r\n        {\r\n            \"lineNo\": 10000,\r\n            \"type\": \"Item\",\r\n            \"no\": \"S10017-007\",\r\n            \"quantity\": 1,\r\n            \"dropShipment\": false,\r\n            \"edcSalesComments\": [\r\n                {\r\n                    \"lineNo\": 10000,\r\n                    \"date\": \"2023-03-14\",\r\n                    \"comment\": \"Order Line One Comment\"\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"lineNo\": 20000,\r\n            \"type\": \"Item\",\r\n            \"no\": \"S10017-003\",\r\n            \"quantity\": 1,\r\n            \"dropShipment\": false,\r\n            \"edcSalesComments\": [\r\n                {\r\n                    \"lineNo\": 10000,\r\n                    \"date\": \"2023-03-14\",\r\n                    \"comment\": \"Order Line One Comment\"\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)/edcCreateSalesOrders?$expand=edcSalesComments,edcSalesLines($expand=edcSalesComments)",
+					"protocol": "https",
+					"host": [
+						"api",
+						"businesscentral",
+						"dynamics",
+						"com"
+					],
+					"path": [
+						"v2.0",
+						"a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2",
+						"Sandbox",
+						"api",
+						"Edhate",
+						"silkapi",
+						"v2.0",
+						"companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)",
+						"edcCreateSalesOrders"
+					],
+					"query": [
+						{
+							"key": "$filter",
+							"value": "no eq 'SO11008'",
+							"disabled": true
+						},
+						{
+							"key": "$expand",
+							"value": "edcSalesComments,edcSalesLines($expand=edcSalesComments)"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "OrderWithCommentAndLines-OrderComments",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"no\": \"\",\r\n    \"sellToCustomerNo\": \"C0003647\",\r\n    \"shipToCode\": \"01\",\r\n    \"projectName\": \"LIBRARY\",\r\n    \"specifier\": \"\",\r\n    \"orderDate\": \"2022-05-25\",\r\n    \"salespersonCode\": \"BEVERLY J\",\r\n    \"campaignNo\": \"\",\r\n    \"requestedDeliveryDate\": \"2023-06-01\",\r\n    \"contact\": \"LIBRARY \",\r\n    \"shippingAgentCode\": \"FEDEX\",\r\n    \"externalDocumentNo\": \"KG-TEST-002\",\r\n    \"shipmentDate\": \"2023-06-02\",\r\n    \"priority\": \"Sea 3\",\r\n    \"edcSalesComments\": [\r\n        {\r\n            \"date\": \"2023-03-14\",\r\n            \"comment\": \"Order Header Comment\"\r\n        }\r\n    ],\r\n    \"edcSalesLines\": [\r\n        {\r\n            \"lineNo\": 10000,\r\n            \"type\": \"Item\",\r\n            \"no\": \"S10017-007\",\r\n            \"quantity\": 1,\r\n            \"dropShipment\": false\r\n        },\r\n        {\r\n            \"lineNo\": 20000,\r\n            \"type\": \"Item\",\r\n            \"no\": \"S10017-003\",\r\n            \"quantity\": 1,\r\n            \"dropShipment\": false\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)/edcCreateSalesOrders?$expand=edcSalesComments,edcSalesLines",
+							"protocol": "https",
+							"host": [
+								"api",
+								"businesscentral",
+								"dynamics",
+								"com"
+							],
+							"path": [
+								"v2.0",
+								"a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2",
+								"Sandbox",
+								"api",
+								"Edhate",
+								"silkapi",
+								"v2.0",
+								"companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)",
+								"edcCreateSalesOrders"
+							],
+							"query": [
+								{
+									"key": "$filter",
+									"value": "no eq 'SO11008'",
+									"disabled": true
+								},
+								{
+									"key": "$expand",
+									"value": "edcSalesComments,edcSalesLines"
+								}
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; odata.metadata=minimal; odata.streaming=true; charset=utf-8"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "br"
+						},
+						{
+							"key": "Location",
+							"value": "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)/edcCreateSalesOrders(documentType%3D%27Order%27,no%3D%27SO12693%27)"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "Server",
+							"value": "Microsoft-HTTPAPI/2.0"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "Origin, X-Requested-With, Authorization"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "ms-correlation-x",
+							"value": "275cc171-10d5-221e-c4cf-5e542e040ca3"
+						},
+						{
+							"key": "mise-correlation-id",
+							"value": "dbae2592-1ddf-4d86-a13b-d0b222fd7e92"
+						},
+						{
+							"key": "OData-Version",
+							"value": "4.0"
+						},
+						{
+							"key": "Access-Control-Expose-Headers",
+							"value": "Date, Content-Length, Server, OData-Version"
+						},
+						{
+							"key": "Access-Control-Expose-Headers",
+							"value": "ms-correlation-x"
+						},
+						{
+							"key": "request-id",
+							"value": "22061b49-7313-43b6-a441-ec4f17cea210"
+						},
+						{
+							"key": "x-content-type-options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=31536000; includeSubDomains"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 14 Mar 2023 17:58:19 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"@odata.context\": \"https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/$metadata#companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)/edcCreateSalesOrders/$entity\",\n    \"@odata.etag\": \"W/\\\"JzE5Ozg5NzUxOTIyNzM2MzY0NDkxMzIxOzAwOyc=\\\"\",\n    \"documentType\": \"Order\",\n    \"no\": \"SO12693\",\n    \"sellToCustomerNo\": \"C0003647\",\n    \"shipToCode\": \"01\",\n    \"projectName\": \"LIBRARY\",\n    \"specifier\": \"\",\n    \"orderDate\": \"2023-03-14\",\n    \"salespersonCode\": \"BEVERLY J\",\n    \"campaignNo\": \"\",\n    \"requestedDeliveryDate\": \"2023-06-01\",\n    \"contact\": \"LIBRARY \",\n    \"shippingAgentCode\": \"FEDEX\",\n    \"externalDocumentNo\": \"KG-TEST-002\",\n    \"shipmentDate\": \"2023-03-14\",\n    \"priority\": \"Sea 3\",\n    \"edcSalesComments\": [\n        {\n            \"@odata.etag\": \"W/\\\"JzIwOzEzOTQ0MDc4ODI3OTc1MzE4NDM4MTswMDsn\\\"\",\n            \"systemId\": \"20c31acb-91c2-ed11-9a88-6045bdbadc99\",\n            \"documentNo\": \"SO12693\",\n            \"documentLineNo\": 0,\n            \"lineNo\": 0,\n            \"date\": \"2023-03-14\",\n            \"comment\": \"Order Header Comment\"\n        }\n    ],\n    \"edcSalesLines\": [\n        {\n            \"@odata.etag\": \"W/\\\"JzE5OzgzNzA3NDE2MzE5NjY3MjUxNzUxOzAwOyc=\\\"\",\n            \"systemId\": \"21c31acb-91c2-ed11-9a88-6045bdbadc99\",\n            \"documentNo\": \"SO12693\",\n            \"lineNo\": 10000,\n            \"type\": \"Item\",\n            \"no\": \"S10017-007\",\n            \"description\": \"RIVERDALE-IRIS MEMO\",\n            \"description2\": \"SAMPLE\",\n            \"unitOfMeasureCode\": \"EACH\",\n            \"unitPrice\": 0.49,\n            \"itemCategoryCode\": \"SAMPLES1\",\n            \"quantity\": 1,\n            \"outstandingQuantity\": 1,\n            \"promisedDeliveryDate\": \"0001-01-01\",\n            \"requestedDeliveryDate\": \"2023-06-01\",\n            \"lineAmount\": 0.49,\n            \"lineDiscountAmount\": 0,\n            \"amountIncludingVAT\": 0.49,\n            \"dropShipment\": false\n        },\n        {\n            \"@odata.etag\": \"W/\\\"JzE5OzkwMzU3MTMyNjAzNDA2ODc4MzAxOzAwOyc=\\\"\",\n            \"systemId\": \"22c31acb-91c2-ed11-9a88-6045bdbadc99\",\n            \"documentNo\": \"SO12693\",\n            \"lineNo\": 20000,\n            \"type\": \"Item\",\n            \"no\": \"S10017-003\",\n            \"description\": \"RIVERDALE-DENIM MEMO\",\n            \"description2\": \"SAMPLE\",\n            \"unitOfMeasureCode\": \"EACH\",\n            \"unitPrice\": 0.49,\n            \"itemCategoryCode\": \"SAMPLES1\",\n            \"quantity\": 1,\n            \"outstandingQuantity\": 1,\n            \"promisedDeliveryDate\": \"0001-01-01\",\n            \"requestedDeliveryDate\": \"2023-06-01\",\n            \"lineAmount\": 0.49,\n            \"lineDiscountAmount\": 0,\n            \"amountIncludingVAT\": 0.49,\n            \"dropShipment\": false\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "SalesLineComments",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "clientSecret",
+							"value": ".Tj8Q~T--p1GIsM_WfNt5Y6eSR6v4BrdZ.Lw1c~B",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "da8dc534-e642-46e2-8f28-57bc71d854c0",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "https://login.microsoftonline.com/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/oauth2/v2.0/token",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "https://api.businesscentral.dynamics.com/.default",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "Token01",
+							"type": "string"
+						},
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "string"
+						},
+						{
+							"key": "useBrowser",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "tokenType",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://api.businesscentral.dynamics.com",
+							"type": "string"
+						},
+						{
+							"key": "client_authentication",
+							"value": "body",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "https://login.windows.net/dynamicslancer.net/oauth2/authorize?resource=https://api.businesscentral.dynamics.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"no\": \"SO12693\",\r\n    \"documentLineNo\": 10000,\r\n    \"lineNo\": 10000,\r\n    \"date\": \"2023-03-14\",\r\n    \"comment\": \"Order Line One Comment\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)/edcSalesComments",
+					"protocol": "https",
+					"host": [
+						"api",
+						"businesscentral",
+						"dynamics",
+						"com"
+					],
+					"path": [
+						"v2.0",
+						"a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2",
+						"Sandbox",
+						"api",
+						"Edhate",
+						"silkapi",
+						"v2.0",
+						"companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)",
+						"edcSalesComments"
+					],
+					"query": [
+						{
+							"key": "$filter",
+							"value": "no eq 'SO12693' and documentLineNo eq 10000",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "OrderWithCommentAndLines-OrderComments",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"no\": \"\",\r\n    \"sellToCustomerNo\": \"C0003647\",\r\n    \"shipToCode\": \"01\",\r\n    \"projectName\": \"LIBRARY\",\r\n    \"specifier\": \"\",\r\n    \"orderDate\": \"2022-05-25\",\r\n    \"salespersonCode\": \"BEVERLY J\",\r\n    \"campaignNo\": \"\",\r\n    \"requestedDeliveryDate\": \"2023-06-01\",\r\n    \"contact\": \"LIBRARY \",\r\n    \"shippingAgentCode\": \"FEDEX\",\r\n    \"externalDocumentNo\": \"KG-TEST-002\",\r\n    \"shipmentDate\": \"2023-06-02\",\r\n    \"priority\": \"Sea 3\",\r\n    \"edcSalesComments\": [\r\n        {\r\n            \"date\": \"2023-03-14\",\r\n            \"comment\": \"Order Header Comment\"\r\n        }\r\n    ],\r\n    \"edcSalesLines\": [\r\n        {\r\n            \"lineNo\": 10000,\r\n            \"type\": \"Item\",\r\n            \"no\": \"S10017-007\",\r\n            \"quantity\": 1,\r\n            \"dropShipment\": false\r\n        },\r\n        {\r\n            \"lineNo\": 20000,\r\n            \"type\": \"Item\",\r\n            \"no\": \"S10017-003\",\r\n            \"quantity\": 1,\r\n            \"dropShipment\": false\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)/edcCreateSalesOrders?$expand=edcSalesComments,edcSalesLines",
+							"protocol": "https",
+							"host": [
+								"api",
+								"businesscentral",
+								"dynamics",
+								"com"
+							],
+							"path": [
+								"v2.0",
+								"a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2",
+								"Sandbox",
+								"api",
+								"Edhate",
+								"silkapi",
+								"v2.0",
+								"companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)",
+								"edcCreateSalesOrders"
+							],
+							"query": [
+								{
+									"key": "$filter",
+									"value": "no eq 'SO11008'",
+									"disabled": true
+								},
+								{
+									"key": "$expand",
+									"value": "edcSalesComments,edcSalesLines"
+								}
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; odata.metadata=minimal; odata.streaming=true; charset=utf-8"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "br"
+						},
+						{
+							"key": "Location",
+							"value": "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)/edcCreateSalesOrders(documentType%3D%27Order%27,no%3D%27SO12693%27)"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "Server",
+							"value": "Microsoft-HTTPAPI/2.0"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "Origin, X-Requested-With, Authorization"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "ms-correlation-x",
+							"value": "275cc171-10d5-221e-c4cf-5e542e040ca3"
+						},
+						{
+							"key": "mise-correlation-id",
+							"value": "dbae2592-1ddf-4d86-a13b-d0b222fd7e92"
+						},
+						{
+							"key": "OData-Version",
+							"value": "4.0"
+						},
+						{
+							"key": "Access-Control-Expose-Headers",
+							"value": "Date, Content-Length, Server, OData-Version"
+						},
+						{
+							"key": "Access-Control-Expose-Headers",
+							"value": "ms-correlation-x"
+						},
+						{
+							"key": "request-id",
+							"value": "22061b49-7313-43b6-a441-ec4f17cea210"
+						},
+						{
+							"key": "x-content-type-options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=31536000; includeSubDomains"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 14 Mar 2023 17:58:19 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"@odata.context\": \"https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/$metadata#companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)/edcCreateSalesOrders/$entity\",\n    \"@odata.etag\": \"W/\\\"JzE5Ozg5NzUxOTIyNzM2MzY0NDkxMzIxOzAwOyc=\\\"\",\n    \"documentType\": \"Order\",\n    \"no\": \"SO12693\",\n    \"sellToCustomerNo\": \"C0003647\",\n    \"shipToCode\": \"01\",\n    \"projectName\": \"LIBRARY\",\n    \"specifier\": \"\",\n    \"orderDate\": \"2023-03-14\",\n    \"salespersonCode\": \"BEVERLY J\",\n    \"campaignNo\": \"\",\n    \"requestedDeliveryDate\": \"2023-06-01\",\n    \"contact\": \"LIBRARY \",\n    \"shippingAgentCode\": \"FEDEX\",\n    \"externalDocumentNo\": \"KG-TEST-002\",\n    \"shipmentDate\": \"2023-03-14\",\n    \"priority\": \"Sea 3\",\n    \"edcSalesComments\": [\n        {\n            \"@odata.etag\": \"W/\\\"JzIwOzEzOTQ0MDc4ODI3OTc1MzE4NDM4MTswMDsn\\\"\",\n            \"systemId\": \"20c31acb-91c2-ed11-9a88-6045bdbadc99\",\n            \"documentNo\": \"SO12693\",\n            \"documentLineNo\": 0,\n            \"lineNo\": 0,\n            \"date\": \"2023-03-14\",\n            \"comment\": \"Order Header Comment\"\n        }\n    ],\n    \"edcSalesLines\": [\n        {\n            \"@odata.etag\": \"W/\\\"JzE5OzgzNzA3NDE2MzE5NjY3MjUxNzUxOzAwOyc=\\\"\",\n            \"systemId\": \"21c31acb-91c2-ed11-9a88-6045bdbadc99\",\n            \"documentNo\": \"SO12693\",\n            \"lineNo\": 10000,\n            \"type\": \"Item\",\n            \"no\": \"S10017-007\",\n            \"description\": \"RIVERDALE-IRIS MEMO\",\n            \"description2\": \"SAMPLE\",\n            \"unitOfMeasureCode\": \"EACH\",\n            \"unitPrice\": 0.49,\n            \"itemCategoryCode\": \"SAMPLES1\",\n            \"quantity\": 1,\n            \"outstandingQuantity\": 1,\n            \"promisedDeliveryDate\": \"0001-01-01\",\n            \"requestedDeliveryDate\": \"2023-06-01\",\n            \"lineAmount\": 0.49,\n            \"lineDiscountAmount\": 0,\n            \"amountIncludingVAT\": 0.49,\n            \"dropShipment\": false\n        },\n        {\n            \"@odata.etag\": \"W/\\\"JzE5OzkwMzU3MTMyNjAzNDA2ODc4MzAxOzAwOyc=\\\"\",\n            \"systemId\": \"22c31acb-91c2-ed11-9a88-6045bdbadc99\",\n            \"documentNo\": \"SO12693\",\n            \"lineNo\": 20000,\n            \"type\": \"Item\",\n            \"no\": \"S10017-003\",\n            \"description\": \"RIVERDALE-DENIM MEMO\",\n            \"description2\": \"SAMPLE\",\n            \"unitOfMeasureCode\": \"EACH\",\n            \"unitPrice\": 0.49,\n            \"itemCategoryCode\": \"SAMPLES1\",\n            \"quantity\": 1,\n            \"outstandingQuantity\": 1,\n            \"promisedDeliveryDate\": \"0001-01-01\",\n            \"requestedDeliveryDate\": \"2023-06-01\",\n            \"lineAmount\": 0.49,\n            \"lineDiscountAmount\": 0,\n            \"amountIncludingVAT\": 0.49,\n            \"dropShipment\": false\n        }\n    ]\n}"
+				},
+				{
+					"name": "SalesLineComments-1",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"no\": \"SO12693\",\r\n    \"documentLineNo\": 10000,\r\n    \"lineNo\": 10000,\r\n    \"date\": \"2023-03-14\",\r\n    \"comment\": \"Order Line One Comment\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)/edcSalesComments",
+							"protocol": "https",
+							"host": [
+								"api",
+								"businesscentral",
+								"dynamics",
+								"com"
+							],
+							"path": [
+								"v2.0",
+								"a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2",
+								"Sandbox",
+								"api",
+								"Edhate",
+								"silkapi",
+								"v2.0",
+								"companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)",
+								"edcSalesComments"
+							],
+							"query": [
+								{
+									"key": "$filter",
+									"value": "no eq 'SO12693' and documentLineNo eq 10000",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; odata.metadata=minimal; odata.streaming=true; charset=utf-8"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "br"
+						},
+						{
+							"key": "Location",
+							"value": "https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)/edcSalesComments(ec8963c3-94c2-ed11-9a88-6045bdbadc99)"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "Server",
+							"value": "Microsoft-HTTPAPI/2.0"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "Origin, X-Requested-With, Authorization"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "ms-correlation-x",
+							"value": "db73fca9-24ce-4027-b6b2-6b333fd64b4d"
+						},
+						{
+							"key": "mise-correlation-id",
+							"value": "447d4f6c-8070-4a07-b3e6-93af537ce1fe"
+						},
+						{
+							"key": "OData-Version",
+							"value": "4.0"
+						},
+						{
+							"key": "Access-Control-Expose-Headers",
+							"value": "Date, Content-Length, Server, OData-Version"
+						},
+						{
+							"key": "Access-Control-Expose-Headers",
+							"value": "ms-correlation-x"
+						},
+						{
+							"key": "request-id",
+							"value": "fe9a64f7-2a1a-4805-a50a-d9e3a9e77714"
+						},
+						{
+							"key": "x-content-type-options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=31536000; includeSubDomains"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 14 Mar 2023 18:19:34 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"@odata.context\": \"https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/$metadata#companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)/edcSalesComments/$entity\",\n    \"@odata.etag\": \"W/\\\"JzIwOzE1MjUzNTU4MzIzOTM0MjI2MDgyMTswMDsn\\\"\",\n    \"systemId\": \"ec8963c3-94c2-ed11-9a88-6045bdbadc99\",\n    \"no\": \"SO12693\",\n    \"documentLineNo\": 10000,\n    \"lineNo\": 10000,\n    \"date\": \"2023-03-14\",\n    \"comment\": \"Order Line One Comment\"\n}"
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "KGAURAV",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
