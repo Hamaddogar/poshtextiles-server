@@ -26,7 +26,7 @@ import NoRecord from '../../HOC/NoRecord';
 
 
 const InventoryManagment = () => {
-    const { inventoryData, perPage } = useSelector(store => store.mainReducer);
+    const { inventoryData, perPage,loadingInventory } = useSelector(store => store.mainReducer);
     const [copy, setCopy] = React.useState([]);
     const [rows, setRows] = React.useState([]);
     const [currentPage, setCurrentPage] = React.useState(1);
@@ -156,7 +156,7 @@ const InventoryManagment = () => {
 
             </Grid>
 
-            <PreLoader>
+            <PreLoader loading={loadingInventory}>
                 <TableContainer component={Paper} sx={{ padding: '0px 4%' }} className='table-Container'>
                     <Table sx={{ minWidth: 750 }} stickyHeader aria-label="table">
                         <TableHead>

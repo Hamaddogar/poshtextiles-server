@@ -2,9 +2,11 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import Button from '@mui/material/Button';
-import { Container, Grid, Slider, Typography } from '@mui/material';
+import { Checkbox, Container, FormControlLabel, Grid, Skeleton, Slider, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
-import logo from './Assets/upslogo.png'
+import logoUPS from './Assets/upslogo.png';
+import logoFED from './Assets/fedlogo.png';
+import { useSelector } from 'react-redux';
 
 function valuetext(value) {
     return `${value}`;
@@ -13,45 +15,26 @@ function valuetext2(value) {
     return `${value}`;
 }
 
-export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate }) {
+export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, service }) {
 
-    // List Data For Drawer
 
-    const listData = [{
-        img: logo,
-        company: "UPS",
-        time: "2 Days",
-        value: 8
-    }, {
-        img: logo,
-        company: "UPS",
-        time: "8 Days",
-        value: 28
-    }, {
-        img: logo,
-        company: "UPS",
-        time: "6 Days",
-        value: 84
-    }, {
-        img: logo,
-        company: "UPS",
-        time: "12 Days",
-        value: 9.0
-    }, {
-        img: logo,
-        company: "UPS",
-        time: "47 Days",
-        value: 2.0
-    }, {
-        img: logo,
-        company: "UPS",
-        time: "2 Days",
-        value: 8
-    }]
-
-    // Range Slider Data
+    const { loadingRateList, UPSList, FEDEXPList } = useSelector(store => store.mainReducer);
+    const [rows, setRows] = React.useState([])
     const [value, setValue] = React.useState([0, 100]);
     const [value2, setValue2] = React.useState([0, 100]);
+
+
+
+    React.useEffect(() => {
+        if (service === "UPS" && UPSList?.length) setRows(UPSList)
+        else if (service === "FEDEXP" && FEDEXPList?.length) setRows(FEDEXPList)
+        //eslint-disable-next-line
+    }, [UPSList, FEDEXPList])
+
+    console.log('row', rows);
+
+    // Range Slider Data
+
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -88,23 +71,27 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate }) {
                                     <Box>
                                         <label>Sort By:</label><br />
                                         <select id="roll" style={{ width: "100%", borderRadius: "5px", border: "0px", padding: "0px 8px" }}>
-                                            <option label="Price">Roll- 4" x 6" Shipping label</option>
-                                            <option label="roll2">Roll- 4" x 6" Shipping label</option>
-                                            <option label="roll3">Roll- 4" x 6" Shipping label</option>
-                                            <option label="roll4">Roll- 4" x 6" Shipping label</option>
+                                            <option label="Price">price</option>
                                         </select>
                                     </Box>
                                     <Box sx={{ marginTop: "20px" }}>
                                         Carriers
                                         <Stack>
                                             <Box>
-                                                <input type={"checkbox"} />&nbsp;&nbsp;USPS
+                                                <FormControlLabel
+                                                    label="FEDEXP"
+                                                    control={
+                                                        <Checkbox size='small' checked={service === "FEDEXP"} />
+                                                    }
+                                                />
                                             </Box>
                                             <Box>
-                                                <input type={"checkbox"} />&nbsp;&nbsp;UPS
-                                            </Box>
-                                            <Box>
-                                                <input type={"checkbox"} />&nbsp;&nbsp;FEDEX
+                                                <FormControlLabel
+                                                    label="UPS"
+                                                    control={
+                                                        <Checkbox size='small' checked={service === "UPS"} />
+                                                    }
+                                                />
                                             </Box>
 
                                         </Stack>
@@ -137,12 +124,35 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate }) {
 
                                 </Grid>
 
-
                                 {/* right section */}
                                 <Grid item xs={12} md={7} >
+                                    {
+                                        loadingRateList && <Box>
+                                            <Skeleton height={2} />
+                                            <Skeleton height={30} />
+                                            <Skeleton height={2} />
+                                            <Skeleton height={30} />
+                                            <Skeleton height={2} />
+                                            <Skeleton height={30} />
+                                            <Skeleton height={2} />
+                                            <Skeleton height={30} />
+                                            <Skeleton height={2} />
+                                            <Skeleton height={30} />
+                                            <Skeleton height={2} />
+                                            <Skeleton height={30} />
+                                            <Skeleton height={2} />
+                                            <Skeleton height={30} />
+                                            <Skeleton height={2} />
+                                            <Skeleton height={30} />
+                                            <Skeleton height={2} />
+                                            <Skeleton height={30} />
+                                            <Skeleton height={2} />
+
+                                        </Box>
+                                    }
 
                                     {
-                                        listData.map((item, indx, self) => {
+                                        !loadingRateList && rows.map((item, indx, self) => {
                                             return (
                                                 <>
                                                     <Box sx={{
@@ -154,15 +164,20 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate }) {
                                                             <Grid item xs={6}>
                                                                 <Stack direction={"row"} alignItems={"center"}>
                                                                     <Box>
-                                                                        <img alt=" " src={item.img} style={{ width: "50px" }} />
+                                                                        {
+                                                                            !service === "UPS" ?
+                                                                                <img alt=" " src={logoUPS} style={{ width: "50px" }} />
+                                                                                :
+                                                                                <img alt=" " src={logoFED} style={{ width: "50px" }} />
+                                                                        }
                                                                     </Box>
-                                                                    <Typography sx={{ fontSize: '14px' }}>{item.company}</Typography>
+                                                                    <Typography sx={{ fontSize: '14px' }}>{item.serviceName}</Typography>
                                                                 </Stack>
                                                             </Grid>
                                                             <Grid item xs={6}>
                                                                 <Stack direction={"row"} alignItems={"center"} justifyContent={"flex-end"}>
                                                                     <Typography sx={{ marginRight: "5px", fontSize: '14px' }}>
-                                                                        {item.time}
+                                                                        {item.serviceCode}
                                                                     </Typography>
                                                                     <Box >
                                                                         <Button
@@ -171,7 +186,7 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate }) {
                                                                                 background: "dodgerBlue", color: "white", "&:hover": {
                                                                                     backgroundColor: 'dodgerBlue'
                                                                                 }
-                                                                            }}>${item.value}</Button>
+                                                                            }}>${item.rate}</Button>
                                                                     </Box>
 
                                                                 </Stack>
@@ -182,6 +197,8 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate }) {
                                             )
                                         })
                                     }
+
+
 
 
                                 </Grid>

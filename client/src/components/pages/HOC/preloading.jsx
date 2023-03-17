@@ -37,7 +37,7 @@ const Preloading = ({ children }) => {
                     }));
                     dispatch(inventoryDataFunction({
                         token: response.accessToken,
-                        toastPermission: true
+                        toastPermission: false
                     }));
 
                     dispatch(saveTokenServer({

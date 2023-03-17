@@ -35,6 +35,16 @@ let initialState = {
   // FEDEXP
   FEDEXP_TOKEN: null,
   fedexpAddressValid: false,
+  loadingRateList: false,
+  loadingHistory: false,
+  loadingInventory: false,
+
+  UPSList: [],
+  FEDEXPList: [],
+
+  loadingNewOrder: false,
+  newOrderData: null,
+
 
 }
 
@@ -120,6 +130,65 @@ export const validateAddressUPS = createAsyncThunk(
     return data.data;
   }
 );
+
+// rateList UPS
+export const rateListUPS = createAsyncThunk(
+  'mainSlice/rateListUPS',
+  async ({ body, toastPermission }) => {
+    const data = await toast.promise(
+      axios.post(APIS.rate_list_ups, { body }),
+      toastPermission ? { pending: 'Loading Please Wait...', success: 'Response Loaded', error: 'Something Went Wrong' } : { error: 'Something Went Wrong' },
+      { autoClose: 1500, hideProgressBar: true }
+    );
+    return data.data;
+  }
+);
+
+// rateListFEDEXP
+export const rateListFEDEXP = createAsyncThunk(
+  'mainSlice/rateListFEDEXP',
+  async ({ body, toastPermission, token }) => {
+    const data = await toast.promise(
+      axios.post(APIS.rate_list_fedexp, { body, token }),
+      toastPermission ? { pending: 'Loading Please Wait...', success: 'Response Loaded', error: 'Something Went Wrong' } : { error: 'Something Went Wrong' },
+      { autoClose: 1500, hideProgressBar: true }
+    );
+    return data.data;
+  }
+);
+
+
+// new_order_micro: '/newOrder',
+export const createNewOrder = createAsyncThunk(
+  'mainSlice/createNewOrder',
+  async ({ body, token, toastPermission }) => {
+    const data = await toast.promise(
+      axios.post(APIS.new_order_micro, { token, body }),
+      toastPermission ? { pending: 'Loading Please Wait...', success: 'Response Loaded', error: 'Something Went Wrong' } : { error: 'Something Went Wrong' },
+      { autoClose: 1500, hideProgressBar: true }
+    );
+    return data.data;
+  }
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -219,39 +288,39 @@ const mainSlice = createSlice({
 
       // inventoryData
       .addCase(inventoryDataFunction.pending, (state) => {
-        state.loading = true;
+        state.loadingInventory = true;
       })
       .addCase(inventoryDataFunction.fulfilled, (state, { payload }) => {
-        state.loading = false;
+        state.loadingInventory = false;
         console.log(payload);
         if (payload) state.inventoryData = payload;
       })
       .addCase(inventoryDataFunction.rejected, (state, { error }) => {
-        state.loading = false;
+        state.loadingInventory = false;
         Swal.fire({ icon: 'error', title: error.code, text: error.message })
       })
 
       // historyGetter
       .addCase(historyGetter.pending, (state) => {
-        state.loading = true;
+        state.loadingHistory = true;
       })
       .addCase(historyGetter.fulfilled, (state, { payload }) => {
-        state.loading = false;
+        state.loadingHistory = false;
         console.log(payload);
         if (payload) state.allOrders = payload;
       })
       .addCase(historyGetter.rejected, (state, { error }) => {
-        state.loading = false;
+        state.loadingHistory = false;
         Swal.fire({ icon: 'error', title: error.code, text: error.message })
       })
 
       // validateAddressFEDEXP cases
       .addCase(validateAddressFEDEXP.pending, (state) => {
-        state.loading = true;
+        state.loadingValidateAddress = true;
         state.fedexpAddressValid = false;
       })
       .addCase(validateAddressFEDEXP.fulfilled, (state, { payload }) => {
-        state.loading = false;
+        state.loadingValidateAddress = false;
         if (!(payload.error)) {
           state.fedexpAddressValid = true;
         } else {
@@ -260,17 +329,17 @@ const mainSlice = createSlice({
       })
       .addCase(validateAddressFEDEXP.rejected, (state, actions) => {
         console.log('rejected', actions);
-        state.loading = false;
+        state.loadingValidateAddress = false;
         Swal.fire({ icon: 'error', title: actions.error.code, text: `${actions.error.message}` })
       })
 
       // validateAddress UPS cases
       .addCase(validateAddressUPS.pending, (state) => {
-        state.loading = true;
+        state.loadingValidateAddress = true;
         state.fedexpAddressValid = false;
       })
       .addCase(validateAddressUPS.fulfilled, (state, { payload }) => {
-        state.loading = false;
+        state.loadingValidateAddress = false;
         if (!(payload.error)) {
           state.fedexpAddressValid = true;
         } else {
@@ -280,7 +349,7 @@ const mainSlice = createSlice({
       })
       .addCase(validateAddressUPS.rejected, (state, actions) => {
         console.log('rejected', actions);
-        state.loading = false;
+        state.loadingValidateAddress = false;
         Swal.fire({ icon: 'error', title: actions.error.code, text: `${actions.error.message}` })
       })
 
@@ -290,10 +359,52 @@ const mainSlice = createSlice({
         Swal.fire({ icon: 'error', title: actions.error.code, text: `${actions.error.message}` })
       })
 
+      // rateListUPS
+      .addCase(rateListUPS.pending, (state) => {
+        state.loadingRateList = true;
+        state.UPSList = []
+      })
+      .addCase(rateListUPS.fulfilled, (state, { payload }) => {
+        state.loadingRateList = false;
+        if (!(payload.error)) state.UPSList = payload.message;
+        else Swal.fire({ icon: 'error', title: payload.code, text: `${payload.message}` })
+      })
+      .addCase(rateListUPS.rejected, (state, actions) => {
+        state.loadingRateList = false;
+        Swal.fire({ icon: 'error', title: actions.error.code, text: `${actions.error.message}` })
+      })
 
+      // rateList FEDEXP
+      .addCase(rateListFEDEXP.pending, (state) => {
+        state.loadingRateList = true;
+        state.FEDEXPList = []
+      })
+      .addCase(rateListFEDEXP.fulfilled, (state, { payload }) => {
+        state.loadingRateList = false;
+        if (!(payload.error)) state.FEDEXPList = payload.message;
+        else Swal.fire({ icon: 'error', title: payload.code, text: `${payload.message}` })
+      })
+      .addCase(rateListFEDEXP.rejected, (state, actions) => {
+        state.loadingRateList = false;
+        Swal.fire({ icon: 'error', title: actions.error.code, text: `${actions.error.message}` })
+      })
 
-
-
+      // createNewOrder
+      .addCase(createNewOrder.pending, (state) => {
+        state.loadingNewOrder = true;
+        state.newOrderData = null;
+      })
+      .addCase(createNewOrder.fulfilled, (state, { payload }) => {
+        state.loadingNewOrder = false;
+        alert()
+        console.log(payload);
+        if (!(payload.error)) state.newOrderData = payload.message;
+        else Swal.fire({ icon: 'error', title: payload.code, text: `${payload.message}` })
+      })
+      .addCase(createNewOrder.rejected, (state, actions) => {
+        state.loadingNewOrder = false;
+        Swal.fire({ icon: 'error', title: actions.error.code, text: `${actions.error.message}` })
+      })
 
 
 })

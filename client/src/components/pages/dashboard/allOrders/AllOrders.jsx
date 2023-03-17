@@ -29,7 +29,7 @@ import NoRecord from '../../HOC/NoRecord';
 
 
 const AllOrders = () => {
-    const { allOrders, perPage } = useSelector(store => store.mainReducer);
+    const { allOrders, perPage, loading } = useSelector(store => store.mainReducer);
     const [copy, setCopy] = React.useState([]);
     const [rows, setRows] = React.useState([]);
     const [currentPage, setCurrentPage] = React.useState(1);
@@ -149,7 +149,7 @@ const AllOrders = () => {
 
 
 
-            <PreLoader>
+            <PreLoader loading={loading}>
                 <TableContainer component={Paper} sx={{ padding: '0px 4%' }} className='table-Container'>
                     <Table sx={{ minWidth: 750 }} stickyHeader aria-label="sticky table">
                         <TableHead>
@@ -192,7 +192,7 @@ const AllOrders = () => {
                                         <TableCell sx={{ maxWidth: '140px' }}>{(row.amount)}</TableCell>
                                         <TableCell sx={{ maxWidth: '140px' }}>{row.shipmentDate}</TableCell>
                                         <TableCell sx={{ maxWidth: '140px' }}>{row.shippingAgentCode}</TableCell>
-                                        <TableCell sx={{ maxWidth: '140px' }}>{row.shipmentMethodCode}</TableCell>
+                                        <TableCell sx={{ maxWidth: '140px' }}>{row.priority}</TableCell>
                                     </TableRow>
 
                                 ))}

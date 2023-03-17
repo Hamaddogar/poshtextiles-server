@@ -26,7 +26,7 @@ import Paginater from '../../HOC/Paginater';
 
 
 const History = () => {
-    const { historyData, perPage } = useSelector(store => store.mainReducer);
+    const { historyData, perPage,loadingHistory } = useSelector(store => store.mainReducer);
     const [copy, setCopy] = React.useState([]);
     const [rows, setRows] = React.useState([]);
     const [currentPage, setCurrentPage] = React.useState(1);
@@ -119,7 +119,7 @@ const History = () => {
                 </Grid>
             </Grid>
 
-            <PreLoader>
+            <PreLoader loading={loadingHistory}>
                 <TableContainer component={Paper} sx={{ padding: '0px 4%' }} className='table-Container'>
                     <Table sx={{ minWidth: 750 }} stickyHeader aria-label="table">
                         <TableHead>

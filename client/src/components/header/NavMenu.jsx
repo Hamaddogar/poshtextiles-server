@@ -18,9 +18,9 @@ import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
-import { LOG_OUT, USE_POSTMAN_TOKEN } from '../../RTK/Reducers/Reducers';
+import { LOG_OUT } from '../../RTK/Reducers/Reducers';
 import { useDispatch, useSelector } from 'react-redux';
-import { btnSm, lnk, menuStyle, scroller } from '../pages/dashboard/reUseAbles/ReuseAbles';
+import { lnk, menuStyle, scroller } from '../pages/dashboard/reUseAbles/ReuseAbles';
 import { useMsal } from '@azure/msal-react';
 
 

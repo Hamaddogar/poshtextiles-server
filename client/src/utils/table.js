@@ -21,15 +21,18 @@ export const APIS = {
     // fedexp 
     create_shipment : 'http://localhost:8080/shipment',
     check_address_fedexp: 'http://localhost:8080/address_validate_fedexp',
+    rate_list_fedexp: 'http://localhost:8080/rate_list_fedexp',
 
 
     // ups
     create_shipment_ups: 'http://localhost:8080/ups_shipment',
     check_address_ups: 'http://localhost:8080/address_validate_ups',
+    rate_list_ups: 'http://localhost:8080/rate_list_ups',
 
     // microsoft
     sale_orders_micro: 'http://localhost:8080/sales',
     history_micro: 'http://localhost:8080/history',
+    new_order_micro: 'http://localhost:8080/newOrder', 
 }
 
 

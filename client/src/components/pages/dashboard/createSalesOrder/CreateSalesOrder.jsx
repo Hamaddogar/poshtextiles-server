@@ -6,15 +6,16 @@ import { Button } from '@mui/material';
 import { Box } from '@mui/system';
 import Pagination from 'react-responsive-pagination';
 import 'bootstrap/dist/css/bootstrap.css';
-import BackArrow from '../../../assets/icons/back-arrow.png'
-import { headInputStyle, subHeadInputStyle, Wrapper } from '../reUseAbles/ReuseAbles';
+import { BackButton, headInputStyle } from '../reUseAbles/ReuseAbles';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import CommentsModel from './commentsModel';
-
-
+import { createNewOrder } from '../../../../RTK/Reducers/Reducers';
+import { useDispatch } from 'react-redux';
+// import { v4 as uuidv4 } from 'uuid';
+import ThumbNailImageSVG from "../../../assets/images/thumbnail2.svg";
+import { requestAccessToken_MICROSOFT } from '../../../../utils/FEDEXP_API_HELPERS';
 const CreateSalesOrder = () => {
 
-    const [copy] = React.useState([]);
     const [rows, setRows] = React.useState([]);
     const [dropShipChecked, setDropShipChecked] = React.useState(false);
     const [currentPage, setCurrentPage] = React.useState(1);
@@ -24,90 +25,170 @@ const CreateSalesOrder = () => {
 
 
     const navigate = useNavigate();
-    // const dispatch = useDispatch();
+    const dispatch = useDispatch();
 
 
     const handlePageChange = page => {
         setCurrentPage(page);
-        setRows(copy.slice(((page - 1) * 9), ((((page - 1) * 9)) + 9)))
+        setRows(rows.slice(((page - 1) * 9), ((((page - 1) * 9)) + 9)))
     }
 
+
+
     // for actions 
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        const data = new FormData(event.target)
+
+        const body = {
+            "no": "",
+            "sellToCustomerNo": "C0003647",
+            "shipToCode": data.get('shipTo'),
+            "projectName": data.get('projectName'),
+            "specifier": data.get('specifier'),
+            "orderDate": data.get('orderDate'),
+            "salespersonCode": data.get('salesPerson'),
+            "campaignNo": data.get('campaign'),
+            "requestedDeliveryDate": data.get('reqDate'),
+            "contact": data.get('projectName'),
+            "shippingAgentCode": "FEDEX",
+            "externalDocumentNo": data.get('po'),
+            "shipmentDate": data.get('orderDate'),
+            "priority": data.get('priority'),
+            "edcSalesLines": rows
+        }
+
+        requestAccessToken_MICROSOFT().then(token => {
+            dispatch(createNewOrder({
+                token: token,
+                body: body,
+                toastPermission: true,
+            }))
+        })
+
+
+
+    }
+
+
+    const handleSubmitLineItem = (event) => {
+        event.preventDefault();
+        const data = new FormData(event.target)
+
+
+        setRows([
+            ...rows,
+            {
+                "linename":data.get('itemName'),
+                "lineNo": data.get('itemNo'),
+                "type": data.get('itemType'),
+                "no": "S10017-007",
+                "quantity": data.get('qty'),
+                "minquantity": data.get('minQty'),
+                "dropShipment": dropShipChecked
+            }
+        ])
+
+
+
+
+    }
+
+
+
 
 
     return (
         <div>
+            <CommentsModel commentModel={commentModel} setCommentModel={setCommentModel} />
             <Box>
-                <CommentsModel commentModel={commentModel} setCommentModel={setCommentModel} />
+                <Box >
+                    <Box component={'form'} onSubmit={handleSubmit} >
+                        <Grid container sx={{ mt: 1, mb: 2 }} alignItems={'flex-end'} justifyContent='space-between' >
 
-                <Box sx={{}} >
-                    <Grid container sx={{ mt: 1, mb: 2 }} alignItems={'flex-end'} justifyContent='space-between' >
+                            <Grid container item xs={12} md={10} spacing={1} alignItems={'flex-end'} >
+                                <Grid item xs={6} md={4} >
+                                    <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Bill To: </Typography>
+                                    <TextField required name='billTo' sx={headInputStyle} fullWidth defaultValue={orderDetail.billTo} size='small' InputProps={{
+                                        endAdornment: (<InputAdornment position="end"> <VisibilityIcon sx={{ fontSize: '17px' }} />  </InputAdornment>)
+                                    }} />
+                                </Grid>
 
-                        <Grid container item xs={12} md={10} spacing={1} alignItems={'flex-end'} >
-                            <Grid item xs={6} md={4} >
-                                <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Bill To: </Typography>
-                                <TextField sx={headInputStyle} fullWidth defaultValue={orderDetail.billTo} size='small' InputProps={{
-                                    endAdornment: (<InputAdornment position="end"> <VisibilityIcon sx={{ fontSize: '17px' }} />  </InputAdornment>)
-                                }} />
+                                <Grid item xs={6} md={4} >
+                                    <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Ship To: </Typography>
+                                    <TextField required name='shipTo' sx={headInputStyle} fullWidth defaultValue={orderDetail.shipTo} size='small' InputProps={{
+                                        endAdornment: (<InputAdornment position="end"> <VisibilityIcon sx={{ fontSize: '17px' }} /> </InputAdornment>)
+                                    }} />
+                                </Grid>
+
+                                <Grid item xs={6} md={4} >
+                                    <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Project Name: </Typography>
+                                    <TextField required name='projectName' sx={headInputStyle} fullWidth defaultValue={orderDetail.projectName} size='small'
+
+                                    />
+                                </Grid>
+
+                                <Grid item xs={6} md={2} >
+                                    <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Terms: </Typography>
+                                    <TextField required name='terms' sx={headInputStyle} fullWidth defaultValue={orderDetail.terms} size='small' />
+                                </Grid>
+
+                                <Grid item xs={6} md={2} >
+                                    <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Priority: </Typography>
+                                    <TextField sx={headInputStyle} required name='priority' fullWidth defaultValue={orderDetail.priority} size='small' />
+                                </Grid>
+
+                                <Grid item xs={6} md={2} >
+                                    <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Specifier: </Typography>
+                                    <TextField sx={headInputStyle} required name='specifier' fullWidth defaultValue={orderDetail.specifier} size='small' />
+                                </Grid>
+
+                                <Grid item xs={6} md={2} >
+                                    <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Sales Person: </Typography>
+                                    <TextField sx={headInputStyle} required name='salesPerson' fullWidth defaultValue={orderDetail.salesPerson} size='small' />
+                                </Grid>
+
+                                <Grid item xs={6} md={2} >
+                                    <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Customer PO: </Typography>
+                                    <TextField sx={headInputStyle} required name='po' fullWidth defaultValue={orderDetail.customerPO} size='small' />
+                                </Grid>
+
+                                <Grid item xs={6} md={2} >
+                                    <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Campaign: </Typography>
+                                    <TextField sx={headInputStyle} fullWidth required name='campaign' defaultValue={orderDetail.campaign} size='small' />
+                                </Grid>
+
+                                <Grid item xs={6} md={2} >
+                                    <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Order Date: </Typography>
+                                    <TextField sx={headInputStyle} required name='orderDate' fullWidth type={"date"} defaultValue={orderDetail.orderDate} size='small' />
+                                </Grid>
+
+                                <Grid item xs={6} md={2} >
+                                    <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Req Ship Date: </Typography>
+                                    <TextField sx={headInputStyle} required name='reqDate' fullWidth type={"date"} defaultValue={orderDetail.reqShipDate} size='small' />
+                                </Grid>
+
+                                <Hidden mdUp>
+                                    <Grid item xs={6}>
+                                        <Box mb={2}>
+                                            <Button onClick={handleOpen} sx={{
+                                                background: "#FFFFFF", color: "black", padding: "2px 15px", '&:hover': {
+                                                    background: "white",
+                                                    color: "black",
+                                                    fontWeight: '600'
+                                                }
+                                            }}>Comments</Button>
+                                        </Box>
+                                        <Box>
+                                            <Button color='primary' type='submit' variant='contained' size='small'>Create Order</Button>
+                                        </Box>
+                                    </Grid>
+                                </Hidden>
+
                             </Grid>
-
-                            <Grid item xs={6} md={4} >
-                                <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Ship To: </Typography>
-                                <TextField sx={headInputStyle} fullWidth defaultValue={orderDetail.shipTo} size='small' InputProps={{
-                                    endAdornment: (<InputAdornment position="end"> <VisibilityIcon sx={{ fontSize: '17px' }} /> </InputAdornment>)
-                                }} />
-                            </Grid>
-
-                            <Grid item xs={6} md={4} >
-                            <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Project Name: </Typography>
-                                <TextField sx={headInputStyle} fullWidth defaultValue={orderDetail.projectName} size='small'
-
-                                />
-                            </Grid>
-
-                            <Grid item xs={6} md={2} >
-                            <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Terms: </Typography>
-                                <TextField sx={headInputStyle} fullWidth  defaultValue={orderDetail.terms} size='small' />
-                            </Grid>
-
-                            <Grid item xs={6} md={2} >
-                            <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Priority: </Typography>
-                                <TextField sx={headInputStyle} fullWidth  defaultValue={orderDetail.priority} size='small' />
-                            </Grid>
-
-                            <Grid item xs={6} md={2} >
-                            <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Specifier: </Typography>
-                                <TextField sx={headInputStyle} fullWidth defaultValue={orderDetail.specifier} size='small' />
-                            </Grid>
-
-                            <Grid item xs={6} md={2} >
-                            <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Sales Person: </Typography>
-                                <TextField sx={headInputStyle} fullWidth  defaultValue={orderDetail.salesPerson} size='small' />
-                            </Grid>
-
-                            <Grid item xs={6} md={2} >
-                            <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Customer PO: </Typography>
-                                <TextField sx={headInputStyle} fullWidth  defaultValue={orderDetail.customerPO} size='small' />
-                            </Grid>
-
-                            <Grid item xs={6} md={2} >
-                            <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Campaign: </Typography>
-                                <TextField sx={headInputStyle} fullWidth  defaultValue={orderDetail.campaign} size='small' />
-                            </Grid>
-
-                            <Grid item xs={6} md={2} >
-                                <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Order Date: </Typography>
-                                <TextField sx={headInputStyle} fullWidth type={"date"} defaultValue={orderDetail.orderDate} size='small' />
-                            </Grid>
-
-                            <Grid item xs={6} md={2} >
-                                <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Req Ship Date: </Typography>
-                                <TextField sx={headInputStyle} fullWidth type={"date"} defaultValue={orderDetail.reqShipDate} size='small' />
-                            </Grid>
-
-                            <Hidden mdUp>
-                                <Grid item xs={6}>
-                                    <Box >
+                            <Hidden mdDown>
+                                <Grid item>
+                                    <Box mb={2}>
                                         <Button onClick={handleOpen} sx={{
                                             background: "#FFFFFF", color: "black", padding: "2px 15px", '&:hover': {
                                                 background: "white",
@@ -116,137 +197,104 @@ const CreateSalesOrder = () => {
                                             }
                                         }}>Comments</Button>
                                     </Box>
+                                    <Box>
+                                        <Button color='primary' type='submit' variant='contained' size='small'>Create Order</Button>
+                                    </Box>
                                 </Grid>
                             </Hidden>
-
                         </Grid>
-
-                        <Hidden mdDown>
-                            <Grid item>
-                                <Box >
-                                    <Button onClick={handleOpen} sx={{
-                                        background: "#FFFFFF", color: "black", padding: "2px 15px", '&:hover': {
-                                            background: "white",
-                                            color: "black",
-                                            fontWeight: '600'
-                                        }
-                                    }}>Comments</Button>
-                                </Box>
-                            </Grid>
-                        </Hidden>
-                    </Grid>
-                </Box>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                <Box sx={{ padding: '15px' }} mb={1}>
-                    <Box sx={{ transition: '.5s', border: '1px solid black', boxShadow: `1px 1px 2px 1px rgba(0, 0, 0, 0.25)`, display: 'flex', alignItems: 'flex-start', padding: '15px 0px' }}>
-                        <Box sx={{ padding: '8px' }} >
-                            <Box style={{ width: '100%', minWidth: '146px', cursor: 'pointer', backgroundColor: 'white', minHeight: '140px' }}></Box>
-                        </Box>
-                        <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
-                            <Wrapper justifyContent={'space-between'} >
-                                <Wrapper margin='3px 10px' >
-                                    <Typography mr={1} sx={{ color: '#6D6D6D' }}>Item Type: </Typography>
-                                    <TextField defaultValue='' size='small' sx={subHeadInputStyle} />
-                                </Wrapper>
-
-                                <Wrapper margin='3px 10px'>
-                                    <Typography mr={1} sx={{ color: '#6D6D6D' }}>Item Name: </Typography>
-                                    <TextField defaultValue='' size='small' sx={subHeadInputStyle} />
-                                </Wrapper>
-
-                                <Wrapper margin='3px 10px'>
-                                    <Typography mr={1} sx={{ color: '#6D6D6D' }}>Description: </Typography>
-                                    <TextField defaultValue='' size='small' sx={{ ...subHeadInputStyle, minWidth: '13rem' }} />
-                                </Wrapper>
-
-                                <Wrapper margin='3px 10px'>
-                                    <Typography mr={1} sx={{ color: '#6D6D6D' }}>Drop Ship: </Typography>
-                                    <Checkbox
-                                        checked={dropShipChecked}
-                                        onChange={e => setDropShipChecked(e.target.checked)}
-                                        inputProps={{ 'aria-label': 'controlled' }}
-                                    />
-                                </Wrapper>
-
-
-                                <Stack >
-                                    <Typography mr={1} sx={{ color: '#6D6D6D' }}>Item Number: </Typography>
-                                    <TextField defaultValue='' size='small' sx={subHeadInputStyle} />
-                                </Stack>
-
-
-                                <Stack margin='3px 10px'>
-                                    <Typography mr={1} sx={{ color: '#6D6D6D' }}>Quantity: </Typography>
-                                    <TextField defaultValue='' size='small' sx={{ ...subHeadInputStyle, maxWidth: '8rem', minWidth: '5rem' }} />
-                                </Stack>
-
-                                <Stack margin='3px 10px'>
-                                    <Typography mr={1} sx={{ color: '#6D6D6D' }}>Min Quantity: </Typography>
-                                    <TextField defaultValue='' size='small' sx={{ ...subHeadInputStyle, maxWidth: '8rem', minWidth: '5rem' }} />
-                                </Stack>
-                                <Stack margin='3px 10px'>
-                                    <Typography mr={1} sx={{ color: '#6D6D6D' }}>Price: </Typography>
-                                    <TextField defaultValue='' size='small' sx={{ ...subHeadInputStyle, maxWidth: '8rem', minWidth: '5rem' }} />
-                                </Stack>
-                                <Stack margin='3px 10px'>
-                                    <Typography mr={1} sx={{ color: '#6D6D6D' }}>Discount: </Typography>
-                                    <TextField defaultValue='' size='small' sx={{ ...subHeadInputStyle, maxWidth: '8rem', minWidth: '5rem' }} />
-                                </Stack>
-                                <Stack margin='3px 10px'>
-                                    <Typography mr={1} sx={{ color: '#6D6D6D' }}>Amount: </Typography>
-                                    <TextField defaultValue='' size='small' sx={{ ...subHeadInputStyle, maxWidth: '8rem', minWidth: '5rem' }} />
-                                </Stack>
-
-                                <Wrapper justifyContent={{ xs: 'center', md: 'space-between' }} margin='7px 10px 3px 0px' width='100%' spacing={0} >
-                                    <TextField placeholder='Comments' size='small' sx={{ ...subHeadInputStyle, minWidth: '80%', }} fullWidth />
-                                    <Box margin='5px 0px'>
-                                        <Button color='error' variant='contained' size='small'>cancel</Button> &nbsp;
-                                        <Button color='primary' variant='contained' size='small'>ok</Button>
-                                    </Box>
-                                </Wrapper>
-                            </Wrapper>
-                        </Box>
                     </Box>
-                </Box>
 
+
+                    {/* box section */}
+                    <Box sx={{ padding: '0px' }} id='lineForm' mb={1} component={'form'} onSubmit={handleSubmitLineItem}>
+
+                        <Stack spacing={2} p={1.5} direction={{ xs: 'column', sm: 'row' }} alignItems={{ xs: 'center', sm: 'flex-start' }} sx={{ transition: '.5s', border: '1px solid black', boxShadow: `1px 1px 2px 1px rgba(0, 0, 0, 0.25)` }}
+                        >
+                            <Box>
+                                <Box component='img' alt='img' style={{ width: '100%', minWidth: '146px', maxWidth: '146px', cursor: 'pointer', backgroundColor: 'white', minHeight: '150px' }} src={ThumbNailImageSVG} />
+                            </Box>
+                            {/* form */}
+                            <Box >
+                                <Grid container alignItems='center' spacing={1}>
+                                    <Grid item xs={6} sm={6} md={3} >
+                                        <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Item Type:</Typography>
+                                        <TextField required sx={headInputStyle} fullWidth defaultValue={''} name={"itemType"} size='small' />
+                                    </Grid>
+
+                                    <Grid item xs={6} sm={6} md={3}>
+                                        <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Item Name: </Typography>
+                                        <TextField required sx={headInputStyle} fullWidth defaultValue={''} name={"itemName"} size='small' />
+                                    </Grid>
+
+                                    <Grid item xs={6} sm={6} md={4}>
+                                        <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Description: </Typography>
+                                        <TextField required sx={headInputStyle} fullWidth defaultValue={''} name={"description"} size='small' />
+                                    </Grid>
+
+                                    <Grid item xs={6} sm={6} md={2}>
+                                        <Box mt={1}>
+                                            <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Drop Ship: </Typography>
+                                            <Checkbox
+                                                checked={dropShipChecked}
+                                                onChange={e => setDropShipChecked(e.target.checked)}
+                                                inputProps={{ 'aria-label': 'controlled' }}
+                                            />
+                                        </Box>
+                                    </Grid>
+
+                                    <Grid item xs={6} sm={6} md={2}>
+                                        <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Item Number: </Typography>
+                                        <TextField required sx={headInputStyle} fullWidth defaultValue={''} name={"itemNo"} size='small' />
+                                    </Grid>
+
+
+                                    <Grid item xs={6} sm={6} md={2}>
+                                        <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Quantity: </Typography>
+                                        <TextField required sx={headInputStyle} fullWidth defaultValue={''} type='number' name={"qty"} size='small' />
+                                    </Grid>
+
+                                    <Grid item xs={6} sm={6} md={2}>
+                                        <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Min Quantity: </Typography>
+                                        <TextField required sx={headInputStyle} fullWidth defaultValue={''} type='number' name={"minQty"} size='small' />
+                                    </Grid>
+
+                                    <Grid item xs={6} sm={6} md={2}>
+                                        <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Price: </Typography>
+                                        <TextField required sx={headInputStyle} fullWidth defaultValue={''} type='price' name={""} size='small' />
+                                    </Grid>
+
+                                    <Grid item xs={6} sm={6} md={2}>
+                                        <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Discount: </Typography>
+                                        <TextField required sx={headInputStyle} fullWidth defaultValue={''} type='number' name={"discount"} size='small' />
+                                    </Grid>
+
+                                    <Grid item xs={6} sm={6} md={2}>
+                                        <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Amount: </Typography>
+                                        <TextField required sx={headInputStyle} fullWidth defaultValue={''} type='number' name={"amount"} size='small' />
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        <Stack spacing={1} direction='row' alignItems='center' justifyContent={'center'} >
+                                            <TextField required sx={headInputStyle} fullWidth defaultValue={''} name={"comment"} size='small' />
+                                            <Stack direction='row' alignItems='center' justifyContent={'center'}>
+                                                <Button color='error' variant='contained' size='small' type='reset'>cancel</Button> &nbsp;
+                                                <Button color='primary' type='submit' variant='contained' size='small'>ADD</Button>
+                                            </Stack>
+                                        </Stack>
+                                    </Grid>
+                                </Grid>
+
+                            </Box>
+                        </Stack>
+
+
+
+
+                    </Box>
+
+
+                </Box>
 
                 <Box sx={{ padding: '15px', backgroundColor: 'white' }}>
                     <Box sx={{ padding: '15px', border: '1px solid black', borderStyle: 'inset' }}>
@@ -254,14 +302,14 @@ const CreateSalesOrder = () => {
                             {rows && rows.map((item, index) => <Grid xs={12} sm={6} md={4} item justifyContent='space-between' key={index} sx={{ minHeight: '100px', }} >
                                 <Box sx={{ cursor: 'pointer' }} px={{ xs: '1', md: 2, lg: 3 }} onClick={() => ""}>
                                     <Grid container justifyContent='space-between'>
-                                        <Grid xs={6} item> <Box component='img' alt='img' style={{ width: '100%', maxWidth: '146px', cursor: 'pointer' }} src={item.image} /> </Grid>
+                                        <Grid xs={6} item> <Box component='img' alt='img' style={{ width: '100%', maxWidth: '146px', cursor: 'pointer' }} src={item.image ? item.image : ThumbNailImageSVG} /> </Grid>
                                         <Grid item container direction={'column'} justifyContent={'space-between'} xs={6} px={1} sx={{ position: 'relative' }}>
 
                                             <Stack sx={{ height: '100%', display: 'flex', justifyContent: 'space-between' }} >
-                                                <Typography textAlign='center' mt={1} variant='h1' fontSize={{ xs: '18px', sm: '25px', md: '30px' }} fontWeight={500} >JEROME SAHARA</Typography>
+                                                <Typography textAlign='center' mt={1} variant='h1' fontSize={item?.linename?.length > 25 ? { xs: '5vw', sm: '2vw', md: '1vw' } : { xs: '6vw', sm: '3vw', md: '2vw' }} fontWeight={500} >{item?.linename || item.description}</Typography>
                                                 <Stack direction='row' alignItems={'center'} justifyContent='space-between'>
-                                                    <Typography fontSize='12px'>MOQ : <span style={{ fontSize: '20px' }}>{item.moq}</span></Typography>
-                                                    <Typography fontSize='12px' textAlign={'right'}>QTY : <span style={{ fontSize: '20px' }}>{item.qty}</span></Typography>
+                                                    <Typography fontSize='12px'>MOQ : <span style={{ fontSize: '20px' }}>{item.minquantity}</span></Typography>
+                                                    <Typography fontSize='12px' textAlign={'right'}>QTY : <span style={{ fontSize: '20px' }}>{item.quantity}</span></Typography>
                                                 </Stack>
                                             </Stack>
                                         </Grid>
@@ -279,13 +327,12 @@ const CreateSalesOrder = () => {
                 <Grid spacing={3} container direction='row' my={3} textAlign='right' mt={2} justifyContent={{ xs: 'center', md: 'space-between' }} alignItems={'center'}>
                     <Grid item>
                         <Box>
-                            <Button startIcon={<img src={BackArrow} alt='back' width='18px' />} variant='contained' color='error' size='small' onClick={() => navigate(-1)}> Go back</Button>
-                            &nbsp; &nbsp; &nbsp;
+                            <BackButton onClick={() => navigate(-1)} /> &nbsp; &nbsp; &nbsp;
                         </Box>
                     </Grid>
                     <Grid item>
                         <Pagination
-                            total={Math.ceil(copy.length / 9)}
+                            total={Math.ceil(rows / 9)}
                             current={currentPage}
                             onPageChange={page => handlePageChange(page)}
                         />
@@ -293,10 +340,14 @@ const CreateSalesOrder = () => {
                 </Grid>
             }
 
-            <Box mt={2}>
-                <Button startIcon={<img src={BackArrow} alt='back' width='18px' />} variant='contained' color='error' size='small' onClick={() => navigate(-1)}> Go back</Button>
-                &nbsp; &nbsp; &nbsp;
-            </Box>
+            {
+                rows.length === 0 && <Box mt={2}>
+                    <BackButton onClick={() => navigate(-1)} />
+                    &nbsp; &nbsp; &nbsp;
+                </Box>
+            }
+
+
 
         </div >
     )

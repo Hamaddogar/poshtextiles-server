@@ -65,7 +65,7 @@ const TokenUpdate = () => {
 
 
 
-                            <Box component="form" onSubmit={handleSubmit} id='token' sx={{ mt: 1 }}>
+                            <Box component="form" loadingRateList={handleSubmit} id='token' sx={{ mt: 1 }}>
                                 <TextField
                                     margin="normal"
                                     required
