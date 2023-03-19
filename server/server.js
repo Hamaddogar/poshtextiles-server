@@ -55,6 +55,7 @@ const routeStrings = {
     history_micro: '/history',
     inventory_micro: '/inventory',
     new_order_micro: '/newOrder',
+    comments_micro: '/comments',
 
     // HTTP routes
     hello: '/',
@@ -1134,7 +1135,7 @@ app.post(routeStrings.sale_orders_micro, cacheHandler, async (req, res) => {
             "Authorization": `Bearer ${req.body.token}`,
         }
     };
-    // console.log( `Bearer ${req.body.token}`);
+    console.log( `Bearer ${req.body.token}`);
     try {
         const response = await axios.get(
             SERVERS.MICROSOFT_Sandbox_Server + API_MICROSOFT.Sales_Orders,
@@ -1231,6 +1232,28 @@ app.post(routeStrings.new_order_micro, cacheHandler, async (req, res) => {
         else if (error?.response?.status) res.status(error.response.status).send({ error: error.response.message });
         else if (error?.arg1?.response?.status) res.status(error.arg1.response.status).send({ error: error.arg1.response.message });
         else res.status(500).send({ error: error.message });
+    }
+});
+
+// CREATE sale order
+app.post(routeStrings.new_order_micro, cacheHandler, async (req, res) => {
+    const config = {
+        headers: {
+            "Authorization": `Bearer ${req.body.token}`,
+        }
+    };
+    try {
+        const response = await axios.post(
+            API_MICROSOFT.comments_micro,
+            req.body.body,
+            config
+        );
+
+        console.log(response.data);
+        res.send(response.data)
+
+    } catch (error) {
+        res.status(500).send({ error: error.message });
     }
 });
 

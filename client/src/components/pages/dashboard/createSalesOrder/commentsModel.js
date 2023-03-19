@@ -2,7 +2,12 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
-import { Grid } from '@mui/material';
+import { Button, Dialog, Grid } from '@mui/material';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+
 
 const style = {
     position: 'absolute',
@@ -56,42 +61,148 @@ const Comments = [{
 }, {
     status: "Done",
     data: "Lorem Ipsum Hello etc sit amit"
-},]
+}, {
+    status: "Done",
+    data: "Lorem Ipsum Hello etc sit amit"
+}, {
+    status: "Done",
+    data: "Lorem Ipsum Hello etc sit amit"
+}, {
+    status: "Done",
+    data: "Lorem Ipsum Hello etc sit amit"
+}, {
+    status: "Done",
+    data: "Lorem Ipsum Hello etc sit amit"
+}, {
+    status: "Done",
+    data: "Lorem Ipsum Hello etc sit amit"
+}, {
+    status: "Done",
+    data: "Lorem Ipsum Hello etc sit amit"
+}, {
+    status: "Done",
+    data: "Lorem Ipsum Hello etc sit amit"
+}, {
+    status: "Done",
+    data: "Lorem Ipsum Hello etc sit amit"
+}, {
+    status: "Done",
+    data: "Lorem Ipsum Hello etc sit amit"
+}, {
+    status: "Done",
+    data: "Lorem Ipsum Hello etc sit amit"
+}, {
+    status: "Done",
+    data: "Lorem Ipsum Hello etc sit amit"
+}, {
+    status: "Done",
+    data: "Lorem Ipsum Hello etc sit amit"
+}, {
+    status: "Done",
+    data: "Lorem Ipsum Hello etc sit amit"
+}, {
+    status: "Done",
+    data: "Lorem Ipsum Hello etc sit amit"
+}, {
+    status: "Done",
+    data: "Lorem Ipsum Hello etc sit amit"
+}, {
+    status: "Done",
+    data: "Lorem Ipsum Hello etc sit amit"
+}, {
+    status: "Done",
+    data: "Lorem Ipsum Hello etc sit amit"
+}, {
+    status: "Done",
+    data: "Lorem Ipsum Hello etc sit amit"
+}, {
+    status: "Done",
+    data: "Lorem Ipsum Hello etc sit amit"
+}, {
+    status: "Done",
+    data: "Lorem Ipsum Hello etc sit amit"
+}, {
+    status: "Done",
+    data: "Lorem Ipsum Hello etc sit amit"
+}, {
+    status: "Done",
+    data: "Lorem Ipsum Hello etc sit amit"
+}, {
+    status: "Done",
+    data: "Lorem Ipsum Hello etc sit amit"
+}, {
+    status: "Done",
+    data: "Lorem Ipsum Hello etc sit amit"
+}, {
+    status: "Done",
+    data: "Lorem Ipsum Hello etc sit amit"
+}, {
+    status: "Done",
+    data: "Lorem Ipsum Hello etc sit amit"
+}, {
+    status: "Done",
+    data: "Lorem Ipsum Hello etc sit amit"
+}, {
+    status: "Done",
+    data: "Lorem Ipsum Hello etc sit amit"
+},
+]
 
 export default function CommentsModel({ commentModel, setCommentModel }) {
-    const handleClose = () => setCommentModel(false);
+
+
+
+
+
+    const handleClose = () => {
+        setCommentModel({
+            ...commentModel,
+            open: false,
+        })
+    };
+
+    const handleClick = comment => {
+        setCommentModel({
+            open: false,
+            selected: true,
+            comment: comment,
+        })
+    }
+
 
     return (
         <div>
-            <Modal
-                open={commentModel}
+            <Dialog
+                open={commentModel.open}
                 onClose={handleClose}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
+                scroll={'paper'}
+                aria-labelledby="scroll-dialog-title"
+                aria-describedby="scroll-dialog-description"
+                sx={{ '& .MuiDialog-paper': { width: '80%', maxHeight: 435 } }}
+
             >
-                <Box sx={{ ...style, maxWidth: "700px", width: "100%" }}>
-                    <Grid container>
-                        <Grid item xs={12}>
-                            <Typography sx={{ color: "black", textAlign: "center", background: "white", padding: "6px" }}>Header Comments</Typography>
-                        </Grid>
-                        <Grid item container xs={12}>
-                            {
-                                Comments.map((obj) => {
-                                    return <>
-                                        <Grid item xs={2} sx={{ border: "1px solid #808080", textAlign: "center" }}>
-                                            {obj.status}
-                                        </Grid>
-                                        <Grid item xs={10} sx={{ border: "1px solid white", background: "#E9EDF1" }}>
-                                            {obj.data}
-                                        </Grid>
-                                    </>
-                                })
-                            }
-                        </Grid>
+                <DialogTitle id="scroll-dialog-title">Select Comment</DialogTitle>
+                <DialogContent dividers>
+                    <Grid container >
+                        {
+                            Comments.map((obj, indx) => {
+                                return <Grid item container xs={12} key={indx}
+                                    sx={{ '&:hover': { background: '#E9EDF1', cursor: 'pointer' } }}
+                                    onClick={() => handleClick(obj)}
+                                >
+                                    <Grid item xs={2} sx={{ border: "1px solid #808080", textAlign: "center" }}>
+                                        {obj.status}
+                                    </Grid>
+                                    <Grid item xs={10} sx={{ border: "1px solid #808080", borderLeft: 0, }}>
+                                        {obj.data}
+                                    </Grid>
+                                </Grid>
+                            })
+                        }
 
                     </Grid>
-                </Box>
-            </Modal>
+                </DialogContent>
+            </Dialog>
         </div >
     );
 }

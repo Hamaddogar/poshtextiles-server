@@ -19,6 +19,7 @@ module.exports = {
         Inventory: "/edcItems",
         History: "/edcSalesOrders?$top=300",
         new_Sale_Order :"https://api.businesscentral.dynamics.com/v2.0/a8f1a5f9-f8b8-400c-87a1-a704be2d7dc2/Sandbox/api/Edhate/silkapi/v2.0/companies(aabdd4f3-a1f4-ec11-82f8-0022483487fb)/edcCreateSalesOrders?$expand=edcSalesLines",
+        comments_micro : ""
 
     },
 

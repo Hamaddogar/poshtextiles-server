@@ -16,11 +16,16 @@ import ThumbNailImageSVG from "../../../assets/images/thumbnail2.svg";
 import { requestAccessToken_MICROSOFT } from '../../../../utils/FEDEXP_API_HELPERS';
 const CreateSalesOrder = () => {
 
-    const [rows, setRows] = React.useState([]);
+    const [lineItems, setLineItems] = React.useState([]);
+    const [rows, setRows] = React.useState(lineItems);
     const [dropShipChecked, setDropShipChecked] = React.useState(false);
     const [currentPage, setCurrentPage] = React.useState(1);
-    const [commentModel, setCommentModel] = React.useState(false);
-    const handleOpen = () => setCommentModel(true);
+    const [commentModel, setCommentModel] = React.useState({
+        open: false,
+        selected: false,
+        comment: {}
+    });
+    const handleOpen = () => setCommentModel({ ...commentModel, open: true });
     const orderDetail = {}
 
 
@@ -55,7 +60,7 @@ const CreateSalesOrder = () => {
             "externalDocumentNo": data.get('po'),
             "shipmentDate": data.get('orderDate'),
             "priority": data.get('priority'),
-            "edcSalesLines": rows
+            "edcSalesLines": lineItems
         }
 
         requestAccessToken_MICROSOFT().then(token => {
@@ -76,10 +81,10 @@ const CreateSalesOrder = () => {
         const data = new FormData(event.target)
 
 
-        setRows([
-            ...rows,
+        setLineItems([
+            ...lineItems,
             {
-                "linename":data.get('itemName'),
+                "linename": data.get('itemName'),
                 "lineNo": data.get('itemNo'),
                 "type": data.get('itemType'),
                 "no": "S10017-007",
@@ -276,7 +281,9 @@ const CreateSalesOrder = () => {
 
                                     <Grid item xs={12}>
                                         <Stack spacing={1} direction='row' alignItems='center' justifyContent={'center'} >
-                                            <TextField required sx={headInputStyle} fullWidth defaultValue={''} name={"comment"} size='small' />
+                                            <TextField required sx={headInputStyle} fullWidth
+                                                value={commentModel.selected ? commentModel.comment.data : ""}
+                                                name={"comment"} size='small' />
                                             <Stack direction='row' alignItems='center' justifyContent={'center'}>
                                                 <Button color='error' variant='contained' size='small' type='reset'>cancel</Button> &nbsp;
                                                 <Button color='primary' type='submit' variant='contained' size='small'>ADD</Button>
@@ -298,7 +305,7 @@ const CreateSalesOrder = () => {
 
                 <Box sx={{ padding: '15px', backgroundColor: 'white' }}>
                     <Box sx={{ padding: '15px', border: '1px solid black', borderStyle: 'inset' }}>
-                        <Grid container alignItems={'center'} rowGap={3} sx={{ margin: '10px', minHeight: '70vh' }}>
+                        <Grid container alignItems={'flex-start'} rowGap={3} sx={{ margin: '10px', minHeight: '70vh' }}>
                             {rows && rows.map((item, index) => <Grid xs={12} sm={6} md={4} item justifyContent='space-between' key={index} sx={{ minHeight: '100px', }} >
                                 <Box sx={{ cursor: 'pointer' }} px={{ xs: '1', md: 2, lg: 3 }} onClick={() => ""}>
                                     <Grid container justifyContent='space-between'>
