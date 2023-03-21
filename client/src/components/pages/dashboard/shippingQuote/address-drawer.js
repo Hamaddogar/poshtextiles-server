@@ -13,7 +13,7 @@ export default function AddressValidateDrawer({ toggleDrawer,
     drawerStateAddress, validatedAddress, setAllowShipment, allowShipment }) {
 
     const dispatch = useDispatch();
-    const { loading } = useSelector(store => store.mainReducer)
+    const { loadingValidateAddress } = useSelector(store => store.mainReducer)
 
     const handleSubmit = event => {
         event.preventDefault();
@@ -70,13 +70,14 @@ export default function AddressValidateDrawer({ toggleDrawer,
                     "CountryCode": data.get('country')
                 }
             }
-            
+
+
 
             dispatch(validateAddressUPS({
                 body: payload,
                 toastPermission: true
             })).then(res => {
-                if (!(res.payload.error) || true) setAllowShipment(true)
+                if (!(res.payload.error)) setAllowShipment(true)
             })
         };
 
@@ -146,7 +147,7 @@ export default function AddressValidateDrawer({ toggleDrawer,
                                 <Grid xs={12} textAlign='right'>
                                     <LoadingButton
                                         sx={{ marginTop: "15px", fontSize: '14px' }}
-                                        loading={loading}
+                                        loading={loadingValidateAddress}
                                         color={allowShipment ? "success" : 'primary'}
                                         // disabled={validatedAddress.addressValidated}
                                         loadingPosition="start"

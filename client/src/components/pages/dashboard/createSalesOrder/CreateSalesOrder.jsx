@@ -33,6 +33,15 @@ const CreateSalesOrder = () => {
     const dispatch = useDispatch();
 
 
+
+    React.useEffect(() => {
+     
+        setRows(lineItems)
+        
+    }, [lineItems])
+    
+
+
     const handlePageChange = page => {
         setCurrentPage(page);
         setRows(rows.slice(((page - 1) * 9), ((((page - 1) * 9)) + 9)))

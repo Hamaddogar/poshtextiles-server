@@ -177,9 +177,9 @@ const AllOrders = () => {
                                     }}
                                         onClick={() => handleSlectOrder(row)}
                                     >
-                                        <TableCell sx={{ maxWidth: '140px' }}> {row.no} </TableCell>
-                                        <TableCell sx={{ maxWidth: '140px' }}> {row.shipToName} </TableCell>
-                                        <TableCell sx={{ maxWidth: '140px' }}>{row.externalDocumentNo} </TableCell>
+                                        <TableCell sx={{ maxWidth: '140px' }}> {row.no ? row.no : "-----"} </TableCell>
+                                        <TableCell sx={{ maxWidth: '140px' }}> {row.shipToName ? row.shipToName : "-----"} </TableCell>
+                                        <TableCell sx={{ maxWidth: '140px' }}>{row.externalDocumentNo ? row.externalDocumentNo : "-----"} </TableCell>
                                         <TableCell sx={{ maxWidth: '140px' }}>
                                             <Chip sx={{
                                                 '&.MuiChip-root': {
@@ -189,10 +189,10 @@ const AllOrders = () => {
                                                 }
                                             }} label={row.status} />
                                         </TableCell>
-                                        <TableCell sx={{ maxWidth: '140px' }}>{(row.amount)}</TableCell>
-                                        <TableCell sx={{ maxWidth: '140px' }}>{row.shipmentDate}</TableCell>
-                                        <TableCell sx={{ maxWidth: '140px' }}>{row.shippingAgentCode}</TableCell>
-                                        <TableCell sx={{ maxWidth: '140px' }}>{row.priority}</TableCell>
+                                        <TableCell sx={{ maxWidth: '140px' }}>{(row.amount) >= 0 ? `$ ${row.amount}`: "-----"}</TableCell>
+                                        <TableCell sx={{ maxWidth: '140px' }}>{row.shipmentDate ? row.shipmentDate : "-----"}</TableCell>
+                                        <TableCell sx={{ maxWidth: '140px' }}>{row.shippingAgentCode ? row.shippingAgentCode : "NA"}</TableCell>
+                                        <TableCell sx={{ maxWidth: '140px' }}>{row.priority ? row.priority : "-----"}</TableCell>
                                     </TableRow>
 
                                 ))}

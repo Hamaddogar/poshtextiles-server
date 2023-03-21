@@ -106,6 +106,24 @@ const SalesOrders = () => {
     }
 
 
+    const handleUpperHeaderSubmit = e => {
+        e.preventDefault();
+        const data = new FormData(e.target);
+        alert('working to update')
+    };
+
+    const handleLineItemSubmit = e => {
+        e.preventDefault();
+        const data = new FormData(e.target);
+        alert('working to add Line Item')
+    };
+
+
+
+
+
+    console.log("saleOrderDetails", saleOrderDetails);
+    console.log("showSelectedProduct", showSelectedProduct);
 
     return (
         <div>
@@ -114,15 +132,15 @@ const SalesOrders = () => {
             <Billto billto={billto} setbillto={setbillto} />
             <Shipto shipto={shipto} setshipto={setshipto} />
 
-            {rows.length > 0 && <Box>
+            <Box>
                 {/* Upper Form */}
-                <Box sx={{}} >
+                <Box component='form' onSubmit={handleUpperHeaderSubmit} >
                     <Grid container sx={{ mt: 1, mb: 2 }} alignItems={'flex-end'} justifyContent='space-between' >
 
                         <Grid container item xs={12} md={10} spacing={1} alignItems={'flex-end'} >
                             <Grid item xs={6} md={4} >
                                 <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Bill To: </Typography>
-                                <TextField sx={headInputStyle} fullWidth defaultValue={saleOrderDetails.sellToContact} size='small' InputProps={{
+                                <TextField sx={headInputStyle} fullWidth defaultValue={saleOrderDetails?.edcCustomers[0]?.name} size='small' InputProps={{
                                     endAdornment: (<InputAdornment position="end"> <VisibilityIcon sx={{ fontSize: '17px', cursor: 'pointer' }} onClick={() => setbillto(true)} />  </InputAdornment>)
                                 }} />
                             </Grid>
@@ -136,27 +154,27 @@ const SalesOrders = () => {
 
                             <Grid item xs={6} md={4} >
                                 <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Project Name: </Typography>
-                                <TextField sx={headInputStyle} fullWidth defaultValue={saleOrderDetails.shipToName} size='small' />
+                                <TextField sx={headInputStyle} fullWidth defaultValue={saleOrderDetails.projectName} size='small' />
                             </Grid>
 
                             <Grid item xs={6} md={2} >
                                 <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Terms: </Typography>
-                                <TextField sx={headInputStyle} fullWidth defaultValue={saleOrderDetails.shipToCountryRegionCode} size='small' />
+                                <TextField sx={headInputStyle} fullWidth defaultValue={saleOrderDetails.paymentTermsCode} size='small' />
                             </Grid>
 
                             <Grid item xs={6} md={2} >
                                 <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Priority: </Typography>
-                                <TextField sx={headInputStyle} fullWidth defaultValue={saleOrderDetails.shipmentMethodCode} size='small' />
+                                <TextField sx={headInputStyle} fullWidth defaultValue={saleOrderDetails.priority} size='small' />
                             </Grid>
 
                             <Grid item xs={6} md={2} >
                                 <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Specifier: </Typography>
-                                <TextField sx={headInputStyle} fullWidth defaultValue={saleOrderDetails.shipToContact} size='small' />
+                                <TextField sx={headInputStyle} fullWidth defaultValue={saleOrderDetails.Specifier} size='small' />
                             </Grid>
 
                             <Grid item xs={6} md={2} >
                                 <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Sales Person: </Typography>
-                                <TextField sx={headInputStyle} fullWidth defaultValue={saleOrderDetails.shipToContact} size='small' />
+                                <TextField sx={headInputStyle} fullWidth defaultValue={saleOrderDetails.salespersonCode} size='small' />
                             </Grid>
 
                             <Grid item xs={6} md={2} >
@@ -166,17 +184,17 @@ const SalesOrders = () => {
 
                             <Grid item xs={6} md={2} >
                                 <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Campaign: </Typography>
-                                <TextField sx={headInputStyle} fullWidth defaultValue={saleOrderDetails.campaign} size='small' />
+                                <TextField sx={headInputStyle} fullWidth defaultValue={saleOrderDetails.campaignNo} size='small' />
                             </Grid>
 
                             <Grid item xs={6} md={2} >
                                 <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Order Date: </Typography>
-                                <TextField sx={headInputStyle} fullWidth type={"date"} defaultValue={saleOrderDetails.shipmentDate} size='small' />
+                                <TextField sx={headInputStyle} fullWidth type={"date"} defaultValue={saleOrderDetails.orderDate} size='small' />
                             </Grid>
 
                             <Grid item xs={6} md={2} >
                                 <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Req Ship Date: </Typography>
-                                <TextField sx={headInputStyle} fullWidth type={"date"} defaultValue={saleOrderDetails.shipmentDate} size='small' />
+                                <TextField sx={headInputStyle} fullWidth type={"date"} defaultValue={saleOrderDetails.requestedDeliveryDate} size='small' />
                             </Grid>
 
                             <Hidden mdUp>
@@ -219,7 +237,7 @@ const SalesOrders = () => {
                                 <Box style={{ width: '100%', minWidth: '146px', maxWidth: '146px', cursor: 'pointer', backgroundColor: 'white', minHeight: '150px' }} />
                             </Box>
                             {/* form */}
-                            <Box>
+                            <Box component='form' onSubmit={handleLineItemSubmit}>
                                 <Grid container alignItems='center' spacing={1}>
                                     <Grid item xs={6} sm={6} md={3} >
                                         <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Item Type:</Typography>
@@ -308,18 +326,18 @@ const SalesOrders = () => {
 
                                         <Grid item xs={6} sm={6} md={3}>
                                             <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Item Name: </Typography>
-                                            <TextField defaultValue={showSelectedProduct.description} size='small' sx={headInputStyle} fullWidth />
+                                            <TextField defaultValue={showSelectedProduct.itemCategoryCode} size='small' sx={headInputStyle} fullWidth />
                                         </Grid>
 
                                         <Grid item xs={6} sm={6} md={4}>
                                             <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Description: </Typography>
-                                            <TextField defaultValue={showSelectedProduct.description2} size='small' sx={headInputStyle} fullWidth />
+                                            <TextField defaultValue={showSelectedProduct.description} size='small' sx={headInputStyle} fullWidth />
                                         </Grid>
 
                                         <Grid item xs={6} sm={6} md={2}>
                                             <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Drop Ship: </Typography>
                                             <Checkbox
-                                                checked={dropShipChecked}
+                                                checked={showSelectedProduct.dropShipment}
                                                 onChange={e => setDropShipChecked(e.target.checked)}
                                                 inputProps={{ 'aria-label': 'controlled' }}
                                             />
@@ -381,12 +399,12 @@ const SalesOrders = () => {
                                     <Grid container justifyContent='space-between'>
                                         <Grid xs={6} item sx={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                             {item.status && <Box component='img' alt='img' style={{ maxWidth: '70%', position: 'absolute' }} src={Done} />}
-                                            <Box component='img' alt='img' style={{ width: '100%', maxWidth: '146px', cursor: 'pointer' }} src={item.image ? item.image : require(`../../../assets/images/p${Math.round(Math.random() * 12)}.png`)} />
+                                            <Box component='img' alt='img' style={{ width: '100%', maxWidth: '146px', cursor: 'pointer' }} src={item.image ? item.image : require(`../../../assets/images/p${index % 12}.png`)} />
                                         </Grid>
                                         <Grid item container direction={'column'} justifyContent={'space-between'} xs={6} px={1} sx={{ position: 'relative' }}>
 
                                             <Stack sx={{ height: '100%', display: 'flex', justifyContent: 'space-between' }} >
-                                                <Typography textAlign='center' mt={1} variant='h1' fontSize={item.itemCategoryCode.length > 25 ? { xs: '5vw', sm: '2vw', md: '1vw' }:{ xs: '6vw', sm: '3vw', md: '2vw' }} fontWeight={500} >{item?.itemCategoryCode || item.description}</Typography>
+                                                <Typography textAlign='center' mt={1} variant='h1' fontSize={item.itemCategoryCode.length > 25 ? { xs: '5vw', sm: '2vw', md: '1vw' } : { xs: '6vw', sm: '3vw', md: '2vw' }} fontWeight={500} >{item?.itemCategoryCode || item.description}</Typography>
                                                 <Stack direction='row' alignItems={'center'} justifyContent='space-between'>
                                                     <Typography fontSize='12px'>MOQ : <span style={{ fontSize: '20px' }}>{item.outstandingQuantity}</span></Typography>
                                                     <Typography fontSize='12px' textAlign={'right'}>QTY : <span style={{ fontSize: '20px' }}>{item.quantity}</span></Typography>
@@ -421,22 +439,8 @@ const SalesOrders = () => {
                         </Grid>
                     </Box >
                 </Box>
-            </Box >}
-            {
-                rows.length === 0 && saleOrderDetails.edcSalesLines.length === 0 &&
-                <Stack alignItems={'center'} justifyContent='space-between' sx={{ minHeight: '75vh' }}>
-                    <Typography>No Record</Typography>
-                    <BackButton onClick={() => navigate(-1)} />
-                </Stack>
-            }
-            {
-                rows.length === 0 && saleOrderDetails.edcSalesLines.length > 0 &&
-                <Stack alignItems={'center'} direction='row' justifyContent='center' sx={{ minHeight: '75vh' }}>
-                    <CircularProgress />
-                </Stack>
-            }
-            {
-                rows.length > 0 &&
+            </Box >
+           
                 <Grid spacing={3} container direction='row' my={3} textAlign='right' mt={.5} justifyContent={{ xs: 'center', md: 'space-between' }} alignItems={'center'}>
                     <Grid item>
                         <Box>
@@ -469,7 +473,7 @@ const SalesOrders = () => {
                         </Box>
                     </Grid>
                 </Grid>
-            }
+            
 
             <Popper
                 open={open}
@@ -493,7 +497,7 @@ const SalesOrders = () => {
                                 >
                                     {/* <MenuItem onClick={handleClose}>Profile</MenuItem> */}
                                     <MenuItem sx={{ borderBottom: '1px solid white', fontSize: '13px' }} >RELEASE</MenuItem>
-                                    <MenuItem onClick={()=> navigate('/shipping-quote')} sx={{ borderBottom: '1px solid white', fontSize: '13px' }} >SHIP</MenuItem>
+                                    <MenuItem onClick={() => navigate('/shipping-quote')} sx={{ borderBottom: '1px solid white', fontSize: '13px' }} >SHIP</MenuItem>
                                     <MenuItem sx={{ fontSize: '13px' }}>UNRELEASE</MenuItem>
                                 </MenuList>
                             </ClickAwayListener>
