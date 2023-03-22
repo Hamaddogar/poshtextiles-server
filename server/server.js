@@ -37,8 +37,7 @@ const cacheHandler = async (req, res, next) => {
 // ---------------- Routes -------------- //
 const routeStrings = {
     // tokens
-    token_fed: '/fedexp_token',
-    token_micro: '/token_microsoft',
+    token_fed: '/fedexp_token', 
 
     // fedexp
     shipment_fedexp: '/shipment',
@@ -57,11 +56,6 @@ const routeStrings = {
     new_order_micro: '/newOrder',
     comments_micro: '/comments',
 
-    // HTTP routes
-    hello: '/',
-
-    // Socket.io route
-    socket: '/socket'
 }
 
 // ---------------- Routes -------------- //
@@ -116,13 +110,14 @@ app.post(routeStrings.shipment_fedexp, async (req, res) => {
             "Authorization": `Bearer ${req.body.token}`,
         }
     };
+    // console.log("req.body.body",req.body.body);
     try {
         const response = await axios.post(
             SERVERS.FEDEXP_Sandbox_Server + API_FEDEXP.Create_Shipment,
             req.body.body,
             config
         );
-        console.log("response", response.data);
+        // console.log("response", response.data);
         if (response?.data?.output?.transactionShipments[0]?.pieceResponses[0]?.packageDocuments[0]?.url) {
 
             const pdfUrls = ((response.data.output.transactionShipments[0].pieceResponses).map(item => {
@@ -145,13 +140,11 @@ app.post(routeStrings.shipment_fedexp, async (req, res) => {
             }
 
             mergePdfs(pdfUrls).then(respp => {
-                const pdf = {
+                res.status(200).send({
                     filename: 'fedexp_labels_report.pdf',
                     contentType: 'application/pdf',
                     file: "http://localhost:8080/report_fedexp"
-                };
-
-                res.status(200).send(pdf)
+                })
             })
 
         }
@@ -164,6 +157,7 @@ app.post(routeStrings.shipment_fedexp, async (req, res) => {
         });
 
     } catch (error) {
+        console.log(error);
         if (error?.status) res.status(error.status).send({ error: error.message });
         else if (error?.response?.status) res.status(error.response.status).send({ error: error.response.message });
         else if (error?.arg1?.response?.status) res.status(error.arg1.response.status).send({ error: error.arg1.response.message });
@@ -186,11 +180,12 @@ app.post(routeStrings.address_validate_fedexp, async (req, res) => {
             req.body.body,
             config
         );
+
         if (
             response?.status === 200 &&
             (
-                response.data.output.resolvedAddresses[0].attributes.DPV &&
-                response.data.output.resolvedAddresses[0].attributes.Matched &&
+                response.data.output.resolvedAddresses[0].attributes.DPV ||
+                response.data.output.resolvedAddresses[0].attributes.Matched ||
                 response.data.output.resolvedAddresses[0].attributes.Resolved
             )
         ) {
@@ -247,8 +242,7 @@ app.post(routeStrings.rate_list_fedexp, async (req, res) => {
             "Authorization": `Bearer ${req.body.token}`,
         }
     };
-
-    
+ 
     try {
         const response = await axios.post(
             SERVERS.FEDEXP_Sandbox_Server + API_FEDEXP.rate_list,
@@ -256,28 +250,25 @@ app.post(routeStrings.rate_list_fedexp, async (req, res) => {
             config
         );
 
-        console.log(response);
-
-
-
+        
 
         if (
             response?.status === 200 &&
-            (response?.data?.RateResponse?.RatedShipment?.RatedPackage)
+            (response?.data?.output?.quoteDate)
         ) {
 
             let rawData = [];
-            if (Array.isArray(response?.data?.RateResponse?.RatedShipment?.RatedPackage)) {
-                rawData = response?.data?.RateResponse?.RatedShipment?.RatedPackage
+            if (Array.isArray(response.data.output.rateReplyDetails[0].ratedShipmentDetails[0].ratedPackages)) {
+                rawData = response.data.output.rateReplyDetails[0].ratedShipmentDetails[0].ratedPackages
             } else {
-                rawData = [response?.data?.RateResponse?.RatedShipment?.RatedPackage]
+                rawData = [response.data.output.rateReplyDetails[0].ratedShipmentDetails[0].ratedPackages]
             }
-
+            
             const rates = rawData.map(ratedPackage => {
                 return {
                     serviceName: "FEDEXP",
-                    serviceCode: response.data.RateResponse.RatedShipment.Service.Code,
-                    rate: ratedPackage.TotalCharges.MonetaryValue,
+                    serviceCode: response.data.output.rateReplyDetails[0].serviceDescription.astraDescription,
+                    rate: ratedPackage.packageRateDetail.netCharge,
                 }
             });
 
@@ -294,30 +285,10 @@ app.post(routeStrings.rate_list_fedexp, async (req, res) => {
                 "status": 500,
             }
         });
-        // if (
-        //     response?.status === 200 &&
-        //     (
-        //         response.data.output.resolvedAddresses[0].attributes.DPV &&
-        //         response.data.output.resolvedAddresses[0].attributes.Matched &&
-        //         response.data.output.resolvedAddresses[0].attributes.Resolved
-        //     )
-        // ) {
-
-        //     res.status(response.status).send({
-        //         message: response.data.output.resolvedAddresses[0].attributes.Resolved,
-        //         error: false
-        //     });
-        // }
-        // else throw ({
-        //     response: {
-        //         "message": "Server Error!",
-        //         "name": "Error",
-        //         "status": 500
-        //     }
-        // });
+        
 
     } catch (error) {
-        console.log(error.response.data);
+        console.log(error);
         if (error?.status) res.send({ code: error.status, message: error.message, error: true });
         else if (error?.response?.status) res.send({
             code: error.response?.status,
@@ -580,86 +551,7 @@ app.post(routeStrings.rate_list_ups, async (req, res) => {
 });
 
 
-
-
-
-
 // -----------------Microsoft Routes --------------------- //
-
-
-
-// microsoft token
-app.get(routeStrings.token_micro, cacheHandler, async (req, res) => {
-
-    const config = {
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-    };
-
-    const body = {
-        grant_type: SECRETS.GRANT_TYPE_MICROSOFT,
-        client_id: SECRETS.CLIENT_ID_MICROSOFT,
-        client_secret: SECRETS.CLIENT_SECRET_MICROSOFT,
-        scope: SECRETS.SCOPE_MICROSOFT
-    };
-
-    try {
-        const response = await axios.post(
-            API_MICROSOFT.Token,
-            new URLSearchParams(body).toString(),
-            config
-        );
-        if (response?.data?.access_token) {
-            cache[routeStrings.token_micro] = response.data.access_token
-            res.status(response.status).send(response.data.access_token);
-        }
-        else {
-            throw ({
-                response: {
-                    "message": "Server Error!",
-                    "name": "Error",
-                    "status": 500
-                }
-            });
-        }
-
-
-    } catch (error) {
-        if (error?.status) res.status(error.status).send({ error: error.message });
-        else if (error?.response?.status) res.status(error.response.status).send({ error: error.response.message });
-        else if (error?.arg1?.response?.status) res.status(error.arg1.response.status).send({ error: error.arg1.response.message });
-        else res.status(500).send({ error: error.message });
-    }
-});
-
-app.post(routeStrings.token_micro, async (req, res) => {
-
-    try {
-        if (req.body.token) {
-            cache[routeStrings.token_micro] = req.body.token;
-            res.status(200).send({
-                error: false,
-                message: cache[routeStrings.token_micro],
-                code: 200
-            });
-        }
-        else {
-            throw ({
-                response: {
-                    "message": "Server Error!",
-                    "name": "Error",
-                    "status": 500
-                }
-            });
-        }
-
-
-    } catch (error) {
-        if (error?.status) res.status(error.status).send({ error: error.message });
-        else if (error?.response?.status) res.status(error.response.status).send({ error: error.response.message });
-        else if (error?.arg1?.response?.status) res.status(error.arg1.response.status).send({ error: error.arg1.response.message });
-        else res.status(500).send({ error: error.message });
-    }
-});
 
 // microsoft all sales orders
 app.post(routeStrings.sale_orders_micro, cacheHandler, async (req, res) => {
@@ -675,7 +567,7 @@ app.post(routeStrings.sale_orders_micro, cacheHandler, async (req, res) => {
             config
         );
         if (response?.data?.value) {
-            // cache[routeStrings.sale_orders_micro] = response.data.value;
+            cache[routeStrings.sale_orders_micro] = response.data.value;
             res.status(response.status).send(response.data.value);
         } else throw ({
             response: {

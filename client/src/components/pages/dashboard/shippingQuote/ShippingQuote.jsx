@@ -9,49 +9,69 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import Billfrom from './Billfrom'
 import SearchIcon from '@mui/icons-material/Search';
 import Shipfrom from './Shipfrom'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { BackButton, headInputStyle, styleSlect } from '../reUseAbles/ReuseAbles'
-import { createShipment_FEDEXP, createShipment_UPS, requestAccessToken_FEDEXP } from '../../../../utils/FEDEXP_API_HELPERS'
+import { createShipment_FEDEXP, createShipment_UPS, rateListFEDEXP, rateListUPS, requestAccessToken_FEDEXP } from '../../../../utils/API_HELPERS'
 import ShipReportDialog from './ShipReportDialog'
-import { rateListFEDEXP, rateListUPS } from '../../../../RTK/Reducers/Reducers'
+import { payload_Rates_Handler, payload_Shipment_Handler } from '../../../../utils/Helper'
+import ShipToDialoge from './ShipToDia'
 
 
 const ShippingQuote = () => {
-    const dispatch = useDispatch();
+
+
     const { saleOrderDetails } = useSelector(store => store.mainReducer);
     const navigate = useNavigate();
+    const [drawerstateRate, setdrawerstateRate] = React.useState(false);
     const [allowShipment, setAllowShipment] = React.useState(false);
     const [billfrom, setbillfrom] = React.useState(false);
     const [shipfrom, setshipfrom] = React.useState(false);
+    const [shipToDia, setshipToDia] = React.useState(false);
+    const [rateListData, setRateListData] = React.useState({
+        loading: true,
+        list: [{}]
+    });
     const [shipReport, SetShipReport] = React.useState({
         open: false,
         response: null,
         error: null
     });
-    const [validatedAddress, setValidatedAddress] = React.useState({
-        companyName: saleOrderDetails.shipToName,
-        addressLine1: saleOrderDetails.shipToAddress,
-        addressLine2: saleOrderDetails.shipToAddress2,
-        state: saleOrderDetails.shipToCounty,
-        city: saleOrderDetails.shipToCity,
-        country: saleOrderDetails.shipToCounty,
-        countryCode: saleOrderDetails.shipToCountryRegionCode,
-        postalCode: saleOrderDetails.shipToPostCode,
-        addressValidated: saleOrderDetails.addressValidated,
-        courier: saleOrderDetails?.shippingAgentCode
-    });
+
     const [selections, setSelections] = React.useState({
         printOn: "No Option Avaliable",
         extraServices: "No Option Avaliable",
         carrier: saleOrderDetails?.shippingAgentCode || "No Option Avaliable",
     });
 
-    console.log('saleOrderDetails', saleOrderDetails);
-
     const handleChange = event => setSelections({
         ...selections,
         [event.target.name]: [event.target.value]
     });
+
+    // for shipment labels recursiveCaller
+    const recursiveCaller = (action, counter) => {
+        action.then(res => {
+            if (res?.data?.file) {
+                SetShipReport({
+                    open: true,
+                    response: res,
+                    error: null,
+                });
+            } else if (res.name && counter < 5) {
+                counter++;
+                recursiveCaller(action, counter)
+            } else {
+                SetShipReport({
+                    open: true,
+                    response: null,
+                    error: "unexpected Error Try Again",
+                });
+            }
+        })
+    };
+
+
+    // for shipment 
     const handleSubmit = event => {
         event.preventDefault();
         // const data = new FormData(event.currentTarget)
@@ -63,231 +83,22 @@ const ShippingQuote = () => {
         SetShipReport({ open: true });
 
         if (saleOrderDetails?.shippingAgentCode === "FEDEX") {
-            const payload_Data = {
-                "labelResponseOptions": "URL_ONLY",
-                "rateRequestTypes": "ACCOUNT",
-                "requestedShipment": {
-                    "shipper": {
-                        "contact": {
-                            "personName": "Muhammad Hamad",
-                            "phoneNumber": 1234567890,
-                            "companyName": "Posh Textiles"
-                        },
-                        "address": {
-                            "streetLines": [
-                                "7670 N.W. 6th Avenue"
-                            ],
-                            "city": "India",
-                            "stateOrProvinceCode": "AR",
-                            "postalCode": 72601,
-                            "countryCode": "US"
-                        }
-                    },
-                    "recipients": [
-                        {
-                            "contact": {
-                                "personName": saleOrderDetails?.shipToName,
-                                "phoneNumber": saleOrderDetails?.edcCustomers[0]?.phoneNo,
-                                "companyName": saleOrderDetails?.edcCustomers[0]?.contact
-                            },
-                            "address": {
-                                "streetLines": [
-                                    saleOrderDetails?.edcCustomers[0]?.address,
-                                    saleOrderDetails?.edcCustomers[0]?.address2
-                                ],
-                                "city": saleOrderDetails?.edcCustomers[0]?.city,
-                                "stateOrProvinceCode": saleOrderDetails?.shipToCounty,
-                                "postalCode": saleOrderDetails?.edcCustomers[0]?.postCode,
-                                "countryCode": saleOrderDetails?.shipToCountryRegionCode
-                            }
-                        }
-                    ],
-                    "shipDatestamp": saleOrderDetails?.shipmentDate,
-                    "serviceType": "STANDARD_OVERNIGHT",
-                    "packagingType": "FEDEX_SMALL_BOX",
-                    "pickupType": "USE_SCHEDULED_PICKUP",
-                    "blockInsightVisibility": false,
-                    "shippingChargesPayment": {
-                        "paymentType": "SENDER"
-                    },
-                    "shipmentSpecialServices": {
-                        "specialServiceTypes": [
-                            "FEDEX_ONE_RATE"
-                        ]
-                    },
-                    "labelSpecification": {
-                        "imageType": "PDF",
-                        "labelStockType": "PAPER_85X11_TOP_HALF_LABEL"
-                    },
-                    "requestedPackageLineItems": ((saleOrderDetails?.edcSalesLines).map((item, index) => {
-                        return {
-                            "weight": {
-                                "value": 10,
-                                "units": "LB"
-                            },
-                            "dimensions": {
-                                "length": 12,
-                                "width": 8,
-                                "height": 6,
-                                "units": "IN"
-                            },
-                            "physicalPackaging": "BOX",
-                            "sequenceNumber": index + 1
-                        }
-                    })),
-
-                },
-                "accountNumber": {
-                    "value": "740561073"
-                }
-            }
-
             requestAccessToken_FEDEXP()
                 .then(token => {
-                    createShipment_FEDEXP(payload_Data, token)
-                        .then(res => {
-                            SetShipReport({
-                                open: true,
-                                response: res,
-                                error: null,
-                                type: "FEDEX"
-                            })
-                        })
-                        .catch(error => {
-                            SetShipReport({
-                                open: true,
-                                response: null,
-                                error: error.statusText,
-                                type: "FEDEX"
-                            });
-                        })
+                    recursiveCaller(
+                        createShipment_FEDEXP(payload_Shipment_Handler(saleOrderDetails), token)
+                        , 0)
                 });
-
         } else if (saleOrderDetails?.shippingAgentCode === "UPS") {
-
-            const body = {
-                "ShipmentRequest": {
-                    "Shipment": {
-                        "Description": "1206 PTR",
-                        "Shipper": {
-                            "Name": "Muhammad Hamad",
-                            "ShipperNumber": "V78944",
-                            "Address": {
-                                "AddressLine": "1234 Main St",
-                                "City": "Anytown",
-                                "StateProvinceCode": "CA",
-                                "PostalCode": "90503",
-                                "CountryCode": "US"
-                            }
-                        },
-                        "ShipTo": {
-                            "Name": saleOrderDetails?.shipToName,
-                            "AttentionName": saleOrderDetails?.shipToName,
-                            "PostalCode": "90503",
-                            "Phone": {
-                                "Number": `${saleOrderDetails?.edcCustomers[0]?.phoneNo}`,
-                            },
-                            "FaxNumber": saleOrderDetails?.edcCustomers[0]?.faxNo,
-                            "TaxIdentificationNumber": "456999",
-                            "Address": {
-                                "AddressLine": saleOrderDetails?.edcCustomers[0]?.address,
-                                "City": saleOrderDetails?.edcCustomers[0]?.city,
-                                "StateProvinceCode": saleOrderDetails?.shipToCounty,
-                                "PostalCode": saleOrderDetails?.edcCustomers[0]?.postCode,
-                                "CountryCode": saleOrderDetails?.shipToCountryRegionCode
-                            }
-                        },
-                        "ShipFrom": {
-                            "Name": "Muhammad Hamd",
-                            "AttentionName": "Muhammad Hamd",
-                            "Phone": {
-                                "Number": "1234567890"
-                            },
-                            "FaxNumber": "1234567999",
-                            "TaxIdentificationNumber": "456999",
-                            "Address": {
-                                "AddressLine": "1234 Main St",
-                                "City": "Anytown",
-                                "StateProvinceCode": "CA",
-                                "PostalCode": "90503",
-                                "CountryCode": "US"
-                            }
-                        },
-                        "PaymentInformation": {
-                            "ShipmentCharge": {
-                                "Type": "01",
-                                "BillShipper": {
-                                    "AccountNumber": "V78944"
-                                }
-                            }
-                        },
-                        "Service": {
-                            "Code": "01",
-                            "Description": "Expedited"
-                        },
-
-                        "Package": ((saleOrderDetails?.edcSalesLines).map(item => {
-                            return {
-                                "Description": item.description,
-                                "Packaging": {
-                                    "Code": "02"
-                                },
-                                "PackageWeight": {
-                                    "UnitOfMeasurement": {
-                                        "Code": "LBS"
-                                    },
-                                    "Weight": "10"
-                                },
-                                "PackageServiceOptions": ""
-                            }
-                        })),
-                        "ItemizedChargesRequestedIndicator": "",
-                        "RatingMethodRequestedIndicator": "",
-                        "TaxInformationIndicator": "",
-                        "ShipmentRatingOptions": {
-                            "NegotiatedRatesIndicator": ""
-                        }
-                    },
-                    "LabelSpecification": {
-                        "LabelImageFormat": {
-                            "Code": "PNG"
-                        }
-                    }
-                }
-            };
-
-            createShipment_UPS(body)
-                .then(res => {
-                    if (res.response?.status >= 400) {
-                        SetShipReport({
-                            open: true,
-                            response: null,
-                            error: res.response.data.error,
-                            type: "UPS"
-                        });
-                    } else {
-                        SetShipReport({
-                            open: true,
-                            response: res,
-                            error: null,
-                            type: "UPS"
-                        })
-                    }
-                })
-                .catch(error => {
-                    SetShipReport({
-                        open: true,
-                        response: null,
-                        error: error.statusText,
-                        type: "UPS"
-                    });
-                })
+            recursiveCaller(
+                createShipment_UPS(payload_Shipment_Handler(saleOrderDetails))
+                , 0)
 
         } else {
             SetShipReport({
                 open: true,
                 response: null,
-                error: "Only FEDEXP Services"
+                error: "This Service is not Supported Yet"
             });
         };
 
@@ -305,187 +116,75 @@ const ShippingQuote = () => {
         setdrawerStateAddress(open);
     };
 
-    // rate
-    const [drawerstateRate, setdrawerstateRate] = React.useState(false);
+    // rate list getters drawerstateRate
+
+
+
+    // for rate lists recursiveCaller
+    const recursiveCallerRates = (action, counter) => {
+        action
+            .then(response => {
+                if (!(response.error)) {
+                    setRateListData({
+                        loading: false,
+                        list: response.message
+                    })
+
+                } else if (response.name && counter < 5) {
+                    counter++;
+                    recursiveCallerRates(action, counter)
+                } else {
+                    setRateListData({
+                        loading: false,
+                        list: []
+                    })
+                }
+            })
+    };
+
+
+    // console.log("saleOrderDetails", saleOrderDetails);
+
+
 
     const toggleDrawerRate = (open) => (event) => {
         if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) { return; }
         setdrawerstateRate(open);
         if (open && saleOrderDetails?.shippingAgentCode === "UPS") {
-
-
-            const body = {
-                "Request": {
-                    "RequestOption": "Rate"
-                },
-                "Shipment": {
-                    "Shipper": {
-                        "Name": "Muhammad Hamad",
-                        "ShipperNumber": "V78944",
-                        "Address": {
-                            "AddressLine": "1234 Main St",
-                            "City": "Anytown",
-                            "StateProvinceCode": "CA",
-                            "PostalCode": "90503",
-                            "CountryCode": "US"
-                        }
-                    },
-                    "ShipTo": {
-                        "Name": saleOrderDetails?.shipToName,
-                        "Address": {
-                            "AddressLine": saleOrderDetails?.edcCustomers[0]?.address,
-                            "City": saleOrderDetails?.edcCustomers[0]?.city,
-                            "StateProvinceCode": saleOrderDetails?.shipToCounty,
-                            "PostalCode": saleOrderDetails?.edcCustomers[0]?.postCode,
-                            "CountryCode": saleOrderDetails?.shipToCountryRegionCode
-                        }
-                    },
-                    "Service": {
-                        "Code": "03",
-                        "Description": "Service Description"
-                    },
-                    "Package": ((saleOrderDetails?.edcSalesLines).map(item => {
-                        return {
-                            "PackagingType": {
-                                "Code": "02",
-                                "Description": item.description
-                            },
-                            "Dimensions": {
-                                "UnitOfMeasurement": {
-                                    "Code": "IN",
-                                    "Description": "Inches"
-                                },
-                                "Length": "20",
-                                "Width": "10",
-                                "Height": "5"
-                            },
-                            "PackageWeight": {
-                                "UnitOfMeasurement": {
-                                    "Code": "Lbs",
-                                    "Description": "Pounds"
-                                },
-                                "Weight": "10"
-                            }
-                        }
-                    })),
-                }
-            };
-
-            dispatch(rateListUPS({
-                body: body,
+            recursiveCallerRates(rateListUPS({
+                body: payload_Rates_Handler(saleOrderDetails),
                 toastPermission: true
-            }))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            }), 0)
 
         } else if (open && saleOrderDetails?.shippingAgentCode === "FEDEX") {
-
-            let body = {
-                "accountNumber": {
-                    "value": "740561073"
-                },
-                "requestedShipment": {
-                    "shipper": {
-                        "address": {
-                            "streetLines": [
-                                "7670 N.W. 6th Avenue"
-                            ],
-                            "city": "India",
-                            "stateOrProvinceCode": "AR",
-                            "postalCode": 72601,
-                            "countryCode": "US"
-                        }
-                    },
-                    "recipient": {
-                        "address": {
-                            "streetLines": [
-                                saleOrderDetails?.edcCustomers[0]?.address,
-                                saleOrderDetails?.edcCustomers[0]?.address2
-                            ],
-                            "city": saleOrderDetails?.edcCustomers[0]?.city,
-                            "stateOrProvinceCode": saleOrderDetails?.shipToCounty,
-                            "postalCode": saleOrderDetails?.edcCustomers[0]?.postCode,
-                            "countryCode": saleOrderDetails?.shipToCountryRegionCode
-                        }
-                    },
-                    "pickupType": "DROPOFF_AT_FEDEX_LOCATION",
-                    "serviceType": "FEDEX_2_DAY",
-                    "rateRequestType": [
-                        "LIST"
-                    ],
-                    "requestedPackageLineItems":
-                        ((saleOrderDetails?.edcSalesLines).map((item, index) => {
-                            return {
-                                "weight": {
-                                    "units": "LB",
-                                    "value": 2 + index
-                                }
-                            }
-                        })),
-                }
-            }
-
             requestAccessToken_FEDEXP().then(token => {
-                dispatch(rateListFEDEXP({
+                recursiveCallerRates(rateListFEDEXP({
                     token: token,
-                    body: body,
+                    body: payload_Rates_Handler(saleOrderDetails),
                     toastPermission: true
-                }))
-
+                }), 0)
             })
 
+        } else if (open && saleOrderDetails?.shippingAgentCode === "STAMPS") {
+            payload_Rates_Handler(saleOrderDetails)
+        } else if (!open) {
+            setRateListData({
+                loading: true,
+                list: [{}]
+            })
         }
     };
 
-    // console.log("order", saleOrderDetails);
 
     return (
         <div>
             <Box component={'form'} onSubmit={handleSubmit}>
                 <Billfrom billfrom={billfrom} setbillfrom={setbillfrom} />
                 <Shipfrom shipfrom={shipfrom} setshipfrom={setshipfrom} />
+                <ShipToDialoge shipToDia={shipToDia} setshipToDia={setshipToDia} customer={saleOrderDetails?.edcCustomers[0]} />
                 <ShipReportDialog shipReport={shipReport} SetShipReport={SetShipReport} />
-                <AddressValidateDrawer allowShipment={allowShipment} setAllowShipment={setAllowShipment} toggleDrawer={toggleDrawer} drawerStateAddress={drawerStateAddress} validatedAddress={validatedAddress} setValidatedAddress={setValidatedAddress} />
-                <RateQuoteDrawer service={saleOrderDetails?.shippingAgentCode} toggleDrawerRate={toggleDrawerRate} drawerstateRate={drawerstateRate} />
+                <AddressValidateDrawer allowShipment={allowShipment} setAllowShipment={setAllowShipment} toggleDrawer={toggleDrawer} drawerStateAddress={drawerStateAddress} customer={saleOrderDetails?.edcCustomers[0]} courier={saleOrderDetails?.shippingAgentCode} />
+                <RateQuoteDrawer rateListData={rateListData} service={saleOrderDetails?.shippingAgentCode} toggleDrawerRate={toggleDrawerRate} drawerstateRate={drawerstateRate} />
                 <Grid container >
 
                     {/* left section */}
@@ -526,13 +225,21 @@ const ShippingQuote = () => {
                             <Stack direction={'row'}>
                                 <Typography sx={{ color: '#6D6D6D', fontSize: '14px', minWidth: '110px' }}>
                                     Ship To &nbsp;&nbsp;
-                                    <SearchIcon onClick={() => { setshipfrom(true) }} sx={{ cursor: "pointer" }} />
+                                    <SearchIcon onClick={() => { setshipToDia(true) }} sx={{ cursor: "pointer" }} />
                                     :
                                 </Typography>
 
                                 <TextField
-                                    sx={{ ...headInputStyle, maxWidth: '400px' }}
-                                    defaultValue={saleOrderDetails.shipToCountryRegionCode}
+                                    sx={{ ...headInputStyle, maxWidth: '400px', fontSize: '12px' }}
+                                    defaultValue={
+                                        saleOrderDetails?.edcCustomers[0]?.name + "\n" +
+                                        saleOrderDetails?.edcCustomers[0]?.address + "\n" +
+                                        saleOrderDetails?.edcCustomers[0]?.address2 + "\n" +
+                                        saleOrderDetails?.edcCustomers[0]?.city + "\n" +
+                                        saleOrderDetails?.edcCustomers[0]?.countryRegionCode + "\n" +
+                                        saleOrderDetails?.edcCustomers[0]?.phoneNo + "\n" +
+                                        saleOrderDetails?.edcCustomers[0]?.eMail
+                                    }
                                     size='small'
                                     multiline
                                     minRows={8}
@@ -688,7 +395,7 @@ const ShippingQuote = () => {
                             <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                                 <Button style={{ background: "#4B5AD8", marginTop: "15px", padding: "2px 6px", color: "white" }} onClick={toggleDrawerRate(true)}>RATE QUOTE</Button>
                                 <Button
-                                    // disabled={!allowShipment}
+                                    disabled={!allowShipment}
                                     type='submit'
                                     variant='contained'
                                     sx={{ marginLeft: "6px", background: "#4B5AD8", marginTop: "15px", padding: "0px 6px", color: 'white' }}

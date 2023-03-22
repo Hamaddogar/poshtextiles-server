@@ -33,14 +33,10 @@ let initialState = {
   // client info
   client_Info: null,
   // FEDEXP
-  FEDEXP_TOKEN: null,
   fedexpAddressValid: false,
-  loadingRateList: false,
   loadingHistory: false,
   loadingInventory: false,
-
-  UPSList: [],
-  FEDEXPList: [],
+  loadingValidateAddress: false,
 
   loadingNewOrder: false,
   newOrderData: null,
@@ -76,22 +72,6 @@ export const inventoryDataFunction = createAsyncThunk(
   }
 );
 
-
-// save token microsoft UPS
-export const saveTokenServer = createAsyncThunk(
-  'mainSlice/saveTokenServer',
-  async ({ token, toastPermission }) => {
-    const data = await toast.promise(
-      axios.post(APIS.token_micro, { token }),
-      toastPermission ? { pending: 'Loading Please Wait...', success: 'Response Loaded', error: 'Something Went Wrong' } : { error: 'Something Went Wrong' },
-      { autoClose: 1500, hideProgressBar: true }
-    );
-    return data.data;
-  }
-);
-
-
-
 // History
 export const historyGetter = createAsyncThunk(
   'mainSlice/historyGetter',
@@ -124,32 +104,6 @@ export const validateAddressUPS = createAsyncThunk(
   async ({ body, toastPermission }) => {
     const data = await toast.promise(
       axios.post(APIS.check_address_ups, { body }),
-      toastPermission ? { pending: 'Loading Please Wait...', success: 'Response Loaded', error: 'Something Went Wrong' } : { error: 'Something Went Wrong' },
-      { autoClose: 1500, hideProgressBar: true }
-    );
-    return data.data;
-  }
-);
-
-// rateList UPS
-export const rateListUPS = createAsyncThunk(
-  'mainSlice/rateListUPS',
-  async ({ body, toastPermission }) => {
-    const data = await toast.promise(
-      axios.post(APIS.rate_list_ups, { body }),
-      toastPermission ? { pending: 'Loading Please Wait...', success: 'Response Loaded', error: 'Something Went Wrong' } : { error: 'Something Went Wrong' },
-      { autoClose: 1500, hideProgressBar: true }
-    );
-    return data.data;
-  }
-);
-
-// rateListFEDEXP
-export const rateListFEDEXP = createAsyncThunk(
-  'mainSlice/rateListFEDEXP',
-  async ({ body, toastPermission, token }) => {
-    const data = await toast.promise(
-      axios.post(APIS.rate_list_fedexp, { body, token }),
       toastPermission ? { pending: 'Loading Please Wait...', success: 'Response Loaded', error: 'Something Went Wrong' } : { error: 'Something Went Wrong' },
       { autoClose: 1500, hideProgressBar: true }
     );
@@ -222,36 +176,6 @@ const mainSlice = createSlice({
     ADD_NEW_INVENTORY_PRODUCT: (state, { payload }) => {
       state.inventoryAdjustment.push(payload);
     },
-    ADD_NEW_RESULT: (state, { payload }) => {
-      // ["@odata.etag"]
-      // state.saleOrderDetails.saleOrders.forEach((prod, indx) => {
-      //   if (prod["@odata.etag"] === payload["@odata.etag"]) {
-      //     state.saleOrderDetails.saleOrders[indx].status = true
-      //   }
-      // });
-      // payload.navigate(-2);
-    },
-    ACCESS_TOKEN_SETTER: (state, { payload }) => {
-      state.accessToken = payload.accessToken;
-      state.idToken = payload.idToken;
-    },
-    UPDATE_TOKEN: (state, { payload }) => {
-      state.accessToken = payload.token;
-      if (payload.notify) toast.success('Token Updated', { autoClose: 3000 });
-      // document.getElementById('token').reset()
-    },
-    USE_POSTMAN_TOKEN: (state) => {
-      state.postMan = !(state.postMan);
-    },
-    CALL_APIS_FIRST_TIME: (state) => {
-      state.firstTime = false;
-    },
-    FEDEXP_TOEKN_SETTER: (state, { payload }) => {
-      state.FEDEXP_TOKEN = payload;
-    },
-    FEDEXP_ADDRESS_STATUS: (state) => {
-      state.fedexpAddressValid = false;
-    }
 
 
   },
@@ -267,7 +191,6 @@ const mainSlice = createSlice({
       })
       .addCase(saleOrderNoFilter.fulfilled, (state, { payload }) => {
         state.loading = false;
-        console.log(payload);
         if (payload) {
           state.allOrders = payload;
           state.stockDetails_saleOrder = payload.flatMap(item => (item.edcSalesLines).map(lineItem => {
@@ -292,7 +215,6 @@ const mainSlice = createSlice({
       })
       .addCase(inventoryDataFunction.fulfilled, (state, { payload }) => {
         state.loadingInventory = false;
-        console.log(payload);
         if (payload) state.inventoryData = payload;
       })
       .addCase(inventoryDataFunction.rejected, (state, { error }) => {
@@ -306,7 +228,6 @@ const mainSlice = createSlice({
       })
       .addCase(historyGetter.fulfilled, (state, { payload }) => {
         state.loadingHistory = false;
-        console.log(payload);
         if (payload) state.allOrders = payload;
       })
       .addCase(historyGetter.rejected, (state, { error }) => {
@@ -323,14 +244,10 @@ const mainSlice = createSlice({
         state.loadingValidateAddress = false;
         if (!(payload.error)) {
           state.fedexpAddressValid = true;
-        } else {
-          Swal.fire({ icon: 'error', title: payload.code, text: `${payload.message}` })
         }
       })
-      .addCase(validateAddressFEDEXP.rejected, (state, actions) => {
-        console.log('rejected', actions);
+      .addCase(validateAddressFEDEXP.rejected, (state, { error }) => {
         state.loadingValidateAddress = false;
-        Swal.fire({ icon: 'error', title: actions.error.code, text: `${actions.error.message}` })
       })
 
       // validateAddress UPS cases
@@ -342,52 +259,12 @@ const mainSlice = createSlice({
         state.loadingValidateAddress = false;
         if (!(payload.error)) {
           state.fedexpAddressValid = true;
-        } else {
-          Swal.fire({ icon: 'error', title: payload.code, text: `${payload.message}` })
         }
-
       })
-      .addCase(validateAddressUPS.rejected, (state, actions) => {
-        console.log('rejected', actions);
+      .addCase(validateAddressUPS.rejected, (state, { error }) => {
         state.loadingValidateAddress = false;
-        Swal.fire({ icon: 'error', title: actions.error.code, text: `${actions.error.message}` })
       })
 
-
-      // save token microsoft cases
-      .addCase(saveTokenServer.rejected, (state, actions) => {
-        Swal.fire({ icon: 'error', title: actions.error.code, text: `${actions.error.message}` })
-      })
-
-      // rateListUPS
-      .addCase(rateListUPS.pending, (state) => {
-        state.loadingRateList = true;
-        state.UPSList = []
-      })
-      .addCase(rateListUPS.fulfilled, (state, { payload }) => {
-        state.loadingRateList = false;
-        if (!(payload.error)) state.UPSList = payload.message;
-        else Swal.fire({ icon: 'error', title: payload.code, text: `${payload.message}` })
-      })
-      .addCase(rateListUPS.rejected, (state, actions) => {
-        state.loadingRateList = false;
-        Swal.fire({ icon: 'error', title: actions.error.code, text: `${actions.error.message}` })
-      })
-
-      // rateList FEDEXP
-      .addCase(rateListFEDEXP.pending, (state) => {
-        state.loadingRateList = true;
-        state.FEDEXPList = []
-      })
-      .addCase(rateListFEDEXP.fulfilled, (state, { payload }) => {
-        state.loadingRateList = false;
-        if (!(payload.error)) state.FEDEXPList = payload.message;
-        else Swal.fire({ icon: 'error', title: payload.code, text: `${payload.message}` })
-      })
-      .addCase(rateListFEDEXP.rejected, (state, actions) => {
-        state.loadingRateList = false;
-        Swal.fire({ icon: 'error', title: actions.error.code, text: `${actions.error.message}` })
-      })
 
       // createNewOrder
       .addCase(createNewOrder.pending, (state) => {
@@ -396,8 +273,6 @@ const mainSlice = createSlice({
       })
       .addCase(createNewOrder.fulfilled, (state, { payload }) => {
         state.loadingNewOrder = false;
-        alert()
-        console.log(payload);
         if (!(payload.error)) state.newOrderData = payload.message;
         else Swal.fire({ icon: 'error', title: payload.code, text: `${payload.message}` })
       })
@@ -418,13 +293,6 @@ export const { LOG_OUT,
   LOG_IN,
   SELECT_PICKING_PRODUCT,
   ADD_NEW_INVENTORY_PRODUCT,
-  ADD_NEW_RESULT,
-  ACCESS_TOKEN_SETTER,
-  UPDATE_TOKEN,
-  USE_POSTMAN_TOKEN,
-  CALL_APIS_FIRST_TIME,
-  FEDEXP_TOEKN_SETTER,
-  FEDEXP_ADDRESS_STATUS,
 } = mainSlice.actions;
 
 

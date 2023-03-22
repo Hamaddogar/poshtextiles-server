@@ -13,7 +13,8 @@ import { createNewOrder } from '../../../../RTK/Reducers/Reducers';
 import { useDispatch } from 'react-redux';
 // import { v4 as uuidv4 } from 'uuid';
 import ThumbNailImageSVG from "../../../assets/images/thumbnail2.svg";
-import { requestAccessToken_MICROSOFT } from '../../../../utils/FEDEXP_API_HELPERS';
+import { requestAccessToken_MICROSOFT } from '../../../../utils/API_HELPERS';
+import { useMsal } from '@azure/msal-react';
 const CreateSalesOrder = () => {
 
     const [lineItems, setLineItems] = React.useState([]);
@@ -28,7 +29,7 @@ const CreateSalesOrder = () => {
     const handleOpen = () => setCommentModel({ ...commentModel, open: true });
     const orderDetail = {}
 
-
+    const { instance, accounts } = useMsal();
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -72,7 +73,7 @@ const CreateSalesOrder = () => {
             "edcSalesLines": lineItems
         }
 
-        requestAccessToken_MICROSOFT().then(token => {
+        requestAccessToken_MICROSOFT(instance, accounts).then(token => {
             dispatch(createNewOrder({
                 token: token,
                 body: body,
@@ -117,7 +118,7 @@ const CreateSalesOrder = () => {
             <CommentsModel commentModel={commentModel} setCommentModel={setCommentModel} />
             <Box>
                 <Box >
-                    <Box component={'form'} onSubmit={handleSubmit} >
+                    <Box component={'form'} noValidate onSubmit={handleSubmit} >
                         <Grid container sx={{ mt: 1, mb: 2 }} alignItems={'flex-end'} justifyContent='space-between' >
 
                             <Grid container item xs={12} md={10} spacing={1} alignItems={'flex-end'} >

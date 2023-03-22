@@ -1,12 +1,11 @@
 import React from 'react'
 import { Button, Grid, Stack, Typography, Checkbox, CircularProgress, TextField, InputAdornment } from '@mui/material'
 import { Box } from '@mui/system'
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import BackArrow from '../../../assets/icons/back-arrow.png'
 import { headInputStyle, subHeadInputStyle } from '../reUseAbles/ReuseAbles';
 import BasicTable from './table-yargade';
-import { ADD_NEW_RESULT } from '../../../../RTK/Reducers/Reducers';
 import { Visibility } from '@mui/icons-material';
 import ThumbNailImageSVG from "../../../assets/images/thumbnail2.svg";
 
@@ -21,14 +20,14 @@ const InspectCut = () => {
     const [showSelectedProduct, setShowSelectedProduct] = React.useState(null);
     const [dropShipChecked, setDropShipChecked] = React.useState(false);
     const navigate = useNavigate();
-    const dispatch = useDispatch()
+    // const dispatch = useDispatch()
     React.useLayoutEffect(() => { setShowSelectedProduct(pickingSelectedProduct.selected_item) }, [pickingSelectedProduct.selected_item]);
 
     const handleResult = () => {
-        dispatch(ADD_NEW_RESULT({
-            etag: showSelectedProduct["@odata.etag"],
-        }));
-        navigate(-2);
+        // dispatch(ADD_NEW_RESULT({
+        //     etag: showSelectedProduct["@odata.etag"],
+        // }));
+        // navigate(-2);
     }
     return (
         <div>

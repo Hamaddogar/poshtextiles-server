@@ -6,41 +6,25 @@ import { Checkbox, Container, FormControlLabel, Grid, Skeleton, Slider, Typograp
 import { Stack } from '@mui/system';
 import logoUPS from './Assets/upslogo.png';
 import logoFED from './Assets/fedlogo.png';
-import { useSelector } from 'react-redux';
 
-function valuetext(value) {
-    return `${value}`;
-}
-function valuetext2(value) {
-    return `${value}`;
-}
+export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, service, rateListData }) {
 
-export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, service }) {
-
-
-    const { loadingRateList, UPSList, FEDEXPList } = useSelector(store => store.mainReducer);
     const [rows, setRows] = React.useState([])
-    const [value, setValue] = React.useState([0, 100]);
-    const [value2, setValue2] = React.useState([0, 100]);
-
-
+    const [slider, setSlider] = React.useState({
+        first: [1, 100],
+        second: [0, 100],
+    });
 
     React.useEffect(() => {
-        if (service === "UPS" && UPSList?.length) setRows(UPSList)
-        else if (service === "FEDEXP" && FEDEXPList?.length) setRows(FEDEXPList)
+        setRows(rateListData.list)
         //eslint-disable-next-line
-    }, [UPSList, FEDEXPList])
-
-    console.log('row', rows);
-
-    // Range Slider Data
-
+    }, [rateListData.list])
 
     const handleChange = (event, newValue) => {
-        setValue(newValue);
-    };
-    const handleChange2 = (event, newValue) => {
-        setValue2(newValue);
+        setSlider({
+            ...slider,
+            [event.target.name]: newValue
+        })
     };
 
     // handleClickProduct
@@ -81,7 +65,7 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, ser
                                                 <FormControlLabel
                                                     label="FEDEXP"
                                                     control={
-                                                        <Checkbox size='small' checked={service === "FEDEXP"} />
+                                                        <Checkbox size='small' checked={service === "FEDEX"} />
                                                     }
                                                 />
                                             </Box>
@@ -99,25 +83,29 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, ser
                                     </Box>
                                     <Box>
                                         <Box sx={{ width: "100%", color: "#000000" }}>
-                                            <Typography>ETA: 1-5 Days</Typography>
+                                            <Typography sx={{ fontSize: '13px' }}>ETA: {`${slider.first[0]}-${slider.first[1]}`} Days</Typography>
                                             <Slider
                                                 sx={{ marginLeft: "5px" }}
                                                 getAriaLabel={() => 'Price Range'}
-                                                value={value}
+                                                value={slider.first}
                                                 onChange={handleChange}
                                                 valueLabelDisplay="auto"
-                                                getAriaValueText={valuetext}
+                                                getAriaValueText={value => `${value}`}
+                                                size='small'
+                                                name='first'
                                             />
                                         </Box>
                                         <Box sx={{ width: "100%", color: "#000000" }}>
-                                            <Typography>Price: $5-$99 </Typography>
+                                            <Typography sx={{ fontSize: '13px' }}>Price: {`$${slider.second[0]}-$${slider.second[1]}`} </Typography>
                                             <Slider
                                                 sx={{ marginLeft: "5px" }}
                                                 getAriaLabel={() => 'Price Range2'}
-                                                value={value2}
-                                                onChange={handleChange2}
+                                                value={slider.second}
+                                                onChange={handleChange}
                                                 valueLabelDisplay="auto"
-                                                getAriaValueText={valuetext2}
+                                                getAriaValueText={value => `${value}`}
+                                                size='small'
+                                                name="second"
                                             />
                                         </Box>
                                     </Box>
@@ -127,7 +115,7 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, ser
                                 {/* right section */}
                                 <Grid item xs={12} md={7} >
                                     {
-                                        loadingRateList && <Box>
+                                        rateListData.loading && <Box>
                                             <Skeleton height={2} />
                                             <Skeleton height={30} />
                                             <Skeleton height={2} />
@@ -152,7 +140,7 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, ser
                                     }
 
                                     {
-                                        !loadingRateList && rows.map((item, indx, self) => {
+                                        !rateListData.loading && rows.length > 0 && rows.map((item, indx, self) => {
                                             return (
                                                 <>
                                                     <Box sx={{
@@ -171,7 +159,7 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, ser
                                                                                 <img alt=" " src={logoFED} style={{ width: "50px" }} />
                                                                         }
                                                                     </Box>
-                                                                    <Typography sx={{ fontSize: '14px' }}>{item.serviceName}</Typography>
+                                                                    {/* <Typography sx={{ fontSize: '14px' }}>{item.serviceName}</Typography> */}
                                                                 </Stack>
                                                             </Grid>
                                                             <Grid item xs={6}>
@@ -198,6 +186,12 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, ser
                                         })
                                     }
 
+                                    {
+                                        !rateListData.loading && rows.length === 0 &&
+                                        <Box textAlign={'center'} >
+                                            No Date Found
+                                        </Box>
+                                    }
 
 
 

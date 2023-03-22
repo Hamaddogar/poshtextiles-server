@@ -28,7 +28,6 @@ import BinTransferPage2 from './components/pages/dashboard/binTransfer';
 import LocationTransferPage from './components/pages/dashboard/locationTransfer';
 import NewLocationTransferPage from './components/pages/dashboard/newLocationTransfer';
 import CreateSalesOrderPage from './components/pages/dashboard/createSalesOrder';
-import TokenUpdatePage from './components/pages/dashboard/tokenUpdate';
 import Preloading from './components/pages/HOC/preloading';
 
 function App() {
@@ -61,7 +60,6 @@ function App() {
           <Route path="location-transfer" element={<LocationTransferPage />} />
           <Route path="new-location-transfer" element={<NewLocationTransferPage />} />
           <Route path="create-order" element={<CreateSalesOrderPage />} />
-          <Route path="token" element={<TokenUpdatePage />} />
         </Route>
 
 

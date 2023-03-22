@@ -15,7 +15,9 @@ export default function ShipReportDialog({ shipReport, SetShipReport }) {
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
     const ShipReportDialogClose = () => {
-        SetShipReport(false);
+        SetShipReport({
+            open: false
+        });
     };
 
     return (
@@ -35,9 +37,9 @@ export default function ShipReportDialog({ shipReport, SetShipReport }) {
                     <Grid container alignItems={'center'} >
                         {
                             shipReport.response && !shipReport.error ?
-                            <Grid item xs={12} sx={{textAlign:'center'}}>
-                            <Box component='img' src={File} alt="report file" sx={{width:'95%', maxWidth:'250px',  textAlign:'center'}} />
-                        </Grid>
+                                <Grid item xs={12} sx={{ textAlign: 'center' }}>
+                                    <Box component='img' src={File} alt="report file" sx={{ width: '95%', maxWidth: '250px', textAlign: 'center' }} />
+                                </Grid>
                                 :
                                 <>
                                     {
