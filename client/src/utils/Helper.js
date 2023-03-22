@@ -57,8 +57,15 @@ export const payload_Shipment_Handler = details => {
                     "imageType": "PDF",
                     "labelStockType": "PAPER_85X11_TOP_HALF_LABEL"
                 },
-                "requestedPackageLineItems": details?.edcSalesLines,
-
+                "requestedPackageLineItems":  ((details?.edcSalesLines).map((item, index) => {
+                    return {
+                        ...item,
+                        "weight": {
+                            "units": "LB",
+                            "value": 10
+                        }
+                    }
+                })),
             },
             "accountNumber": {
                 "value": "740561073"
