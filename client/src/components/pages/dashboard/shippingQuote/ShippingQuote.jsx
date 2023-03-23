@@ -182,7 +182,7 @@ const ShippingQuote = () => {
                 <Billfrom billfrom={billfrom} setbillfrom={setbillfrom} />
                 <Shipfrom shipfrom={shipfrom} setshipfrom={setshipfrom} />
                 <ShipToDialoge shipToDia={shipToDia} setshipToDia={setshipToDia} customer={saleOrderDetails?.edcCustomers[0]} />
-                <ShipReportDialog shipReport={shipReport} SetShipReport={SetShipReport} />
+                <ShipReportDialog shipReport={shipReport} SetShipReport={SetShipReport} numbers={saleOrderDetails?.edcSalesLines?.length} />
                 <AddressValidateDrawer allowShipment={allowShipment} setAllowShipment={setAllowShipment} toggleDrawer={toggleDrawer} drawerStateAddress={drawerStateAddress} customer={saleOrderDetails?.edcCustomers[0]} courier={saleOrderDetails?.shippingAgentCode} />
                 <RateQuoteDrawer rateListData={rateListData} service={saleOrderDetails?.shippingAgentCode} toggleDrawerRate={toggleDrawerRate} drawerstateRate={drawerstateRate} />
                 <Grid container >
@@ -395,7 +395,7 @@ const ShippingQuote = () => {
                             <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                                 <Button style={{ background: "#4B5AD8", marginTop: "15px", padding: "2px 6px", color: "white" }} onClick={toggleDrawerRate(true)}>RATE QUOTE</Button>
                                 <Button
-                                    disabled={!allowShipment}
+                                    // disabled={!allowShipment}
                                     type='submit'
                                     variant='contained'
                                     sx={{ marginLeft: "6px", background: "#4B5AD8", marginTop: "15px", padding: "0px 6px", color: 'white' }}

@@ -25,19 +25,11 @@ app.use(express.urlencoded({ limit: '200mb', extended: true }));
 
 
 // ---------------- MiddleWares -------------- //
-let cache = {};
 
-
-// cacheHandler
-const cacheHandler = async (req, res, next) => {
-    const key = req.originalUrl
-    if (cache[key]) res.send(cache[key]);
-    else next();
-};
 // ---------------- Routes -------------- //
 const routeStrings = {
     // tokens
-    token_fed: '/fedexp_token', 
+    token_fed: '/fedexp_token',
 
     // fedexp
     shipment_fedexp: '/shipment',
@@ -62,7 +54,7 @@ const routeStrings = {
 // ---------------- FedExp Routes -------------- //
 
 // FedExp-Token
-app.get(routeStrings.token_fed, cacheHandler, async (req, res) => {
+app.get(routeStrings.token_fed, async (req, res) => {
     const config = {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     };
@@ -80,7 +72,6 @@ app.get(routeStrings.token_fed, cacheHandler, async (req, res) => {
         );
 
         if (response?.data?.access_token) {
-            cache[routeStrings.token_fed] = response.data.access_token
             res.status(response.status).send(response.data.access_token);
         } else {
             throw ({
@@ -101,7 +92,7 @@ app.get(routeStrings.token_fed, cacheHandler, async (req, res) => {
     }
 });
 
-// FedExp shipment order
+// FedExp shipment_fedexp
 app.post(routeStrings.shipment_fedexp, async (req, res) => {
     const config = {
         headers: {
@@ -110,60 +101,54 @@ app.post(routeStrings.shipment_fedexp, async (req, res) => {
             "Authorization": `Bearer ${req.body.token}`,
         }
     };
-    // console.log("req.body.body",req.body.body);
     try {
-        const response = await axios.post(
-            SERVERS.FEDEXP_Sandbox_Server + API_FEDEXP.Create_Shipment,
-            req.body.body,
-            config
-        );
-        // console.log("response", response.data);
-        if (response?.data?.output?.transactionShipments[0]?.pieceResponses[0]?.packageDocuments[0]?.url) {
+        const arr = req.body.body.requestedShipment.requestedPackageLineItems;
+        const allPDFs = [];
 
-            const pdfUrls = ((response.data.output.transactionShipments[0].pieceResponses).map(item => {
-                return item.packageDocuments[0].url;
-            }));
+        for (let i = 0; i < arr.length; i += 4) {
+            const chunk = arr.slice(i, i + 4);
+            let newBody = { ...req.body.body }
+            newBody.requestedShipment.requestedPackageLineItems = chunk
+            const response = await axios.post(
+                SERVERS.FEDEXP_Sandbox_Server + API_FEDEXP.Create_Shipment,
+                newBody,
+                config
+            );
 
-            async function mergePdfs(pdfUrls) {
-                const merger = new PDFMerger();
-
-                for (const pdfUrl of pdfUrls) {
-                    const { data } = await axios.get(pdfUrl, { responseType: 'arraybuffer' });
-                    await merger.add(data);
-                }
-
-                const mergedPdf = await merger.saveAsBuffer();
-                const filePath = path.join(__dirname, '/reports/fedexp/fedexp_labels_report.pdf');
-                fs.writeFileSync(filePath, mergedPdf);
-
-                return filePath;
+            if (response?.data?.output?.transactionShipments[0]?.pieceResponses[0]?.packageDocuments[0]?.url) {
+                const pdfUrls = ((response.data.output.transactionShipments[0].pieceResponses).map(item => {
+                    return item.packageDocuments[0].url;
+                }));
+                allPDFs.push(...pdfUrls)
             }
-
-            mergePdfs(pdfUrls).then(respp => {
-                res.status(200).send({
-                    filename: 'fedexp_labels_report.pdf',
-                    contentType: 'application/pdf',
-                    file: "http://localhost:8080/report_fedexp"
-                })
-            })
-
         }
-        else throw ({
-            response: {
-                "message": "Server Error!",
-                "name": "Error",
-                "status": 500
-            }
-        });
+
+
+        // Create a single PDFMerger instance and reuse it for each PDF
+        const merger = new PDFMerger();
+        for (const pdfUrl of allPDFs) {
+            const { data } = await axios.get(pdfUrl, { responseType: 'arraybuffer' });
+            await merger.add(data);
+        }
+        const mergedPdf = await merger.saveAsBuffer();
+        const filePath = path.join(__dirname, '/reports/fedexp/fedexp_labels_report.pdf');
+        fs.writeFileSync(filePath, mergedPdf);
+
+        res.status(200).send({
+            filename: 'fedexp_labels_report.pdf',
+            contentType: 'application/pdf',
+            file: "http://localhost:8080/report_fedexp"
+        })
 
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         if (error?.status) res.status(error.status).send({ error: error.message });
         else if (error?.response?.status) res.status(error.response.status).send({ error: error.response.message });
         else if (error?.arg1?.response?.status) res.status(error.arg1.response.status).send({ error: error.arg1.response.message });
         else res.status(500).send({ error: error.message });
     }
 });
+
 
 // FedExp address validation
 app.post(routeStrings.address_validate_fedexp, async (req, res) => {
@@ -204,7 +189,7 @@ app.post(routeStrings.address_validate_fedexp, async (req, res) => {
         });
 
     } catch (error) {
-        console.log(error.response.data);
+        // console.log(error.response.data);
         if (error?.status) res.send({ code: error.status, message: error.message, error: true });
         else if (error?.response?.status) res.send({
             code: error.response?.status,
@@ -242,53 +227,45 @@ app.post(routeStrings.rate_list_fedexp, async (req, res) => {
             "Authorization": `Bearer ${req.body.token}`,
         }
     };
- 
+    const rawData = [];
     try {
-        const response = await axios.post(
-            SERVERS.FEDEXP_Sandbox_Server + API_FEDEXP.rate_list,
-            req.body.body,
-            config
-        );
+        const lineItems = req.body.body.requestedShipment.requestedPackageLineItems;
+        for (let i = 0; i < lineItems.length; i += 7) {
+            const chunk = lineItems.slice(i, i + 7);
+            let newBody = { ...req.body.body }
+            newBody.requestedShipment.requestedPackageLineItems = chunk;
+            const response = await axios.post(
+                SERVERS.FEDEXP_Sandbox_Server + API_FEDEXP.rate_list,
+                newBody,
+                config
+            );
 
-        
-
-        if (
-            response?.status === 200 &&
-            (response?.data?.output?.quoteDate)
-        ) {
-
-            let rawData = [];
-            if (Array.isArray(response.data.output.rateReplyDetails[0].ratedShipmentDetails[0].ratedPackages)) {
-                rawData = response.data.output.rateReplyDetails[0].ratedShipmentDetails[0].ratedPackages
-            } else {
-                rawData = [response.data.output.rateReplyDetails[0].ratedShipmentDetails[0].ratedPackages]
-            }
-            
-            const rates = rawData.map(ratedPackage => {
-                return {
-                    serviceName: "FEDEXP",
-                    serviceCode: response.data.output.rateReplyDetails[0].serviceDescription.astraDescription,
-                    rate: ratedPackage.packageRateDetail.netCharge,
+            if (response?.status === 200 && (response?.data?.output?.quoteDate)) {
+                if (Array.isArray(response.data.output.rateReplyDetails[0].ratedShipmentDetails[0].ratedPackages)) {
+                    const data = response.data.output.rateReplyDetails[0].ratedShipmentDetails[0].ratedPackages
+                    rawData.push(...data)
+                } else {
+                    const data = response.data.output.rateReplyDetails[0].ratedShipmentDetails[0].ratedPackages
+                    rawData.push(data)
                 }
-            });
-
-
-            res.status(response.status).send({
-                message: rates,
-                error: false
-            });
+            }
         }
-        else throw ({
-            response: {
-                "message": response?.data?.Fault?.faultstring,
-                "name": "Error",
-                "status": 500,
+
+        const rates = rawData.map(ratedPackage => {
+            return {
+                serviceName: "FEDEXP",
+                serviceCode: "FEDEXP",
+                rate: ratedPackage.packageRateDetail.netCharge,
             }
         });
-        
+
+        res.status(200).send({
+            message: rates,
+            error: false
+        });
 
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         if (error?.status) res.send({ code: error.status, message: error.message, error: true });
         else if (error?.response?.status) res.send({
             code: error.response?.status,
@@ -325,64 +302,65 @@ app.post(routeStrings.shipment_ups, async (req, res) => {
             'Password': 'praveen#123'
         }
     };
-
+    const images = [];
     try {
+        const lineItems = req.body.body.ShipmentRequest.Shipment.Package;
+        for (let i = 0; i < lineItems.length; i += 4) {
+            const chunk = lineItems.slice(i, i + 4);
+            let newBody = { ...req.body.body }
+            newBody.ShipmentRequest.Shipment.Package = chunk;
+            const response = await axios.post(
+                SERVERS.UPS_Sandbox_Server + API_UPS.Create_Shipment,
+                newBody,
+                config
+            );
 
-        const response = await axios.post(
-            SERVERS.UPS_Sandbox_Server + API_UPS.Create_Shipment,
-            req.body.body,
-            config
-        );
-        if (response?.data?.ShipmentResponse?.ShipmentResults?.PackageResults) {
-            let images = [];
-            if (Array.isArray(response.data.ShipmentResponse.ShipmentResults.PackageResults)) {
-                images = (response.data.ShipmentResponse.ShipmentResults.PackageResults).map((item) => item.ShippingLabel.GraphicImage)
-            } else {
-                images = [response.data.ShipmentResponse.ShipmentResults.PackageResults.ShippingLabel.GraphicImage]
+            if (response?.data?.ShipmentResponse?.ShipmentResults?.PackageResults) {
+                if (Array.isArray(response.data.ShipmentResponse.ShipmentResults.PackageResults)) {
+                    const new_images = (response.data.ShipmentResponse.ShipmentResults.PackageResults).map((item) => item.ShippingLabel.GraphicImage)
+                    images.push(...new_images)
+                } else {
+                    const new_images = [response.data.ShipmentResponse.ShipmentResults.PackageResults.ShippingLabel.GraphicImage]
+                    images.push(new_images)
+                }
             }
-
-            const doc = new PDFDocument();
-            images.forEach((base64, index) => {
-                const buffer = Buffer.from(base64, 'base64');
-                doc.image(buffer, {
-                    fit: [500, 500],
-                    align: 'center',
-                    valign: 'center',
-                })
-
-                if (index < images.length - 1) {
-                    doc.addPage();
-                }
-            });
-            const outputPath = path.join(__dirname, '/reports/ups/UPS_labels_report.pdf');
-
-            doc.pipe(fs.createWriteStream(outputPath));
-            doc.end();
-
-            fs.readFile(outputPath, (err, data) => {
-                if (err) {
-                    console.error(err);
-                    return;
-                }
-                const base64 = Buffer.from(data).toString('base64');
-                const pdf = {
-                    filename: 'UPS_labels_report.pdf',
-                    contentType: 'application/pdf',
-                    file: "http://localhost:8080/report_ups"
-                };
-
-                res.status(200).send(pdf)
-            });
-
-        } else {
-            throw ({
-                response: {
-                    "message": "Server Error!",
-                    "name": "Error",
-                    "status": 500
-                }
-            });
         }
+
+
+
+        const doc = new PDFDocument();
+        images.forEach((base64, index) => {
+            const buffer = Buffer.from(base64, 'base64');
+            doc.image(buffer, {
+                fit: [500, 500],
+                align: 'center',
+                valign: 'center',
+            })
+
+            if (index < images.length - 1) {
+                doc.addPage();
+            }
+        });
+        const outputPath = path.join(__dirname, '/reports/ups/UPS_labels_report.pdf');
+
+        doc.pipe(fs.createWriteStream(outputPath));
+        doc.end();
+
+        fs.readFile(outputPath, (err, data) => {
+            if (err) {
+                console.error(err);
+                return;
+            }
+            const base64 = Buffer.from(data).toString('base64');
+            const pdf = {
+                filename: 'UPS_labels_report.pdf',
+                contentType: 'application/pdf',
+                file: "http://localhost:8080/report_ups"
+            };
+
+            res.status(200).send(pdf)
+        });
+
 
     } catch (error) {
         if (error?.status) res.status(error.status).send({ error: error.message });
@@ -443,7 +421,7 @@ app.post(routeStrings.address_validate_ups, async (req, res) => {
 
     } catch (error) {
 
-        console.log(error.response.data);
+        // console.log(error.response.data);
         // res.send(error)
         if (error?.status) res.send({ code: error.status, message: ((error?.response?.data?.errors[0]?.code) || (error?.response?.data?.response?.errors[0]?.message)), error: true });
         else if (error?.response?.status) res.send({
@@ -497,52 +475,49 @@ app.post(routeStrings.rate_list_ups, async (req, res) => {
         },
         "RateRequest": req.body.body
     };
+    const rawData = [];
 
     try {
 
-        const response = await axios.post(
-            "https://onlinetools.ups.com/rest/Rate",
-            body,
-            config
-        );
-        if (
-            response?.status === 200 &&
-            (response?.data?.RateResponse?.RatedShipment?.RatedPackage)
-        ) {
+        const lineItems = req.body.body.requestedShipment.requestedPackageLineItems;
+        for (let i = 0; i < lineItems.length; i += 7) {
+            const chunk = lineItems.slice(i, i + 7);
+            let newBody = { ...body }
+            newBody.RateRequest.requestedShipment.requestedPackageLineItems = chunk;
+            const response = await axios.post(
+                "https://onlinetools.ups.com/rest/Rate",
+                body,
+                config
+            );
 
-            let rawData = [];
-            if (Array.isArray(response?.data?.RateResponse?.RatedShipment?.RatedPackage)) {
-                rawData = response?.data?.RateResponse?.RatedShipment?.RatedPackage
-            } else {
-                rawData = [response?.data?.RateResponse?.RatedShipment?.RatedPackage]
-            }
-
-            const rates = rawData.map(ratedPackage => {
-                return {
-                    serviceName: "UPS",
-                    serviceCode: response.data.RateResponse.RatedShipment.Service.Code,
-                    rate: ratedPackage.TotalCharges.MonetaryValue,
+            if (response?.status === 200 && (response?.data?.RateResponse?.RatedShipment?.RatedPackage)) {
+                if (Array.isArray(response?.data?.RateResponse?.RatedShipment?.RatedPackage)) {
+                    const new_rawData = response?.data?.RateResponse?.RatedShipment?.RatedPackage
+                    rawData.push(...new_rawData)
+                } else {
+                    const new_rawData = [response?.data?.RateResponse?.RatedShipment?.RatedPackage]
+                    rawData.push(new_rawData)
                 }
-            });
 
-
-            res.status(response.status).send({
-                message: rates,
-                error: false
-            });
+            }
         }
-        else throw ({
-            response: {
-                "message": response?.data?.Fault?.faultstring,
-                "name": "Error",
-                "status": 500,
+
+        const rates = rawData.map(ratedPackage => {
+            return {
+                serviceName: "UPS",
+                serviceCode: "UPS",
+                rate: ratedPackage.TotalCharges.MonetaryValue,
             }
         });
 
 
+        res.status(200).send({
+            message: rates,
+            error: false
+        });
 
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         if (error?.status) res.send({ error: error.message });
         else if (error?.response?.status) res.send({ error: error.response.data.response.errors[0].message });
         else if (error?.arg1?.response?.status) res.send({ error: error.arg1.response.message });
@@ -554,20 +529,19 @@ app.post(routeStrings.rate_list_ups, async (req, res) => {
 // -----------------Microsoft Routes --------------------- //
 
 // microsoft all sales orders
-app.post(routeStrings.sale_orders_micro, cacheHandler, async (req, res) => {
+app.post(routeStrings.sale_orders_micro, async (req, res) => {
     const config = {
         headers: {
             "Authorization": `Bearer ${req.body.token}`,
         }
     };
-    // console.log( `Bearer ${req.body.token}`);
+    // // console.log( `Bearer ${req.body.token}`);
     try {
         const response = await axios.get(
             API_MICROSOFT.Sales_Orders,
             config
         );
         if (response?.data?.value) {
-            cache[routeStrings.sale_orders_micro] = response.data.value;
             res.status(response.status).send(response.data.value);
         } else throw ({
             response: {
@@ -578,7 +552,7 @@ app.post(routeStrings.sale_orders_micro, cacheHandler, async (req, res) => {
         });
 
     } catch (error) {
-        console.log("error", error.response.data);
+        // console.log("error", error.response.data);
         if (error?.status) res.status(error.status).send({ error: error.message });
         else if (error?.response?.status) res.status(error.response.status).send({ error: error.response.message });
         else if (error?.arg1?.response?.status) res.status(error.arg1.response.status).send({ error: error.arg1.response.message });
@@ -587,7 +561,7 @@ app.post(routeStrings.sale_orders_micro, cacheHandler, async (req, res) => {
 });
 
 // microsoft all inventory 
-app.post(routeStrings.inventory_micro, cacheHandler, async (req, res) => {
+app.post(routeStrings.inventory_micro, async (req, res) => {
     const config = {
         headers: {
             "Authorization": `Bearer ${req.body.token}`,
@@ -599,7 +573,6 @@ app.post(routeStrings.inventory_micro, cacheHandler, async (req, res) => {
             config
         );
         if (response?.data?.value) {
-            // cache[routeStrings.sale_orders_micro] = response.data.value;
             res.status(response.status).send(response.data.value);
         } else throw ({
             response: {
@@ -610,7 +583,7 @@ app.post(routeStrings.inventory_micro, cacheHandler, async (req, res) => {
         });
 
     } catch (error) {
-        console.log("error", error.response);
+        // console.log("error", error.response);
         if (error?.status) res.status(error.status).send({ error: error.message });
         else if (error?.response?.status) res.status(error.response.status).send({ error: error.response.message });
         else if (error?.arg1?.response?.status) res.status(error.arg1.response.status).send({ error: error.arg1.response.message });
@@ -619,14 +592,14 @@ app.post(routeStrings.inventory_micro, cacheHandler, async (req, res) => {
 });
 
 // CREATE sale order
-app.post(routeStrings.new_order_micro, cacheHandler, async (req, res) => {
+app.post(routeStrings.new_order_micro, async (req, res) => {
     const config = {
         headers: {
             "Authorization": `Bearer ${req.body.token}`,
         }
     };
-    console.log(req.body.token);
-    console.log(req.body.body);
+    // console.log(req.body.token);
+    // console.log(req.body.body);
     try {
         const response = await axios.post(
             API_MICROSOFT.new_Sale_Order,
@@ -634,7 +607,7 @@ app.post(routeStrings.new_order_micro, cacheHandler, async (req, res) => {
             config
         );
 
-        console.log(response.data);
+        // console.log(response.data);
         res.send(response.data)
         // if (response?.data?.value) {
 
@@ -654,7 +627,7 @@ app.post(routeStrings.new_order_micro, cacheHandler, async (req, res) => {
         // });
 
     } catch (error) {
-        console.log("error", error.response);
+        // console.log("error", error.response);
         if (error?.status) res.status(error.status).send({ error: error.message });
         else if (error?.response?.status) res.status(error.response.status).send({ error: error.response.message });
         else if (error?.arg1?.response?.status) res.status(error.arg1.response.status).send({ error: error.arg1.response.message });
@@ -662,8 +635,8 @@ app.post(routeStrings.new_order_micro, cacheHandler, async (req, res) => {
     }
 });
 
-// CREATE sale order
-app.post(routeStrings.new_order_micro, cacheHandler, async (req, res) => {
+// CREATE comments_micro
+app.post(routeStrings.comments_micro, async (req, res) => {
     const config = {
         headers: {
             "Authorization": `Bearer ${req.body.token}`,
@@ -676,7 +649,7 @@ app.post(routeStrings.new_order_micro, cacheHandler, async (req, res) => {
             config
         );
 
-        console.log(response.data);
+        // console.log(response.data);
         res.send(response.data)
 
     } catch (error) {
@@ -688,51 +661,10 @@ app.post(routeStrings.new_order_micro, cacheHandler, async (req, res) => {
 
 
 // ------------------- Configurations----------------- //
-app.get("/setter", async (req, res) => {
-    const config = {
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-    };
-
-    const body = {
-        grant_type: SECRETS.GRANT_TYPE_FEDEXP,
-        client_id: SECRETS.CLIENT_ID_FEDEXP,
-        client_secret: SECRETS.CLIENT_SECRET_FEDEXP
-    };
-    try {
-        const response = await axios.post(
-            SERVERS.FEDEXP_Sandbox_Server + API_FEDEXP.Token,
-            new URLSearchParams(body).toString(),
-            config
-        );
-
-        if (response?.data?.access_token) cache[routeStrings.token_fed] = response.data.access_token
-
-
-    } catch (error) {
-        console.error(error);
-    }
-});
-
-// Set up a cron job to run the route every day at 9:00 AM
-
-cron.schedule('*/50 * * * *', () => {
-    axios.get('http://localhost:8080/setter');
-});
-
-
-
-
-
 
 
 // server configuration
 const PORT = process.env.PORT || 8080;
 
-if (process.env.NODE_ENV === "production") {
-    app.use(express.static("build"));
-    const path = require("path");
-    app.get("*", (req, res) => {
-        res.sendFile(path.resolve(__dirname, 'build', 'index.html'));
-    })
-}
+
 app.listen(PORT, () => { console.log(`Server listening on port ${PORT}`); })

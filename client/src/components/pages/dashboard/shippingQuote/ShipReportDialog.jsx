@@ -6,11 +6,12 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
-import { CircularProgress, Grid, Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import File from "../../../assets/icons/file.svg";
+import ProgressIndicator from '../reUseAbles/ProgressIndicator';
 
-export default function ShipReportDialog({ shipReport, SetShipReport }) {
+export default function ShipReportDialog({ shipReport, SetShipReport, numbers }) {
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -48,7 +49,7 @@ export default function ShipReportDialog({ shipReport, SetShipReport }) {
                                             :
                                             <Grid item xs={12}>
                                                 <Box sx={{ textAlign: 'center' }}>
-                                                    <CircularProgress />
+                                                    <ProgressIndicator interval={numbers > 10 ? 2000 : 800} />
                                                 </Box>
                                             </Grid>
                                     }

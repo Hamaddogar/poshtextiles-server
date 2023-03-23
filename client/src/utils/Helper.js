@@ -57,7 +57,7 @@ export const payload_Shipment_Handler = details => {
                     "imageType": "PDF",
                     "labelStockType": "PAPER_85X11_TOP_HALF_LABEL"
                 },
-                "requestedPackageLineItems":  ((details?.edcSalesLines).map((item, index) => {
+                "requestedPackageLineItems": ((details?.edcSalesLines).map((item, index) => {
                     return {
                         ...item,
                         "weight": {
@@ -232,44 +232,7 @@ export const payload_Rates_Handler = details => {
         return payload_Data;
     }
     else if (details.shippingAgentCode === "FEDEX") {
-        let payload_Data = {
-            "accountNumber": {
-                "value": "740561073"
-            },
-            "requestedShipment": {
-                "shipper": {
-                    "address": {
-                        "streetLines": [
-                            "7670 N.W. 6th Avenue"
-                        ],
-                        "city": "India",
-                        "stateOrProvinceCode": "AR",
-                        "postalCode": 72601,
-                        "countryCode": "US"
-                    }
-                },
-                "recipient": {
-                    "address": {
-                        "streetLines": [
-                            details?.edcCustomers[0]?.address,
-                            details?.edcCustomers[0]?.address2
-                        ],
-                        "city": details?.edcCustomers[0]?.city,
-                        "stateOrProvinceCode": details?.shipToCounty,
-                        "postalCode": details?.edcCustomers[0]?.postCode,
-                        "countryCode": details?.shipToCountryRegionCode
-                    }
-                },
-                "pickupType": "DROPOFF_AT_FEDEX_LOCATION",
-                "serviceType": "FEDEX_2_DAY",
-                "rateRequestType": [
-                    "LIST"
-                ],
-                "requestedPackageLineItems": details?.edcSalesLines,
-            }
-        }
-
-        payload_Data = {
+        const payload_Data = {
             "accountNumber": {
                 "value": "740561073"
             },
