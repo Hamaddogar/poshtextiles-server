@@ -171,7 +171,7 @@ export const payload_Shipment_Handler = details => {
 
 
 
-export const payload_Rates_Handler = details => {
+export const payload_Rates_Handler = (details, serviceType) => {
     if (details.shippingAgentCode === "UPS") {
         const payload_Data = {
             "Request": {
@@ -200,7 +200,7 @@ export const payload_Rates_Handler = details => {
                     }
                 },
                 "Service": {
-                    "Code": "03",
+                    "Code": serviceType,
                     "Description": "Service Description"
                 },
                 "Package": ((details?.edcSalesLines).map(item => {
@@ -251,15 +251,8 @@ export const payload_Rates_Handler = details => {
                     }
                 },
                 "pickupType": "DROPOFF_AT_FEDEX_LOCATION",
-                "serviceType": "GROUND_HOME_DELIVERY",
-                "shipmentSpecialServices": {
-                    "specialServiceTypes": [
-                        "HOME_DELIVERY_PREMIUM"
-                    ],
-                    "homeDeliveryPremiumDetail": {
-                        "homedeliveryPremiumType": "APPOINTMENT"
-                    }
-                },
+                "serviceType": serviceType,
+
                 "rateRequestType": [
                     "LIST"
                 ],
@@ -269,11 +262,17 @@ export const payload_Rates_Handler = details => {
                             "weight": {
                                 "units": "LB",
                                 "value": 10
-                            }
+                            },
+                            "shipmentSpecialServices": {
+                                "specialServiceTypes": [
+                                    "APPOINTMENT",
+                                ]
+                            },
                         }
                     }))
             }
         }
+
 
         return payload_Data;
     }

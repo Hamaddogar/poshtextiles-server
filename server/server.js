@@ -21,11 +21,14 @@ app.use(express.static("./build"));
 app.use(express.static("./uploads"));
 app.use(express.urlencoded({ limit: '200mb', extended: true }));
 
-
+let dataaaaaaa = []
 
 
 // ---------------- MiddleWares -------------- //
-
+const handle = (req, res, next) => {
+    if (dataaaaaaa.length) res.send(dataaaaaaa)
+    else next()
+}
 // ---------------- Routes -------------- //
 const routeStrings = {
     // tokens
@@ -228,6 +231,7 @@ app.post(routeStrings.rate_list_fedexp, async (req, res) => {
         }
     };
     const rawData = [];
+
     try {
         const lineItems = req.body.body.requestedShipment.requestedPackageLineItems;
         for (let i = 0; i < lineItems.length; i += 7) {
@@ -239,12 +243,15 @@ app.post(routeStrings.rate_list_fedexp, async (req, res) => {
                 newBody,
                 config
             );
-
             if (response?.status === 200 && (response?.data?.output?.quoteDate)) {
                 if (Array.isArray(response.data.output.rateReplyDetails[0].ratedShipmentDetails[0].ratedPackages)) {
                     const data = response.data.output.rateReplyDetails[0].ratedShipmentDetails[0].ratedPackages
                     rawData.push(...data)
-                } else {
+                } else if ("totalNetCharge" in (response.data.output.rateReplyDetails[0].ratedShipmentDetails[0])) {
+                    const data = response.data.output.rateReplyDetails[0].ratedShipmentDetails[0]
+                    rawData.push(data)
+                }
+                else {
                     const data = response.data.output.rateReplyDetails[0].ratedShipmentDetails[0].ratedPackages
                     rawData.push(data)
                 }
@@ -253,14 +260,17 @@ app.post(routeStrings.rate_list_fedexp, async (req, res) => {
 
         const rates = rawData.map(ratedPackage => {
             return {
-                serviceName: "FEDEXP",
-                serviceCode: "FEDEXP",
-                rate: ratedPackage.packageRateDetail.netCharge,
+                serviceName: req.body.body.requestedShipment.serviceType,
+                currency: ratedPackage.currency,
+                rate: "totalNetCharge" in ratedPackage ? ratedPackage.totalNetCharge : ratedPackage.packageRateDetail.netCharge,
+                netWeight: ratedPackage.shipmentRateDetail?.totalBillingWeight?.value,
+                unit: ratedPackage.shipmentRateDetail?.totalBillingWeight?.units,
             }
         });
 
         res.status(200).send({
             message: rates,
+            responded: rawData,
             error: false
         });
 
@@ -476,19 +486,19 @@ app.post(routeStrings.rate_list_ups, async (req, res) => {
         "RateRequest": req.body.body
     };
     const rawData = [];
-
     try {
 
-        const lineItems = req.body.body.requestedShipment.requestedPackageLineItems;
+        const lineItems = req.body.body.Shipment.Package;
         for (let i = 0; i < lineItems.length; i += 7) {
             const chunk = lineItems.slice(i, i + 7);
             let newBody = { ...body }
-            newBody.RateRequest.requestedShipment.requestedPackageLineItems = chunk;
+            newBody.RateRequest.Shipment.Package = chunk;
             const response = await axios.post(
                 "https://onlinetools.ups.com/rest/Rate",
                 body,
                 config
             );
+
 
             if (response?.status === 200 && (response?.data?.RateResponse?.RatedShipment?.RatedPackage)) {
                 if (Array.isArray(response?.data?.RateResponse?.RatedShipment?.RatedPackage)) {
@@ -502,22 +512,25 @@ app.post(routeStrings.rate_list_ups, async (req, res) => {
             }
         }
 
-        const rates = rawData.map(ratedPackage => {
+        const rates = rawData.reduce((accumulator, currentItem) => {
             return {
-                serviceName: "UPS",
-                serviceCode: "UPS",
-                rate: ratedPackage.TotalCharges.MonetaryValue,
-            }
-        });
+                serviceName: req.body.body.Shipment.Service.Code,
+                currency: currentItem.ServiceOptionsCharges.CurrencyCode,
+                rate: accumulator.rate + Number(currentItem.TotalCharges.MonetaryValue),
+
+                netWeight: accumulator.netWeight + Number(currentItem.BillingWeight.Weight),
+                unit: currentItem.BillingWeight.UnitOfMeasurement.Code,
+            };
+        }, { rate: 0, netWeight: 0 });
 
 
         res.status(200).send({
-            message: rates,
+            message: [rates],
             error: false
         });
 
     } catch (error) {
-        // console.log(error);
+        console.log(error);
         if (error?.status) res.send({ error: error.message });
         else if (error?.response?.status) res.send({ error: error.response.data.response.errors[0].message });
         else if (error?.arg1?.response?.status) res.send({ error: error.arg1.response.message });
@@ -529,7 +542,7 @@ app.post(routeStrings.rate_list_ups, async (req, res) => {
 // -----------------Microsoft Routes --------------------- //
 
 // microsoft all sales orders
-app.post(routeStrings.sale_orders_micro, async (req, res) => {
+app.post(routeStrings.sale_orders_micro, handle, async (req, res) => {
     const config = {
         headers: {
             "Authorization": `Bearer ${req.body.token}`,
@@ -542,6 +555,7 @@ app.post(routeStrings.sale_orders_micro, async (req, res) => {
             config
         );
         if (response?.data?.value) {
+            dataaaaaaa = response.data.value
             res.status(response.status).send(response.data.value);
         } else throw ({
             response: {

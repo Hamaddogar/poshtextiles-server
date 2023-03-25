@@ -27,10 +27,7 @@ const ShippingQuote = () => {
     const [billfrom, setbillfrom] = React.useState(false);
     const [shipfrom, setshipfrom] = React.useState(false);
     const [shipToDia, setshipToDia] = React.useState(false);
-    const [rateListData, setRateListData] = React.useState({
-        loading: true,
-        list: [{}]
-    });
+
     const [shipReport, SetShipReport] = React.useState({
         open: false,
         response: null,
@@ -116,63 +113,10 @@ const ShippingQuote = () => {
         setdrawerStateAddress(open);
     };
 
-    // rate list getters drawerstateRate
-
-
-
-    // for rate lists recursiveCaller
-    const recursiveCallerRates = (action, counter) => {
-        action
-            .then(response => {
-                if (!(response.error)) {
-                    setRateListData({
-                        loading: false,
-                        list: response.message
-                    })
-
-                } else if (response.name && counter < 5) {
-                    counter++;
-                    recursiveCallerRates(action, counter)
-                } else {
-                    setRateListData({
-                        loading: false,
-                        list: []
-                    })
-                }
-            })
-    };
-
-
-    // console.log("saleOrderDetails", saleOrderDetails);
-
-
-
+    // toggleDrawerRate
     const toggleDrawerRate = (open) => (event) => {
         if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) { return; }
         setdrawerstateRate(open);
-        if (open && saleOrderDetails?.shippingAgentCode === "UPS") {
-            recursiveCallerRates(rateListUPS({
-                body: payload_Rates_Handler(saleOrderDetails),
-                toastPermission: true
-            }), 0)
-
-        } else if (open && saleOrderDetails?.shippingAgentCode === "FEDEX") {
-            requestAccessToken_FEDEXP().then(token => {
-                recursiveCallerRates(rateListFEDEXP({
-                    token: token,
-                    body: payload_Rates_Handler(saleOrderDetails),
-                    toastPermission: true
-                }), 0)
-            })
-
-        } else if (open && saleOrderDetails?.shippingAgentCode === "STAMPS") {
-            payload_Rates_Handler(saleOrderDetails)
-        } else if (!open) {
-            setRateListData({
-                loading: true,
-                list: [{}]
-            })
-        }
     };
 
 
@@ -184,7 +128,7 @@ const ShippingQuote = () => {
                 <ShipToDialoge shipToDia={shipToDia} setshipToDia={setshipToDia} customer={saleOrderDetails?.edcCustomers[0]} />
                 <ShipReportDialog shipReport={shipReport} SetShipReport={SetShipReport} numbers={saleOrderDetails?.edcSalesLines?.length} />
                 <AddressValidateDrawer allowShipment={allowShipment} setAllowShipment={setAllowShipment} toggleDrawer={toggleDrawer} drawerStateAddress={drawerStateAddress} customer={saleOrderDetails?.edcCustomers[0]} courier={saleOrderDetails?.shippingAgentCode} />
-                <RateQuoteDrawer rateListData={rateListData} service={saleOrderDetails?.shippingAgentCode} toggleDrawerRate={toggleDrawerRate} drawerstateRate={drawerstateRate} />
+                <RateQuoteDrawer saleOrderDetails={saleOrderDetails} toggleDrawerRate={toggleDrawerRate} drawerstateRate={drawerstateRate} />
                 <Grid container >
 
                     {/* left section */}

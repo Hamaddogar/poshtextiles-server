@@ -28,7 +28,7 @@ function CircularProgressWithLabel(props) {
 }
 
 
-export default function ProgressIndicator(interval=800) {
+export default function ProgressIndicator({ interval = 800 }) {
     const [progress, setProgress] = React.useState(1);
 
     React.useEffect(() => {
