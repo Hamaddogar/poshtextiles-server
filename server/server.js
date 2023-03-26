@@ -21,14 +21,10 @@ app.use(express.static("./build"));
 app.use(express.static("./uploads"));
 app.use(express.urlencoded({ limit: '200mb', extended: true }));
 
-let dataaaaaaa = []
 
 
 // ---------------- MiddleWares -------------- //
-const handle = (req, res, next) => {
-    if (dataaaaaaa.length) res.send(dataaaaaaa)
-    else next()
-}
+
 // ---------------- Routes -------------- //
 const routeStrings = {
     // tokens
@@ -144,11 +140,9 @@ app.post(routeStrings.shipment_fedexp, async (req, res) => {
         })
 
     } catch (error) {
-        // console.log(error);
-        if (error?.status) res.status(error.status).send({ error: error.message });
-        else if (error?.response?.status) res.status(error.response.status).send({ error: error.response.message });
-        else if (error?.arg1?.response?.status) res.status(error.arg1.response.status).send({ error: error.arg1.response.message });
-        else res.status(500).send({ error: error.message });
+        console.log(error);
+        if (error?.response?.status) res.send({ message: error?.response?.data?.errors[0]?.message, error: true, code: error?.response?.data?.errors[0]?.code });
+        else res.send({ message: "Request failed with status code 500", error: true });
     }
 });
 
@@ -337,7 +331,6 @@ app.post(routeStrings.shipment_ups, async (req, res) => {
         }
 
 
-
         const doc = new PDFDocument();
         images.forEach((base64, index) => {
             const buffer = Buffer.from(base64, 'base64');
@@ -373,10 +366,9 @@ app.post(routeStrings.shipment_ups, async (req, res) => {
 
 
     } catch (error) {
-        if (error?.status) res.status(error.status).send({ error: error.message });
-        else if (error?.response?.status) res.status(error.response.status).send({ error: error.response.data.response.errors[0].message });
-        else if (error?.arg1?.response?.status) res.status(error.arg1.response.status).send({ error: error.arg1.response.message });
-        else res.status(500).send({ error: error.message });
+        console.log(error);
+        if (error?.response?.status) res.send({ message: error.response.data.response.errors[0].message, error: true });
+        else res.send({ message: 'Request failed with status code 500', error: true });
     }
 });
 
@@ -542,7 +534,7 @@ app.post(routeStrings.rate_list_ups, async (req, res) => {
 // -----------------Microsoft Routes --------------------- //
 
 // microsoft all sales orders
-app.post(routeStrings.sale_orders_micro, handle, async (req, res) => {
+app.post(routeStrings.sale_orders_micro, async (req, res) => {
     const config = {
         headers: {
             "Authorization": `Bearer ${req.body.token}`,
@@ -555,7 +547,6 @@ app.post(routeStrings.sale_orders_micro, handle, async (req, res) => {
             config
         );
         if (response?.data?.value) {
-            dataaaaaaa = response.data.value
             res.status(response.status).send(response.data.value);
         } else throw ({
             response: {

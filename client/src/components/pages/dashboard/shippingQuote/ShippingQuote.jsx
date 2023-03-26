@@ -48,20 +48,20 @@ const ShippingQuote = () => {
     // for shipment labels recursiveCaller
     const recursiveCaller = (action, counter) => {
         action.then(res => {
-            if (res?.data?.file) {
+            if (!(res?.data?.error)) {
                 SetShipReport({
                     open: true,
                     response: res,
                     error: null,
                 });
-            } else if (res.name && counter < 5) {
+            } else if ((res.name || res.data.error) && counter < 5) {
                 counter++;
                 recursiveCaller(action, counter)
             } else {
                 SetShipReport({
                     open: true,
                     response: null,
-                    error: "unexpected Error Try Again",
+                    error: res.data.message ? res.data.message : "unexpected Error Try Again",
                 });
             }
         })
@@ -78,20 +78,27 @@ const ShippingQuote = () => {
         // console.log('--data', data.get('customer'))
         // console.log('--data', data.get('shipTooo'))
         SetShipReport({ open: true });
-
-        if (saleOrderDetails?.shippingAgentCode === "FEDEX") {
+        const condition = saleOrderDetails?.edcSalesLines?.length > 0
+        if (condition && saleOrderDetails?.shippingAgentCode === "FEDEX") {
             requestAccessToken_FEDEXP()
                 .then(token => {
                     recursiveCaller(
                         createShipment_FEDEXP(payload_Shipment_Handler(saleOrderDetails), token)
                         , 0)
                 });
-        } else if (saleOrderDetails?.shippingAgentCode === "UPS") {
+        } else if (condition && saleOrderDetails?.shippingAgentCode === "UPS") {
             recursiveCaller(
                 createShipment_UPS(payload_Shipment_Handler(saleOrderDetails))
                 , 0)
 
-        } else {
+        } else if (!condition) {
+            SetShipReport({
+                open: true,
+                response: null,
+                error: "Line Items must be presernt"
+            });
+        }
+        else {
             SetShipReport({
                 open: true,
                 response: null,

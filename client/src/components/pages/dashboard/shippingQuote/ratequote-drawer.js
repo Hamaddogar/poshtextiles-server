@@ -12,11 +12,10 @@ import { FEDEX_Service_Types, UPS_Service_Types } from '../../../../utils/DATA_H
 
 export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, saleOrderDetails }) {
 
-    const [slider, setSlider] = React.useState([0, 1000]);
+    const [slider, setSlider] = React.useState([0, 2000]);
     const [rateListData, setRateListData] = React.useState({
         loading: "idle",
         list: [],
-        copy: [],
         error: false
     });
 
@@ -36,7 +35,6 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
     const loadingFunction = () => setRateListData({
         loading: "loading",
         list: [],
-        copy: [],
         error: false
     });
 
@@ -49,7 +47,6 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
                     setRateListData({
                         loading: "responded",
                         list: response.message,
-                        copy: response.message,
                         error: false
                     })
 
@@ -60,14 +57,12 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
                     setRateListData({
                         loading: "responded",
                         list: [],
-                        copy: [],
                         error: response.message
                     })
                 } else {
                     setRateListData({
                         loading: "idle",
                         list: [],
-                        copy: [],
                         error: response.message
                     })
                 }
@@ -104,22 +99,6 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
         }
         //eslint-disable-next-line
     }, [drawerstateRate, serviceType])
-
-
-
-    const handleChange = (event, newValue) => {
-        setSlider(newValue)
-        console.log(newValue, 'newValue');
-        const filteredItems = rateListData.copy.filter(item => {
-            return item.rate >= newValue[0] && item.rate <= newValue[0];
-        });
-        console.log(filteredItems, 'filteredItems');
-        //   setRateListData({
-        //     list: filteredItems,
-        //     ...rateListData,
-        // })
-    };
-
 
 
 
@@ -180,14 +159,6 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
                                             }
                                         />
 
-
-
-
-
-
-
-
-
                                     </Box>
                                     <Box sx={{ marginTop: "20px" }}>
                                         Carriers
@@ -224,13 +195,14 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
                                                 sx={{ marginLeft: "5px" }}
                                                 getAriaLabel={() => 'Price Range2'}
                                                 value={slider}
-                                                onChange={handleChange}
+                                                onChange={(event, newValue) => setSlider(newValue)}
                                                 valueLabelDisplay="auto"
                                                 getAriaValueText={value => `${value}`}
                                                 size='small'
                                                 name="second"
-                                                max={1000}
-                                                step={100}
+                                                max={2000}
+                                                step={1}
+                                                aria-labelledby="non-linear-slider"
                                             />
                                         </Box>
                                     </Box>
@@ -270,10 +242,10 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
                                     {
                                         rateListData.loading === "responded" &&
                                         (rateListData?.list)?.length > 0 &&
-                                        // (rateListData?.list.filter(item => {
-                                        //     return item.rate >= slider[0] && item.rate <= slider[1];
-                                        //   }))?.map((item, indx, self) => {
-                                        (rateListData?.list)?.map((item, indx, self) => {
+                                        (rateListData?.list.filter(item => {
+                                            return item.rate >= slider[0] && item.rate <= slider[1];
+                                        }))?.map((item, indx, self) => {
+                                            // (rateListData?.list)?.map((item, indx, self) => {
                                             return (
                                                 <>
                                                     <Box sx={{
@@ -325,7 +297,12 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
                                             {rateListData.error}
                                         </Box>
                                     }
-
+                                    {
+                                        rateListData.loading === "responded" && (rateListData.list.length === 0) &&
+                                        <Box textAlign={'center'} >
+                                            No Rates Are Found
+                                        </Box>
+                                    }
 
 
                                 </Grid>

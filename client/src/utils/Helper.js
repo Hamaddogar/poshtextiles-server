@@ -172,7 +172,51 @@ export const payload_Shipment_Handler = details => {
 
 
 export const payload_Rates_Handler = (details, serviceType) => {
-    if (details.shippingAgentCode === "UPS") {
+    if (details.shippingAgentCode === "FEDEX") {
+        const payload_Data = {
+            "accountNumber": {
+                "value": "740561073"
+            },
+            "requestedShipment": {
+                "shipper": {
+                    "address": {
+                        "postalCode": 65247,
+                        "countryCode": "US"
+                    }
+                },
+                "recipient": {
+                    "address": {
+                        "postalCode": 75063,
+                        "countryCode": "US",
+                        "residential": true
+                    }
+                },
+                "pickupType": "DROPOFF_AT_FEDEX_LOCATION",
+                "serviceType": serviceType,
+
+                "rateRequestType": [
+                    "LIST"
+                ],
+                "requestedPackageLineItems":
+                    ((details?.edcSalesLines).map((item, index) => {
+                        return {
+                            "weight": {
+                                "units": "LB",
+                                "value": 10
+                            },
+                            "shipmentSpecialServices": {
+                                "specialServiceTypes": [
+                                    "APPOINTMENT",
+                                ]
+                            },
+                        }
+                    }))
+            }
+        }
+
+
+        return payload_Data;
+    } else if (details.shippingAgentCode === "UPS") {
         const payload_Data = {
             "Request": {
                 "RequestOption": "Rate"
@@ -230,53 +274,7 @@ export const payload_Rates_Handler = (details, serviceType) => {
             }
         };
         return payload_Data;
-    }
-    else if (details.shippingAgentCode === "FEDEX") {
-        const payload_Data = {
-            "accountNumber": {
-                "value": "740561073"
-            },
-            "requestedShipment": {
-                "shipper": {
-                    "address": {
-                        "postalCode": 65247,
-                        "countryCode": "US"
-                    }
-                },
-                "recipient": {
-                    "address": {
-                        "postalCode": 75063,
-                        "countryCode": "US",
-                        "residential": true
-                    }
-                },
-                "pickupType": "DROPOFF_AT_FEDEX_LOCATION",
-                "serviceType": serviceType,
-
-                "rateRequestType": [
-                    "LIST"
-                ],
-                "requestedPackageLineItems":
-                    ((details?.edcSalesLines).map((item, index) => {
-                        return {
-                            "weight": {
-                                "units": "LB",
-                                "value": 10
-                            },
-                            "shipmentSpecialServices": {
-                                "specialServiceTypes": [
-                                    "APPOINTMENT",
-                                ]
-                            },
-                        }
-                    }))
-            }
-        }
-
-
-        return payload_Data;
-    }
-    else if (details.shippingAgentCode === "STAMPS") {
+    } else if (details.shippingAgentCode === "STAMPS") {
         alert('working')
     }
 };
