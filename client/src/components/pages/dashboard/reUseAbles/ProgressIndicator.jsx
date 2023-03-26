@@ -38,6 +38,7 @@ export default function ProgressIndicator({ interval = 800 }) {
         return () => {
             clearInterval(timer);
         };
+        //eslint-disable-next-line
     }, []);
 
     return <CircularProgressWithLabel value={progress} />;

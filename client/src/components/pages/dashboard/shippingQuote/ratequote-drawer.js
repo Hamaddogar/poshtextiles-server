@@ -28,6 +28,8 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
             return { initial: { value: '03', label: 'UPS Ground' }, list: UPS_Service_Types }
         } else if (saleOrderDetails?.shippingAgentCode === "STAMPS") {
             return { initial: { label: 'Standard Overnight', value: 'STANDARD_OVERNIGHT' }, list: FEDEX_Service_Types }
+        }else {
+            return { initial: { label: 'Standard Overnight', value: 'STANDARD_OVERNIGHT' }, list: FEDEX_Service_Types }
         }
     })
 

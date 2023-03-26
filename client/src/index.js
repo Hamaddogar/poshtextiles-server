@@ -24,18 +24,20 @@ import { TransitionGroup } from 'react-transition-group';
 const msalInstance = new PublicClientApplication(msalConfig);
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <MsalProvider instance={msalInstance}>
-      <BrowserRouter>
-        <Provider store={store}>
-          <PersistGate loading={null} persistor={persistor}>
+  <MsalProvider instance={msalInstance}>
+    <BrowserRouter>
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
           <TransitionGroup>
-            <App />
-            </TransitionGroup>
-            <ToastContainer />
-          </PersistGate>
-        </Provider>
-      </BrowserRouter>
-    </MsalProvider>
+            <React.StrictMode>
+              <App />
+            </React.StrictMode>
+          </TransitionGroup>
+          <ToastContainer />
+        </PersistGate>
+      </Provider>
+    </BrowserRouter>
+  </MsalProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function

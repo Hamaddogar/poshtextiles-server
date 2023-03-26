@@ -11,9 +11,9 @@ import SearchIcon from '@mui/icons-material/Search';
 import Shipfrom from './Shipfrom'
 import { useSelector } from 'react-redux'
 import { BackButton, headInputStyle, styleSlect } from '../reUseAbles/ReuseAbles'
-import { createShipment_FEDEXP, createShipment_UPS, rateListFEDEXP, rateListUPS, requestAccessToken_FEDEXP } from '../../../../utils/API_HELPERS'
+import { createShipment_FEDEXP, createShipment_UPS, requestAccessToken_FEDEXP } from '../../../../utils/API_HELPERS'
 import ShipReportDialog from './ShipReportDialog'
-import { payload_Rates_Handler, payload_Shipment_Handler } from '../../../../utils/Helper'
+import { payload_Shipment_Handler } from '../../../../utils/Helper'
 import ShipToDialoge from './ShipToDia'
 
 
