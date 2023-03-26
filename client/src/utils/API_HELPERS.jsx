@@ -64,10 +64,10 @@ export const createShipment_UPS = async (body) => {
 
 // ---------------------rate list --------------------- //
 
-export const rateListUPS = async ({ body, toastPermission }) => {
+export const rateListUPS = async ({ body, toastPermission, details }) => {
     try {
         const data = await toast.promise(
-            axios.post(APIS.rate_list_ups, { body }),
+            axios.post(APIS.rate_list_ups, { body, details }),
             toastPermission ? { pending: 'Loading Please Wait...', success: 'Response Loaded', error: 'Something Went Wrong' } : { error: 'Something Went Wrong' },
             { autoClose: 1500, hideProgressBar: true }
         );
@@ -79,10 +79,10 @@ export const rateListUPS = async ({ body, toastPermission }) => {
 
 
 // fedexp
-export const rateListFEDEXP = async ({ body, toastPermission, token }) => {
+export const rateListFEDEXP = async ({ body, toastPermission, token, details }) => {
     try {
         const data = await toast.promise(
-            axios.post(APIS.rate_list_fedexp, { body, token }),
+            axios.post(APIS.rate_list_fedexp, { body, token, details }),
             toastPermission ? { pending: 'Loading Please Wait...', success: 'Response Loaded', error: 'Something Went Wrong' } : { error: 'Something Went Wrong' },
             { autoClose: 1500, hideProgressBar: true }
         );

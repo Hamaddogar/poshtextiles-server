@@ -100,6 +100,7 @@ app.post(routeStrings.shipment_fedexp, async (req, res) => {
             "Authorization": `Bearer ${req.body.token}`,
         }
     };
+
     try {
         const arr = req.body.body.requestedShipment.requestedPackageLineItems;
         const allPDFs = [];
@@ -225,7 +226,7 @@ app.post(routeStrings.rate_list_fedexp, async (req, res) => {
         }
     };
     const rawData = [];
-
+    
     try {
         const lineItems = req.body.body.requestedShipment.requestedPackageLineItems;
         for (let i = 0; i < lineItems.length; i += 7) {
@@ -254,7 +255,7 @@ app.post(routeStrings.rate_list_fedexp, async (req, res) => {
 
         const rates = rawData.map(ratedPackage => {
             return {
-                serviceName: req.body.body.requestedShipment.serviceType,
+                serviceName: req.body.details.label,
                 currency: ratedPackage.currency,
                 rate: "totalNetCharge" in ratedPackage ? ratedPackage.totalNetCharge : ratedPackage.packageRateDetail.netCharge,
                 netWeight: ratedPackage.shipmentRateDetail?.totalBillingWeight?.value,
@@ -491,7 +492,6 @@ app.post(routeStrings.rate_list_ups, async (req, res) => {
                 config
             );
 
-
             if (response?.status === 200 && (response?.data?.RateResponse?.RatedShipment?.RatedPackage)) {
                 if (Array.isArray(response?.data?.RateResponse?.RatedShipment?.RatedPackage)) {
                     const new_rawData = response?.data?.RateResponse?.RatedShipment?.RatedPackage
@@ -503,10 +503,9 @@ app.post(routeStrings.rate_list_ups, async (req, res) => {
 
             }
         }
-
         const rates = rawData.reduce((accumulator, currentItem) => {
             return {
-                serviceName: req.body.body.Shipment.Service.Code,
+                serviceName: req.body.details.label,
                 currency: currentItem.ServiceOptionsCharges.CurrencyCode,
                 rate: accumulator.rate + Number(currentItem.TotalCharges.MonetaryValue),
 
@@ -546,6 +545,7 @@ app.post(routeStrings.sale_orders_micro, async (req, res) => {
             API_MICROSOFT.Sales_Orders,
             config
         );
+        console.log(response?.data?.value);
         if (response?.data?.value) {
             res.status(response.status).send(response.data.value);
         } else throw ({

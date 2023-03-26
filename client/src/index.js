@@ -29,9 +29,7 @@ root.render(
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <TransitionGroup>
-            <React.StrictMode>
-              <App />
-            </React.StrictMode>
+            <App />
           </TransitionGroup>
           <ToastContainer />
         </PersistGate>

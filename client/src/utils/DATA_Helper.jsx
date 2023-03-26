@@ -5,26 +5,14 @@ export const FEDEX_Service_Types = [
     { label: 'Priority Overnight', value: 'PRIORITY_OVERNIGHT' },
     { label: 'First Overnight', value: 'FIRST_OVERNIGHT' },
     { label: 'FedEx Express Saver', value: 'FEDEX_EXPRESS_SAVER' },
-    { label: 'International Priority', value: 'INTERNATIONAL_PRIORITY' },
-    { label: 'International Economy', value: 'INTERNATIONAL_ECONOMY' },
 ];
 
 export const UPS_Service_Types = [
     { value: '01', label: 'UPS Next Day Air' },
     { value: '02', label: 'UPS 2nd Day Air' },
     { value: '03', label: 'UPS Ground' },
-    { value: '07', label: 'UPS Worldwide Express' },
-    { value: '08', label: 'UPS Worldwide Expedited' },
-    { value: '11', label: 'UPS Standard' },
     { value: '12', label: 'UPS 3 Day Select' },
     { value: '13', label: 'UPS Next Day Air Saver' },
     { value: '14', label: 'UPS Next Day Air Early A.M.' },
-    { value: '54', label: 'UPS Worldwide Express Plus' },
     { value: '59', label: 'UPS 2nd Day Air A.M.' },
-    { value: '65', label: 'UPS Saver' },
-    { value: '82', label: 'UPS Today Standard' },
-    { value: '83', label: 'UPS Today Dedicated Courier' },
-    { value: '84', label: 'UPS Today Intercity' },
-    { value: '85', label: 'UPS Today Express' },
-    { value: '86', label: 'UPS Today Express Saver' },
 ];

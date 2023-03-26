@@ -2,7 +2,7 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import Button from '@mui/material/Button';
-import { Autocomplete, Checkbox, Container, Divider, FormControlLabel, Grid, Skeleton, Slider, TextField, Typography } from '@mui/material';
+import { Checkbox, Container, Divider, FormControl, FormControlLabel, Grid, MenuItem, Select, Skeleton, Slider, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
 import logoUPS from './Assets/upslogo.png';
 import logoFED from './Assets/fedlogo.png';
@@ -23,13 +23,24 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
 
     const [serviceType, setServiceType] = React.useState(() => {
         if (saleOrderDetails?.shippingAgentCode === "FEDEX") {
-            return { initial: { label: 'Standard Overnight', value: 'STANDARD_OVERNIGHT' }, list: FEDEX_Service_Types }
+            return { label: 'Standard Overnight', value: 'STANDARD_OVERNIGHT' }
         } else if (saleOrderDetails?.shippingAgentCode === "UPS") {
-            return { initial: { value: '03', label: 'UPS Ground' }, list: UPS_Service_Types }
+            return { value: '03', label: 'UPS Ground' }
         } else if (saleOrderDetails?.shippingAgentCode === "STAMPS") {
-            return { initial: { label: 'Standard Overnight', value: 'STANDARD_OVERNIGHT' }, list: FEDEX_Service_Types }
-        }else {
-            return { initial: { label: 'Standard Overnight', value: 'STANDARD_OVERNIGHT' }, list: FEDEX_Service_Types }
+            return { value: '03', label: 'UPS Ground' }
+        } else {
+            return { value: '03', label: 'UPS Ground' }
+        }
+    });
+    const [serviceTypeOptions] = React.useState(() => {
+        if (saleOrderDetails?.shippingAgentCode === "FEDEX") {
+            return FEDEX_Service_Types
+        } else if (saleOrderDetails?.shippingAgentCode === "UPS") {
+            return UPS_Service_Types
+        } else if (saleOrderDetails?.shippingAgentCode === "STAMPS") {
+            return FEDEX_Service_Types
+        } else {
+            return FEDEX_Service_Types
         }
     })
 
@@ -55,7 +66,7 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
                 } else if ((response.name) && counter < 5) {
                     counter++;
                     recursiveCallerRates(action, counter)
-                } else if (("error" in response) && counter >= 5) {
+                } else if (("error" in response || response.error) && counter >= 5) {
                     setRateListData({
                         loading: "responded",
                         list: [],
@@ -63,7 +74,7 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
                     })
                 } else {
                     setRateListData({
-                        loading: "idle",
+                        loading: "responded",
                         list: [],
                         error: response.message
                     })
@@ -73,22 +84,24 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
     React.useLayoutEffect(() => {
         const condition = rateListData.loading === "idle" && drawerstateRate;
         // calling apis
-        if (condition && saleOrderDetails?.shippingAgentCode === "UPS") {
-            loadingFunction();
-            recursiveCallerRates(rateListUPS({
-                body: payload_Rates_Handler(saleOrderDetails, serviceType.initial.value ? serviceType.initial.value : "03"),
-                toastPermission: true
-            }))
-
-        } else if (condition && saleOrderDetails?.shippingAgentCode === "FEDEX") {
+        if (condition && saleOrderDetails?.shippingAgentCode === "FEDEX") {
             loadingFunction();
             requestAccessToken_FEDEXP().then(token => {
                 recursiveCallerRates(rateListFEDEXP({
                     token: token,
-                    body: payload_Rates_Handler(saleOrderDetails, serviceType.initial.value ? serviceType.initial.value : "STANDARD_OVERNIGHT"),
-                    toastPermission: true
+                    body: payload_Rates_Handler(saleOrderDetails, serviceType.value ? serviceType : { label: 'Standard Overnight', value: 'STANDARD_OVERNIGHT' }),
+                    toastPermission: true,
+                    details: serviceType
                 }))
             })
+
+        } else if (condition && saleOrderDetails?.shippingAgentCode === "UPS") {
+            loadingFunction();
+            recursiveCallerRates(rateListUPS({
+                body: payload_Rates_Handler(saleOrderDetails, serviceType.value ? serviceType : { value: '03', label: 'UPS Ground' }),
+                toastPermission: true,
+                details: serviceType
+            }))
 
         } else if (condition && saleOrderDetails?.shippingAgentCode === "STAMPS") {
             loadingFunction();
@@ -105,11 +118,36 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
 
 
     const handleChangeServiceType = (event, newValue) => {
-        setRateListData({
-            loading: "idle",
-            list: []
-        })
-        if (newValue) setServiceType({ initial: newValue, ...serviceType });
+
+        if (saleOrderDetails?.shippingAgentCode === "FEDEX") {
+            const daaa = FEDEX_Service_Types.filter(opt => opt.value === event.target.value)
+            setServiceType(daaa[0]);
+            setRateListData({
+                loading: "idle",
+                list: []
+            })
+        } else if (saleOrderDetails?.shippingAgentCode === "UPS") {
+            const daaa = UPS_Service_Types.filter(opt => opt.value === event.target.value)
+            setServiceType(daaa[0]);
+            setRateListData({
+                loading: "idle",
+                list: []
+            })
+        } else if (saleOrderDetails?.shippingAgentCode === "STAMPS") {
+            const daaa = UPS_Service_Types.filter(opt => opt.value === event.target.value)
+            setServiceType(daaa[0]);
+            setRateListData({
+                loading: "idle",
+                list: []
+            })
+        } else {
+            const daaa = UPS_Service_Types.filter(opt => opt.value === event.target.value)
+            setServiceType(daaa[0]);
+            setRateListData({
+                loading: "idle",
+                list: []
+            })
+        }
     }
 
     // handleClickProduct
@@ -139,27 +177,21 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
                                 <Grid item xs={12}>
                                     <Box>
                                         <label>Service Types:</label><br />
-                                        <Autocomplete
-                                            disablePortal
-                                            id="combo-box-demo"
-                                            options={serviceType.list}
-                                            value={serviceType.initial}
-                                            onChange={handleChangeServiceType}
-                                            getOptionLabel={(option) => option.label}
-                                            sx={{
-                                                width: "100%", fontSize: '13px'
-                                            }}
-                                            size='small'
-                                            renderInput={
-                                                (params) => <TextField size='small' {...params}
-                                                    sx={{
-                                                        fontSize: '10px',
-                                                        '& .MuiInputBase-root ': {
-                                                            fontSize: '13px',
-                                                        }
-                                                    }} />
-                                            }
-                                        />
+                                        <FormControl fullWidth>
+                                            <Select
+                                                labelId="routes-select-label"
+                                                id="routes-select"
+                                                value={serviceType.value}
+                                                onChange={handleChangeServiceType}
+                                                size='small'
+                                                sx={{ '& input': { fontSize: '13px' }, fontSize: '12px', }}
+                                            >
+                                                {
+                                                    serviceTypeOptions.map(option => <MenuItem value={option.value} sx={{ fontSize: '12px' }}>{option.label}</MenuItem>)
+                                                }
+
+                                            </Select>
+                                        </FormControl>
 
                                     </Box>
                                     <Box sx={{ marginTop: "20px" }}>
@@ -272,7 +304,7 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
                                                             <Grid item xs={10}>
                                                                 <Stack direction={"row"} alignItems={"center"} justifyContent={"flex-end"}>
                                                                     <Typography sx={{ marginRight: "5px", fontSize: '11px' }}>
-                                                                        {serviceType?.initial?.label} / {item.netWeight} {item.unit}
+                                                                        {item.serviceName} / {item.netWeight} {item.unit}
                                                                     </Typography>
                                                                     <Box >
                                                                         <Button

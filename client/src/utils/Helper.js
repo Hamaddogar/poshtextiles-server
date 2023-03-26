@@ -192,8 +192,7 @@ export const payload_Rates_Handler = (details, serviceType) => {
                     }
                 },
                 "pickupType": "DROPOFF_AT_FEDEX_LOCATION",
-                "serviceType": serviceType,
-
+                "serviceType": serviceType.value,
                 "rateRequestType": [
                     "LIST"
                 ],
@@ -244,9 +243,10 @@ export const payload_Rates_Handler = (details, serviceType) => {
                     }
                 },
                 "Service": {
-                    "Code": serviceType,
-                    "Description": "Service Description"
-                },
+                    "Code": serviceType.value,
+                    "Description": "Service Description",
+                    "details" : serviceType
+                }, 
                 "Package": ((details?.edcSalesLines).map(item => {
                     return {
                         "PackagingType": {
