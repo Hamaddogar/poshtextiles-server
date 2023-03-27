@@ -22,9 +22,14 @@ app.use(express.static("./uploads"));
 app.use(express.urlencoded({ limit: '200mb', extended: true }));
 
 
-
+// let data = {
+//     allOrders: []
+// }
 // ---------------- MiddleWares -------------- //
-
+// const handleCache = (req, res, next) => {
+//     if (data.dataa.length) { res.send(data.dataa) }
+//     else { next() }
+// }
 // ---------------- Routes -------------- //
 const routeStrings = {
     // tokens
@@ -226,7 +231,7 @@ app.post(routeStrings.rate_list_fedexp, async (req, res) => {
         }
     };
     const rawData = [];
-    
+
     try {
         const lineItems = req.body.body.requestedShipment.requestedPackageLineItems;
         for (let i = 0; i < lineItems.length; i += 7) {
@@ -262,7 +267,6 @@ app.post(routeStrings.rate_list_fedexp, async (req, res) => {
                 unit: ratedPackage.shipmentRateDetail?.totalBillingWeight?.units,
             }
         });
-
         res.status(200).send({
             message: rates,
             responded: rawData,
@@ -547,6 +551,7 @@ app.post(routeStrings.sale_orders_micro, async (req, res) => {
         );
         console.log(response?.data?.value);
         if (response?.data?.value) {
+            data.dataa = response.data.value;
             res.status(response.status).send(response.data.value);
         } else throw ({
             response: {

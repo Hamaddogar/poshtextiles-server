@@ -10,13 +10,13 @@ import { validateAddressFEDEXP, validateAddressUPS } from '../../../../RTK/Reduc
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 
-export default function AddressValidateDrawer({ 
+export default function AddressValidateDrawer({
     toggleDrawer, drawerStateAddress,
-     customer, setAllowShipment, allowShipment,
-     courier
-    }) {
+    customer, setAllowShipment, allowShipment,
+    courier
+}) {
 
-        const [loading, setLoading] = React.useState(false)
+    const [loading, setLoading] = React.useState(false)
 
 
     const dispatch = useDispatch();
@@ -24,12 +24,28 @@ export default function AddressValidateDrawer({
 
     const recursiveCaller = (func, counter) => {
         setLoading(true)
+        if (counter === 0) {
+            toast.loading('Loading...', {
+                position: "top-right",
+                autoClose: false,
+                hideProgressBar: true
+            });
+        }
         dispatch(func).then(res => {
-            if (!(res.payload.error)) {setAllowShipment(true); setLoading(false)}
-            else if (res.payload.error && counter < 7) {
+            if (!(res.payload.error)) {
+                toast.dismiss();
+                setAllowShipment(true);
+                setLoading(false)
+            }
+            else if (res.payload.error && counter < 10) {
                 counter++;
                 recursiveCaller(func, counter);
-            } else { setLoading(false)}
+            } else {
+                toast.dismiss();
+                setLoading(false)
+                toast.warn(`Please Try Again!`, { position: "top-right", autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "light", });
+
+            }
         })
     };
 
@@ -72,7 +88,6 @@ export default function AddressValidateDrawer({
                     }), 0)
                 })
         } else if (courier === "UPS") {
-
             let payload = {
                 "AddressKeyFormat": {
                     "ConsigneeName": data.get('companyName'),
@@ -88,8 +103,6 @@ export default function AddressValidateDrawer({
                     "CountryCode": data.get('country')
                 }
             }
-
-
 
             recursiveCaller(validateAddressUPS({
                 body: payload,

@@ -6,10 +6,10 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
-import { Grid, Typography } from '@mui/material';
+import { CircularProgress, Grid, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import File from "../../../assets/icons/file.svg";
-import ProgressIndicator from '../reUseAbles/ProgressIndicator';
+// import ProgressIndicator from '../reUseAbles/ProgressIndicator';
 
 export default function ShipReportDialog({ shipReport, SetShipReport, numbers }) {
     const theme = useTheme();
@@ -49,7 +49,9 @@ export default function ShipReportDialog({ shipReport, SetShipReport, numbers })
                                             :
                                             <Grid item xs={12}>
                                                 <Box sx={{ textAlign: 'center' }}>
-                                                    <ProgressIndicator interval={numbers > 10 ? 2000 : 800} />
+                                                    <Box mb={2}> Working in Progrss... </Box>
+                                                    <Box> <CircularProgress /></Box>
+                                                    {/* <ProgressIndicator interval={numbers > 10 ? 2000 : 800} /> */}
                                                 </Box>
                                             </Grid>
                                     }

@@ -88,12 +88,8 @@ export const historyGetter = createAsyncThunk(
 // validateAddressFEDEXP
 export const validateAddressFEDEXP = createAsyncThunk(
   'mainSlice/validateAddressFEDEXP',
-  async ({ token, body, toastPermission }) => {
-    const data = await toast.promise(
-      axios.post(APIS.check_address_fedexp, { token, body }),
-      toastPermission ? { pending: 'Loading Please Wait...', success: 'Response Loaded', error: 'Something Went Wrong' } : { error: 'Something Went Wrong' },
-      { autoClose: 1500, hideProgressBar: true }
-    );
+  async ({ token, body }) => {
+    const data = await axios.post(APIS.check_address_fedexp, { token, body });
     return data.data;
   }
 );
@@ -101,12 +97,8 @@ export const validateAddressFEDEXP = createAsyncThunk(
 // validateAddress UPS
 export const validateAddressUPS = createAsyncThunk(
   'mainSlice/validateAddressUPS',
-  async ({ body, toastPermission }) => {
-    const data = await toast.promise(
-      axios.post(APIS.check_address_ups, { body }),
-      toastPermission ? { pending: 'Loading Please Wait...', success: 'Response Loaded', error: 'Something Went Wrong' } : { error: 'Something Went Wrong' },
-      { autoClose: 1500, hideProgressBar: true }
-    );
+  async ({ body }) => {
+    const data = await axios.post(APIS.check_address_ups, { body });
     return data.data;
   }
 );
