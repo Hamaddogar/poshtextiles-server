@@ -168,35 +168,36 @@ app.post(routeStrings.address_validate_fedexp, async (req, res) => {
             req.body.body,
             config
         );
-
-        if (
-            response?.status === 200 &&
-            (
-                response.data.output.resolvedAddresses[0].attributes.DPV ||
-                response.data.output.resolvedAddresses[0].attributes.Matched ||
-                response.data.output.resolvedAddresses[0].attributes.Resolved
-            )
-        ) {
-
+        if (response?.status === 200 && (response.data.output.resolvedAddresses[0].attributes.DPV || response.data.output.resolvedAddresses[0].attributes.Matched || response.data.output.resolvedAddresses[0].attributes.Resolved)) {
             res.status(response.status).send({
                 message: response.data.output.resolvedAddresses[0].attributes.Resolved,
                 error: false
             });
+        } else if (response?.data?.output?.resolvedAddresses[0]?.customerMessages[0]?.code) {
+            throw ({
+                response: {
+                    "message": response.data.output.resolvedAddresses[0].customerMessages[0].code,
+                    "name": response.data.output.resolvedAddresses[0].customerMessages[0].message,
+                    "status": 500,
+                }
+            });
         }
-        else throw ({
-            response: {
-                "message": "Server Error!",
-                "name": "Error",
-                "status": 500
-            }
-        });
+        else {
+            throw ({
+                response: {
+                    "message": "Server Error!",
+                    "name": "Error",
+                    "status": 500,
+                }
+            });
+        }
 
     } catch (error) {
-        // console.log(error.response.data);
+        console.log(error);
         if (error?.status) res.send({ code: error.status, message: error.message, error: true });
         else if (error?.response?.status) res.send({
             code: error.response?.status,
-            message: ((error?.response?.data?.errors[0]?.code) || (error?.response?.data?.response?.errors[0]?.message)),
+            message: ((error?.response?.data?.errors[0]?.code) || (error?.response?.data?.response?.errors[0]?.message) || error.response.message),
             error: true
         });
         else if (error?.arg1?.response?.status) res.send({ code: error.arg1?.response?.status, message: error.arg1.response.data, error: true });
@@ -408,32 +409,38 @@ app.post(routeStrings.address_validate_ups, async (req, res) => {
             payload,
             config
         );
-        if (
-            response?.status === 200 &&
-            (response?.data?.XAVResponse?.Response?.ResponseStatus?.Description === "Success")
-        ) {
 
+        if (response?.status === 200 && (response?.data?.XAVResponse?.Response?.ResponseStatus?.Description === "Success")) {
             res.status(response.status).send({
                 message: true,
                 error: false
             });
+        } else if (response?.response?.data?.response?.errors[0]?.message) {
+            throw ({
+                response: {
+                    "message": response.response.data.response.errors[0].message,
+                    "name": response.response.data.response.errors[0].code,
+                    "status": 500
+                }
+            })
         }
-        else throw ({
-            response: {
-                "message": "Server Error!",
-                "name": "Error",
-                "status": 500
-            }
-        });
+        else {
+            throw ({
+                response: {
+                    "message": "Server Error!",
+                    "name": "Error",
+                    "status": 500
+                }
+            });
+        }
 
     } catch (error) {
-
-        // console.log(error.response.data);
+        console.log(error);
         // res.send(error)
         if (error?.status) res.send({ code: error.status, message: ((error?.response?.data?.errors[0]?.code) || (error?.response?.data?.response?.errors[0]?.message)), error: true });
         else if (error?.response?.status) res.send({
             code: error.response?.status,
-            message: ((error?.response?.data?.response?.errors[0]?.message) || (error?.response?.data?.errors[0]?.code)),
+            message: ((error?.response?.data?.response?.errors[0]?.message) || (error?.response?.data?.errors[0]?.code) || error?.response?.message),
             error: true
         });
         else if (error?.arg1?.response?.status) res.send({ code: error.arg1?.response?.status, message: error.arg1.response.data.response.errors[0].message, error: true });

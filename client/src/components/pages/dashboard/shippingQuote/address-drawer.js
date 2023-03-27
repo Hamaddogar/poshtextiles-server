@@ -32,6 +32,7 @@ export default function AddressValidateDrawer({
             });
         }
         dispatch(func).then(res => {
+            console.log("resssssss",res);
             if (!(res.payload.error)) {
                 toast.dismiss();
                 setAllowShipment(true);
@@ -43,7 +44,7 @@ export default function AddressValidateDrawer({
             } else {
                 toast.dismiss();
                 setLoading(false)
-                toast.warn(`Please Try Again!`, { position: "top-right", autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "light", });
+                toast.error(`${res.payload.message}`, { position: "top-right", autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "light", });
 
             }
         })
@@ -55,7 +56,6 @@ export default function AddressValidateDrawer({
         event.preventDefault();
         event.stopPropagation();
         const data = new FormData(event.target);
-
 
         if (courier === "FEDEX") {
             const payload = {
@@ -103,7 +103,6 @@ export default function AddressValidateDrawer({
                     "CountryCode": data.get('country')
                 }
             }
-
             recursiveCaller(validateAddressUPS({
                 body: payload,
                 toastPermission: true
