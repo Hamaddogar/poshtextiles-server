@@ -551,7 +551,6 @@ app.post(routeStrings.sale_orders_micro, async (req, res) => {
         );
         console.log(response?.data?.value);
         if (response?.data?.value) {
-            data.dataa = response.data.value;
             res.status(response.status).send(response.data.value);
         } else throw ({
             response: {
