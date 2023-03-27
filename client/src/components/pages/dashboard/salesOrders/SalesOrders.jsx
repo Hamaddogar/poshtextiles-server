@@ -1,4 +1,4 @@
-import { Checkbox, CircularProgress, ClickAwayListener, Grow, Hidden, InputAdornment, MenuList, Popper, Stack, TextField, Typography } from '@mui/material';
+import { Checkbox, ClickAwayListener, Grow, Hidden, InputAdornment, MenuList, Popper, Stack, TextField, Typography } from '@mui/material';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -108,13 +108,13 @@ const SalesOrders = () => {
 
     const handleUpperHeaderSubmit = e => {
         e.preventDefault();
-        const data = new FormData(e.target);
+        // const data = new FormData(e.target);
         alert('working to update')
     };
 
     const handleLineItemSubmit = e => {
         e.preventDefault();
-        const data = new FormData(e.target);
+        // const data = new FormData(e.target);
         alert('working to add Line Item')
     };
 
@@ -122,8 +122,8 @@ const SalesOrders = () => {
 
 
 
-    console.log("saleOrderDetails", saleOrderDetails);
-    console.log("showSelectedProduct", showSelectedProduct);
+    // console.log("saleOrderDetails", saleOrderDetails);
+    // console.log("showSelectedProduct", showSelectedProduct);
 
     return (
         <div>

@@ -8,7 +8,7 @@ import { APIS } from '../../utils/table';
 
 // ------------------All Asyn Reducers are below ------------------//
 let initialState = {
-  perPage: 20,
+  perPage: 21,
   isAuthorised: false,
   loading: false,
   // original data

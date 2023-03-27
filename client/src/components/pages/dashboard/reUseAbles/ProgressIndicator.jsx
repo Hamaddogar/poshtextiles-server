@@ -34,7 +34,7 @@ export default function ProgressIndicator({ interval = 800 }) {
     React.useEffect(() => {
         const timer = setInterval(() => {
             setProgress((prevProgress) => (prevProgress >= 100 ? 0 : prevProgress + 1));
-        }, interval);
+        }, 600);
         return () => {
             clearInterval(timer);
         };
