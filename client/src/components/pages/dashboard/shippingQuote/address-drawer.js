@@ -17,10 +17,7 @@ export default function AddressValidateDrawer({
 }) {
 
     const [loading, setLoading] = React.useState(false)
-
-
     const dispatch = useDispatch();
-    // const { loadingValidateAddress } = useSelector(store => store.mainReducer)
 
     const recursiveCaller = (func, counter) => {
         setLoading(true)
@@ -152,8 +149,6 @@ export default function AddressValidateDrawer({
                                         <Typography sx={{ color: '#6D6D6D', fontSize: '14px' }}>Country<font style={{ color: "red" }}>*</font></Typography>
                                         <TextField required name="country" sx={headInputStyle} fullWidth defaultValue={customer.county} size='small' />
                                     </Box>
-
-
                                 </Grid>
 
                                 {/* right side */}
