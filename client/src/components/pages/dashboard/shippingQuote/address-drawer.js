@@ -25,7 +25,7 @@ export default function AddressValidateDrawer({
     const recursiveCaller = (func, counter) => {
         setLoading(true)
         if (counter === 0) {
-            toast.loading('Loading...', {
+            toast.loading('Validating Address...', {
                 position: "top-right",
                 autoClose: false,
                 hideProgressBar: true
