@@ -43,7 +43,6 @@ export default function ShipReportDialog({ shipReport, SetShipReport, numbers })
 
         print_Labels(data)
             .then(res => {
-
                 if (!(res.data.error)) {
                     setprintProcess({
                         loading: false,

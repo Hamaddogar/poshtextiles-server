@@ -45,29 +45,33 @@ export default function AddressValidateDrawer({
 
     const handleSubmit = () => {
 
-        if (saleOrderDetails?.shippingAgentCode === "FEDEX") {
-            setLoading({ loading: "loading", valid: false })
-            toast.loading('Validating Address...', {
-                position: "top-right",
-                autoClose: false,
-                hideProgressBar: true
-            });
-            request_AccessToken_FEDEXP().then(token => {
-                console.log('--------token',token);
-                recursiveCaller(validate_Address_FEDEX(token, payload_Address_Handler(saleOrderDetails)));
-            })
-        } else if (saleOrderDetails?.shippingAgentCode === "UPS") {
-            setLoading({ loading: "loading", valid: false })
-            toast.loading('Validating Address...', {
-                position: "top-right",
-                autoClose: false,
-                hideProgressBar: true
-            });
-            recursiveCaller(validate_Address_UPS(payload_Address_Handler(saleOrderDetails)));
-        } else if (saleOrderDetails?.shippingAgentCode === "STAMPS") {
-            toast.warn(`${"working on STAMPS"}`, { position: "top-right", autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "light", });
+        if (saleOrderDetails.edcWhseShipments.length > 0) {
+            if (saleOrderDetails?.shippingAgentCode === "FEDEX") {
+                setLoading({ loading: "loading", valid: false })
+                toast.loading('Validating Address...', {
+                    position: "top-right",
+                    autoClose: false,
+                    hideProgressBar: true
+                });
+                request_AccessToken_FEDEXP().then(token => {
+                    console.log('--------token', token);
+                    recursiveCaller(validate_Address_FEDEX(token, payload_Address_Handler(saleOrderDetails)));
+                })
+            } else if (saleOrderDetails?.shippingAgentCode === "UPS") {
+                setLoading({ loading: "loading", valid: false })
+                toast.loading('Validating Address...', {
+                    position: "top-right",
+                    autoClose: false,
+                    hideProgressBar: true
+                });
+                recursiveCaller(validate_Address_UPS(payload_Address_Handler(saleOrderDetails)));
+            } else if (saleOrderDetails?.shippingAgentCode === "STAMPS") {
+                toast.warn(`${"working on STAMPS"}`, { position: "top-right", autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "light", });
+            } else {
+                toast.warn(`No courier isattached`, { position: "top-right", autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "light", });
+            }
         } else {
-            toast.warn(`No courier isattached`, { position: "top-right", autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "light", });
+            drawerStateAddress && toast.error('No Shipment Details Found ...', { position: "top-right", autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "light", });
         }
 
     };
@@ -79,7 +83,7 @@ export default function AddressValidateDrawer({
                 <SwipeableDrawer
                     anchor={"left"}
                     open={drawerStateAddress}
-                    onClose={toggleDrawer(false)}
+                    onClose={loading.loading === "loading" ? () => { } : toggleDrawer(false)}
                     onOpen={toggleDrawer(true)}
                 >
                     <Box

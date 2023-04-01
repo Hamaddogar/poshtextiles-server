@@ -15,6 +15,7 @@ import { create_Shipment_FEDEXP, createShipment_UPS, request_AccessToken_FEDEXP 
 import ShipReportDialog from './ShipReportDialog'
 import { payload_Shipment_Handler } from '../../../../utils/Helper'
 import ShipToDialoge from './ShipToDia'
+import { toast } from 'react-toastify'
 
 
 const ShippingQuote = () => {
@@ -48,7 +49,7 @@ const ShippingQuote = () => {
     // for shipment labels recursiveCaller
     const recursiveCaller = (action, counter) => {
         action.then(res => {
-            console.log("-------",res)
+            console.log("---labels----", res)
             if (!(res?.data?.error)) {
                 SetShipReport({
                     open: true,
@@ -78,35 +79,37 @@ const ShippingQuote = () => {
         // console.log('--data', data.get('printOn'))
         // console.log('--data', data.get('customer'))
         // console.log('--data', data.get('shipTooo'))
-        SetShipReport({ open: true });
-        const condition = saleOrderDetails?.edcSalesLines?.length > 0
-        if (condition && saleOrderDetails?.shippingAgentCode === "FEDEX") {
-            request_AccessToken_FEDEXP()
-                .then(token => {
-                    recursiveCaller(
-                        create_Shipment_FEDEXP(payload_Shipment_Handler(saleOrderDetails), token)
-                        , 0)
+        if (saleOrderDetails.edcWhseShipments.length > 0) {
+            SetShipReport({ open: true });
+            const condition = saleOrderDetails?.edcSalesLines?.length > 0
+            if (condition && saleOrderDetails?.shippingAgentCode === "FEDEX") {
+                request_AccessToken_FEDEXP()
+                    .then(token => {
+                        recursiveCaller(
+                            create_Shipment_FEDEXP(payload_Shipment_Handler(saleOrderDetails), token)
+                            , 0)
+                    });
+            } else if (condition && saleOrderDetails?.shippingAgentCode === "UPS") {
+                recursiveCaller(
+                    createShipment_UPS(payload_Shipment_Handler(saleOrderDetails))
+                    , 0)
+
+            } else if (!condition) {
+                SetShipReport({
+                    open: true,
+                    response: null,
+                    error: "Line Items must be presernt"
                 });
-        } else if (condition && saleOrderDetails?.shippingAgentCode === "UPS") {
-            recursiveCaller(
-                createShipment_UPS(payload_Shipment_Handler(saleOrderDetails))
-                , 0)
-
-        } else if (!condition) {
-            SetShipReport({
-                open: true,
-                response: null,
-                error: "Line Items must be presernt"
-            });
+            } else {
+                SetShipReport({
+                    open: true,
+                    response: null,
+                    error: "This Service is not Supported Yet"
+                });
+            };
+        } else {
+            toast.error('No Shipment Details Found ...', { position: "top-right", autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "light", });
         }
-        else {
-            SetShipReport({
-                open: true,
-                response: null,
-                error: "This Service is not Supported Yet"
-            });
-        };
-
 
     };
 
@@ -127,7 +130,7 @@ const ShippingQuote = () => {
         setdrawerstateRate(open);
     };
 
-
+    // console.log("---------->", saleOrderDetails);
     return (
         <div>
             <Box component={'form'} onSubmit={handleSubmit}>
@@ -135,7 +138,7 @@ const ShippingQuote = () => {
                 <Shipfrom shipfrom={shipfrom} setshipfrom={setshipfrom} />
                 <ShipToDialoge shipToDia={shipToDia} setshipToDia={setshipToDia} customer={saleOrderDetails?.edcCustomers[0]} />
                 <ShipReportDialog shipReport={shipReport} SetShipReport={SetShipReport} numbers={saleOrderDetails?.edcSalesLines?.length} />
-                <AddressValidateDrawer saleOrderDetails={saleOrderDetails} allowShipment={allowShipment} setAllowShipment={setAllowShipment} toggleDrawer={toggleDrawer} drawerStateAddress={drawerStateAddress}  />
+                <AddressValidateDrawer saleOrderDetails={saleOrderDetails} allowShipment={allowShipment} setAllowShipment={setAllowShipment} toggleDrawer={toggleDrawer} drawerStateAddress={drawerStateAddress} />
                 <RateQuoteDrawer saleOrderDetails={saleOrderDetails} toggleDrawerRate={toggleDrawerRate} drawerstateRate={drawerstateRate} />
                 <Grid container >
 
@@ -182,7 +185,7 @@ const ShippingQuote = () => {
                                 </Typography>
 
                                 <TextField
-                                    sx={{ ...headInputStyle, maxWidth: '400px', fontSize: '10px', textDecoration:"italic" }}
+                                    sx={{ ...headInputStyle, maxWidth: '400px', fontSize: '10px', textDecoration: "italic" }}
                                     defaultValue={
                                         saleOrderDetails?.edcCustomers[0]?.name + "\n" +
                                         saleOrderDetails?.edcCustomers[0]?.address + "\n" +

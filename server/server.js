@@ -172,8 +172,8 @@ app.post(routeStrings.shipment_fedexp, async (req, res) => {
         }
     };
 
+    let images = [];
     try {
-        let images = [];
         const arr = req.body.body.requestedShipment.requestedPackageLineItems;
 
         for (let i = 0; i < arr.length; i += 4) {
@@ -194,57 +194,47 @@ app.post(routeStrings.shipment_fedexp, async (req, res) => {
             }
         }
 
-        const canvas = createCanvas(800, 1200);
-        const ctx = canvas.getContext('2d');
-
-        async function downloadAndDrawImage(url, x, y, width, height) {
+        async function downloadAndDrawImage(ctx, url, x, y, width, height) {
             const response = await axios.get(url, { responseType: 'arraybuffer' });
             const img = await loadImage(response.data);
             ctx.drawImage(img, x, y, width, height);
         }
 
-        (async function main() {
+        const b64Getter = async () => {
+
+            const canvas = createCanvas(800, 1220 * images.length + (images.length - 1) * 10);
+            const ctx = canvas.getContext('2d');
+
             let x = 0;
             let y = 0;
-            const width = canvas.width / images.length;
-            const height = canvas.height;
+            const width = canvas.width;
+            const height = canvas.height / images.length;
 
             for (const url of images) {
-                await downloadAndDrawImage(url, x, y, width, height);
-                x += width;
+                await downloadAndDrawImage(ctx, url, x, y, width, height);
+                y += height + 10;
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
             }
 
             const buffer = canvas.toBuffer('image/png');
-            // fs.writeFileSync('merged-image.png', buffer);
             const filePath = path.join(__dirname, '/reports/fedexp/fedexp_labels_report.png');
             fs.writeFileSync(filePath, buffer);
-        })();
+            const base64Datacanvas = canvas.toDataURL().replace(/^data:image\/png;base64,/, '');
+            return base64Datacanvas
 
-        async function downloadAndConvert() {
-            let arrayData = []
-            for (let i = 0; i < images.length; i++) {
-                const response = await axios.get(images[i], { responseType: 'arraybuffer' });
-                const imageData = response.data;
-                const fileName = `label${i + 1}.png`;
-                fs.writeFileSync(fileName, imageData, 'binary');
-
-                const img = await loadImage(fileName);
-                const canvas = createCanvas(800, 1200);
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, 800, 1200);
-                const base64DataSingle = canvas.toDataURL().replace(/^data:image\/png;base64,/, '');
-                // console.log(`Base64 data for label${i + 1}: ${base64Data}`);
-                arrayData.push(base64DataSingle)
-            }
-            return arrayData
         };
 
-        const images64 = await downloadAndConvert(images)
+
+
+        const myFile = await b64Getter()
+
+
         res.status(200).send({
-            filename: 'fedexp_labels_report.png',
-            contentType: 'application/png',
             file: "http://localhost:8080/report_fedexp",
-            data: images64,
+            data: myFile,
             error: false
         })
 
@@ -336,71 +326,41 @@ app.post(routeStrings.rate_list_fedexp, async (req, res) => {
     };
 
     const accountNumber = "740561073";
-    const serviceType = req.body.details
 
-    let rates = [], rawData = [];
+    let rates = [];
     try {
-        for (let index = 0; index < 2; index++) {
-            let newBody = { ...req.body.body }
-            if (index === 0) {
-                newBody.accountNumber.value = accountNumber;
-            } else {
-                newBody.accountNumber.value = accountNumber;
-                newBody.requestedShipment.serviceType = serviceType.value
-            }
+        let newBody = { ...req.body.body }
+        newBody.accountNumber.value = accountNumber;
 
-            const response = await axios.post(
-                SERVERS.FEDEXP_Sandbox_Server + API_FEDEXP.rate_list,
-                newBody,
-                config
-            );
+        const response = await axios.post(
+            SERVERS.FEDEXP_Sandbox_Server + API_FEDEXP.rate_list,
+            newBody,
+            config
+        );
 
-            if (index === 0 && Array.isArray(response.data?.output?.rateReplyDetails)) {
-                response.data?.output?.rateReplyDetails?.map(service => {
-                    // respo[0].ratedShipmentDetails[0]
-                    service.ratedShipmentDetails.map(item => {
-                        if (item.rateType === "ACCOUNT" || item.rateType === "LIST") {
-                            rates.push({
-                                based: item.rateType,
-                                serviceName: service.serviceName,
-                                days: "02",
-                                currency: item.currency,
-                                pkgType: item.ratedPackages[0].rateType,
+        response.data?.output?.rateReplyDetails?.map(service => {
+            // respo[0].ratedShipmentDetails[0]
+            service.ratedShipmentDetails.map(item => {
+                if (item.rateType === "ACCOUNT" || item.rateType === "LIST") {
+                    rates.push({
+                        based: item.rateType,
+                        serviceName: service.serviceName,
+                        days: "02",
+                        currency: item.currency,
+                        pkgType: item.ratedPackages[0].rateType,
 
-                                rate: item.totalNetCharge,
-                                netWeight: item.shipmentRateDetail.totalBillingWeight.value,
-                                unit: item.shipmentRateDetail.totalBillingWeight.units
-                            })
-
-
-                        }
+                        rate: item.totalNetCharge,
+                        netWeight: item.shipmentRateDetail.totalBillingWeight.value,
+                        unit: item.shipmentRateDetail.totalBillingWeight.units
                     })
+                }
+            })
 
 
-                })
-            } else if (index === 1 && Array.isArray(response.data?.output?.rateReplyDetails)) {
-                response.data?.output?.rateReplyDetails?.map(service => {
-                    service.ratedShipmentDetails.map(item => {
-                        if (item.rateType === "ACCOUNT") {
-                            rawData.push({
-                                based: item.rateType,
-                                serviceName: service.serviceName,
-                                days: "02",
-                                currency: item.currency,
-                                pkgType: item.ratedPackages[0].rateType,
+        })
 
-                                rate: item.totalNetCharge,
-                                netWeight: item.shipmentRateDetail.totalBillingWeight.value,
-                                unit: item.shipmentRateDetail.totalBillingWeight.units
-                            })
-                        }
-                    })
-                })
-            }
-        }
 
         res.status(200).send({
-            message: rawData,
             error: false,
             allServices: rates,
         });
@@ -467,34 +427,96 @@ app.post(routeStrings.shipment_ups, async (req, res) => {
         }
 
 
-        const canvas = createCanvas(800, 1200);
-        const ctx = canvas.getContext('2d');
-        let yOffset = 0;
+        // const canvas = createCanvas(800, 1200);
+        // const ctx = canvas.getContext('2d');
+        // let yOffset = 0;
 
-        for (let i = 0; i < images.length; i++) {
-            const base64 = images[i];
-            const image = await loadImage(Buffer.from(base64, 'base64'));
-            const aspectRatio = image.width / image.height;
-            const imageWidth = canvas.width;
-            const imageHeight = imageWidth / aspectRatio;
-            ctx.drawImage(image, 0, yOffset, imageWidth, imageHeight);
-            yOffset += imageHeight;
-        }
+        // for (let i = 0; i < images.length; i++) {
+        //     const base64 = images[i];
+        //     const image = await loadImage(Buffer.from(base64, 'base64'));
+        //     const aspectRatio = image.width / image.height;
+        //     const imageWidth = canvas.width;
+        //     const imageHeight = imageWidth / aspectRatio;
+        //     ctx.drawImage(image, 0, yOffset, imageWidth, imageHeight);
+        //     yOffset += imageHeight;
+        // }
 
-        // Save the canvas as a PNG image
-        const outputPath = path.join(__dirname, '/reports/ups/UPS_labels_report.png');
-        const out = fs.createWriteStream(outputPath);
-        const stream = canvas.createPNGStream();
-        stream.pipe(out);
-        out.on('finish', () => {
-            res.status(200).send({
-                filename: 'UPS_labels_report.png',
-                file: "http://localhost:8080/report_ups",
-                data: images,
-                error: false
-            })
-        });
+        // // Save the canvas as a PNG image
+        // const outputPath = path.join(__dirname, '/reports/ups/UPS_labels_report.png');
+        // const out = fs.createWriteStream(outputPath);
+        // const stream = canvas.createPNGStream();
+        // stream.pipe(out);
+        // out.on('finish', () => {
+        // });
 
+
+
+
+
+
+
+        const b64Getter = async () => {
+            const canvas = createCanvas(800, 700 * images.length + (images.length - 1) * 10);
+            const ctx = canvas.getContext('2d');
+            
+            // Fill canvas with white background
+            ctx.fillStyle = "#FFFFFF";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+            let x = 20;
+            let y = 20;
+            const width = canvas.width - 40; // Subtract 40 to account for 20px padding on each side
+            const height = (canvas.height - ((images.length - 1) * 10) - (20 * 2)) / images.length; // Subtract additional padding and separator lines
+        
+            for (const b64 of images) {
+                const img = await loadImage(Buffer.from(b64, 'base64'));
+                ctx.drawImage(img, x, y, width, height);
+                y += height + 10;
+        
+                // Draw separator line
+                ctx.beginPath();
+                ctx.moveTo(20, y);
+                ctx.lineTo(canvas.width - 20, y);
+                ctx.stroke();
+            }
+        
+            const buffer = canvas.toBuffer('image/png');
+            const filePath = path.join(__dirname, '/reports/ups/UPS_labels_report.png');
+            fs.writeFileSync(filePath, buffer);
+            const base64Datacanvas = canvas.toDataURL().replace(/^data:image\/png;base64,/, '');
+            return base64Datacanvas;
+        };
+        
+
+        const myFile = await b64Getter()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        res.status(200).send({
+            file: "http://localhost:8080/report_ups",
+            data: myFile,
+            data2: images,
+            error: false
+        })
     } catch (error) {
         console.log(error);
         if (error?.response?.status) res.send({ message: error.response.data.response.errors[0].message, error: true });
@@ -520,6 +542,7 @@ app.post(routeStrings.address_validate_ups, async (req, res) => {
             req.body.body,
             config
         );
+
 
 
         if (response?.status === 200 && (response?.data?.XAVResponse?.Response?.ResponseStatus?.Description === "Success")) {
@@ -580,15 +603,11 @@ app.get('/report_ups', (req, res) => {
 // PRINTING labels ups
 app.post('/printer', async (req, res) => {
 
-    const arrayBase64 = req.body.printData
+    const base64 = req.body.printData
     try {
-
-        for (let index = 0; index < arrayBase64.length; index++) {
-            const base64 = arrayBase64[index];
-            const formData = new FormData();
-            formData.append('label', base64);
-            await axios.post("https://zpl.rs74.net", formData);
-        }
+        let formData = new FormData();
+        formData.append('label', base64);
+        await axios.post("https://zpl.rs74.net", formData);
 
         res.status(200).send({
             error: false,
@@ -635,78 +654,50 @@ app.post(routeStrings.rate_list_ups, async (req, res) => {
             "RequestAction": "Shop",
             "RequestOption": "Shop"
         },
-        account: {
-            "RequestAction": "Rate",
-            "RequestOption": "Rate"
-        },
         ShipperNumber: "R006V5",
     }
 
-    const bodyMaker = (indx) => {
-        let newBody = { ...body }
-        if (indx === 0) {
-            newBody.RateRequest.Request = request.shop;
-            return newBody
-        } else {
-            newBody.RateRequest.Request = request.account;
-            newBody.RateRequest.Shipment.Shipper.ShipperNumber = request.ShipperNumber;
-            return newBody
-        }
-    }
-
-
-
     const shopRates = [];
-    let accountService = {}
     try {
 
-        for (let index = 0; index < 2; index++) {
+        let newBody = { ...body }
+        newBody.RateRequest.Request = request.shop;
+        const response = await axios.post(
+            SERVERS.UPS_Production_Server + API_UPS.rate_list,
+            newBody,
+            config
+        );
 
-            const response = await axios.post(
-                SERVERS.UPS_Production_Server + API_UPS.rate_list,
-                bodyMaker(index),
-                config
-            );
-            if (response?.status === 200 && index === 1 && !(Array.isArray(response.data?.RateResponse?.RatedShipment))) {
-                const singleService = {
-                    serviceName: getServiceName(response.data.RateResponse.RatedShipment.Service.Code),
-                    days: getServiceDays(response.data.RateResponse.RatedShipment.Service.Code),
-                    currency: response.data.RateResponse.RatedShipment.TotalCharges.CurrencyCode,
-                    rate: response.data.RateResponse.RatedShipment.TotalCharges.MonetaryValue,
-                    netWeight: response.data.RateResponse.RatedShipment.BillingWeight.Weight,
-                    unit: response.data.RateResponse.RatedShipment.BillingWeight.UnitOfMeasurement.Code,
+
+        if ("Fault" in response.data) {
+            throw {
+                response: {
+                    "message": response?.data?.detail?.Errors?.ErrorDetail?.PrimaryErrorCode?.Description,
+                    "name": response?.data?.detail?.Errors?.ErrorDetail?.PrimaryErrorCode?.Code,
+                    "status": 500
                 }
-                accountService = singleService
-            } else if ("Fault" in response.data) {
-                throw {
-                    response: {
-                        "message": response?.data?.detail?.Errors?.ErrorDetail?.PrimaryErrorCode?.Description,
-                        "name": response?.data?.detail?.Errors?.ErrorDetail?.PrimaryErrorCode?.Code,
-                        "status": 500
-                    }
-                }
-            } else if (response?.status === 200 && index === 0 && (Array.isArray(response.data?.RateResponse?.RatedShipment))) {
-                const shop = (response.data.RateResponse.RatedShipment).map(item => {
-                    return {
-                        serviceName: getServiceName(item.Service.Code),
-                        days: item.GuaranteedDelivery?.BusinessDaysInTransit,
-                        currency: item.TotalCharges.CurrencyCode,
-                        rate: item.TotalCharges.MonetaryValue,
-                        netWeight: item.BillingWeight.Weight,
-                        unit: item.BillingWeight.UnitOfMeasurement.Code
-                    }
-                });
-                shopRates.push(...shop)
             }
+        } else if (response?.status === 200 && (Array.isArray(response.data?.RateResponse?.RatedShipment))) {
+            const shop = (response.data.RateResponse.RatedShipment).map(item => {
+                return {
+                    serviceName: getServiceName(item.Service.Code),
+                    days: item.GuaranteedDelivery?.BusinessDaysInTransit,
+                    currency: item.TotalCharges.CurrencyCode,
+                    rate: item.TotalCharges.MonetaryValue,
+                    netWeight: item.BillingWeight.Weight,
+                    unit: item.BillingWeight.UnitOfMeasurement.Code
+                }
+            });
+            shopRates.push(...shop)
         }
 
         res.status(200).send({
-            message: [accountService],
             allServices: shopRates,
             error: false,
         });
 
     } catch (error) {
+        console.log("error", error);
         if (error?.response?.status) res.send({ error: true, message: error?.response?.data?.response?.errors[0]?.message });
         else res.status(500).send({ error: true, message: error.message });
     }

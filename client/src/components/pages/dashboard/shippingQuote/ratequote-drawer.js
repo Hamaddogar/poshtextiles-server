@@ -1,54 +1,28 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
-import { Checkbox, Container, FormControl, FormControlLabel, Grid, MenuItem, Select, Skeleton, Slider, Typography } from '@mui/material';
-import { Stack } from '@mui/system';
+import { Button, Checkbox, Container, FormControlLabel, Grid, Skeleton, Slider, Stack, Typography } from '@mui/material';
 import { rate_List_FEDEX, rate_List_UPS, request_AccessToken_FEDEXP } from '../../../../utils/API_HELPERS';
 import { payload_Rates_Handler } from '../../../../utils/Helper';
-import { FEDEX_Service_Types, UPS_Service_Types } from '../../../../utils/DATA_Helper';
 import FedexRates from './FedexRates';
 import UPSRates from './UPSRates';
+import { toast } from 'react-toastify';
 
 export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, saleOrderDetails }) {
 
     const [slider, setSlider] = React.useState([0, 2000]);
+    const [reload, setReload] = React.useState(false);
     const [rateListData, setRateListData] = React.useState({
         loading: "idle",
         allService: [],
-        singleService: [],
         error: false
     });
 
 
 
-    const [serviceType, setServiceType] = React.useState(() => {
-        if (saleOrderDetails?.shippingAgentCode === "FEDEX") {
-            return { label: 'Standard Overnight', value: 'STANDARD_OVERNIGHT' }
-        } else if (saleOrderDetails?.shippingAgentCode === "UPS") {
-            return { value: '03', label: 'UPS Ground' }
-        } else if (saleOrderDetails?.shippingAgentCode === "STAMPS") {
-            return { value: '03', label: 'UPS Ground' }
-        } else {
-            return { value: '03', label: 'UPS Ground' }
-        }
-    });
-    const [serviceTypeOptions] = React.useState(() => {
-        if (saleOrderDetails?.shippingAgentCode === "FEDEX") {
-            return FEDEX_Service_Types
-        } else if (saleOrderDetails?.shippingAgentCode === "UPS") {
-            return UPS_Service_Types
-        } else if (saleOrderDetails?.shippingAgentCode === "STAMPS") {
-            return FEDEX_Service_Types
-        } else {
-            return FEDEX_Service_Types
-        }
-    })
-
-
     const loadingFunction = () => setRateListData({
         loading: "loading",
         allService: [],
-        singleService: [],
         error: false
     });
 
@@ -61,7 +35,6 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
                     setRateListData({
                         loading: "responded",
                         allService: response.allServices,
-                        singleService: response.message,
                         error: false
                     })
 
@@ -72,14 +45,12 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
                     setRateListData({
                         loading: "responded",
                         allService: [],
-                        singleService: [],
                         error: response.message
                     })
                 } else {
                     setRateListData({
                         loading: "responded",
                         allService: [],
-                        singleService: [],
                         error: response.message
                     })
                 }
@@ -88,81 +59,49 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
     React.useLayoutEffect(() => {
         const condition = rateListData.loading === "idle" && drawerstateRate;
         // calling apis
-        if (condition && saleOrderDetails?.shippingAgentCode === "FEDEX") {
-            loadingFunction();
-            request_AccessToken_FEDEXP().then(token => {
-                recursiveCallerRates(rate_List_FEDEX({
-                    token: token,
-                    body: payload_Rates_Handler(saleOrderDetails, serviceType.value ? serviceType : { label: 'Standard Overnight', value: 'STANDARD_OVERNIGHT' }),
+        if (saleOrderDetails.edcWhseShipments.length > 0) {
+            if (condition && saleOrderDetails?.shippingAgentCode === "FEDEX") {
+                loadingFunction();
+                request_AccessToken_FEDEXP().then(token => {
+                    recursiveCallerRates(rate_List_FEDEX({
+                        token: token,
+                        body: payload_Rates_Handler(saleOrderDetails),
+                        toastPermission: true,
+                    }))
+                })
+
+            } else if (condition && saleOrderDetails?.shippingAgentCode === "UPS") {
+                loadingFunction();
+                recursiveCallerRates(rate_List_UPS({
+                    body: payload_Rates_Handler(saleOrderDetails),
                     toastPermission: true,
-                    details: serviceType
                 }))
-            })
 
-        } else if (condition && saleOrderDetails?.shippingAgentCode === "UPS") {
-            loadingFunction();
-            recursiveCallerRates(rate_List_UPS({
-                body: payload_Rates_Handler(saleOrderDetails, serviceType.value ? serviceType : { value: '03', label: 'UPS Ground' }),
-                toastPermission: true,
-                details: serviceType
-            }))
-
-        } else if (condition && saleOrderDetails?.shippingAgentCode === "STAMPS") {
-            loadingFunction();
-            payload_Rates_Handler(saleOrderDetails)
-        } else if (!drawerstateRate) {
-            setRateListData({
-                loading: "idle",
-                allService: [],
-                singleService: []
-            })
-        }
-        //eslint-disable-next-line
-    }, [drawerstateRate, serviceType])
-
-
-
-    const handleChangeServiceType = (event, newValue) => {
-
-        if (saleOrderDetails?.shippingAgentCode === "FEDEX") {
-            const daaa = FEDEX_Service_Types.filter(opt => opt.value === event.target.value)
-            setServiceType(daaa[0]);
-            setRateListData({
-                loading: "idle",
-                allService: [],
-                singleService: []
-            })
-        } else if (saleOrderDetails?.shippingAgentCode === "UPS") {
-            const daaa = UPS_Service_Types.filter(opt => opt.value === event.target.value)
-            setServiceType(daaa[0]);
-            setRateListData({
-                loading: "idle",
-                allService: [],
-                singleService: []
-            })
-        } else if (saleOrderDetails?.shippingAgentCode === "STAMPS") {
-            const daaa = UPS_Service_Types.filter(opt => opt.value === event.target.value)
-            setServiceType(daaa[0]);
-            setRateListData({
-                loading: "idle",
-                allService: [],
-                singleService: []
-            })
+            } else if (condition && saleOrderDetails?.shippingAgentCode === "STAMPS") {
+                loadingFunction();
+                payload_Rates_Handler(saleOrderDetails)
+            } else if (!drawerstateRate) {
+                setRateListData({
+                    loading: "idle",
+                    allService: [],
+                })
+            }
         } else {
-            const daaa = UPS_Service_Types.filter(opt => opt.value === event.target.value)
-            setServiceType(daaa[0]);
-            setRateListData({
-                loading: "idle",
-                allService: [],
-                singleService: []
-            })
+            drawerstateRate && toast.error('No Shipment Details Found ...', { position: "top-right", autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "light", });
         }
+
+        //eslint-disable-next-line
+    }, [drawerstateRate, reload])
+
+
+    const handleReload = () => {
+        setRateListData({
+            loading: "idle",
+            allService: [],
+        })
+        setReload(!reload)
     }
 
-    // handleClickProduct
-    // const handleClickProduct = (item) => {
-    //     console.log('handleClickProduct', item);
-    // }
 
 
 
@@ -172,11 +111,11 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
                 <SwipeableDrawer
                     anchor={"left"}
                     open={drawerstateRate}
-                    onClose={toggleDrawerRate(false)}
+                    onClose={rateListData.loading === "loading" ? () => { } : toggleDrawerRate(false)}
                     onOpen={toggleDrawerRate(true)}
                 >
                     <Box
-                        sx={{ width: 500, padding: "20px 15px 0px 15px", background: "#E9EDF1" }}
+                        sx={{ width: 500,minHeight: '650px' ,padding: "20px 15px 0px 15px", background: "#E9EDF1" }}
                         role="presentation"
                     >
                         <Container component='form'>
@@ -184,28 +123,9 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
 
                                 {/* left section */}
                                 <Grid item xs={12}>
-                                    <Box>
-                                        <label>Service Types:</label><br />
-                                        <FormControl fullWidth>
-                                            <Select
-                                                labelId="routes-select-label"
-                                                id="routes-select"
-                                                value={serviceType.value}
-                                                onChange={handleChangeServiceType}
-                                                size='small'
-                                                sx={{ '& input': { fontSize: '13px' }, fontSize: '12px', }}
-                                            >
-                                                {
-                                                    serviceTypeOptions.map(option => <MenuItem value={option.value} sx={{ fontSize: '12px' }}>{option.label}</MenuItem>)
-                                                }
-
-                                            </Select>
-                                        </FormControl>
-
-                                    </Box>
-                                    <Box sx={{ marginTop: "20px" }}>
-                                        Carriers
-                                        <Stack>
+                                    <Stack direction='row' alignItems={'center'} justifyContent={'space-between'}>
+                                        <Box sx={{ marginTop: "20px", minWidth: '50%' }}>
+                                            Carriers
                                             <Box>
                                                 <FormControlLabel
                                                     label={saleOrderDetails?.shippingAgentCode}
@@ -215,9 +135,10 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
                                                 />
                                             </Box>
 
-                                        </Stack>
+                                        </Box>
+                                        <Button size='small' sx={{ fontSize: '11px' }} variant='contained' color='success' onClick={handleReload}>Reload Rates</Button>
+                                    </Stack>
 
-                                    </Box>
                                     <Box>
                                         <Box sx={{ width: "100%", color: "#000000" }}>
                                             <Typography sx={{ fontSize: '13px' }}>Price: {`$${slider[0]}-$${slider[1]}`} </Typography>
@@ -270,27 +191,19 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
 
                                 <Grid item xs={12} >
                                     {
-                                        (saleOrderDetails?.shippingAgentCode === "FEDEX") &&
+                                        !(rateListData.loading === "loading") && (saleOrderDetails?.shippingAgentCode === "FEDEX") &&
                                         <FedexRates rateListData={rateListData} slider={slider} service={saleOrderDetails?.shippingAgentCode} />
                                     }
 
                                     {
-                                        (saleOrderDetails?.shippingAgentCode === "UPS") &&
+                                        !(rateListData.loading === "loading") && (saleOrderDetails?.shippingAgentCode === "UPS") &&
                                         <UPSRates rateListData={rateListData} slider={slider} service={saleOrderDetails?.shippingAgentCode} />
                                     }
-
-
 
                                     <Box py={3}></Box>
 
 
                                 </Grid>
-
-
-
-
-
-
                             </Grid>
                         </Container>
 

@@ -57,12 +57,11 @@ export const payload_Shipment_Handler = details => {
                     "imageType": "PNG",
                     "labelStockType": "PAPER_4X6"
                 },
-                "requestedPackageLineItems": ((details?.edcSalesLines).map((item, index) => {
+                "requestedPackageLineItems": ((details.edcWhseShipments).map((item, index) => {
                     return {
-                        ...item,
                         "weight": {
-                            "units": "LB",
-                            "value": 10
+                            "units": details?.edcSalesLines[0]?.unitOfMeasureCode ? "LB" : "LB",
+                            "value": item.GrossWeight
                         }
                     }
                 })),
@@ -172,7 +171,7 @@ export const payload_Shipment_Handler = details => {
 
 
 
-export const payload_Rates_Handler = (details, serviceType) => {
+export const payload_Rates_Handler = (details) => {
     if (details.shippingAgentCode === "FEDEX") {
         return {
             "accountNumber": {
@@ -237,8 +236,8 @@ export const payload_Rates_Handler = (details, serviceType) => {
                     }
                 },
                 "Service": {
-                    "Code": serviceType.value,
-                    "Description": serviceType.label,
+                    "Code": "03",
+                    "Description": "Strandred Ground",
                 },
                 "Package": ((details?.edcWhseShipments).map(item => {
                     return {
@@ -273,8 +272,6 @@ export const payload_Rates_Handler = (details, serviceType) => {
         alert('working')
     }
 };
-
-
 
 
 export const payload_Address_Handler = (details) => {
