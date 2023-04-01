@@ -28,15 +28,11 @@ let initialState = {
   // app select and flow 
   saleOrderDetails: null,
   pickingSelectedProduct: null,
-  postMan: false,
-  firstTime: true,
   // client info
   client_Info: null,
   // FEDEXP
-  fedexpAddressValid: false,
   loadingHistory: false,
   loadingInventory: false,
-  loadingValidateAddress: false,
 
   loadingNewOrder: false,
   newOrderData: null,
@@ -81,24 +77,6 @@ export const historyGetter = createAsyncThunk(
       toastPermission ? { pending: 'Loading Please Wait...', success: 'Successfully Loaded', error: 'Something Went Wrong' } : { error: 'Something Went Wrong' },
       { autoClose: 1500, hideProgressBar: true }
     );
-    return data.data;
-  }
-);
-
-// validateAddressFEDEXP
-export const validateAddressFEDEXP = createAsyncThunk(
-  'mainSlice/validateAddressFEDEXP',
-  async ({ token, body }) => {
-    const data = await axios.post(APIS.check_address_fedexp, { token, body });
-    return data.data;
-  }
-);
-
-// validateAddress UPS
-export const validateAddressUPS = createAsyncThunk(
-  'mainSlice/validateAddressUPS',
-  async ({ body }) => {
-    const data = await axios.post(APIS.check_address_ups, { body });
     return data.data;
   }
 );
@@ -226,37 +204,6 @@ const mainSlice = createSlice({
         state.loadingHistory = false;
         Swal.fire({ icon: 'error', title: error.code, text: error.message })
       })
-
-      // validateAddressFEDEXP cases
-      .addCase(validateAddressFEDEXP.pending, (state) => {
-        state.loadingValidateAddress = true;
-        state.fedexpAddressValid = false;
-      })
-      .addCase(validateAddressFEDEXP.fulfilled, (state, { payload }) => {
-        state.loadingValidateAddress = false;
-        if (!(payload.error)) {
-          state.fedexpAddressValid = true;
-        }
-      })
-      .addCase(validateAddressFEDEXP.rejected, (state, { error }) => {
-        state.loadingValidateAddress = false;
-      })
-
-      // validateAddress UPS cases
-      .addCase(validateAddressUPS.pending, (state) => {
-        state.loadingValidateAddress = true;
-        state.fedexpAddressValid = false;
-      })
-      .addCase(validateAddressUPS.fulfilled, (state, { payload }) => {
-        state.loadingValidateAddress = false;
-        if (!(payload.error)) {
-          state.fedexpAddressValid = true;
-        }
-      })
-      .addCase(validateAddressUPS.rejected, (state, { error }) => {
-        state.loadingValidateAddress = false;
-      })
-
 
       // createNewOrder
       .addCase(createNewOrder.pending, (state) => {

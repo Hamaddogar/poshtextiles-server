@@ -5,106 +5,65 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { Grid, TextField, Typography } from '@mui/material';
 import { headInputStyle } from '../reUseAbles/ReuseAbles';
 import { Container } from '@mui/system';
-import { requestAccessToken_FEDEXP } from '../../../../utils/API_HELPERS';
-import { validateAddressFEDEXP, validateAddressUPS } from '../../../../RTK/Reducers/Reducers';
-import { useDispatch } from 'react-redux';
+import { request_AccessToken_FEDEXP, validate_Address_FEDEX, validate_Address_UPS } from '../../../../utils/API_HELPERS';
+// import { validateAddressFEDEXP, validateAddressUPS } from '../../../../RTK/Reducers/Reducers';
 import { toast } from 'react-toastify';
+import { payload_Address_Handler } from '../../../../utils/Helper';
 
 export default function AddressValidateDrawer({
     toggleDrawer, drawerStateAddress,
-    customer, setAllowShipment, allowShipment,
-    courier
+    setAllowShipment,
+    saleOrderDetails
 }) {
 
-    const [loading, setLoading] = React.useState(false)
-    const dispatch = useDispatch();
+    const [loading, setLoading] = React.useState({ loading: "idle", valid: false })
 
-    const recursiveCaller = (func, counter) => {
-        setLoading(true)
-        if (counter === 0) {
-            toast.loading('Validating Address...', {
-                position: "top-right",
-                autoClose: false,
-                hideProgressBar: true
-            });
-        }
-        dispatch(func).then(res => {
-            console.log("resssssss",res);
-            if (!(res.payload.error)) {
+    const recursiveCaller = (func, counter = 0) => {
+        // calling api
+        func.then(response => {
+            if (("error" in response) && !(response.error) && response.valid) {
                 toast.dismiss();
                 setAllowShipment(true);
-                setLoading(false)
+                setLoading({ loading: "reponded", valid: true })
             }
-            else if (res.payload.error && counter < 10) {
+            else if ((response.name) && counter < 5) {
                 counter++;
                 recursiveCaller(func, counter);
+            } else if (("error" in response || response.error) && counter >= 5) {
+                toast.dismiss();
+                setLoading({ loading: "reponded", valid: false })
+                toast.error(`${response.message}`, { position: "top-right", autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "light", });
             } else {
                 toast.dismiss();
-                setLoading(false)
-                toast.error(`${res.payload.message}`, { position: "top-right", autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "light", });
-
+                setLoading({ loading: "idle", valid: false })
+                toast.error(`${response.message}`, { position: "top-right", autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "light", });
             }
         })
     };
 
 
 
-    const handleSubmit = event => {
-        event.preventDefault();
-        event.stopPropagation();
-        const data = new FormData(event.target);
+    const handleSubmit = () => {
 
-        if (courier === "FEDEX") {
-            const payload = {
-                "validateAddressControlParameters": {
-                    "includeResolutionTokens": true
-                },
-                "addressesToValidate": [
-                    {
-                        "address": {
-                            "streetLines": [
-                                data.get('address1'),
-                                data.get('address2'),
-                            ],
-                            "city": data.get('city'),
-                            "stateOrProvinceCode": data.get('state'),
-                            "postalCode": data.get('postalCode'),
-                            "countryCode": data.get('country'),
-                            "urbanizationCode": "EXT VISTA BELLA",
-                            "addressVerificationId": "string"
-                        }
-                    }
-                ]
-            }
-            requestAccessToken_FEDEXP()
-                .then(token => {
-                    recursiveCaller(validateAddressFEDEXP({
-                        token,
-                        body: payload,
-                        toastPermission: true
-                    }), 0)
-                })
-        } else if (courier === "UPS") {
-            let payload = {
-                "AddressKeyFormat": {
-                    "ConsigneeName": data.get('companyName'),
-                    "AddressLine": [
-                        data.get('address1'),
-                        data.get('address2'),
-                    ],
-                    "Region": data.get('state'),
-                    "PoliticalDivision1": data.get('state'),
-                    "PoliticalDivision2": data.get('city'),
-                    "PostcodePrimaryLow": data.get('postalCode').split("-")[0],
-                    "PostcodeExtendedLow": data.get('postalCode').split("-")[1],
-                    "CountryCode": data.get('country')
-                }
-            }
-            recursiveCaller(validateAddressUPS({
-                body: payload,
-                toastPermission: true
-            }), 0)
-        } else if (courier === "STAMPS") {
+        if (saleOrderDetails?.shippingAgentCode === "FEDEX") {
+            setLoading({ loading: "loading", valid: false })
+            toast.loading('Validating Address...', {
+                position: "top-right",
+                autoClose: false,
+                hideProgressBar: true
+            });
+            request_AccessToken_FEDEXP().then(token => {
+                recursiveCaller(validate_Address_FEDEX(token, payload_Address_Handler(saleOrderDetails)));
+            })
+        } else if (saleOrderDetails?.shippingAgentCode === "UPS") {
+            setLoading({ loading: "loading", valid: false })
+            toast.loading('Validating Address...', {
+                position: "top-right",
+                autoClose: false,
+                hideProgressBar: true
+            });
+            recursiveCaller(validate_Address_UPS(payload_Address_Handler(saleOrderDetails)));
+        } else if (saleOrderDetails?.shippingAgentCode === "STAMPS") {
             toast.warn(`${"working on STAMPS"}`, { position: "top-right", autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "light", });
         } else {
             toast.warn(`No courier isattached`, { position: "top-right", autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "light", });
@@ -126,7 +85,7 @@ export default function AddressValidateDrawer({
                         sx={{ width: 500, height: "100vh", padding: "10px 20px 0px 30px", background: "#E9EDF1" }}
                         role="presentation"
                     >
-                        <Container component='form' onSubmit={handleSubmit}>
+                        <Container>
                             <Typography >* Represents fields Required</Typography>
 
                             <Grid container spacing={3} >
@@ -134,20 +93,20 @@ export default function AddressValidateDrawer({
                                 <Grid item xs={12} md={6}>
                                     <Box sx={{ marginTop: "20px" }}>
                                         <Typography sx={{ color: '#6D6D6D', fontSize: '14px' }}>Company Name<font style={{ color: "red" }}>*</font></Typography>
-                                        <TextField required name='companyName' sx={headInputStyle} fullWidth defaultValue={customer.name} size='small' />
+                                        <TextField required name='companyName' sx={headInputStyle} fullWidth value={saleOrderDetails?.edcCustomers[0]?.name} size='small' />
                                     </Box>
 
                                     <Box sx={{ marginTop: "20px" }}>
                                         <Typography sx={{ color: '#6D6D6D', fontSize: '14px' }}>Address Line 2<font style={{ color: "red" }}>*</font></Typography>
-                                        <TextField name="address2" sx={headInputStyle} fullWidth defaultValue={customer.address2} size='small' />
+                                        <TextField name="address2" sx={headInputStyle} fullWidth value={saleOrderDetails?.edcCustomers[0]?.address2} size='small' />
                                     </Box>
                                     <Box sx={{ marginTop: "20px" }}>
                                         <Typography sx={{ color: '#6D6D6D', fontSize: '14px' }}>City<font style={{ color: "red" }}>*</font></Typography>
-                                        <TextField required name="city" sx={headInputStyle} fullWidth defaultValue={customer.city} size='small' />
+                                        <TextField required name="city" sx={headInputStyle} fullWidth value={saleOrderDetails?.edcCustomers[0]?.city} size='small' />
                                     </Box>
                                     <Box sx={{ marginTop: "20px" }}>
                                         <Typography sx={{ color: '#6D6D6D', fontSize: '14px' }}>Country<font style={{ color: "red" }}>*</font></Typography>
-                                        <TextField required name="country" sx={headInputStyle} fullWidth defaultValue={customer.county} size='small' />
+                                        <TextField required name="country" sx={headInputStyle} fullWidth value={saleOrderDetails?.edcCustomers[0]?.county} size='small' />
                                     </Box>
                                 </Grid>
 
@@ -156,16 +115,16 @@ export default function AddressValidateDrawer({
 
                                     <Box sx={{ marginTop: "20px" }}>
                                         <Typography sx={{ color: '#6D6D6D', fontSize: '14px' }}>Address Line 1<font style={{ color: "red" }}>*</font></Typography>
-                                        <TextField required name='address1' sx={headInputStyle} fullWidth defaultValue={customer.address} size='small' />
+                                        <TextField required name='address1' sx={headInputStyle} fullWidth value={saleOrderDetails?.edcCustomers[0]?.address} size='small' />
                                     </Box>
 
                                     <Box sx={{ marginTop: "20px" }}>
                                         <Typography sx={{ color: '#6D6D6D', fontSize: '14px' }}>State<font style={{ color: "red" }}>*</font></Typography>
-                                        <TextField required name='state' sx={headInputStyle} fullWidth defaultValue={customer.county} size='small' />
+                                        <TextField required name='state' sx={headInputStyle} fullWidth value={saleOrderDetails?.edcCustomers[0]?.county} size='small' />
                                     </Box>
                                     <Box sx={{ marginTop: "20px" }}>
                                         <Typography sx={{ color: '#6D6D6D', fontSize: '14px' }}>Postal Code<font style={{ color: "red" }}>*</font></Typography>
-                                        <TextField required name='postalCode' sx={headInputStyle} fullWidth defaultValue={customer.postCode} size='small' />
+                                        <TextField required name='postalCode' sx={headInputStyle} fullWidth value={saleOrderDetails?.edcCustomers[0]?.postCode} size='small' />
                                     </Box>
 
                                 </Grid>
@@ -173,19 +132,13 @@ export default function AddressValidateDrawer({
                                 <Grid xs={12} textAlign='right'>
                                     <LoadingButton
                                         sx={{ marginTop: "15px", fontSize: '14px' }}
-                                        loading={loading}
-                                        color={allowShipment ? "success" : 'primary'}
-                                        // disabled={customer.addressValidated}
+                                        loading={loading.loading === "loading"}
+                                        color={loading.valid ? "success" : loading.loading === "responded" ? "error" : 'primary'}
                                         loadingPosition="start"
-                                        variant="outlined"
-                                        type='submit'
+                                        variant="contained"
+                                        onClick={() => loading.valid ? () => { } : handleSubmit()}
                                     >
-                                        {
-                                            allowShipment ?
-                                                "Addess is Valid - Move to Shipment"
-                                                :
-                                                "Validate Now"
-                                        }
+                                        {loading.valid ? "Addess is Valid - Move to Shipment" : loading.loading === "responded" ? "Try Again to Validate" : "Validate Now"}
                                     </LoadingButton>
                                 </Grid>
 

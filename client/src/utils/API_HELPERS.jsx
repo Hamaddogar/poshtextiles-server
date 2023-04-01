@@ -6,7 +6,7 @@ import { APIS } from "./table";
 
 
 // Access Token 
-export const requestAccessToken_FEDEXP = async () => {
+export const request_AccessToken_FEDEXP = async () => {
     try {
         const response = await axios.get('http://localhost:8080/fedexp_token');
         return response.data;
@@ -17,7 +17,7 @@ export const requestAccessToken_FEDEXP = async () => {
 
 
 // 
-export const requestAccessToken_MICROSOFT = async (instance, accounts) => {
+export const request_AccessToken_MICROSOFT = async (instance, accounts) => {
     return instance
         .acquireTokenSilent({
             ...loginRequest,
@@ -26,9 +26,10 @@ export const requestAccessToken_MICROSOFT = async (instance, accounts) => {
         .then((response) => response.accessToken)
 };
 
+// --------------------- create shipment and LABELS --------------------- //
 
 // create shipment FEDEXP
-export const createShipment_FEDEXP = async (body, token) => {
+export const create_Shipment_FEDEXP = async (body, token) => {
     try {
         const response = await axios.post(
             APIS.create_shipment,
@@ -47,7 +48,7 @@ export const createShipment_FEDEXP = async (body, token) => {
 export const createShipment_UPS = async (body) => {
     try {
         const response = await axios.post(
-            APIS.create_shipment_ups,
+            APIS.create_Shipment_UPS,
             {
                 body: body,
             });
@@ -64,7 +65,8 @@ export const createShipment_UPS = async (body) => {
 
 // ---------------------rate list --------------------- //
 
-export const rateListUPS = async ({ body, toastPermission, details }) => {
+// UPS
+export const rate_List_UPS = async ({ body, toastPermission, details }) => {
     try {
         const data = await toast.promise(
             axios.post(APIS.rate_list_ups, { body, details }),
@@ -79,7 +81,7 @@ export const rateListUPS = async ({ body, toastPermission, details }) => {
 
 
 // fedexp
-export const rateListFEDEXP = async ({ body, toastPermission, token, details }) => {
+export const rate_List_FEDEX = async ({ body, toastPermission, token, details }) => {
     try {
         const data = await toast.promise(
             axios.post(APIS.rate_list_fedexp, { body, token, details }),
@@ -91,3 +93,50 @@ export const rateListFEDEXP = async ({ body, toastPermission, token, details }) 
         return error
     }
 }
+// --------------------- validate Address --------------------- //
+//  fedex
+export const validate_Address_FEDEX = async (token, body) => {
+    try {
+        const response = await axios.post(APIS.check_address_fedexp, { token, body });
+        if (response.status >= 400) {
+            throw (response)
+        } else {
+            return response.data
+        }
+    } catch (error) {
+        return error
+    }
+};
+
+
+
+//  UPS
+export const validate_Address_UPS = async (body) => {
+    try {
+        const response = await axios.post(APIS.check_address_ups, { body: body });
+        if (response.status >= 400) {
+            throw (response)
+        } else {
+            return response.data
+        }
+    } catch (error) {
+        return error
+    }
+};
+
+
+// --------------------- Printing Labels --------------------- //
+// UPS + FEDEX
+export const print_Labels = async (base64) => {
+    try {
+        const response = await axios.post(APIS.printUPS, { printData: base64 });
+        if (response.status >= 400) {
+            throw (response)
+
+        } else {
+            return response
+        }
+    } catch (error) {
+        return error
+    }
+};

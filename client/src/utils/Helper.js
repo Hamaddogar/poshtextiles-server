@@ -1,7 +1,7 @@
 
 export const payload_Shipment_Handler = details => {
     if (details.shippingAgentCode === "FEDEX") {
-        const payload_Data = {
+        return {
             "labelResponseOptions": "URL_ONLY",
             "rateRequestTypes": "ACCOUNT",
             "requestedShipment": {
@@ -54,8 +54,8 @@ export const payload_Shipment_Handler = details => {
                     ]
                 },
                 "labelSpecification": {
-                    "imageType": "PDF",
-                    "labelStockType": "PAPER_85X11_TOP_HALF_LABEL"
+                    "imageType": "PNG",
+                    "labelStockType": "PAPER_4X6"
                 },
                 "requestedPackageLineItems": ((details?.edcSalesLines).map((item, index) => {
                     return {
@@ -71,18 +71,17 @@ export const payload_Shipment_Handler = details => {
                 "value": "740561073"
             }
         }
-        return payload_Data;
     } else if (details.shippingAgentCode === "UPS") {
-        const payload_Data = {
+        return {
             "ShipmentRequest": {
                 "Shipment": {
-                    "Description": "1206 PTR",
+                    "Description": details.externalDocumentNo,
                     "Shipper": {
                         "Name": "Muhammad Hamad",
-                        "ShipperNumber": "V78944",
+                        "ShipperNumber": "R006V5",
                         "Address": {
-                            "AddressLine": "1234 Main St",
-                            "City": "Anytown",
+                            "AddressLine": "12 Main St",
+                            "City": "Kalali",
                             "StateProvinceCode": "CA",
                             "PostalCode": "90503",
                             "CountryCode": "US"
@@ -96,7 +95,6 @@ export const payload_Shipment_Handler = details => {
                             "Number": `${details?.edcCustomers[0]?.phoneNo}`,
                         },
                         "FaxNumber": details?.edcCustomers[0]?.faxNo,
-                        "TaxIdentificationNumber": "456999",
                         "Address": {
                             "AddressLine": details?.edcCustomers[0]?.address,
                             "City": details?.edcCustomers[0]?.city,
@@ -106,16 +104,16 @@ export const payload_Shipment_Handler = details => {
                         }
                     },
                     "ShipFrom": {
-                        "Name": "Muhammad Hamd",
-                        "AttentionName": "Muhammad Hamd",
+                        "Name": "Muhammad Hamad",
+                        "AttentionName": "Muhammad Hamad",
                         "Phone": {
                             "Number": "1234567890"
                         },
                         "FaxNumber": "1234567999",
                         "TaxIdentificationNumber": "456999",
                         "Address": {
-                            "AddressLine": "1234 Main St",
-                            "City": "Anytown",
+                            "AddressLine": "12 Main St",
+                            "City": "Kalali",
                             "StateProvinceCode": "CA",
                             "PostalCode": "90503",
                             "CountryCode": "US"
@@ -125,16 +123,16 @@ export const payload_Shipment_Handler = details => {
                         "ShipmentCharge": {
                             "Type": "01",
                             "BillShipper": {
-                                "AccountNumber": "V78944"
+                                "AccountNumber": "R006V5"
                             }
                         }
                     },
                     "Service": {
-                        "Code": "01",
+                        "Code": "03",
                         "Description": "Expedited"
                     },
 
-                    "Package": ((details?.edcSalesLines).map(item => {
+                    "Package": ((details?.edcWhseShipments).map(item => {
                         return {
                             "Description": item.description,
                             "Packaging": {
@@ -142,9 +140,9 @@ export const payload_Shipment_Handler = details => {
                             },
                             "PackageWeight": {
                                 "UnitOfMeasurement": {
-                                    "Code": "LBS"
+                                    "Code": details?.edcSalesLines[0]?.unitOfMeasureCode ? "LBS" : "LBS"
                                 },
-                                "Weight": "10"
+                                "Weight": `${item.GrossWeight}`
                             },
                             "PackageServiceOptions": ""
                         }
@@ -159,11 +157,14 @@ export const payload_Shipment_Handler = details => {
                 "LabelSpecification": {
                     "LabelImageFormat": {
                         "Code": "PNG"
+                    },
+                    "LabelStockSize": {
+                        "Height": "6",
+                        "Width": "4"
                     }
                 }
             }
-        };
-        return payload_Data;
+        }
     } else if (details.shippingAgentCode === "STAMPS") {
         alert('working')
     }
@@ -173,9 +174,9 @@ export const payload_Shipment_Handler = details => {
 
 export const payload_Rates_Handler = (details, serviceType) => {
     if (details.shippingAgentCode === "FEDEX") {
-        const payload_Data = {
+        return {
             "accountNumber": {
-                "value": "740561073"
+                "value": " "
             },
             "requestedShipment": {
                 "shipper": {
@@ -186,22 +187,22 @@ export const payload_Rates_Handler = (details, serviceType) => {
                 },
                 "recipient": {
                     "address": {
-                        "postalCode": 75063,
-                        "countryCode": "US",
+                        "postalCode": details?.edcCustomers[0]?.postCode,
+                        "countryCode": details?.shipToCountryRegionCode,
                         "residential": true
                     }
                 },
                 "pickupType": "DROPOFF_AT_FEDEX_LOCATION",
-                "serviceType": serviceType.value,
                 "rateRequestType": [
-                    "LIST"
+                    "LIST",
+                    "ACCOUNT"
                 ],
                 "requestedPackageLineItems":
-                    ((details?.edcSalesLines).map((item, index) => {
+                    ((details?.edcWhseShipments).map((item, index) => {
                         return {
                             "weight": {
-                                "units": "LB",
-                                "value": 10
+                                "units": `${details?.edcSalesLines[0]?.unitOfMeasureCode === "YDS" ? "LB" : "LB"}`,
+                                "value": details?.edcSalesLines[0]?.unitOfMeasureCode === "YDS" ? Math.ceil(item.GrossWeight) : Math.ceil(item.GrossWeight)
                             },
                             "shipmentSpecialServices": {
                                 "specialServiceTypes": [
@@ -212,21 +213,14 @@ export const payload_Rates_Handler = (details, serviceType) => {
                     }))
             }
         }
-
-
-        return payload_Data;
     } else if (details.shippingAgentCode === "UPS") {
-        const payload_Data = {
-            "Request": {
-                "RequestOption": "Rate"
-            },
+        return {
             "Shipment": {
                 "Shipper": {
                     "Name": "Muhammad Hamad",
-                    "ShipperNumber": "V78944",
                     "Address": {
-                        "AddressLine": "1234 Main St",
-                        "City": "Anytown",
+                        "AddressLine": "12 Main St",
+                        "City": "Kalali",
                         "StateProvinceCode": "CA",
                         "PostalCode": "90503",
                         "CountryCode": "US"
@@ -244,10 +238,9 @@ export const payload_Rates_Handler = (details, serviceType) => {
                 },
                 "Service": {
                     "Code": serviceType.value,
-                    "Description": "Service Description",
-                    "details" : serviceType
-                }, 
-                "Package": ((details?.edcSalesLines).map(item => {
+                    "Description": serviceType.label,
+                },
+                "Package": ((details?.edcWhseShipments).map(item => {
                     return {
                         "PackagingType": {
                             "Code": "02",
@@ -258,26 +251,79 @@ export const payload_Rates_Handler = (details, serviceType) => {
                                 "Code": "IN",
                                 "Description": "Inches"
                             },
-                            "Length": "20",
-                            "Width": "10",
-                            "Height": "5"
+                            "Length": `${item.edcBoxDetails[0].length}`,
+                            "Width": `${item.edcBoxDetails[0].width}`,
+                            "Height": `${item.edcBoxDetails[0].height}`
                         },
                         "PackageWeight": {
                             "UnitOfMeasurement": {
-                                "Code": "Lbs",
-                                "Description": "Pounds"
+                                "Code": `${details?.edcSalesLines[0]?.unitOfMeasureCode === "YDS" ? "LBS" : "LBS"}`,
+                                "Description": `${details?.edcSalesLines[0]?.unitOfMeasureCode === "YDS" ? details.edcSalesLines[0].unitOfMeasureCode : "Pounds"}`
                             },
-                            "Weight": "10"
+                            "Weight": `${details?.edcSalesLines[0]?.unitOfMeasureCode === "YDS" ? Math.ceil(item.GrossWeight) : Math.ceil(item.GrossWeight)}`
                         }
                     }
                 })),
+                "ShipmentRatingOptions": {
+                    "NegotiatedRatesIndicator": "True"
+                }
             }
         };
-        return payload_Data;
     } else if (details.shippingAgentCode === "STAMPS") {
         alert('working')
     }
 };
+
+
+
+
+export const payload_Address_Handler = (details) => {
+    if (details.shippingAgentCode === "FEDEX") {
+        return {
+            "validateAddressControlParameters": {
+                "includeResolutionTokens": true
+            },
+            "addressesToValidate": [
+                {
+                    "address": {
+                        "streetLines": [
+                            details.edcCustomers[0].address,
+                            details.edcCustomers[0].address2,
+                        ],
+                        "city": `${details.edcCustomers[0].city}`,
+                        "stateOrProvinceCode": `${details.edcCustomers[0].county}`,
+                        "postalCode": `${details.edcCustomers[0].postCode}`,
+                        "countryCode": `${details.edcCustomers[0].countryRegionCode}`,
+                        "addressVerificationId": `${Math.random()}`,
+                    }
+                }
+            ]
+        }
+    } else if (details.shippingAgentCode === "UPS") {
+        return {
+            "XAVRequest": {
+                "AddressKeyFormat": {
+                    "ConsigneeName": details.edcCustomers[0].name,
+                    "AddressLine": [
+                        details.edcCustomers[0].address,
+                        details.edcCustomers[0].address2,
+                    ],
+                    "Region": `${details.edcCustomers[0].city},${details.edcCustomers[0].county},${details.edcCustomers[0].postCode}`,
+                    "PoliticalDivision1": `${details.edcCustomers[0].county}`,
+                    "PostcodePrimaryLow": `${details.edcCustomers[0].postCode.split("-")[0] ? details.edcCustomers[0].postCode.split("-")[0] : " "}`,
+                    "PostcodeExtendedLow": `${details.edcCustomers[0].postCode.split("-")[1] ? details.edcCustomers[0].postCode.split("-")[1] : " "}`,
+                    "CountryCode": `${details.edcCustomers[0].countryRegionCode}`,
+                }
+            }
+        }
+    } else if (details.shippingAgentCode === "STAMPS") {
+        alert('working')
+    }
+};
+
+
+
+
 
 
 

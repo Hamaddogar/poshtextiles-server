@@ -11,7 +11,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import Shipfrom from './Shipfrom'
 import { useSelector } from 'react-redux'
 import { BackButton, headInputStyle, styleSlect } from '../reUseAbles/ReuseAbles'
-import { createShipment_FEDEXP, createShipment_UPS, requestAccessToken_FEDEXP } from '../../../../utils/API_HELPERS'
+import { create_Shipment_FEDEXP, createShipment_UPS, request_AccessToken_FEDEXP } from '../../../../utils/API_HELPERS'
 import ShipReportDialog from './ShipReportDialog'
 import { payload_Shipment_Handler } from '../../../../utils/Helper'
 import ShipToDialoge from './ShipToDia'
@@ -48,6 +48,7 @@ const ShippingQuote = () => {
     // for shipment labels recursiveCaller
     const recursiveCaller = (action, counter) => {
         action.then(res => {
+            console.log("-------",res)
             if (!(res?.data?.error)) {
                 SetShipReport({
                     open: true,
@@ -80,10 +81,10 @@ const ShippingQuote = () => {
         SetShipReport({ open: true });
         const condition = saleOrderDetails?.edcSalesLines?.length > 0
         if (condition && saleOrderDetails?.shippingAgentCode === "FEDEX") {
-            requestAccessToken_FEDEXP()
+            request_AccessToken_FEDEXP()
                 .then(token => {
                     recursiveCaller(
-                        createShipment_FEDEXP(payload_Shipment_Handler(saleOrderDetails), token)
+                        create_Shipment_FEDEXP(payload_Shipment_Handler(saleOrderDetails), token)
                         , 0)
                 });
         } else if (condition && saleOrderDetails?.shippingAgentCode === "UPS") {
@@ -134,7 +135,7 @@ const ShippingQuote = () => {
                 <Shipfrom shipfrom={shipfrom} setshipfrom={setshipfrom} />
                 <ShipToDialoge shipToDia={shipToDia} setshipToDia={setshipToDia} customer={saleOrderDetails?.edcCustomers[0]} />
                 <ShipReportDialog shipReport={shipReport} SetShipReport={SetShipReport} numbers={saleOrderDetails?.edcSalesLines?.length} />
-                <AddressValidateDrawer allowShipment={allowShipment} setAllowShipment={setAllowShipment} toggleDrawer={toggleDrawer} drawerStateAddress={drawerStateAddress} customer={saleOrderDetails?.edcCustomers[0]} courier={saleOrderDetails?.shippingAgentCode} />
+                <AddressValidateDrawer saleOrderDetails={saleOrderDetails} allowShipment={allowShipment} setAllowShipment={setAllowShipment} toggleDrawer={toggleDrawer} drawerStateAddress={drawerStateAddress}  />
                 <RateQuoteDrawer saleOrderDetails={saleOrderDetails} toggleDrawerRate={toggleDrawerRate} drawerstateRate={drawerstateRate} />
                 <Grid container >
 
@@ -181,15 +182,15 @@ const ShippingQuote = () => {
                                 </Typography>
 
                                 <TextField
-                                    sx={{ ...headInputStyle, maxWidth: '400px', fontSize: '12px' }}
+                                    sx={{ ...headInputStyle, maxWidth: '400px', fontSize: '10px', textDecoration:"italic" }}
                                     defaultValue={
                                         saleOrderDetails?.edcCustomers[0]?.name + "\n" +
                                         saleOrderDetails?.edcCustomers[0]?.address + "\n" +
                                         saleOrderDetails?.edcCustomers[0]?.address2 + "\n" +
+                                        saleOrderDetails?.edcCustomers[0]?.county + "\n" +
+                                        saleOrderDetails?.edcCustomers[0]?.postCode + "\n" +
                                         saleOrderDetails?.edcCustomers[0]?.city + "\n" +
-                                        saleOrderDetails?.edcCustomers[0]?.countryRegionCode + "\n" +
-                                        saleOrderDetails?.edcCustomers[0]?.phoneNo + "\n" +
-                                        saleOrderDetails?.edcCustomers[0]?.eMail
+                                        saleOrderDetails?.edcCustomers[0]?.countryRegionCode
                                     }
                                     size='small'
                                     multiline

@@ -13,7 +13,7 @@ import { createNewOrder } from '../../../../RTK/Reducers/Reducers';
 import { useDispatch } from 'react-redux';
 // import { v4 as uuidv4 } from 'uuid';
 import ThumbNailImageSVG from "../../../assets/images/thumbnail2.svg";
-import { requestAccessToken_MICROSOFT } from '../../../../utils/API_HELPERS';
+import { request_AccessToken_MICROSOFT } from '../../../../utils/API_HELPERS';
 import { useMsal } from '@azure/msal-react';
 const CreateSalesOrder = () => {
 
@@ -73,10 +73,44 @@ const CreateSalesOrder = () => {
             "edcSalesLines": lineItems
         }
 
-        requestAccessToken_MICROSOFT(instance, accounts).then(token => {
+        console.log("body",body);
+        const newdata  = {
+            "no": "",
+            "sellToCustomerNo": "C0003647",
+            "shipToCode": "01",
+            "projectName": "LIBRARY",
+            "specifier": "",
+            "orderDate": "2022-05-25",
+            "salespersonCode": "BEVERLY J",
+            "campaignNo": "",
+            "requestedDeliveryDate": "2023-06-01",
+            "contact": "LIBRARY ",
+            "shippingAgentCode": "FEDEX",
+            "externalDocumentNo": "KG-TEST-901",
+            "shipmentDate": "2023-06-02",
+            "priority": "Sea 3",
+            "edcSalesLines": [
+                {
+                    "lineNo": 10000,
+                    "type": "Item",
+                    "no": "S10017-007",
+                    "quantity": 1,
+                    "dropShipment": false
+                },
+                {
+                    "lineNo": 20000,
+                    "type": "Item",
+                    "no": "S10017-003",
+                    "quantity": 1,
+                    "dropShipment": false
+                }
+            ]
+        }
+
+        request_AccessToken_MICROSOFT(instance, accounts).then(token => {
             dispatch(createNewOrder({
                 token: token,
-                body: body,
+                body: newdata,
                 toastPermission: true,
             }))
         })

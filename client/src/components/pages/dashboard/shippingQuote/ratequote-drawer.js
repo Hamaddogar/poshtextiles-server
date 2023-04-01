@@ -1,21 +1,21 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
-import Button from '@mui/material/Button';
-import { Checkbox, Container, Divider, FormControl, FormControlLabel, Grid, MenuItem, Select, Skeleton, Slider, Typography } from '@mui/material';
+import { Checkbox, Container, FormControl, FormControlLabel, Grid, MenuItem, Select, Skeleton, Slider, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
-import logoUPS from './Assets/upslogo.png';
-import logoFED from './Assets/fedlogo.png';
-import { rateListFEDEXP, rateListUPS, requestAccessToken_FEDEXP } from '../../../../utils/API_HELPERS';
+import { rate_List_FEDEX, rate_List_UPS, request_AccessToken_FEDEXP } from '../../../../utils/API_HELPERS';
 import { payload_Rates_Handler } from '../../../../utils/Helper';
 import { FEDEX_Service_Types, UPS_Service_Types } from '../../../../utils/DATA_Helper';
+import FedexRates from './FedexRates';
+import UPSRates from './UPSRates';
 
 export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, saleOrderDetails }) {
 
     const [slider, setSlider] = React.useState([0, 2000]);
     const [rateListData, setRateListData] = React.useState({
         loading: "idle",
-        list: [],
+        allService: [],
+        singleService: [],
         error: false
     });
 
@@ -47,7 +47,8 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
 
     const loadingFunction = () => setRateListData({
         loading: "loading",
-        list: [],
+        allService: [],
+        singleService: [],
         error: false
     });
 
@@ -59,7 +60,8 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
                 if (("error" in response) && !(response.error)) {
                     setRateListData({
                         loading: "responded",
-                        list: response.message,
+                        allService: response.allServices,
+                        singleService: response.message,
                         error: false
                     })
 
@@ -69,13 +71,15 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
                 } else if (("error" in response || response.error) && counter >= 5) {
                     setRateListData({
                         loading: "responded",
-                        list: [],
+                        allService: [],
+                        singleService: [],
                         error: response.message
                     })
                 } else {
                     setRateListData({
                         loading: "responded",
-                        list: [],
+                        allService: [],
+                        singleService: [],
                         error: response.message
                     })
                 }
@@ -86,8 +90,8 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
         // calling apis
         if (condition && saleOrderDetails?.shippingAgentCode === "FEDEX") {
             loadingFunction();
-            requestAccessToken_FEDEXP().then(token => {
-                recursiveCallerRates(rateListFEDEXP({
+            request_AccessToken_FEDEXP().then(token => {
+                recursiveCallerRates(rate_List_FEDEX({
                     token: token,
                     body: payload_Rates_Handler(saleOrderDetails, serviceType.value ? serviceType : { label: 'Standard Overnight', value: 'STANDARD_OVERNIGHT' }),
                     toastPermission: true,
@@ -97,7 +101,7 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
 
         } else if (condition && saleOrderDetails?.shippingAgentCode === "UPS") {
             loadingFunction();
-            recursiveCallerRates(rateListUPS({
+            recursiveCallerRates(rate_List_UPS({
                 body: payload_Rates_Handler(saleOrderDetails, serviceType.value ? serviceType : { value: '03', label: 'UPS Ground' }),
                 toastPermission: true,
                 details: serviceType
@@ -109,7 +113,8 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
         } else if (!drawerstateRate) {
             setRateListData({
                 loading: "idle",
-                list: []
+                allService: [],
+                singleService: []
             })
         }
         //eslint-disable-next-line
@@ -124,36 +129,40 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
             setServiceType(daaa[0]);
             setRateListData({
                 loading: "idle",
-                list: []
+                allService: [],
+                singleService: []
             })
         } else if (saleOrderDetails?.shippingAgentCode === "UPS") {
             const daaa = UPS_Service_Types.filter(opt => opt.value === event.target.value)
             setServiceType(daaa[0]);
             setRateListData({
                 loading: "idle",
-                list: []
+                allService: [],
+                singleService: []
             })
         } else if (saleOrderDetails?.shippingAgentCode === "STAMPS") {
             const daaa = UPS_Service_Types.filter(opt => opt.value === event.target.value)
             setServiceType(daaa[0]);
             setRateListData({
                 loading: "idle",
-                list: []
+                allService: [],
+                singleService: []
             })
         } else {
             const daaa = UPS_Service_Types.filter(opt => opt.value === event.target.value)
             setServiceType(daaa[0]);
             setRateListData({
                 loading: "idle",
-                list: []
+                allService: [],
+                singleService: []
             })
         }
     }
 
     // handleClickProduct
-    const handleClickProduct = (item) => {
-        console.log('handleClickProduct', item);
-    }
+    // const handleClickProduct = (item) => {
+    //     console.log('handleClickProduct', item);
+    // }
 
 
 
@@ -167,7 +176,7 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
                     onOpen={toggleDrawerRate(true)}
                 >
                     <Box
-                        sx={{ width: 500, minHeight: "100vh", padding: "20px 15px 0px 15px", background: "#E9EDF1" }}
+                        sx={{ width: 500, padding: "20px 15px 0px 15px", background: "#E9EDF1" }}
                         role="presentation"
                     >
                         <Container component='form'>
@@ -210,19 +219,6 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
 
                                     </Box>
                                     <Box>
-                                        {/* <Box sx={{ width: "100%", color: "#000000" }}>
-                                            <Typography sx={{ fontSize: '13px' }}>ETA: {`${slider.first[0]}-${slider.first[1]}`} Days</Typography>
-                                            <Slider
-                                                sx={{ marginLeft: "5px" }}
-                                                getAriaLabel={() => 'Price Range'}
-                                                value={slider.first}
-                                                onChange={handleChange}
-                                                valueLabelDisplay="auto"
-                                                getAriaValueText={value => `${value}`}
-                                                size='small'
-                                                name='first'
-                                            />
-                                        </Box> */}
                                         <Box sx={{ width: "100%", color: "#000000" }}>
                                             <Typography sx={{ fontSize: '13px' }}>Price: {`$${slider[0]}-$${slider[1]}`} </Typography>
                                             <Slider
@@ -242,10 +238,8 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
                                     </Box>
 
                                 </Grid>
-                                <Grid item xs={12}>
-                                    <Divider > Rates </Divider>
-                                </Grid>
-                                {/* right section */}
+
+                                {/* rates display section */}
                                 <Grid item xs={12} >
 
                                     {
@@ -272,74 +266,31 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
 
                                         </Box>
                                     }
+                                </Grid>
 
+                                <Grid item xs={12} >
                                     {
-                                        rateListData.loading === "responded" &&
-                                        (rateListData?.list)?.length > 0 &&
-                                        (rateListData?.list.filter(item => {
-                                            return item.rate >= slider[0] && item.rate <= slider[1];
-                                        }))?.map((item, indx, self) => {
-                                            // (rateListData?.list)?.map((item, indx, self) => {
-                                            return (
-                                                <>
-                                                    <Box sx={{
-                                                        borderTop: "1px solid #AFB2B5", borderBottom: indx === self.length - 1 ? "1px solid #AFB2B5" : "none", padding: "8px 0px 6px 0px", "&:hover": {
-                                                            backgroundColor: 'white'
-                                                        }
-                                                    }}>
-                                                        <Grid container justifyContent={"space-between"} alignItems={"center"}>
-                                                            <Grid item xs={2}>
-                                                                <Stack direction={"row"} alignItems={"center"}>
-                                                                    <Box>
-                                                                        {
-                                                                            !(saleOrderDetails?.shippingAgentCode) === "UPS" ?
-                                                                                <img alt=" " src={logoUPS} style={{ width: "50px" }} />
-                                                                                :
-                                                                                <img alt=" " src={logoFED} style={{ width: "50px" }} />
-                                                                        }
-                                                                    </Box>
-                                                                    {/* <Typography sx={{ fontSize: '14px' }}>{item.serviceName}</Typography> */}
-                                                                </Stack>
-                                                            </Grid>
-                                                            <Grid item xs={10}>
-                                                                <Stack direction={"row"} alignItems={"center"} justifyContent={"flex-end"}>
-                                                                    <Typography sx={{ marginRight: "5px", fontSize: '11px' }}>
-                                                                        {item.serviceName} / {item.netWeight} {item.unit}
-                                                                    </Typography>
-                                                                    <Box >
-                                                                        <Button
-                                                                            onClick={() => handleClickProduct(item)}
-                                                                            size='small' sx={{
-                                                                                background: "dodgerBlue", color: "white", "&:hover": {
-                                                                                    backgroundColor: 'dodgerBlue'
-                                                                                }
-                                                                            }}>{item.rate} {item.currency}</Button>
-                                                                    </Box>
-
-                                                                </Stack>
-                                                            </Grid>
-                                                        </Grid>
-                                                    </Box>
-                                                </>
-                                            )
-                                        })
+                                        (saleOrderDetails?.shippingAgentCode === "FEDEX") &&
+                                        <FedexRates rateListData={rateListData} slider={slider} service={saleOrderDetails?.shippingAgentCode} />
                                     }
 
                                     {
-                                        rateListData.loading === "responded" && (rateListData.error) &&
-                                        <Box textAlign={'center'} >
-                                            {rateListData.error}
-                                        </Box>
+                                        (saleOrderDetails?.shippingAgentCode === "UPS") &&
+                                        <UPSRates rateListData={rateListData} slider={slider} service={saleOrderDetails?.shippingAgentCode} />
                                     }
-                                    {
-                                        rateListData.loading === "responded" && (rateListData.list.length === 0) &&
-                                        <Box textAlign={'center'} >
-                                            No Rates Are Found
-                                        </Box>
-                                    }
+
+
+
+                                    <Box py={3}></Box>
 
 
                                 </Grid>
+
+
+
+
+
+
                             </Grid>
                         </Container>
 

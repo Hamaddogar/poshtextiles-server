@@ -6,20 +6,63 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
-import { CircularProgress, Grid, Typography } from '@mui/material';
+import { CircularProgress, Container, Grid, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import File from "../../../assets/icons/file.svg";
+import LoadingButton from '@mui/lab/LoadingButton';
+import { print_Labels } from '../../../../utils/API_HELPERS';
 // import ProgressIndicator from '../reUseAbles/ProgressIndicator';
 
 export default function ShipReportDialog({ shipReport, SetShipReport, numbers }) {
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-
+    const [printProcess, setprintProcess] = React.useState({
+        loading: false,
+        message: "",
+        error: false
+    })
     const ShipReportDialogClose = () => {
         SetShipReport({
             open: false
         });
+        setprintProcess({
+            loading: false,
+            message: "",
+            error: false
+        })
     };
+
+
+
+    const handlePrint = async (data) => {
+        setprintProcess({
+            loading: true,
+            message: "",
+            error: false
+        })
+
+        print_Labels(data)
+            .then(res => {
+
+                if (!(res.data.error)) {
+                    setprintProcess({
+                        loading: false,
+                        message: "",
+                        error: false
+                    });
+                } else {
+                    setprintProcess({
+                        loading: false,
+                        message: res.data.message,
+                        error: true
+                    });
+                }
+
+                // setprintProcess(false)
+            })
+
+    }
+
 
     return (
         <div>
@@ -58,10 +101,13 @@ export default function ShipReportDialog({ shipReport, SetShipReport, numbers })
                                 </>
                         }
                     </Grid>
+                    <Container>
+                        <Typography sx={{ color: '#DE7D69' }}>{printProcess.message ? `Printing Issue : \n ${printProcess.message}`: ""}</Typography>
+                    </Container>
                 </DialogContent>
                 <DialogActions>
                     {shipReport.response && !shipReport.error && <>
-                        <Button color='error' variant='contained'
+                        <Button size='small' color='error' variant='contained'
                             onClick={ShipReportDialogClose}
                         >Close</Button>
                         &nbsp; &nbsp;
@@ -72,8 +118,28 @@ export default function ShipReportDialog({ shipReport, SetShipReport, numbers })
                             href={shipReport?.response?.data?.file}
                             download="shipment-label.pdf"
                         >
-                            <Button color='success' variant='contained'>Download PDF</Button>
+                            <Button size='small' color='success' variant='contained'>Preview</Button>
                         </a>
+
+
+                        <LoadingButton
+                            // sx={{ marginTop: "15px", fontSize: '14px' }}
+                            loading={printProcess.loading}
+                            color={printProcess.error ? "error" : "success"}
+                            disabled={printProcess.loading}
+                            loadingPosition="start"
+                            variant="contained"
+                            size='small'
+                            onClick={() => handlePrint(shipReport?.response?.data?.data)}
+                        >
+                            {printProcess.loading ? "Printing" : "Print Labels"}
+                        </LoadingButton>
+
+
+
+
+
+
                     </>}
                     {shipReport.error && <Button color='error' variant='contained'
                         onClick={ShipReportDialogClose}
