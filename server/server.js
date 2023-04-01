@@ -137,7 +137,7 @@ app.get(routeStrings.token_fed, async (req, res) => {
     };
     try {
         const response = await axios.post(
-            SERVERS.FEDEXP_Sandbox_Server + API_FEDEXP.Token,
+            SERVERS.FEDEXP_Production_Server + API_FEDEXP.Token,
             new URLSearchParams(body).toString(),
             config
         );
@@ -156,8 +156,8 @@ app.get(routeStrings.token_fed, async (req, res) => {
 
 
     } catch (error) {
-        if (error?.status) res.status(error.status).send({ error: error.message });
-        else if (error?.response?.status) res.status(error.response.status).send({ error: error.response.message });
+        console.log(error);
+        if (error?.response?.status) res.send({ error: true, message: error.response.data.errors[0].message });
         else res.status(500).send({ error: error.message });
     }
 });
@@ -181,7 +181,7 @@ app.post(routeStrings.shipment_fedexp, async (req, res) => {
             let newBody = { ...req.body.body }
             newBody.requestedShipment.requestedPackageLineItems = chunk
             const response = await axios.post(
-                SERVERS.FEDEXP_Sandbox_Server + API_FEDEXP.Create_Shipment,
+                SERVERS.FEDEXP_Production_Server + API_FEDEXP.Create_Shipment,
                 newBody,
                 config
             );
@@ -267,7 +267,7 @@ app.post(routeStrings.address_validate_fedexp, async (req, res) => {
     };
     try {
         const response = await axios.post(
-            SERVERS.FEDEXP_Sandbox_Server + API_FEDEXP.Validate_Address,
+            SERVERS.FEDEXP_Production_Server + API_FEDEXP.Validate_Address,
             req.body.body,
             config
         );
@@ -350,7 +350,7 @@ app.post(routeStrings.rate_list_fedexp, async (req, res) => {
             }
 
             const response = await axios.post(
-                SERVERS.FEDEXP_Sandbox_Server + API_FEDEXP.rate_list,
+                SERVERS.FEDEXP_Production_Server + API_FEDEXP.rate_list,
                 newBody,
                 config
             );

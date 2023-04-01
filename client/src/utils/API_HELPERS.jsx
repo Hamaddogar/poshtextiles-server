@@ -8,10 +8,10 @@ import { APIS } from "./table";
 // Access Token 
 export const request_AccessToken_FEDEXP = async () => {
     try {
-        const response = await axios.get('http://localhost:8080/fedexp_token');
+        const response = await axios.get(APIS.token_fed);
         return response.data;
     } catch (error) {
-        throw new Error('Failed to retrieve access token');
+        return error
     }
 };
 
