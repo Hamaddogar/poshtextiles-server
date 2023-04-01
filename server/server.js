@@ -137,7 +137,7 @@ app.get(routeStrings.token_fed, async (req, res) => {
     };
     try {
         const response = await axios.post(
-            SERVERS.FEDEXP_Production_Server + API_FEDEXP.Token,
+            SERVERS.FEDEXP_Sandbox_Server + API_FEDEXP.Token,
             new URLSearchParams(body).toString(),
             config
         );
@@ -181,7 +181,7 @@ app.post(routeStrings.shipment_fedexp, async (req, res) => {
             let newBody = { ...req.body.body }
             newBody.requestedShipment.requestedPackageLineItems = chunk
             const response = await axios.post(
-                SERVERS.FEDEXP_Production_Server + API_FEDEXP.Create_Shipment,
+                SERVERS.FEDEXP_Sandbox_Server + API_FEDEXP.Create_Shipment,
                 newBody,
                 config
             );
@@ -267,7 +267,7 @@ app.post(routeStrings.address_validate_fedexp, async (req, res) => {
     };
     try {
         const response = await axios.post(
-            SERVERS.FEDEXP_Production_Server + API_FEDEXP.Validate_Address,
+            SERVERS.FEDEXP_Sandbox_Server + API_FEDEXP.Validate_Address,
             req.body.body,
             config
         );
@@ -350,7 +350,7 @@ app.post(routeStrings.rate_list_fedexp, async (req, res) => {
             }
 
             const response = await axios.post(
-                SERVERS.FEDEXP_Production_Server + API_FEDEXP.rate_list,
+                SERVERS.FEDEXP_Sandbox_Server + API_FEDEXP.rate_list,
                 newBody,
                 config
             );
