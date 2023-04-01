@@ -2,13 +2,10 @@
 require('dotenv').config();
 const express = require('express');
 const fs = require('fs');
-const { degrees, PDFDocument, rgb, StandardFonts } = require('pdf-lib');
 const { Buffer } = require('buffer');
-const PDFMerger = require('pdf-merger-js');
 const querystring = require('querystring');
-const { createCanvas, Image, loadImage } = require('canvas');
+const { createCanvas, loadImage } = require('canvas');
 
-const cron = require('node-cron');
 const axios = require('axios');
 const path = require("path");
 const cors = require('cors');
