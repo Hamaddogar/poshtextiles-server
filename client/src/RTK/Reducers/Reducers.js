@@ -82,19 +82,6 @@ export const historyGetter = createAsyncThunk(
 );
 
 
-// new_order_micro: '/newOrder',
-export const createNewOrder = createAsyncThunk(
-  'mainSlice/createNewOrder',
-  async ({ body, token, toastPermission }) => {
-    const data = await toast.promise(
-      axios.post(APIS.new_order_micro, { token, body }),
-      toastPermission ? { pending: 'Loading Please Wait...', success: 'Response Loaded', error: 'Something Went Wrong' } : { error: 'Something Went Wrong' },
-      { autoClose: 1500, hideProgressBar: true }
-    );
-    return data.data;
-  }
-);
-
 
 
 
@@ -203,21 +190,6 @@ const mainSlice = createSlice({
       .addCase(historyGetter.rejected, (state, { error }) => {
         state.loadingHistory = false;
         Swal.fire({ icon: 'error', title: error.code, text: error.message })
-      })
-
-      // createNewOrder
-      .addCase(createNewOrder.pending, (state) => {
-        state.loadingNewOrder = true;
-        state.newOrderData = null;
-      })
-      .addCase(createNewOrder.fulfilled, (state, { payload }) => {
-        state.loadingNewOrder = false;
-        if (!(payload.error)) state.newOrderData = payload.message;
-        else Swal.fire({ icon: 'error', title: payload.code, text: `${payload.message}` })
-      })
-      .addCase(createNewOrder.rejected, (state, actions) => {
-        state.loadingNewOrder = false;
-        Swal.fire({ icon: 'error', title: actions.error.code, text: `${actions.error.message}` })
       })
 
 

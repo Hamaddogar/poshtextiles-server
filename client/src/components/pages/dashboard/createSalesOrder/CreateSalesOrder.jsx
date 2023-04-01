@@ -1,4 +1,4 @@
-import { Checkbox, Hidden, InputAdornment, Stack, TextField, Typography } from '@mui/material';
+import { Checkbox, FormControl, Hidden, InputAdornment, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
 import { Grid } from '@mui/material';
@@ -9,12 +9,10 @@ import 'bootstrap/dist/css/bootstrap.css';
 import { BackButton, headInputStyle } from '../reUseAbles/ReuseAbles';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import CommentsModel from './commentsModel';
-import { createNewOrder } from '../../../../RTK/Reducers/Reducers';
-import { useDispatch } from 'react-redux';
-// import { v4 as uuidv4 } from 'uuid';
 import ThumbNailImageSVG from "../../../assets/images/thumbnail2.svg";
-import { request_AccessToken_MICROSOFT } from '../../../../utils/API_HELPERS';
+import { create_New_SaleOrder, request_AccessToken_MICROSOFT } from '../../../../utils/API_HELPERS';
 import { useMsal } from '@azure/msal-react';
+import { toast } from 'react-toastify';
 const CreateSalesOrder = () => {
 
     const [lineItems, setLineItems] = React.useState([]);
@@ -26,21 +24,25 @@ const CreateSalesOrder = () => {
         selected: false,
         comment: {}
     });
+    const [agentCode, setAgentCode] = React.useState("FEDEX")
+
+    const shippingAgents = ["FEDEX", "STAMPS", "UPS"]
+
+
+
     const handleOpen = () => setCommentModel({ ...commentModel, open: true });
     const orderDetail = {}
 
     const { instance, accounts } = useMsal();
     const navigate = useNavigate();
-    const dispatch = useDispatch();
 
 
 
     React.useEffect(() => {
-     
         setRows(lineItems)
-        
+
     }, [lineItems])
-    
+
 
 
     const handlePageChange = page => {
@@ -57,7 +59,8 @@ const CreateSalesOrder = () => {
 
         const body = {
             "no": "",
-            "sellToCustomerNo": "C0003647",
+            "sellToCustomerNo": data.get('sellToCustomerNo'),
+            "shippingAgentCode": agentCode,
             "shipToCode": data.get('shipTo'),
             "projectName": data.get('projectName'),
             "specifier": data.get('specifier'),
@@ -66,15 +69,14 @@ const CreateSalesOrder = () => {
             "campaignNo": data.get('campaign'),
             "requestedDeliveryDate": data.get('reqDate'),
             "contact": data.get('projectName'),
-            "shippingAgentCode": "FEDEX",
             "externalDocumentNo": data.get('po'),
-            "shipmentDate": data.get('orderDate'),
+            "shipmentDate": data.get('reqDate'),
             "priority": data.get('priority'),
-            "edcSalesLines": lineItems
+            "edcSalesLines": [...lineItems]
         }
 
-        console.log("body",body);
-        const newdata  = {
+        // console.log("body", body);
+        const newdata = {
             "no": "",
             "sellToCustomerNo": "C0003647",
             "shipToCode": "01",
@@ -107,13 +109,30 @@ const CreateSalesOrder = () => {
             ]
         }
 
-        request_AccessToken_MICROSOFT(instance, accounts).then(token => {
-            dispatch(createNewOrder({
-                token: token,
-                body: newdata,
-                toastPermission: true,
-            }))
-        })
+        if (lineItems.length > 0) {
+            request_AccessToken_MICROSOFT(instance, accounts).then(token => {
+                create_New_SaleOrder({
+                    token: token,
+                    body: newdata,
+                    toastPermission: true,
+                }).then(response => {
+                    alert('new')
+                    console.log("ressssss", response);
+                    console.log("body", body);
+                })
+            })
+        } else {
+            toast.error('Line Items must be present', {
+                position: "top-right",
+                autoClose: false,
+                hideProgressBar: true
+            });
+            // toast.loading('Validating Address...', {
+            //     position: "top-right",
+            //     autoClose: false,
+            //     hideProgressBar: true
+            // });
+        }
 
 
 
@@ -128,12 +147,10 @@ const CreateSalesOrder = () => {
         setLineItems([
             ...lineItems,
             {
-                "linename": data.get('itemName'),
+                "no": data.get('simpleNo'),
                 "lineNo": data.get('itemNo'),
                 "type": data.get('itemType'),
-                "no": "S10017-007",
                 "quantity": data.get('qty'),
-                "minquantity": data.get('minQty'),
                 "dropShipment": dropShipChecked
             }
         ])
@@ -217,6 +234,32 @@ const CreateSalesOrder = () => {
                                     <TextField sx={headInputStyle} required name='reqDate' fullWidth type={"date"} defaultValue={orderDetail.reqShipDate} size='small' />
                                 </Grid>
 
+                                <Grid item xs={6} md={2} >
+                                    <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Sell Customer No: </Typography>
+                                    <TextField sx={headInputStyle} required name='sellToCustomerNo' fullWidth type={"text"} defaultValue={"C0003647"} size='small' />
+                                </Grid>
+
+                                <Grid item xs={6} md={2} >
+                                    <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Req Ship Date: </Typography>
+
+                                    <FormControl fullWidth>
+                                        <Select
+                                            labelId="agentCode-select-label"
+                                            id="agentCode-select"
+                                            value={agentCode}
+                                            onChange={e => setAgentCode(e.target.value)}
+                                            size='small'
+                                            sx={{ backgroundColor:'#FFFFFF','& input': { fontSize: '13px' }, fontSize: '12px', }}
+                                        >
+                                            {
+                                                shippingAgents.map(option => <MenuItem value={option} sx={{ fontSize: '12px' }}>{option}</MenuItem>)
+                                            }
+
+                                        </Select>
+                                    </FormControl>
+
+                                </Grid>
+
                                 <Hidden mdUp>
                                     <Grid item xs={6}>
                                         <Box mb={2}>
@@ -272,8 +315,8 @@ const CreateSalesOrder = () => {
                                     </Grid>
 
                                     <Grid item xs={6} sm={6} md={3}>
-                                        <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Item Name: </Typography>
-                                        <TextField required sx={headInputStyle} fullWidth defaultValue={''} name={"itemName"} size='small' />
+                                        <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Item Number: </Typography>
+                                        <TextField required sx={headInputStyle} fullWidth defaultValue={'S10017-003'} name={"simpleNo"} size='small' />
                                     </Grid>
 
                                     <Grid item xs={6} sm={6} md={4}>
@@ -300,27 +343,27 @@ const CreateSalesOrder = () => {
 
                                     <Grid item xs={6} sm={6} md={2}>
                                         <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Quantity: </Typography>
-                                        <TextField required sx={headInputStyle} fullWidth defaultValue={''} type='number' name={"qty"} size='small' />
+                                        <TextField required sx={headInputStyle} fullWidth defaultValue={''} type='text' name={"qty"} size='small' />
                                     </Grid>
 
                                     <Grid item xs={6} sm={6} md={2}>
                                         <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Min Quantity: </Typography>
-                                        <TextField required sx={headInputStyle} fullWidth defaultValue={''} type='number' name={"minQty"} size='small' />
+                                        <TextField required sx={headInputStyle} fullWidth defaultValue={''} type='text' name={"minQty"} size='small' />
                                     </Grid>
 
                                     <Grid item xs={6} sm={6} md={2}>
                                         <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Price: </Typography>
-                                        <TextField required sx={headInputStyle} fullWidth defaultValue={''} type='price' name={""} size='small' />
+                                        <TextField required sx={headInputStyle} fullWidth defaultValue={''} type='text' name={""} size='small' />
                                     </Grid>
 
                                     <Grid item xs={6} sm={6} md={2}>
                                         <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Discount: </Typography>
-                                        <TextField required sx={headInputStyle} fullWidth defaultValue={''} type='number' name={"discount"} size='small' />
+                                        <TextField required sx={headInputStyle} fullWidth defaultValue={''} type='text' name={"discount"} size='small' />
                                     </Grid>
 
                                     <Grid item xs={6} sm={6} md={2}>
                                         <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Amount: </Typography>
-                                        <TextField required sx={headInputStyle} fullWidth defaultValue={''} type='number' name={"amount"} size='small' />
+                                        <TextField required sx={headInputStyle} fullWidth defaultValue={''} type='text' name={"amount"} size='small' />
                                     </Grid>
 
                                     <Grid item xs={12}>
@@ -357,9 +400,9 @@ const CreateSalesOrder = () => {
                                         <Grid item container direction={'column'} justifyContent={'space-between'} xs={6} px={1} sx={{ position: 'relative' }}>
 
                                             <Stack sx={{ height: '100%', display: 'flex', justifyContent: 'space-between' }} >
-                                                <Typography textAlign='center' mt={1} variant='h1' fontSize={item?.linename?.length > 25 ? { xs: '5vw', sm: '2vw', md: '1vw' } : { xs: '6vw', sm: '3vw', md: '2vw' }} fontWeight={500} >{item?.linename || item.description}</Typography>
+                                                <Typography textAlign='center' mt={1} variant='h1' fontSize={item?.linename?.length > 25 ? { xs: '5vw', sm: '2vw', md: '1vw' } : { xs: '6vw', sm: '3vw', md: '2vw' }} fontWeight={500} >{item?.linename || item.type}</Typography>
                                                 <Stack direction='row' alignItems={'center'} justifyContent='space-between'>
-                                                    <Typography fontSize='12px'>MOQ : <span style={{ fontSize: '20px' }}>{item.minquantity}</span></Typography>
+                                                    <Typography fontSize='12px'>MOQ : <span style={{ fontSize: '20px' }}>{item.quantity}</span></Typography>
                                                     <Typography fontSize='12px' textAlign={'right'}>QTY : <span style={{ fontSize: '20px' }}>{item.quantity}</span></Typography>
                                                 </Stack>
                                             </Stack>

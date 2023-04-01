@@ -140,3 +140,22 @@ export const print_Labels = async (base64) => {
         return error
     }
 };
+
+
+// create new Order Microsoft
+
+
+
+export const create_New_SaleOrder = async ({ token, body, toastPermission }) => {
+    try {
+        const data = await toast.promise(
+            axios.post(APIS.new_order_micro, { token, body }),
+            toastPermission ? { pending: 'Loading Please Wait...', success: 'Response Loaded', error: 'Something Went Wrong' } : { error: 'Something Went Wrong' },
+            { autoClose: 1500, hideProgressBar: true }
+        );
+        return data.data;
+    } catch (error) {
+        return error
+    }
+}
+

@@ -914,7 +914,7 @@ app.post(routeStrings.new_order_micro, async (req, res) => {
         }
     };
     // console.log(req.body.token);
-    console.log(req.body.body);
+    // console.log(req.body.body);
     try {
         const response = await axios.post(
             API_MICROSOFT.new_Sale_Order,
