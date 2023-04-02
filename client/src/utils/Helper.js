@@ -1,4 +1,15 @@
 
+// weight converter
+
+const ydsToOz = YDS_W => (YDS_W * 16 * 16);
+const ydsToLbs = YDS_W => (YDS_W / 16);
+
+
+
+
+
+
+
 export const payload_Shipment_Handler = details => {
     if (details.shippingAgentCode === "FEDEX") {
         return {
@@ -168,6 +179,7 @@ export const payload_Shipment_Handler = details => {
         alert('working')
     }
 };
+
 
 
 

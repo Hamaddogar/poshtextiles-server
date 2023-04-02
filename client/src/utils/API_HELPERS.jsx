@@ -93,6 +93,21 @@ export const rate_List_FEDEX = async ({ body, toastPermission, token }) => {
         return error
     }
 }
+// 4STAMPS
+export const rate_List_STAMPS = async ({ body }) => {
+    try {
+        const data = await toast.promise(
+            axios.post(APIS.rate_list_stamps, { body }),
+            { pending: 'Loading Please Wait...', success: 'Response Loaded', error: 'Something Went Wrong' },
+            { autoClose: 1500, hideProgressBar: true }
+        );
+        return data.data;
+    } catch (error) {
+        return error
+    }
+}
+
+
 // --------------------- validate Address --------------------- //
 //  fedex
 export const validate_Address_FEDEX = async (token, body) => {
@@ -129,7 +144,7 @@ export const validate_Address_UPS = async (body) => {
 // UPS + FEDEX
 export const print_Labels = async (base64) => {
     try {
-        const response = await axios.post(APIS.printUPS, { printData: base64 });
+        const response = await axios.post(APIS.printer, { printData: base64 });
         if (response.status >= 400) {
             throw (response)
 
@@ -143,8 +158,6 @@ export const print_Labels = async (base64) => {
 
 
 // create new Order Microsoft
-
-
 
 export const create_New_SaleOrder = async ({ token, body, toastPermission }) => {
     try {

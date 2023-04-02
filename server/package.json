@@ -18,6 +18,7 @@
     "dotenv": "^16.0.3",
     "express": "^4.17.3",
     "fs": "^0.0.1-security",
+    "stamps": "^0.1.6",
     "util": "^0.12.5",
     "validator": "^11.1.0"
   }

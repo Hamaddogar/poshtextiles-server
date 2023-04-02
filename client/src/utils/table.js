@@ -28,7 +28,9 @@ export const APIS = {
     create_Shipment_UPS: 'http://localhost:8080/ups_shipment',
     check_address_ups: 'http://localhost:8080/address_validate_ups',
     rate_list_ups: 'http://localhost:8080/rate_list_ups',
-    printUPS: "http://localhost:8080/printer",
+
+    // printer
+    printer: "http://localhost:8080/printer",
 
     // stamps
     create_shipment_stamps: 'http://localhost:8080/stamps_shipment',

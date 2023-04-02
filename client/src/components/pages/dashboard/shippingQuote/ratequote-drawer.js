@@ -2,7 +2,7 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { Button, Checkbox, Container, FormControlLabel, Grid, Skeleton, Slider, Stack, Typography } from '@mui/material';
-import { rate_List_FEDEX, rate_List_UPS, request_AccessToken_FEDEXP } from '../../../../utils/API_HELPERS';
+import { rate_List_FEDEX, rate_List_STAMPS, rate_List_UPS, request_AccessToken_FEDEXP } from '../../../../utils/API_HELPERS';
 import { payload_Rates_Handler } from '../../../../utils/Helper';
 import FedexRates from './FedexRates';
 import UPSRates from './UPSRates';
@@ -79,7 +79,9 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
 
             } else if (condition && saleOrderDetails?.shippingAgentCode === "STAMPS") {
                 loadingFunction();
-                payload_Rates_Handler(saleOrderDetails)
+                recursiveCallerRates(rate_List_STAMPS({
+                    body: payload_Rates_Handler(saleOrderDetails),
+                }))
             } else if (!drawerstateRate) {
                 setRateListData({
                     loading: "idle",

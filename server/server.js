@@ -455,35 +455,35 @@ app.post(routeStrings.shipment_ups, async (req, res) => {
         const b64Getter = async () => {
             const canvas = createCanvas(800, 700 * images.length + (images.length - 1) * 10);
             const ctx = canvas.getContext('2d');
-            
+
             // Fill canvas with white background
             ctx.fillStyle = "#FFFFFF";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
+
             let x = 20;
             let y = 20;
             const width = canvas.width - 40; // Subtract 40 to account for 20px padding on each side
             const height = (canvas.height - ((images.length - 1) * 10) - (20 * 2)) / images.length; // Subtract additional padding and separator lines
-        
+
             for (const b64 of images) {
                 const img = await loadImage(Buffer.from(b64, 'base64'));
                 ctx.drawImage(img, x, y, width, height);
                 y += height + 10;
-        
+
                 // Draw separator line
                 ctx.beginPath();
                 ctx.moveTo(20, y);
                 ctx.lineTo(canvas.width - 20, y);
                 ctx.stroke();
             }
-        
+
             const buffer = canvas.toBuffer('image/png');
             const filePath = path.join(__dirname, '/reports/ups/UPS_labels_report.png');
             fs.writeFileSync(filePath, buffer);
             const base64Datacanvas = canvas.toDataURL().replace(/^data:image\/png;base64,/, '');
             return base64Datacanvas;
         };
-        
+
 
         const myFile = await b64Getter()
 
@@ -760,15 +760,6 @@ app.get(routeStrings.token_stamps, async (req, res) => {
 });
 
 
-
-
-
-
-
-
-
-
-
 // stamps address validation
 app.post(routeStrings.address_validate_stamps, async (req, res) => {
     const config = {
@@ -821,6 +812,75 @@ app.post(routeStrings.address_validate_stamps, async (req, res) => {
 });
 
 
+app.get(routeStrings.rate_list_stamps, async (req, res) => {
+
+    try {
+
+        const STAMPS_INTEGRATION_ID = "fcaa4f74-9bc2-4506-9420-8ebb99b524f1";
+        const STAMPS_USERNAME = "SilkCraft-001";
+        const STAMPS_PASSWORD = "October2020!";
+
+
+
+
+
+
+
+
+
+
+        res.status(200).send({
+            allServices: 'stamps',
+            error: false,
+        });
+
+    } catch (error) {
+        console.log("error", error);
+        if (error?.response?.status) res.send({ error: true, message: error?.response?.data?.response?.errors[0]?.message });
+        else res.status(500).send({ error: true, message: error.message });
+    }
+});
+
+
+
+app.get('/get-access-token', async (req, res) => {
+    try {
+        const stamps_integration_id = "YOUR_INTEGRATION_ID";
+        const stamps_username = "YOUR_USERNAME";
+        const stamps_password = "YOUR_PASSWORD";
+
+        // Get the authorization code
+        const authorizationCodeResponse = await axios.get('https://signin.stampsendicia.com/authorize', {
+            params: {
+                client_id: stamps_integration_id,
+                response_type: 'code',
+                redirect_uri: 'https://www.stamps.com'
+            },
+            auth: {
+                username: stamps_username,
+                password: stamps_password
+            }
+        });
+
+        // const authorizationCode = authorizationCodeResponse.request.res.responseUrl.split('=')[1];
+
+        // // Get the access token
+        // const { data } = await axios.post('https://signin.stamps.com/oauth/token', {
+        //     grant_type: 'authorization_code',
+        //     client_id: stamps_integration_id,
+        //     client_secret: 'YOUR_CLIENT_SECRET',
+        //     code: authorizationCode,
+        //     redirect_uri: 'https://www.stamps.com'
+        // });
+
+        // const accessToken = data.access_token;
+
+        res.status(200).json({ access_token: 'accessToken',authorizationCodeResponse:authorizationCodeResponse });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error });
+    }
+});
 
 
 
