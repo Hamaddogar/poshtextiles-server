@@ -643,62 +643,143 @@ app.post(routeStrings.rate_list_ups, async (req, res) => {
 
 // -----------------stamps Routes --------------------- //
 
-// Stamps-Token
-// app.get(routeStrings.token_stamps, async (req, res) => {
 
 
-//     try {
-//         const STAMPS_API_BASE_URL = 'https://api.stamps.com';
-//         const stampsIntegrationId = "fcaa4f74-9bc2-4506-9420-8ebb99b524f1";
-//         const stampsUsername = "SilkCraft-001";
-//         const stampsPassword = "October2020!";
-
-//         router.get('/example', async (req, res) => {
-//             // Step 1: Redirect the user to the Stamps.com authentication endpoint
-//             if (!req.query.code) {
-//                 const queryParams = querystring.stringify({
-//                     response_type: 'code',
-//                     client_id: stampsIntegrationId,
-//                     redirect_uri: 'http://localhost:8080/example', // replace with your redirect URI
-//                 });
-//                 const authorizationUrl = `https://signin.stamps.com/authorize?${queryParams}`;
-//                 return res.redirect(authorizationUrl);
-//             }
-
-//             // Step 2: Handle the authorization code and exchange it for an access token
-//             const authorizationCode = req.query.code;
-//             try {
-//                 const tokenResponse = await axios.post(`${STAMPS_API_BASE_URL}/oauth2/v1/token`, {
-//                     grant_type: 'authorization_code',
-//                     code: authorizationCode,
-//                     redirect_uri: 'http://localhost:8080/example', // replace with your redirect URI
-//                     client_id: stampsIntegrationId,
-//                     client_secret: YOUR_STAMPS_INTEGRATION_SECRET,
-//                 });
-
-//                 const accessToken = tokenResponse.data.access_token;
-
-//                 // Step 3: Make the API request with the access token
-//                 const apiResponse = await axios.get(`${STAMPS_API_BASE_URL}/v1/addresses`, {
-//                     headers: {
-//                         Authorization: `Bearer ${accessToken}`,
-//                     },
-//                 });
-
-//                 res.send(apiResponse.data);
-//             } catch (error) {
-//                 console.error(error);
-//                 res.status(500).send('Error getting access token or making API request');
-//             }
-//         });
 
 
-//     } catch (error) {
-//         console.log("errorCatch", error);
-//         if (error?.response?.status) res.status(error.response.status).send({ error: error.response.message });
-//         else res.status(500).send({ error: error.message });
-//     }
-// });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const CLIENT_ID = 'my778N8oCwaKq0dSPT1soKY9807OpicK';
+const CLIENT_SECRET = 'd_uNVV_XwW8K2wwO7UrEkMIuiokqPLANSUnr6JNP1CcXUbrtgQoTsBSnOJi0ttGF';
+const REDIRECT_URI = 'http://localhost:8080/auth_stamps';
+const AUTH_ENDPOINT = 'https://signin.testing.stampsendicia.com/authorize';
+const TOKEN_ENDPOINT = 'https://signin.testing.stampsendicia.com/oauth/token';
+const stampsUsername = "poshtext-01";
+const stampsPassword = "April2023!";
+
+
+app.get('/auth_stamps', async (req, res) => {
+    const authorizationCode = req.query.code;
+    console.log("eqe", authorizationCode);
+    try {
+
+        if (authorizationCode) {
+            const tokenResponse = await axios.post(TOKEN_ENDPOINT, {
+                grant_type: 'authorization_code',
+                code: authorizationCode,
+                redirect_uri: REDIRECT_URI,
+                client_id: CLIENT_ID,
+                client_secret: CLIENT_SECRET
+            });
+            res.status(200).send(tokenResponse.data.access_token);
+        } else {
+            const queryParams = querystring.stringify({
+                response_type: 'code',
+                client_id: CLIENT_ID,
+                redirect_uri: REDIRECT_URI
+            });
+
+            const authorizationUrl = `${AUTH_ENDPOINT}?${queryParams}`;
+            console.log(authorizationUrl);
+            res.redirect(authorizationUrl);
+        }
+
+    } catch (error) {
+        console.error(error);
+        res.send({ ...error });
+    }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // stamps address validation
@@ -711,15 +792,46 @@ app.post(routeStrings.address_validate_stamps, async (req, res) => {
         }
     };
     try {
-        console.log("---address_validate_stamps", req.body.body);
-        res.status(200).send({
-            message: true,
-            error: false,
-            valid: true
-        });
+
+
+        const response = await axios.post(
+            "https://api.testing.stampsendicia.com/sera/v1/addresses/validate",
+            req.body.body,
+            config
+        );
+
+
+        console.log("---------", response.data);
+
+
+        if (Array.isArray(response.data) && "validation_results" in response.data[0]) {
+            res.status(200).send({
+                message: true,
+                error: false,
+                valid: true
+            });
+        } else {
+            throw ({
+                response: {
+                    message: 'Try Again'
+                }
+            })
+        }
+
+
+
+        // console.log("---address_validate_stamps", req.body.body);
+
 
     } catch (error) {
-        res.send({ code: error.status, message: error.message, error: true })
+        console.log(error);
+        if (error?.status) res.send({ code: error.status, message: ((error?.response?.data?.errors[0]?.code) || (error?.response?.data?.response?.errors[0]?.message)), error: true });
+        else if (error?.response?.status) res.send({
+            code: error.response?.status,
+            message: ((error?.response?.data?.message) || (error?.response?.data?.errors[0]?.code) || error?.response?.message),
+            error: true
+        });
+        else res.send({ code: 'error.status', message: 'error.message', error: true });
     }
 });
 

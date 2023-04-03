@@ -16,7 +16,7 @@ export const request_AccessToken_FEDEXP = async () => {
 };
 
 
-// 
+// Microsoft
 export const request_AccessToken_MICROSOFT = async (instance, accounts) => {
     return instance
         .acquireTokenSilent({
@@ -25,6 +25,17 @@ export const request_AccessToken_MICROSOFT = async (instance, accounts) => {
         })
         .then((response) => response.accessToken)
 };
+
+// STTAMPS
+export const request_AccessToken_STAMPS = async (refresh_token = 0) => {
+    try {
+        const response = await axios.get(APIS.token_stamps, { refresh_token });
+        return response.data;
+    } catch (error) {
+        return error
+    }
+};
+
 
 // --------------------- create shipment and LABELS --------------------- //
 

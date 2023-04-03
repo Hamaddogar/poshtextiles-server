@@ -5,7 +5,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { Grid, TextField, Typography } from '@mui/material';
 import { headInputStyle } from '../reUseAbles/ReuseAbles';
 import { Container } from '@mui/system';
-import { request_AccessToken_FEDEXP, validate_Address_FEDEX, validate_Address_STAMPS, validate_Address_UPS } from '../../../../utils/API_HELPERS';
+import { request_AccessToken_FEDEXP, request_AccessToken_STAMPS, validate_Address_FEDEX, validate_Address_STAMPS, validate_Address_UPS } from '../../../../utils/API_HELPERS';
 // import { validateAddressFEDEXP, validateAddressUPS } from '../../../../RTK/Reducers/Reducers';
 import { toast } from 'react-toastify';
 import { payload_Address_Handler } from '../../../../utils/Helper';
@@ -66,9 +66,15 @@ export default function AddressValidateDrawer({
                 });
                 recursiveCaller(validate_Address_UPS(payload_Address_Handler(saleOrderDetails)));
             } else if (saleOrderDetails?.shippingAgentCode === "STAMPS") {
-                recursiveCaller(
-                    validate_Address_STAMPS('TOKEN',payload_Address_Handler(saleOrderDetails))
-                );
+                request_AccessToken_STAMPS()
+                .then(token => {
+                    alert('h')
+                    console.log("tttoken",token);
+                    const tokenn = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlA3Z3pLRGdfRENlVzcyeXZ3cnpQcCJ9.eyJodHRwczovL3N0YW1wc2VuZGljaWEuY29tL2ludGVncmF0aW9uX2lkIjoiNzc4OTdmNDYtNjg2NS00NzQ1LTlkZjMtZDUzYjc4MTA4YjBjIiwiaHR0cHM6Ly9zdGFtcHNlbmRpY2lhLmNvbS91c2VyX2lkIjozNzI1Mzk5LCJpc3MiOiJodHRwczovL3NpZ25pbi50ZXN0aW5nLnN0YW1wc2VuZGljaWEuY29tLyIsInN1YiI6ImF1dGgwfDM3MjUzOTkiLCJhdWQiOiJodHRwczovL2FwaS5zdGFtcHNlbmRpY2lhLmNvbSIsImlhdCI6MTY4MDU1NjExMCwiZXhwIjoxNjgwNTU3MDEwLCJhenAiOiJteTc3OE44b0N3YUtxMGRTUFQxc29LWTk4MDdPcGljSyJ9.HZiIlG3gOk5DMiI19QPJ_dxBK7btodnovqzk6yRN8UY9ZGrKuWKboDd6GFJKGEIcMbyyw3vClJLkDPR2k9e5CLJosfQI1YxLPKW--EzFOHUcjRyhBIQb2K8iE9ELV7fl9z-pSOiiYLvSK2JEhiCBedXtdcAfOhIvnoHYQr2jgsMN7_C6DKrUnJRcl0maWnYM_wY3nxfu3L4-Lxib2d6nnciVlx0wyWw07WsSzWSlpx3u732x-z3GmikZYJLbftPihNa8RrYWZv4khR5LAKMEUW3KYpHxTaopE6qAnmgzVFUcX9ED4JYx-cxH_FVnTeFiA4aSqNKgDHNhYNEiHU6MPA"
+                    recursiveCaller(
+                        validate_Address_STAMPS(tokenn,payload_Address_Handler(saleOrderDetails))
+                    );
+                })
 
                 // toast.warn(`${"working on STAMPS"}`, { position: "top-right", autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "light", });
             } else {

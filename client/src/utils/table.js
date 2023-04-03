@@ -14,6 +14,7 @@ export const table = {
 
 export const APIS = {
     token_fed: 'http://localhost:8080/fedexp_token',
+    token_stamps: 'http://localhost:8080/auth_stamps',
     token_micro: 'http://localhost:8080/token_microsoft',
     inventory_micro: "http://localhost:8080/inventory",
 
