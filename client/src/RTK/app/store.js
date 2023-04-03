@@ -21,6 +21,9 @@ const persistConfig = {
     "historyData",
     "firstTime",
     "FEDEXP_TOKEN",
+    "csv_OrdersDetail",
+    "csv_data",
+    "csv_fileName",
   ],
   rootReducer: mainReducer
 }

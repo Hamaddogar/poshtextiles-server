@@ -421,36 +421,7 @@ app.post(routeStrings.shipment_ups, async (req, res) => {
                     images.push(new_images)
                 }
             }
-        }
-
-
-        // const canvas = createCanvas(800, 1200);
-        // const ctx = canvas.getContext('2d');
-        // let yOffset = 0;
-
-        // for (let i = 0; i < images.length; i++) {
-        //     const base64 = images[i];
-        //     const image = await loadImage(Buffer.from(base64, 'base64'));
-        //     const aspectRatio = image.width / image.height;
-        //     const imageWidth = canvas.width;
-        //     const imageHeight = imageWidth / aspectRatio;
-        //     ctx.drawImage(image, 0, yOffset, imageWidth, imageHeight);
-        //     yOffset += imageHeight;
-        // }
-
-        // // Save the canvas as a PNG image
-        // const outputPath = path.join(__dirname, '/reports/ups/UPS_labels_report.png');
-        // const out = fs.createWriteStream(outputPath);
-        // const stream = canvas.createPNGStream();
-        // stream.pipe(out);
-        // out.on('finish', () => {
-        // });
-
-
-
-
-
-
+        };
 
         const b64Getter = async () => {
             const canvas = createCanvas(800, 700 * images.length + (images.length - 1) * 10);
@@ -484,29 +455,7 @@ app.post(routeStrings.shipment_ups, async (req, res) => {
             return base64Datacanvas;
         };
 
-
         const myFile = await b64Getter()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         res.status(200).send({
             file: "http://localhost:8080/report_ups",
@@ -597,28 +546,6 @@ app.get('/report_ups', (req, res) => {
     });
 });
 
-// PRINTING labels ups
-app.post('/printer', async (req, res) => {
-
-    const base64 = req.body.printData
-    try {
-        let formData = new FormData();
-        formData.append('label', base64);
-        await axios.post("https://zpl.rs74.net", formData);
-
-        res.status(200).send({
-            error: false,
-            printed: true,
-        })
-
-    } catch (error) {
-        console.log(error);
-        if (error?.name) res.send({ message: error.message, error: true });
-        else res.send({ message: 'Request failed with status code 500', error: true });
-    }
-
-});
-
 
 // UPS rate list
 app.post(routeStrings.rate_list_ups, async (req, res) => {
@@ -700,6 +627,20 @@ app.post(routeStrings.rate_list_ups, async (req, res) => {
     }
 });
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // -----------------stamps Routes --------------------- //
 
 // Stamps-Token
@@ -761,129 +702,123 @@ app.post(routeStrings.rate_list_ups, async (req, res) => {
 
 
 // stamps address validation
-// app.post(routeStrings.address_validate_stamps, async (req, res) => {
-//     const config = {
-//         headers: {
-//             "Content-Type": "application/json",
-//             "X-locale": "en_US",
-//             "Authorization": `Bearer ${req.body.token}`,
-//         }
-//     };
-//     try {
-//         const response = await axios.post(
-//             SERVERS.STAMPS_Sandbox_Server + API_STAMPS.Validate_Address,
-//             req.body.body,
-//             config
-//         );
-//         if (response?.status === 200 && (response.data.output.resolvedAddresses[0].attributes.DPV || response.data.output.resolvedAddresses[0].attributes.Matched || response.data.output.resolvedAddresses[0].attributes.Resolved)) {
-//             res.status(response.status).send({
-//                 message: response.data.output.resolvedAddresses[0].attributes.Resolved,
-//                 error: false
-//             });
-//         } else if (response?.data?.output?.resolvedAddresses[0]?.customerMessages[0]?.code) {
-//             throw ({
-//                 response: {
-//                     "message": response.data.output.resolvedAddresses[0].customerMessages[0].code,
-//                     "name": response.data.output.resolvedAddresses[0].customerMessages[0].message,
-//                     "status": 500,
-//                 }
-//             });
-//         }
-//         else {
-//             throw ({
-//                 response: {
-//                     "message": "Server Error!",
-//                     "name": "Error",
-//                     "status": 500,
-//                 }
-//             });
-//         }
+app.post(routeStrings.address_validate_stamps, async (req, res) => {
+    const config = {
+        headers: {
+            "Content-Type": "application/json",
+            "X-locale": "en_US",
+            "Authorization": `Bearer ${req.body.token}`,
+        }
+    };
+    try {
+        console.log("---address_validate_stamps", req.body.body);
+        res.status(200).send({
+            message: true,
+            error: false,
+            valid: true
+        });
 
-//     } catch (error) {
-//         console.log(error);
-//         if (error?.status) res.send({ code: error.status, message: error.message, error: true });
-//         else if (error?.response?.status) res.send({
-//             code: error.response?.status,
-//             message: ((error?.response?.data?.errors[0]?.code) || (error?.response?.data?.response?.errors[0]?.message) || error.response.message),
-//             error: true
-//         });
-//         else res.send({ code: error.status, message: error.message, error: true });
-//     }
-// });
+    } catch (error) {
+        res.send({ code: error.status, message: error.message, error: true })
+    }
+});
 
 
-// app.get(routeStrings.rate_list_stamps, async (req, res) => {
+// stamps rate list
+app.post(routeStrings.rate_list_stamps, async (req, res) => {
+    const config = {
+        headers: {
+            "Content-Type": "application/json",
+            "X-locale": "en_US",
+            "Authorization": `Bearer ${req.body.token}`,
+        }
+    };
+    try {
+        console.log("---rate_list_stamps", req.body.body);
+        res.status(200).send({
+            allServices: shopRates,
+            error: false,
+        });
 
-//     try {
-
-//         const STAMPS_INTEGRATION_ID = "fcaa4f74-9bc2-4506-9420-8ebb99b524f1";
-//         const STAMPS_USERNAME = "SilkCraft-001";
-//         const STAMPS_PASSWORD = "October2020!";
-
-
-
-
-
-
-
-
-
-
-//         res.status(200).send({
-//             allServices: 'stamps',
-//             error: false,
-//         });
-
-//     } catch (error) {
-//         console.log("error", error);
-//         if (error?.response?.status) res.send({ error: true, message: error?.response?.data?.response?.errors[0]?.message });
-//         else res.status(500).send({ error: true, message: error.message });
-//     }
-// });
+    } catch (error) {
+        res.send({ code: error.status, message: error.message, error: true })
+    }
+});
 
 
+// stamps shipment & labels
+app.post(routeStrings.shipment_stamps, async (req, res) => {
+    const config = {
+        headers: {
+            "Content-Type": "application/json",
+            "X-locale": "en_US",
+            "Authorization": `Bearer ${req.body.token}`,
+        }
+    };
+    try {
+        console.log("---shipment_stamps", req.body.body);
+        res.status(200).send({
+            file: "http://localhost:8080/report_stamps",
+            data: ['myFile'],
+            data2: ['images'],
+            error: false
+        })
 
-// app.get('/get-access-token', async (req, res) => {
-//     try {
-//         const stamps_integration_id = "YOUR_INTEGRATION_ID";
-//         const stamps_username = "YOUR_USERNAME";
-//         const stamps_password = "YOUR_PASSWORD";
+    } catch (error) {
+        res.send({ code: error.status, message: error.message, error: true })
+    }
+});
 
-//         // Get the authorization code
-//         const authorizationCodeResponse = await axios.get('https://signin.stampsendicia.com/authorize', {
-//             params: {
-//                 client_id: stamps_integration_id,
-//                 response_type: 'code',
-//                 redirect_uri: 'https://www.stamps.com'
-//             },
-//             auth: {
-//                 username: stamps_username,
-//                 password: stamps_password
-//             }
-//         });
-
-//         // const authorizationCode = authorizationCodeResponse.request.res.responseUrl.split('=')[1];
-
-//         // // Get the access token
-//         // const { data } = await axios.post('https://signin.stamps.com/oauth/token', {
-//         //     grant_type: 'authorization_code',
-//         //     client_id: stamps_integration_id,
-//         //     client_secret: 'YOUR_CLIENT_SECRET',
-//         //     code: authorizationCode,
-//         //     redirect_uri: 'https://www.stamps.com'
-//         // });
-
-//         // const accessToken = data.access_token;
-
-//         res.status(200).json({ access_token: 'accessToken',authorizationCodeResponse:authorizationCodeResponse });
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({ error: error });
-//     }
-// });
+// preview file link UPS
+app.get('/report_stamps', (req, res) => {
+    const filePath = path.join(__dirname, '/reports/stamps/STAMPS_labels_report.png');
+    res.sendFile(filePath, {
+        headers: {
+            'Content-Type': 'image/png',
+            'Content-Disposition': 'inline; filename=STAMPS_labels_report.png'
+        }
+    }, (err) => {
+        if (err) {
+            console.error(err);
+            res.status(500).send('Internal Server Error');
+        }
+    });
+});
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+// =============== PRINTING labels ALL =============//
+app.post('/printer', async (req, res) => {
+    const base64 = req.body.printData
+    try {
+        let formData = new FormData();
+        formData.append('label', base64);
+        await axios.post("https://zpl.rs74.net", formData);
+
+        res.status(200).send({
+            error: false,
+            printed: true,
+        })
+    } catch (error) {
+        console.log(error);
+        if (error?.name) res.send({ message: error.message, error: true });
+        else res.send({ message: 'Request failed with status code 500', error: true });
+    }
+
+});
 
 
 

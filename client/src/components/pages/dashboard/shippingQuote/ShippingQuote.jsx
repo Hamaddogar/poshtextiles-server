@@ -11,7 +11,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import Shipfrom from './Shipfrom'
 import { useSelector } from 'react-redux'
 import { BackButton, headInputStyle, styleSlect } from '../reUseAbles/ReuseAbles'
-import { create_Shipment_FEDEXP, createShipment_UPS, request_AccessToken_FEDEXP } from '../../../../utils/API_HELPERS'
+import { create_Shipment_FEDEXP, create_Shipment_STAMPS, createShipment_UPS, request_AccessToken_FEDEXP } from '../../../../utils/API_HELPERS'
 import ShipReportDialog from './ShipReportDialog'
 import { payload_Shipment_Handler } from '../../../../utils/Helper'
 import ShipToDialoge from './ShipToDia'
@@ -47,7 +47,7 @@ const ShippingQuote = () => {
     });
 
     // for shipment labels recursiveCaller
-    const recursiveCaller = (action, counter) => {
+    const recursiveCaller = (action, counter = 0) => {
         action.then(res => {
             console.log("---labels----", res)
             if (!(res?.data?.error)) {
@@ -73,12 +73,7 @@ const ShippingQuote = () => {
     // for shipment 
     const handleSubmit = event => {
         event.preventDefault();
-        // const data = new FormData(event.currentTarget)
-        // // api call
-        // console.log('--data', event)
-        // console.log('--data', data.get('printOn'))
-        // console.log('--data', data.get('customer'))
-        // console.log('--data', data.get('shipTooo'))
+        
         if (saleOrderDetails.edcWhseShipments.length > 0) {
             SetShipReport({ open: true });
             const condition = saleOrderDetails?.edcSalesLines?.length > 0
@@ -87,13 +82,16 @@ const ShippingQuote = () => {
                     .then(token => {
                         recursiveCaller(
                             create_Shipment_FEDEXP(payload_Shipment_Handler(saleOrderDetails), token)
-                            , 0)
+                        )
                     });
             } else if (condition && saleOrderDetails?.shippingAgentCode === "UPS") {
                 recursiveCaller(
                     createShipment_UPS(payload_Shipment_Handler(saleOrderDetails))
-                    , 0)
-
+                )
+            } else if (condition && saleOrderDetails?.shippingAgentCode === "STAMPS") {
+                recursiveCaller(
+                    create_Shipment_STAMPS("TOKEN", payload_Shipment_Handler(saleOrderDetails))
+                );
             } else if (!condition) {
                 SetShipReport({
                     open: true,

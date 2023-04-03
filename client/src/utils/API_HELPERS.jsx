@@ -62,6 +62,22 @@ export const createShipment_UPS = async (body) => {
     }
 };
 
+// create shipment STAMPS
+export const create_Shipment_STAMPS = async (token, body) => {
+    try {
+        const response = await axios.post(
+            APIS.create_shipment_stamps,
+            {
+                token: token,
+                body: body,
+            });
+
+        return response;
+    } catch (error) {
+        return error
+    }
+};
+
 
 // ---------------------rate list --------------------- //
 
@@ -79,7 +95,6 @@ export const rate_List_UPS = async ({ body, toastPermission }) => {
     }
 }
 
-
 // fedexp
 export const rate_List_FEDEX = async ({ body, toastPermission, token }) => {
     try {
@@ -93,6 +108,7 @@ export const rate_List_FEDEX = async ({ body, toastPermission, token }) => {
         return error
     }
 }
+
 // 4STAMPS
 export const rate_List_STAMPS = async ({ body }) => {
     try {
@@ -123,8 +139,6 @@ export const validate_Address_FEDEX = async (token, body) => {
     }
 };
 
-
-
 //  UPS
 export const validate_Address_UPS = async (body) => {
     try {
@@ -139,9 +153,23 @@ export const validate_Address_UPS = async (body) => {
     }
 };
 
+// STAMPS
+export const validate_Address_STAMPS = async (token, body) => {
+    try {
+        const response = await axios.post(APIS.check_address_stamps, { token, body });
+        if (response.status >= 400) {
+            throw (response)
+        } else {
+            return response.data
+        }
+    } catch (error) {
+        return error
+    }
+};
+
 
 // --------------------- Printing Labels --------------------- //
-// UPS + FEDEX
+// UPS + FEDEX +stamps
 export const print_Labels = async (base64) => {
     try {
         const response = await axios.post(APIS.printer, { printData: base64 });

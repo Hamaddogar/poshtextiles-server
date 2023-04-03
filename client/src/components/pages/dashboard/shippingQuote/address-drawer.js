@@ -5,7 +5,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { Grid, TextField, Typography } from '@mui/material';
 import { headInputStyle } from '../reUseAbles/ReuseAbles';
 import { Container } from '@mui/system';
-import { request_AccessToken_FEDEXP, validate_Address_FEDEX, validate_Address_UPS } from '../../../../utils/API_HELPERS';
+import { request_AccessToken_FEDEXP, validate_Address_FEDEX, validate_Address_STAMPS, validate_Address_UPS } from '../../../../utils/API_HELPERS';
 // import { validateAddressFEDEXP, validateAddressUPS } from '../../../../RTK/Reducers/Reducers';
 import { toast } from 'react-toastify';
 import { payload_Address_Handler } from '../../../../utils/Helper';
@@ -21,6 +21,7 @@ export default function AddressValidateDrawer({
     const recursiveCaller = (func, counter = 0) => {
         // calling api
         func.then(response => {
+            console.log("------------------",response);
             if (("error" in response) && !(response.error) && response.valid) {
                 toast.dismiss();
                 setAllowShipment(true);
@@ -54,7 +55,6 @@ export default function AddressValidateDrawer({
                     hideProgressBar: true
                 });
                 request_AccessToken_FEDEXP().then(token => {
-                    console.log('--------token', token);
                     recursiveCaller(validate_Address_FEDEX(token, payload_Address_Handler(saleOrderDetails)));
                 })
             } else if (saleOrderDetails?.shippingAgentCode === "UPS") {
@@ -66,7 +66,11 @@ export default function AddressValidateDrawer({
                 });
                 recursiveCaller(validate_Address_UPS(payload_Address_Handler(saleOrderDetails)));
             } else if (saleOrderDetails?.shippingAgentCode === "STAMPS") {
-                toast.warn(`${"working on STAMPS"}`, { position: "top-right", autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "light", });
+                recursiveCaller(
+                    validate_Address_STAMPS('TOKEN',payload_Address_Handler(saleOrderDetails))
+                );
+
+                // toast.warn(`${"working on STAMPS"}`, { position: "top-right", autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "light", });
             } else {
                 toast.warn(`No courier isattached`, { position: "top-right", autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "light", });
             }
