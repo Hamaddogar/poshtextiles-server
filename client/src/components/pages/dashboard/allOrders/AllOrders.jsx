@@ -90,7 +90,7 @@ const AllOrders = () => {
                     backgroundColor: '#E9EDF1'
                 }}
             >
-                <Grid item xs={6} sm={4} md={6} >
+                <Grid item xs={6} sm={4} md={4} >
                     <FormControl fullWidth>
                         <Select
                             labelId="orderType-select-label"
@@ -108,10 +108,15 @@ const AllOrders = () => {
                     </FormControl>
                 </Grid>
 
-                <Grid item xs={6} sm={6} md={2} textAlign={{ xs: 'right' }} >
-                    <Link style={lnk} to='/create-order' >
-                        <Button size='small' variant='contained' color='primary' sx={{ minWidth: '121px', fontSize: '12px', textTransform: 'captalize' }}>Create Sale Order</Button>
-                    </Link>
+                <Grid item xs={6} sm={6} md={4} textAlign={{ xs: 'right' }} >
+                    <Stack direction='row' columnGap={1} >
+                        <Link style={lnk} to='/create-order' >
+                            <Button size='small' variant='contained' color='primary' sx={{ minWidth: '121px', fontSize: '12px', textTransform: 'captalize' }}>Create Order</Button>
+                        </Link>
+                        <Link style={lnk} to='/csv-order' >
+                            <Button size='small' variant='contained' color='success' sx={{ minWidth: '121px', fontSize: '12px', textTransform: 'captalize' }}>Upload CSV</Button>
+                        </Link>
+                    </Stack>
                 </Grid>
 
                 <Grid item xs={12} md={4} >
@@ -189,7 +194,7 @@ const AllOrders = () => {
                                                 }
                                             }} label={row.status} />
                                         </TableCell>
-                                        <TableCell sx={{ maxWidth: '140px' }}>{(row.amount) >= 0 ? `$ ${row.amount}`: "-----"}</TableCell>
+                                        <TableCell sx={{ maxWidth: '140px' }}>{(row.amount) >= 0 ? `$ ${row.amount}` : "-----"}</TableCell>
                                         <TableCell sx={{ maxWidth: '140px' }}>{row.shipmentDate ? row.shipmentDate : "-----"}</TableCell>
                                         <TableCell sx={{ maxWidth: '140px' }}>{row.shippingAgentCode ? row.shippingAgentCode : "NA"}</TableCell>
                                         <TableCell sx={{ maxWidth: '140px' }}>{row.priority ? row.priority : "-----"}</TableCell>

@@ -28,6 +28,9 @@ let initialState = {
   // app select and flow 
   saleOrderDetails: null,
   pickingSelectedProduct: null,
+  csv_OrdersDetail: null,
+  csv_data: null,
+  csv_fileName: null,
   // client info
   client_Info: null,
   // FEDEXP
@@ -133,6 +136,15 @@ const mainSlice = createSlice({
     ADD_NEW_INVENTORY_PRODUCT: (state, { payload }) => {
       state.inventoryAdjustment.push(payload);
     },
+    CSV_PRODUCT_DETAIL: (state, { payload }) => {
+
+      state.csv_OrdersDetail = {
+        total: payload.total,
+        product: payload.product,
+      };
+      state.csv_data = payload.data;
+      state.csv_fileName = payload.name;
+    },
 
 
   },
@@ -204,6 +216,7 @@ export const { LOG_OUT,
   LOG_IN,
   SELECT_PICKING_PRODUCT,
   ADD_NEW_INVENTORY_PRODUCT,
+  CSV_PRODUCT_DETAIL,
 } = mainSlice.actions;
 
 

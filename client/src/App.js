@@ -29,6 +29,8 @@ import LocationTransferPage from './components/pages/dashboard/locationTransfer'
 import NewLocationTransferPage from './components/pages/dashboard/newLocationTransfer';
 import CreateSalesOrderPage from './components/pages/dashboard/createSalesOrder';
 import Preloading from './components/pages/HOC/preloading';
+import CSVOrdersPage from './components/pages/dashboard/csvOrders';
+import CSVOrdersPageDetail from './components/pages/dashboard/csvOrdersDetail';
 
 function App() {
 
@@ -60,6 +62,10 @@ function App() {
           <Route path="location-transfer" element={<LocationTransferPage />} />
           <Route path="new-location-transfer" element={<NewLocationTransferPage />} />
           <Route path="create-order" element={<CreateSalesOrderPage />} />
+          <Route path="csv-order" element={<CSVOrdersPage />} />
+          <Route path="csv-order-detail" element={<CSVOrdersPageDetail />} />
+
+
         </Route>
 
 

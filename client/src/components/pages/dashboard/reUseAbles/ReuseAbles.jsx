@@ -68,6 +68,24 @@ export const styleSlect = {
     },
 };
 
+export const NoBorder = {
+    '.MuiOutlinedInput-notchedOutline': {
+        // borderColor: 'rgba(228, 219, 233, 0.25)',
+        border: 'none'
+    },
+    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+        // borderColor: 'rgba(228, 219, 233, 0.25)',
+        border: 'none'
+    },
+    '&:hover .MuiOutlinedInput-notchedOutline': {
+        // borderColor: 'rgba(228, 219, 233, 0.25)',
+        border: 'none'
+    },
+    '.MuiSvgIcon-root ': {
+        // fill: "white !important",
+    },
+}
+
 
 export const searchDropDown = {
     ...styleSlect,

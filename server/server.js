@@ -703,124 +703,122 @@ app.post(routeStrings.rate_list_ups, async (req, res) => {
 // -----------------stamps Routes --------------------- //
 
 // Stamps-Token
-app.get(routeStrings.token_stamps, async (req, res) => {
+// app.get(routeStrings.token_stamps, async (req, res) => {
 
 
-    try {
-        const STAMPS_API_BASE_URL = 'https://api.stamps.com';
-        const stampsIntegrationId = "fcaa4f74-9bc2-4506-9420-8ebb99b524f1";
-        const stampsUsername = "SilkCraft-001";
-        const stampsPassword = "October2020!";
+//     try {
+//         const STAMPS_API_BASE_URL = 'https://api.stamps.com';
+//         const stampsIntegrationId = "fcaa4f74-9bc2-4506-9420-8ebb99b524f1";
+//         const stampsUsername = "SilkCraft-001";
+//         const stampsPassword = "October2020!";
 
-        router.get('/example', async (req, res) => {
-            // Step 1: Redirect the user to the Stamps.com authentication endpoint
-            if (!req.query.code) {
-                const queryParams = querystring.stringify({
-                    response_type: 'code',
-                    client_id: stampsIntegrationId,
-                    redirect_uri: 'http://localhost:8080/example', // replace with your redirect URI
-                });
-                const authorizationUrl = `https://signin.stamps.com/authorize?${queryParams}`;
-                return res.redirect(authorizationUrl);
-            }
+//         router.get('/example', async (req, res) => {
+//             // Step 1: Redirect the user to the Stamps.com authentication endpoint
+//             if (!req.query.code) {
+//                 const queryParams = querystring.stringify({
+//                     response_type: 'code',
+//                     client_id: stampsIntegrationId,
+//                     redirect_uri: 'http://localhost:8080/example', // replace with your redirect URI
+//                 });
+//                 const authorizationUrl = `https://signin.stamps.com/authorize?${queryParams}`;
+//                 return res.redirect(authorizationUrl);
+//             }
 
-            // Step 2: Handle the authorization code and exchange it for an access token
-            const authorizationCode = req.query.code;
-            try {
-                const tokenResponse = await axios.post(`${STAMPS_API_BASE_URL}/oauth2/v1/token`, {
-                    grant_type: 'authorization_code',
-                    code: authorizationCode,
-                    redirect_uri: 'http://localhost:8080/example', // replace with your redirect URI
-                    client_id: stampsIntegrationId,
-                    client_secret: YOUR_STAMPS_INTEGRATION_SECRET,
-                });
+//             // Step 2: Handle the authorization code and exchange it for an access token
+//             const authorizationCode = req.query.code;
+//             try {
+//                 const tokenResponse = await axios.post(`${STAMPS_API_BASE_URL}/oauth2/v1/token`, {
+//                     grant_type: 'authorization_code',
+//                     code: authorizationCode,
+//                     redirect_uri: 'http://localhost:8080/example', // replace with your redirect URI
+//                     client_id: stampsIntegrationId,
+//                     client_secret: YOUR_STAMPS_INTEGRATION_SECRET,
+//                 });
 
-                const accessToken = tokenResponse.data.access_token;
+//                 const accessToken = tokenResponse.data.access_token;
 
-                // Step 3: Make the API request with the access token
-                const apiResponse = await axios.get(`${STAMPS_API_BASE_URL}/v1/addresses`, {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                    },
-                });
+//                 // Step 3: Make the API request with the access token
+//                 const apiResponse = await axios.get(`${STAMPS_API_BASE_URL}/v1/addresses`, {
+//                     headers: {
+//                         Authorization: `Bearer ${accessToken}`,
+//                     },
+//                 });
 
-                res.send(apiResponse.data);
-            } catch (error) {
-                console.error(error);
-                res.status(500).send('Error getting access token or making API request');
-            }
-        });
+//                 res.send(apiResponse.data);
+//             } catch (error) {
+//                 console.error(error);
+//                 res.status(500).send('Error getting access token or making API request');
+//             }
+//         });
 
 
-    } catch (error) {
-        console.log("errorCatch", error);
-        if (error?.response?.status) res.status(error.response.status).send({ error: error.response.message });
-        else res.status(500).send({ error: error.message });
-    }
-});
+//     } catch (error) {
+//         console.log("errorCatch", error);
+//         if (error?.response?.status) res.status(error.response.status).send({ error: error.response.message });
+//         else res.status(500).send({ error: error.message });
+//     }
+// });
 
 
 // stamps address validation
-app.post(routeStrings.address_validate_stamps, async (req, res) => {
-    const config = {
-        headers: {
-            "Content-Type": "application/json",
-            "X-locale": "en_US",
-            "Authorization": `Bearer ${req.body.token}`,
-        }
-    };
-    try {
-        const response = await axios.post(
-            SERVERS.STAMPS_Sandbox_Server + API_STAMPS.Validate_Address,
-            req.body.body,
-            config
-        );
-        if (response?.status === 200 && (response.data.output.resolvedAddresses[0].attributes.DPV || response.data.output.resolvedAddresses[0].attributes.Matched || response.data.output.resolvedAddresses[0].attributes.Resolved)) {
-            res.status(response.status).send({
-                message: response.data.output.resolvedAddresses[0].attributes.Resolved,
-                error: false
-            });
-        } else if (response?.data?.output?.resolvedAddresses[0]?.customerMessages[0]?.code) {
-            throw ({
-                response: {
-                    "message": response.data.output.resolvedAddresses[0].customerMessages[0].code,
-                    "name": response.data.output.resolvedAddresses[0].customerMessages[0].message,
-                    "status": 500,
-                }
-            });
-        }
-        else {
-            throw ({
-                response: {
-                    "message": "Server Error!",
-                    "name": "Error",
-                    "status": 500,
-                }
-            });
-        }
+// app.post(routeStrings.address_validate_stamps, async (req, res) => {
+//     const config = {
+//         headers: {
+//             "Content-Type": "application/json",
+//             "X-locale": "en_US",
+//             "Authorization": `Bearer ${req.body.token}`,
+//         }
+//     };
+//     try {
+//         const response = await axios.post(
+//             SERVERS.STAMPS_Sandbox_Server + API_STAMPS.Validate_Address,
+//             req.body.body,
+//             config
+//         );
+//         if (response?.status === 200 && (response.data.output.resolvedAddresses[0].attributes.DPV || response.data.output.resolvedAddresses[0].attributes.Matched || response.data.output.resolvedAddresses[0].attributes.Resolved)) {
+//             res.status(response.status).send({
+//                 message: response.data.output.resolvedAddresses[0].attributes.Resolved,
+//                 error: false
+//             });
+//         } else if (response?.data?.output?.resolvedAddresses[0]?.customerMessages[0]?.code) {
+//             throw ({
+//                 response: {
+//                     "message": response.data.output.resolvedAddresses[0].customerMessages[0].code,
+//                     "name": response.data.output.resolvedAddresses[0].customerMessages[0].message,
+//                     "status": 500,
+//                 }
+//             });
+//         }
+//         else {
+//             throw ({
+//                 response: {
+//                     "message": "Server Error!",
+//                     "name": "Error",
+//                     "status": 500,
+//                 }
+//             });
+//         }
 
-    } catch (error) {
-        console.log(error);
-        if (error?.status) res.send({ code: error.status, message: error.message, error: true });
-        else if (error?.response?.status) res.send({
-            code: error.response?.status,
-            message: ((error?.response?.data?.errors[0]?.code) || (error?.response?.data?.response?.errors[0]?.message) || error.response.message),
-            error: true
-        });
-        else res.send({ code: error.status, message: error.message, error: true });
-    }
-});
-
-
-app.get(routeStrings.rate_list_stamps, async (req, res) => {
-
-    try {
-
-        const STAMPS_INTEGRATION_ID = "fcaa4f74-9bc2-4506-9420-8ebb99b524f1";
-        const STAMPS_USERNAME = "SilkCraft-001";
-        const STAMPS_PASSWORD = "October2020!";
+//     } catch (error) {
+//         console.log(error);
+//         if (error?.status) res.send({ code: error.status, message: error.message, error: true });
+//         else if (error?.response?.status) res.send({
+//             code: error.response?.status,
+//             message: ((error?.response?.data?.errors[0]?.code) || (error?.response?.data?.response?.errors[0]?.message) || error.response.message),
+//             error: true
+//         });
+//         else res.send({ code: error.status, message: error.message, error: true });
+//     }
+// });
 
 
+// app.get(routeStrings.rate_list_stamps, async (req, res) => {
+
+//     try {
+
+//         const STAMPS_INTEGRATION_ID = "fcaa4f74-9bc2-4506-9420-8ebb99b524f1";
+//         const STAMPS_USERNAME = "SilkCraft-001";
+//         const STAMPS_PASSWORD = "October2020!";
 
 
 
@@ -829,58 +827,60 @@ app.get(routeStrings.rate_list_stamps, async (req, res) => {
 
 
 
-        res.status(200).send({
-            allServices: 'stamps',
-            error: false,
-        });
-
-    } catch (error) {
-        console.log("error", error);
-        if (error?.response?.status) res.send({ error: true, message: error?.response?.data?.response?.errors[0]?.message });
-        else res.status(500).send({ error: true, message: error.message });
-    }
-});
 
 
+//         res.status(200).send({
+//             allServices: 'stamps',
+//             error: false,
+//         });
 
-app.get('/get-access-token', async (req, res) => {
-    try {
-        const stamps_integration_id = "YOUR_INTEGRATION_ID";
-        const stamps_username = "YOUR_USERNAME";
-        const stamps_password = "YOUR_PASSWORD";
+//     } catch (error) {
+//         console.log("error", error);
+//         if (error?.response?.status) res.send({ error: true, message: error?.response?.data?.response?.errors[0]?.message });
+//         else res.status(500).send({ error: true, message: error.message });
+//     }
+// });
 
-        // Get the authorization code
-        const authorizationCodeResponse = await axios.get('https://signin.stampsendicia.com/authorize', {
-            params: {
-                client_id: stamps_integration_id,
-                response_type: 'code',
-                redirect_uri: 'https://www.stamps.com'
-            },
-            auth: {
-                username: stamps_username,
-                password: stamps_password
-            }
-        });
 
-        // const authorizationCode = authorizationCodeResponse.request.res.responseUrl.split('=')[1];
 
-        // // Get the access token
-        // const { data } = await axios.post('https://signin.stamps.com/oauth/token', {
-        //     grant_type: 'authorization_code',
-        //     client_id: stamps_integration_id,
-        //     client_secret: 'YOUR_CLIENT_SECRET',
-        //     code: authorizationCode,
-        //     redirect_uri: 'https://www.stamps.com'
-        // });
+// app.get('/get-access-token', async (req, res) => {
+//     try {
+//         const stamps_integration_id = "YOUR_INTEGRATION_ID";
+//         const stamps_username = "YOUR_USERNAME";
+//         const stamps_password = "YOUR_PASSWORD";
 
-        // const accessToken = data.access_token;
+//         // Get the authorization code
+//         const authorizationCodeResponse = await axios.get('https://signin.stampsendicia.com/authorize', {
+//             params: {
+//                 client_id: stamps_integration_id,
+//                 response_type: 'code',
+//                 redirect_uri: 'https://www.stamps.com'
+//             },
+//             auth: {
+//                 username: stamps_username,
+//                 password: stamps_password
+//             }
+//         });
 
-        res.status(200).json({ access_token: 'accessToken',authorizationCodeResponse:authorizationCodeResponse });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: error });
-    }
-});
+//         // const authorizationCode = authorizationCodeResponse.request.res.responseUrl.split('=')[1];
+
+//         // // Get the access token
+//         // const { data } = await axios.post('https://signin.stamps.com/oauth/token', {
+//         //     grant_type: 'authorization_code',
+//         //     client_id: stamps_integration_id,
+//         //     client_secret: 'YOUR_CLIENT_SECRET',
+//         //     code: authorizationCode,
+//         //     redirect_uri: 'https://www.stamps.com'
+//         // });
+
+//         // const accessToken = data.access_token;
+
+//         res.status(200).json({ access_token: 'accessToken',authorizationCodeResponse:authorizationCodeResponse });
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ error: error });
+//     }
+// });
 
 
 
