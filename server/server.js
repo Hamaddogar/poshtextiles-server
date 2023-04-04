@@ -2,9 +2,8 @@
 require('dotenv').config();
 const express = require('express');
 const fs = require('fs');
-const { Buffer } = require('buffer');
 const querystring = require('querystring');
-const { createCanvas, loadImage } = require('canvas');
+const { v4: uuidv4 } = require('uuid');
 
 const axios = require('axios');
 const path = require("path");
@@ -12,6 +11,7 @@ const cors = require('cors');
 const { SECRETS } = require('./environment/credentials');
 const { API_FEDEXP, SERVERS, API_MICROSOFT, API_UPS, API_STAMPS } = require('./environment/APIs');
 const app = express();
+
 
 // useage
 app.use(cors());
@@ -169,7 +169,7 @@ app.post(routeStrings.shipment_fedexp, async (req, res) => {
         }
     };
 
-    let images = [];
+    let URLs = [];
     try {
         const arr = req.body.body.requestedShipment.requestedPackageLineItems;
 
@@ -183,55 +183,41 @@ app.post(routeStrings.shipment_fedexp, async (req, res) => {
                 config
             );
             // console.log("resss", response);
-            if (response?.data?.output?.transactionShipments[0]?.pieceResponses[0]?.packageDocuments[0]?.url) {
+            if (response?.data?.output?.transactionShipments?.[0]?.pieceResponses?.[0]?.packageDocuments?.[0]?.url) {
                 const pdfUrls = ((response.data.output.transactionShipments[0].pieceResponses).map(item => {
                     return item.packageDocuments[0].url;
                 }));
-                images.push(...pdfUrls)
+                URLs.push(...pdfUrls)
             }
         }
 
-        async function downloadAndDrawImage(ctx, url, x, y, width, height) {
-            const response = await axios.get(url, { responseType: 'arraybuffer' });
-            const img = await loadImage(response.data);
-            ctx.drawImage(img, x, y, width, height);
+        async function downloadAndConvert(urls) {
+            const base64Array = [];
+            for (let i = 0; i < urls.length; i++) {
+                try {
+                    const response = await axios.get(urls[i], { responseType: 'arraybuffer' });
+                    const imageData = response.data;
+                    const fileName = `label${i + 1}.png`;
+                    fs.writeFileSync(fileName, imageData, 'binary');
+
+                    const base64Data = fs.readFileSync(fileName, 'base64');
+                    base64Array.push(base64Data);
+
+                    fs.unlinkSync(fileName);
+                } catch (error) {
+                    console.error(`Failed to download ${urls[i]}`, error);
+                }
+            }
+            return base64Array;
         }
 
-        const b64Getter = async () => {
 
-            const canvas = createCanvas(800, 1220 * images.length + (images.length - 1) * 10);
-            const ctx = canvas.getContext('2d');
-
-            let x = 0;
-            let y = 0;
-            const width = canvas.width;
-            const height = canvas.height / images.length;
-
-            for (const url of images) {
-                await downloadAndDrawImage(ctx, url, x, y, width, height);
-                y += height + 10;
-                ctx.beginPath();
-                ctx.moveTo(0, y);
-                ctx.lineTo(canvas.width, y);
-                ctx.stroke();
-            }
-
-            const buffer = canvas.toBuffer('image/png');
-            const filePath = path.join(__dirname, '/reports/fedexp/fedexp_labels_report.png');
-            fs.writeFileSync(filePath, buffer);
-            const base64Datacanvas = canvas.toDataURL().replace(/^data:image\/png;base64,/, '');
-            return base64Datacanvas
-
-        };
-
-
-
-        const myFile = await b64Getter()
+        const images = await downloadAndConvert(URLs)
 
 
         res.status(200).send({
-            file: "http://localhost:8080/report_fedexp",
-            data: myFile,
+            file: true,
+            data: images,
             error: false
         })
 
@@ -293,22 +279,6 @@ app.post(routeStrings.address_validate_fedexp, async (req, res) => {
         });
         else res.send({ code: error.status, message: error.message, error: true });
     }
-});
-
-// preview file fedexp
-app.get('/report_fedexp', (req, res) => {
-    const filePath = path.join(__dirname, '/reports/fedexp/fedexp_labels_report.png');
-    res.sendFile(filePath, {
-        headers: {
-            'Content-Type': 'image/png',
-            'Content-Disposition': 'inline; filename=fedexp_labels_report.png'
-        }
-    }, (err) => {
-        if (err) {
-            console.error(err);
-            res.status(500).send('Internal Server Error');
-        }
-    });
 });
 
 
@@ -423,44 +393,9 @@ app.post(routeStrings.shipment_ups, async (req, res) => {
             }
         };
 
-        const b64Getter = async () => {
-            const canvas = createCanvas(800, 700 * images.length + (images.length - 1) * 10);
-            const ctx = canvas.getContext('2d');
-
-            // Fill canvas with white background
-            ctx.fillStyle = "#FFFFFF";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            let x = 20;
-            let y = 20;
-            const width = canvas.width - 40; // Subtract 40 to account for 20px padding on each side
-            const height = (canvas.height - ((images.length - 1) * 10) - (20 * 2)) / images.length; // Subtract additional padding and separator lines
-
-            for (const b64 of images) {
-                const img = await loadImage(Buffer.from(b64, 'base64'));
-                ctx.drawImage(img, x, y, width, height);
-                y += height + 10;
-
-                // Draw separator line
-                ctx.beginPath();
-                ctx.moveTo(20, y);
-                ctx.lineTo(canvas.width - 20, y);
-                ctx.stroke();
-            }
-
-            const buffer = canvas.toBuffer('image/png');
-            const filePath = path.join(__dirname, '/reports/ups/UPS_labels_report.png');
-            fs.writeFileSync(filePath, buffer);
-            const base64Datacanvas = canvas.toDataURL().replace(/^data:image\/png;base64,/, '');
-            return base64Datacanvas;
-        };
-
-        const myFile = await b64Getter()
-
         res.status(200).send({
-            file: "http://localhost:8080/report_ups",
-            data: myFile,
-            data2: images,
+            file: true,
+            data: images,
             error: false
         })
     } catch (error) {
@@ -527,23 +462,6 @@ app.post(routeStrings.address_validate_ups, async (req, res) => {
         });
         else res.send({ code: error.status, message: error.message, error: true });
     }
-});
-
-
-// preview file link UPS
-app.get('/report_ups', (req, res) => {
-    const filePath = path.join(__dirname, '/reports/ups/UPS_labels_report.png');
-    res.sendFile(filePath, {
-        headers: {
-            'Content-Type': 'image/png',
-            'Content-Disposition': 'inline; filename=UPS_labels_report.png'
-        }
-    }, (err) => {
-        if (err) {
-            console.error(err);
-            res.status(500).send('Internal Server Error');
-        }
-    });
 });
 
 
@@ -629,45 +547,7 @@ app.post(routeStrings.rate_list_ups, async (req, res) => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 // -----------------stamps Routes --------------------- //
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 const CLIENT_ID = 'my778N8oCwaKq0dSPT1soKY9807OpicK';
@@ -681,7 +561,7 @@ const stampsPassword = "April2023!";
 
 app.get('/auth_stamps', async (req, res) => {
     const authorizationCode = req.query.code;
-    console.log("eqe", authorizationCode);
+    // console.log("eqe", authorizationCode);
     try {
 
         if (authorizationCode) {
@@ -701,7 +581,7 @@ app.get('/auth_stamps', async (req, res) => {
             });
 
             const authorizationUrl = `${AUTH_ENDPOINT}?${queryParams}`;
-            console.log(authorizationUrl);
+            // console.log(authorizationUrl);
             res.redirect(authorizationUrl);
         }
 
@@ -712,69 +592,40 @@ app.get('/auth_stamps', async (req, res) => {
 });
 
 
+app.post('/refresh_stamps', async (req, res) => {
+    // const authorizationCode = req.query.code;
+    // console.log("eqe", authorizationCode);
+    try {
+
+        const tokenResponse = await axios.post(TOKEN_ENDPOINT, {
+            "grant_type": "refresh_token",
+            "client_id": CLIENT_ID,
+            "client_secret": CLIENT_SECRET,
+            "refresh_token": `${req.body.token}`
+        });
+
+        console.log("--------", tokenResponse.data);
 
 
+        res.status(200).send({ ...tokenResponse.data });
 
+    } catch (error) {
+        console.error(error);
+        res.send({ ...error });
+    }
+});
 
+app.get('/auth', async (req, res) => {
 
+    try {
+        const token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlA3Z3pLRGdfRENlVzcyeXZ3cnpQcCJ9.eyJodHRwczovL3N0YW1wc2VuZGljaWEuY29tL2ludGVncmF0aW9uX2lkIjoiNzc4OTdmNDYtNjg2NS00NzQ1LTlkZjMtZDUzYjc4MTA4YjBjIiwiaHR0cHM6Ly9zdGFtcHNlbmRpY2lhLmNvbS91c2VyX2lkIjozNzI1Mzk5LCJpc3MiOiJodHRwczovL3NpZ25pbi50ZXN0aW5nLnN0YW1wc2VuZGljaWEuY29tLyIsInN1YiI6ImF1dGgwfDM3MjUzOTkiLCJhdWQiOiJodHRwczovL2FwaS5zdGFtcHNlbmRpY2lhLmNvbSIsImlhdCI6MTY4MDYxODc3OSwiZXhwIjoxNjgwNjE5Njc5LCJhenAiOiJteTc3OE44b0N3YUtxMGRTUFQxc29LWTk4MDdPcGljSyJ9.KSjWTxIgC7dOYz59J-kYhgCDDRlg9UIstjfrjlkRkkMuTRTBrWGHGLv3XfxuCDf7p6-P53Il3gXJ9fi8sHEpfiQAr8_T4FY951yugiao5a1gs1fhMBbEPxgb28VBkSHNBF1SijB-Z_Y24_tfqNItF8CY20YDsVSFAPDZnaQciZ4o8b9DHKf0e_Zo-k0IfgDJOo7fhCzS_idONqa0wE4-MR9NVBN6h0-xpTglBZmKLA9hJX0nR3PRJ7w38Eg8P_MmJ_ciMiwX-iUvK4NR946a9pk7BEJVFEqTjn5ocg5wH2GzAfC46YfPhcibedrgCJIeu_HBFBPAVgx1IrQAzUq6kw"
+        res.send(token)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    } catch (error) {
+        console.error(error);
+        res.send({ ...error });
+    }
+});
 
 
 
@@ -791,6 +642,7 @@ app.post(routeStrings.address_validate_stamps, async (req, res) => {
             "Authorization": `Bearer ${req.body.token}`,
         }
     };
+
     try {
 
 
@@ -800,16 +652,72 @@ app.post(routeStrings.address_validate_stamps, async (req, res) => {
             config
         );
 
-
-        console.log("---------", response.data);
-
-
-        if (Array.isArray(response.data) && "validation_results" in response.data[0]) {
-            res.status(200).send({
-                message: true,
-                error: false,
-                valid: true
-            });
+        if (Array.isArray(response?.data) && "validation_results" in response?.data[0]) {
+            const result = response?.data[0]?.validation_results?.result_code;
+            switch (result) {
+                case "V100":
+                    res.status(200).send({
+                        message: response.data[0].validation_results.result_description,
+                        error: false,
+                        valid: true,
+                    });
+                    break;
+                case "V101":
+                    res.send({
+                        message: "The postal code is invalid",
+                        error: true,
+                        valid: false,
+                    });
+                    break;
+                case "V102":
+                    res.send({
+                        message: "The state is invalid",
+                        error: true,
+                        valid: false,
+                    });
+                    break;
+                case "V103":
+                    res.send({
+                        message: "The city is invalid",
+                        error: true,
+                        valid: false,
+                    });
+                    break;
+                case "V104":
+                    res.send({
+                        message: "The street address is invalid",
+                        error: true,
+                        valid: false,
+                    });
+                    break;
+                case "V105":
+                    res.send({
+                        message: "The country is not supported",
+                        error: true,
+                        valid: false,
+                    });
+                    break;
+                case "V106":
+                    res.send({
+                        message: "The address is too long",
+                        error: true,
+                        valid: false,
+                    });
+                    break;
+                case "V200":
+                    res.send({
+                        message: "The address is invalid",
+                        error: true,
+                        valid: false,
+                    });
+                    break;
+                default:
+                    throw ({
+                        response: {
+                            message: 'Try Again'
+                        }
+                    })
+            }
         } else {
             throw ({
                 response: {
@@ -817,12 +725,6 @@ app.post(routeStrings.address_validate_stamps, async (req, res) => {
                 }
             })
         }
-
-
-
-        // console.log("---address_validate_stamps", req.body.body);
-
-
     } catch (error) {
         console.log(error);
         if (error?.status) res.send({ code: error.status, message: ((error?.response?.data?.errors[0]?.code) || (error?.response?.data?.response?.errors[0]?.message)), error: true });
@@ -845,10 +747,45 @@ app.post(routeStrings.rate_list_stamps, async (req, res) => {
             "Authorization": `Bearer ${req.body.token}`,
         }
     };
+
+    let allRates = []
     try {
-        console.log("---rate_list_stamps", req.body.body);
+        const url = "https://api.testing.stampsendicia.com/sera/v1/rates"
+        const response = await axios.post(
+            url,
+            req.body.body,
+            config
+        );
+
+        const avaliableServices = response.data.map(rate => {
+            return rate.service_type
+        })
+
+        for (let index = 0; index < avaliableServices.length; index++) {
+            let newBody = { ...req.body.body }
+            newBody.service_type = avaliableServices[index];
+            const response = await axios.post(
+                url,
+                newBody,
+                config
+            );
+
+
+            response.data.forEach(item => {
+                allRates.push({
+                    serviceName: item.service_type,
+                    serviceType: item.packaging_type,
+                    days: item.estimated_delivery_days,
+                    currency: item.shipment_cost.currency,
+                    rate: item.shipment_cost.total_amount,
+                })
+            });
+        }
+
+
+
         res.status(200).send({
-            allServices: shopRates,
+            allServices: allRates,
             error: false,
         });
 
@@ -860,24 +797,55 @@ app.post(routeStrings.rate_list_stamps, async (req, res) => {
 
 // stamps shipment & labels
 app.post(routeStrings.shipment_stamps, async (req, res) => {
+
     const config = {
         headers: {
             "Content-Type": "application/json",
             "X-locale": "en_US",
             "Authorization": `Bearer ${req.body.token}`,
+            "Idempotency-Key": `${uuidv4()}`
         }
     };
+    let images = [];
     try {
-        console.log("---shipment_stamps", req.body.body);
+        const url = "https://api.testing.stampsendicia.com/sera/v1/labels";
+
+        const lineItems = req.body.body.packages;
+        for (let i = 0; i < lineItems.length; i += 4) {
+            const chunk = lineItems.slice(i, i + 4);
+            let newBody = { ...req.body.body }
+            newBody.packages = chunk;
+            const response = await axios.post(
+                url,
+                newBody,
+                config
+            );
+            console.log("resss", response);
+            if (response.status < 300 && "labels" in (response?.data)) {
+                if (Array.isArray(response.data.labels)) {
+                    const new_images = (response.data.labels).map((item) => item.label_data)
+                    images.push(...new_images)
+                } else {
+                    const new_images = response.data.labels.label_data
+                    images.push(new_images)
+                }
+            }
+        };
+
+
         res.status(200).send({
-            file: "http://localhost:8080/report_stamps",
-            data: ['myFile'],
-            data2: ['images'],
+            file: true,
+            data: images,
             error: false
         })
 
     } catch (error) {
-        res.send({ code: error.status, message: error.message, error: true })
+        console.log(error);
+        res.send({
+            code: error.status,
+            message: error?.response?.data?.errors?.[0]?.error_message || error?.message
+            , error: true
+        })
     }
 });
 
@@ -916,9 +884,13 @@ app.get('/report_stamps', (req, res) => {
 app.post('/printer', async (req, res) => {
     const base64 = req.body.printData
     try {
-        let formData = new FormData();
-        formData.append('label', base64);
-        await axios.post("https://zpl.rs74.net", formData);
+
+        for (let index = 0; index < base64.length; index++) {
+            const item = base64[index];
+            let formData = new FormData();
+            formData.append('label', item);
+            await axios.post("https://zpl.rs74.net", formData);
+        }
 
         res.status(200).send({
             error: false,

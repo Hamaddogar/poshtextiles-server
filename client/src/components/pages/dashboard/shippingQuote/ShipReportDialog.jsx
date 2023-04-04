@@ -8,10 +8,8 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import { CircularProgress, Container, Grid, Typography } from '@mui/material';
 import { Box } from '@mui/system';
-import File from "../../../assets/icons/file.svg";
 import LoadingButton from '@mui/lab/LoadingButton';
 import { print_Labels } from '../../../../utils/API_HELPERS';
-// import ProgressIndicator from '../reUseAbles/ProgressIndicator';
 
 export default function ShipReportDialog({ shipReport, SetShipReport, numbers }) {
     const theme = useTheme();
@@ -65,6 +63,7 @@ export default function ShipReportDialog({ shipReport, SetShipReport, numbers })
 
     return (
         <div>
+{/* <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIA..." alt="base64 encoded image"> */}
             <Dialog
                 fullScreen={fullScreen}
                 open={shipReport.open}
@@ -81,7 +80,11 @@ export default function ShipReportDialog({ shipReport, SetShipReport, numbers })
                         {
                             shipReport.response && !shipReport.error ?
                                 <Grid item xs={12} sx={{ textAlign: 'center' }}>
-                                    <Box component='img' src={File} alt="report file" sx={{ width: '95%', maxWidth: '250px', textAlign: 'center' }} />
+                                    {
+                                        (shipReport?.response?.data?.data).map((img, indx) => (
+                                            <Box key={indx} component='img' src={`data:image/png;base64,${img}`} alt="report file" sx={{ width: '95%', maxWidth: '250px', textAlign: 'center' }} p={1} />
+                                        ))
+                                    }
                                 </Grid>
                                 :
                                 <>
@@ -109,17 +112,6 @@ export default function ShipReportDialog({ shipReport, SetShipReport, numbers })
                         <Button size='small' color='error' variant='contained'
                             onClick={ShipReportDialogClose}
                         >Close</Button>
-                        &nbsp; &nbsp;
-                        <a
-                            style={{ textDecoration: 'none' }}
-                            target={"_blank"}
-                            rel="noreferrer"
-                            href={shipReport?.response?.data?.file}
-                            download="shipment-label.pdf"
-                        >
-                            <Button size='small' color='success' variant='contained'>Preview</Button>
-                        </a>
-
 
                         <LoadingButton
                             // sx={{ marginTop: "15px", fontSize: '14px' }}

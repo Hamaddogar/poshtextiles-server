@@ -240,7 +240,7 @@ const CreateSalesOrder = () => {
                                 </Grid>
 
                                 <Grid item xs={6} md={2} >
-                                    <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Req Ship Date: </Typography>
+                                    <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>shipping Agent Code: </Typography>
 
                                     <FormControl fullWidth>
                                         <Select

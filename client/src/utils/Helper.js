@@ -2,9 +2,16 @@
 // weight converter
 
 // const ydsToOz = YDS_W => (YDS_W * 16 * 16);
-const ydsToLbs_ounces = YDS_W => (YDS_W / 16);
+const ydsToLbs_ounces = YDS_W => YDS_W ? (YDS_W / 16) : .5;
 
-
+function addDaysToDate(dateString) {
+    const date = new Date(dateString);
+    date.setDate(date.getDate() + 7);
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+  }
 
 
 
@@ -206,12 +213,12 @@ export const payload_Shipment_Handler = details => {
                 "city": details?.edcCustomers[0]?.city,
                 "state_province": details?.shipToCounty,
                 "postal_code": details?.edcCustomers[0]?.postCode,
-                "country": details?.edcCustomers[0]?.county,
-                "country_code": details?.edcCustomers[0]?.county,
+                "country": details?.edcCustomers[0]?.countryRegionCode,
+                "country_code": details?.edcCustomers[0]?.countryRegionCode,
                 "phone": details?.edcCustomers[0]?.phoneNo,
                 "email": details?.edcCustomers[0]?.eMail,
             },
-            "service_type": "usps_first_class_mail",
+            "service_type": "usps_parcel_select",
             "packages":
                 ((details?.edcWhseShipments).map(item => {
                     return {
@@ -224,22 +231,14 @@ export const payload_Shipment_Handler = details => {
                         "dimension_unit": "inch"
                     }
                 })),
-            "delivery_confirmation_type": "none",
-            "insurance": {
-                "insurance_provider": "stamps_com",
-                "insured_value": {
-                    "amount": 0,
-                    "currency": "usd"
-                }
-            },
-            "ship_date": "string",
+            "ship_date": addDaysToDate(details?.shipmentDate),
             "is_return_label": true,
             "label_options": {
                 "label_size": "4x6",
                 "label_format": "png",
                 "label_output_type": "base64"
             },
-            "is_test_label": true
+            "is_test_label": false,
         }
     }
 };
@@ -346,39 +345,51 @@ export const payload_Rates_Handler = (details) => {
         };
     } else if (details.shippingAgentCode === "STAMPS") {
         return {
-            "ship_from": {
+            "from_address": {
                 "name": "Muhammad Hamad",
-                "company": "poshtextiles",
-                "address1": "12 Main St",
-                "address2": "",
+                "company_name": "poshtextiles",
+                "address_line1": "12 Main St",
+                "address_line2": "",
                 "city": "Kalali",
-                "state": "CA",
-                "zip": "90503",
-                "country": "US",
+                "state_province": "CA",
+                "postal_code": "90503",
+                "country_code": "US",
             },
-            "ship_to": {
-                "name": details?.shipToName,
-                "company": "Doe Inc.",
-                "address1": details?.edcCustomers[0]?.address,
-                "address2": details?.edcCustomers[0]?.address2,
+            "to_address": {
+                "name": details?.edcCustomers[0]?.name,
+                "company_name": details?.edcCustomers[0]?.searchName,
+                "address_line1": details?.edcCustomers[0]?.address,
+                "address_line2": details?.edcCustomers[0]?.address2,
                 "city": details?.edcCustomers[0]?.city,
-                "state": details?.shipToCounty,
-                "zip": details?.edcCustomers[0]?.postCode,
-                "country": details?.edcCustomers[0]?.county,
+                "state_province": details?.shipToCounty,
+                "postal_code": details?.edcCustomers[0]?.postCode,
+                "country": details?.edcCustomers[0]?.countryRegionCode,
+                "country_code": details?.edcCustomers[0]?.countryRegionCode,
                 "phone": details?.edcCustomers[0]?.phoneNo,
                 "email": details?.edcCustomers[0]?.eMail,
             },
+            
             "packages":
                 ((details?.edcWhseShipments).map(item => {
                     return {
-                        "weight": item.GrossWeight,
+                        "packaging_type": "package",
+                        "weight_unit": "ounce",
+                        "weight": details?.edcSalesLines[0]?.unitOfMeasureCode === "YDS" ? ydsToLbs_ounces(item.GrossWeight) : item.GrossWeight,
                         "length": item.edcBoxDetails[0]?.["length"],
                         "width": item.edcBoxDetails[0]?.["width"],
-                        "height": item.edcBoxDetails[0]?.["height"]
+                        "height": item.edcBoxDetails[0]?.["height"],
+                        "dimension_unit": "inch"
                     }
                 })),
+            "ship_date": addDaysToDate(details?.shipmentDate),
+            "is_return_label": true,
+            "label_options": {
+                "label_size": "4x6",
+                "label_format": "png",
+                "label_output_type": "base64"
+            },
+            "is_test_label": false,
         }
-
     }
 };
 

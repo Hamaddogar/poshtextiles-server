@@ -17,6 +17,8 @@ export const APIS = {
     token_stamps: 'http://localhost:8080/auth_stamps',
     token_micro: 'http://localhost:8080/token_microsoft',
     inventory_micro: "http://localhost:8080/inventory",
+    token_refresh_stamps: 'http://localhost:8080/refresh_stamps',
+
 
 
     // fedexp 

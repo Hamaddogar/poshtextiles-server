@@ -11,7 +11,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import Shipfrom from './Shipfrom'
 import { useSelector } from 'react-redux'
 import { BackButton, headInputStyle, styleSlect } from '../reUseAbles/ReuseAbles'
-import { create_Shipment_FEDEXP, create_Shipment_STAMPS, createShipment_UPS, request_AccessToken_FEDEXP } from '../../../../utils/API_HELPERS'
+import { create_Shipment_FEDEXP, create_Shipment_STAMPS, createShipment_UPS, request_AccessToken_FEDEXP, token_STAMPS } from '../../../../utils/API_HELPERS'
 import ShipReportDialog from './ShipReportDialog'
 import { payload_Shipment_Handler } from '../../../../utils/Helper'
 import ShipToDialoge from './ShipToDia'
@@ -73,7 +73,7 @@ const ShippingQuote = () => {
     // for shipment 
     const handleSubmit = event => {
         event.preventDefault();
-        
+
         if (saleOrderDetails.edcWhseShipments.length > 0) {
             SetShipReport({ open: true });
             const condition = saleOrderDetails?.edcSalesLines?.length > 0
@@ -89,9 +89,13 @@ const ShippingQuote = () => {
                     createShipment_UPS(payload_Shipment_Handler(saleOrderDetails))
                 )
             } else if (condition && saleOrderDetails?.shippingAgentCode === "STAMPS") {
-                recursiveCaller(
-                    create_Shipment_STAMPS("TOKEN", payload_Shipment_Handler(saleOrderDetails))
-                );
+                token_STAMPS()
+                    .then(token => {
+                        recursiveCaller(
+                            create_Shipment_STAMPS(token, payload_Shipment_Handler(saleOrderDetails))
+                        );
+                    });
+
             } else if (!condition) {
                 SetShipReport({
                     open: true,

@@ -36,6 +36,25 @@ export const request_AccessToken_STAMPS = async (refresh_token = 0) => {
     }
 };
 
+// STTAMPS
+export const refresh_AccessToken_STAMPS = async (token) => {
+    try {
+        const response = await axios.post(APIS.token_refresh_stamps, { token });
+        return response.data;
+    } catch (error) {
+        return error
+    }
+};
+
+export const token_STAMPS = async () => {
+    try {
+        const response = await axios.get("http://localhost:8080/auth");
+        return response.data;
+    } catch (error) {
+        return error
+    }
+};
+
 
 // --------------------- create shipment and LABELS --------------------- //
 
@@ -121,10 +140,10 @@ export const rate_List_FEDEX = async ({ body, toastPermission, token }) => {
 }
 
 // 4STAMPS
-export const rate_List_STAMPS = async ({ body }) => {
+export const rate_List_STAMPS = async (token, body) => {
     try {
         const data = await toast.promise(
-            axios.post(APIS.rate_list_stamps, { body }),
+            axios.post(APIS.rate_list_stamps, { token, body }),
             { pending: 'Loading Please Wait...', success: 'Response Loaded', error: 'Something Went Wrong' },
             { autoClose: 1500, hideProgressBar: true }
         );
@@ -132,7 +151,7 @@ export const rate_List_STAMPS = async ({ body }) => {
     } catch (error) {
         return error
     }
-}
+};
 
 
 // --------------------- validate Address --------------------- //

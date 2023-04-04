@@ -2,15 +2,16 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { Button, Checkbox, Container, FormControlLabel, Grid, Skeleton, Slider, Stack, Typography } from '@mui/material';
-import { rate_List_FEDEX, rate_List_STAMPS, rate_List_UPS, request_AccessToken_FEDEXP } from '../../../../utils/API_HELPERS';
+import { rate_List_FEDEX, rate_List_STAMPS, rate_List_UPS, request_AccessToken_FEDEXP, token_STAMPS } from '../../../../utils/API_HELPERS';
 import { payload_Rates_Handler } from '../../../../utils/Helper';
 import FedexRates from './FedexRates';
 import UPSRates from './UPSRates';
 import { toast } from 'react-toastify';
+import StampsRates from './StampsRates';
 
 export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, saleOrderDetails }) {
 
-    const [slider, setSlider] = React.useState([0, 2000]);
+    const [slider, setSlider] = React.useState([0, 1500]);
     const [reload, setReload] = React.useState(false);
     const [rateListData, setRateListData] = React.useState({
         loading: "idle",
@@ -31,6 +32,7 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
         // calling function 
         action
             .then(response => {
+                console.log("-----rates--------", response);
                 if (("error" in response) && !(response.error)) {
                     setRateListData({
                         loading: "responded",
@@ -79,9 +81,10 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
 
             } else if (condition && saleOrderDetails?.shippingAgentCode === "STAMPS") {
                 loadingFunction();
-                recursiveCallerRates(rate_List_STAMPS({
-                    body: payload_Rates_Handler(saleOrderDetails),
-                }))
+                token_STAMPS()
+                    .then(token => {
+                        recursiveCallerRates(rate_List_STAMPS(token, payload_Rates_Handler(saleOrderDetails)))
+                    });
             } else if (!drawerstateRate) {
                 setRateListData({
                     loading: "idle",
@@ -117,10 +120,10 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
                     onOpen={toggleDrawerRate(true)}
                 >
                     <Box
-                        sx={{ width: 500,minHeight: '650px' ,padding: "20px 15px 0px 15px", background: "#E9EDF1" }}
+                        sx={{ width: 500, minHeight: '650px', padding: "20px 15px 0px 15px", background: "#E9EDF1" }}
                         role="presentation"
                     >
-                        <Container component='form'>
+                        <Container component='form' sx={{ backgroundColor: '#E9EDF1' }}>
                             <Grid container spacing={3}>
 
                                 {/* left section */}
@@ -153,7 +156,7 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
                                                 getAriaValueText={value => `${value}`}
                                                 size='small'
                                                 name="second"
-                                                max={2000}
+                                                max={1500}
                                                 step={1}
                                                 aria-labelledby="non-linear-slider"
                                             />
@@ -194,12 +197,17 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
                                 <Grid item xs={12} >
                                     {
                                         !(rateListData.loading === "loading") && (saleOrderDetails?.shippingAgentCode === "FEDEX") &&
-                                        <FedexRates rateListData={rateListData} slider={slider} service={saleOrderDetails?.shippingAgentCode} />
+                                        <FedexRates rateListData={rateListData} slider={slider} />
                                     }
 
                                     {
                                         !(rateListData.loading === "loading") && (saleOrderDetails?.shippingAgentCode === "UPS") &&
-                                        <UPSRates rateListData={rateListData} slider={slider} service={saleOrderDetails?.shippingAgentCode} />
+                                        <UPSRates rateListData={rateListData} slider={slider} />
+                                    }
+
+                                    {
+                                        !(rateListData.loading === "loading") && (saleOrderDetails?.shippingAgentCode === "STAMPS") &&
+                                        <StampsRates rateListData={rateListData} slider={slider} />
                                     }
 
                                     <Box py={3}></Box>
