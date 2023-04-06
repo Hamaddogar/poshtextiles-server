@@ -52,12 +52,14 @@ const FedexRates = ({ rateListData, slider }) => {
 
             {
                 rateListData.loading === "responded" && (rateListData.error) &&
-                <Box textAlign={'center'} >
+                <Box textAlign={'center'} sx={{ color: '#DE7D69' }} >
                     {rateListData.error}
                 </Box>
             }
             {
-                rateListData.loading === "responded" && (rateListData.allService?.length === 0) &&
+                rateListData.loading === "responded"
+                && (rateListData.allService?.length === 0)
+                && !(rateListData.error) &&
                 <Box textAlign={'center'} >
                     No Rates Are Found
                 </Box>

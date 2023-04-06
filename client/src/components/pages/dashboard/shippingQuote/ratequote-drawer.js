@@ -2,15 +2,18 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { Button, Checkbox, Container, FormControlLabel, Grid, Skeleton, Slider, Stack, Typography } from '@mui/material';
-import { rate_List_FEDEX, rate_List_STAMPS, rate_List_UPS, request_AccessToken_FEDEXP, token_STAMPS } from '../../../../utils/API_HELPERS';
+import { rate_List_FEDEX, rate_List_STAMPS, rate_List_UPS, request_AccessToken_FEDEXP, request_AccessToken_STAMPS } from '../../../../utils/API_HELPERS';
 import { payload_Rates_Handler } from '../../../../utils/Helper';
 import FedexRates from './FedexRates';
 import UPSRates from './UPSRates';
 import { toast } from 'react-toastify';
 import StampsRates from './StampsRates';
+import { useDispatch, useSelector } from 'react-redux';
+import { STAMPS_TOKEN } from '../../../../RTK/Reducers/Reducers';
 
 export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, saleOrderDetails }) {
-
+    const { stamps_token } = useSelector(store => store.mainReducer)
+    const dispatch = useDispatch();
     const [slider, setSlider] = React.useState([0, 1500]);
     const [reload, setReload] = React.useState(false);
     const [rateListData, setRateListData] = React.useState({
@@ -18,6 +21,7 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
         allService: [],
         error: false
     });
+
 
 
 
@@ -33,22 +37,32 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
         action
             .then(response => {
                 console.log("-----rates--------", response);
-                if (("error" in response) && !(response.error)) {
+                if (("allServices" in response) && !(response.error)) {
                     setRateListData({
                         loading: "responded",
                         allService: response.allServices,
                         error: false
                     })
 
-                } else if ((response.name) && counter < 5) {
+                } else if (response.error && counter < 5) {
                     counter++;
                     recursiveCallerRates(action, counter)
-                } else if (("error" in response || response.error) && counter >= 5) {
-                    setRateListData({
-                        loading: "responded",
-                        allService: [],
-                        error: response.message
-                    })
+                } else if (response.error && counter >= 5) {
+                    if (response.code === 401) {
+                        dispatch(STAMPS_TOKEN({ set: false }))
+                        setRateListData({
+                            loading: "responded",
+                            allService: [],
+                            error: "Please Try Again!"
+                        })
+                    } else {
+                        setRateListData({
+                            loading: "responded",
+                            allService: [],
+                            error: response.message
+                        })
+                    }
+
                 } else {
                     setRateListData({
                         loading: "responded",
@@ -81,10 +95,19 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
 
             } else if (condition && saleOrderDetails?.shippingAgentCode === "STAMPS") {
                 loadingFunction();
-                token_STAMPS()
-                    .then(token => {
-                        recursiveCallerRates(rate_List_STAMPS(token, payload_Rates_Handler(saleOrderDetails)))
-                    });
+                if (stamps_token) {
+                    recursiveCallerRates(rate_List_STAMPS(stamps_token, payload_Rates_Handler(saleOrderDetails)))
+                } else {
+                    request_AccessToken_STAMPS()
+                        .then(res => {
+                            if (res.token) {
+                                recursiveCallerRates(rate_List_STAMPS(res.token, payload_Rates_Handler(saleOrderDetails)))
+                                dispatch(STAMPS_TOKEN({ set: true, token: res.token, code: res.code }))
+                            }
+                            console.log("res", res);
+                        })
+                }
+
             } else if (!drawerstateRate) {
                 setRateListData({
                     loading: "idle",
@@ -106,9 +129,6 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
         })
         setReload(!reload)
     }
-
-
-
 
     return (
         <div>

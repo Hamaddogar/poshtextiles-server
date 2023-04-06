@@ -17,7 +17,7 @@ import Pagination from 'react-responsive-pagination';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Box } from '@mui/system';
 import { Link, useNavigate } from 'react-router-dom';
-import { SELECTED_SALE_ORDER_DATA } from '../../../../RTK/Reducers/Reducers';
+import { PAGE_DEALER_ALL_ORDERS, SELECTED_SALE_ORDER_DATA } from '../../../../RTK/Reducers/Reducers';
 import { lnk, Search, searchDropDown, SearchIconWrapper, StyledInputBase, styleSlect } from '../reUseAbles/ReuseAbles';
 import PreLoader from '../../HOC/Loading';
 import NoRecord from '../../HOC/NoRecord';
@@ -29,12 +29,10 @@ import NoRecord from '../../HOC/NoRecord';
 
 
 const AllOrders = () => {
-    const { allOrders, perPage, loading } = useSelector(store => store.mainReducer);
+    const { allOrders, perPage, loading, currentPageAllOrders, orderTypeAllOrders } = useSelector(store => store.mainReducer);
     const [copy, setCopy] = React.useState([]);
     const [rows, setRows] = React.useState([]);
-    const [currentPage, setCurrentPage] = React.useState(1);
     const [searchIt, setSearchIt] = React.useState("");
-    const [orderType, setOrderType] = React.useState('all');
     const [searchItDebounce, setSearchItDebounce] = React.useState("");
     const [searchTo, setSearchTo] = React.useState('no');
     const deskTopView = useMediaQuery('(min-width:600px)');
@@ -42,16 +40,17 @@ const AllOrders = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch()
 
-    const handlePageChange = page => {
-        setCurrentPage(page);
-        setRows(copy.slice(((page - 1) * perPage), ((((page - 1) * perPage)) + perPage)))
-    }
 
-    React.useLayoutEffect(() => { setCopy(allOrders) }, [allOrders]);
+
+    React.useLayoutEffect(() => {
+        if (orderTypeAllOrders === "all") setCopy(allOrders);
+        else setCopy(allOrders.filter(item => item.status === orderTypeAllOrders));
+        //eslint-disable-next-line
+    }, [allOrders]);
     React.useLayoutEffect(() => { setRows(copy.slice(0, perPage)) }, [copy, perPage]);
     React.useLayoutEffect(() => {
-        if (orderType === "all") setRows(copy.filter(item => (item[searchTo])?.toLocaleLowerCase().includes(searchIt)));
-        else setRows(copy.filter(item => (item[searchTo])?.toLocaleLowerCase().includes(searchIt) && item.status === orderType));
+        if (orderTypeAllOrders === "all") setRows(copy.filter(item => (item[searchTo])?.toLocaleLowerCase().includes(searchIt)));
+        else setRows(copy.filter(item => (item[searchTo])?.toLocaleLowerCase().includes(searchIt) && item.status === orderTypeAllOrders));
         //eslint-disable-next-line
     }, [searchIt]);
     React.useLayoutEffect(() => {
@@ -63,7 +62,10 @@ const AllOrders = () => {
     }, [searchItDebounce]);
 
 
-
+    const handlePageChange = page => {
+        dispatch(PAGE_DEALER_ALL_ORDERS({ to: "page", currentPage: page, orderType: 'all' }));
+        setRows(copy.slice(((page - 1) * perPage), ((((page - 1) * perPage)) + perPage)))
+    }
     const handleSearchTo = event => setSearchTo(event.target.value);
     const handleSearch = e => setSearchItDebounce((e.target.value).toLocaleLowerCase());
     const handleSlectOrder = data => {
@@ -72,7 +74,7 @@ const AllOrders = () => {
     }
 
     const handleChange = event => {
-        setOrderType(event.target.value);
+        dispatch(PAGE_DEALER_ALL_ORDERS({ to: "both", orderType: event.target.value, currentPage: 1 }));
         if (event.target.value === "all") setCopy(allOrders);
         else setCopy(allOrders.filter(item => item.status === event.target.value));
     };
@@ -95,7 +97,7 @@ const AllOrders = () => {
                         <Select
                             labelId="orderType-select-label"
                             id="orderType-select"
-                            value={orderType}
+                            value={orderTypeAllOrders}
                             onChange={handleChange}
                             size='small'
                             sx={styleSlect}
@@ -212,7 +214,7 @@ const AllOrders = () => {
                     <Box>
                         <Pagination
                             total={Math.ceil(copy.length / perPage)}
-                            current={currentPage}
+                            current={currentPageAllOrders}
                             onPageChange={page => handlePageChange(page)}
                         />
                     </Box>

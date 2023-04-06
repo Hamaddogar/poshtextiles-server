@@ -5,11 +5,12 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { Grid, TextField, Typography } from '@mui/material';
 import { headInputStyle } from '../reUseAbles/ReuseAbles';
 import { Container } from '@mui/system';
-import { request_AccessToken_FEDEXP, token_STAMPS, validate_Address_FEDEX, validate_Address_STAMPS, validate_Address_UPS } from '../../../../utils/API_HELPERS';
+import { funds_STAMPS, request_AccessToken_FEDEXP, request_AccessToken_STAMPS, validate_Address_FEDEX, validate_Address_STAMPS, validate_Address_UPS } from '../../../../utils/API_HELPERS';
 // import { validateAddressFEDEXP, validateAddressUPS } from '../../../../RTK/Reducers/Reducers';
 import { toast } from 'react-toastify';
 import { payload_Address_Handler } from '../../../../utils/Helper';
-// import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { STAMPS_TOKEN } from '../../../../RTK/Reducers/Reducers';
 
 
 export default function AddressValidateDrawer({
@@ -18,26 +19,33 @@ export default function AddressValidateDrawer({
     saleOrderDetails
 }) {
 
-    // const { stamps_token } = useSelector(store => store.mainReducer)
-
+    const { stamps_token } = useSelector(store => store.mainReducer)
+    const dispatch = useDispatch();
     const [loading, setLoading] = React.useState({ loading: "idle", valid: false })
 
     const recursiveCaller = (func, counter = 0) => {
         // calling api
         func.then(response => {
-            console.log("------------------", response);
             if (("error" in response) && !(response.error) && response.valid) {
                 toast.dismiss();
                 setAllowShipment(true);
                 setLoading({ loading: "reponded", valid: true })
             }
-            else if ((response.name) && counter < 5) {
+            else if ((response.error) && counter < 5) {
+                console.log(counter);
                 counter++;
                 recursiveCaller(func, counter);
-            } else if (("error" in response || response.error) && counter >= 5) {
-                toast.dismiss();
-                setLoading({ loading: "reponded", valid: false })
-                toast.error(`${response.message}`, { position: "top-right", autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "light", });
+            } else if (response.error && counter >= 5) {
+                if (response.code === 401) {
+                    dispatch(STAMPS_TOKEN({ set: false }))
+                    toast.dismiss();
+                    setLoading({ loading: "reponded", valid: false })
+                    toast.error(`Try Again!`, { position: "top-right", autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "light", });
+                } else {
+                    toast.dismiss();
+                    setLoading({ loading: "reponded", valid: false })
+                    toast.error(`${response.message}`, { position: "top-right", autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "light", });
+                }
             } else {
                 toast.dismiss();
                 setLoading({ loading: "idle", valid: false })
@@ -70,33 +78,29 @@ export default function AddressValidateDrawer({
                 });
                 recursiveCaller(validate_Address_UPS(payload_Address_Handler(saleOrderDetails)));
             } else if (saleOrderDetails?.shippingAgentCode === "STAMPS") {
-                // request_AccessToken_STAMPS()
-                //     .then(token => {
-                //         recursiveCaller(
-                //             validate_Address_STAMPS(stamps_token, payload_Address_Handler(saleOrderDetails))
-                //         );
-                //     })
                 setLoading({ loading: "loading", valid: false })
                 toast.loading('Validating Address...', {
                     position: "top-right",
                     autoClose: false,
                     hideProgressBar: true
                 });
-                // refresh_AccessToken_STAMPS(stamps_token)
-                // .then(res => {
-                //     alert('refreshToken')
-                //     console.log("res----------", res);
-                // })
-                token_STAMPS()
-                    .then(token => {
-                        recursiveCaller(
-                            validate_Address_STAMPS(token, payload_Address_Handler(saleOrderDetails))
-                        );
-                    });
+                if (stamps_token) {
+                    recursiveCaller(
+                        validate_Address_STAMPS(stamps_token, payload_Address_Handler(saleOrderDetails))
+                    );
+                } else {
+                    request_AccessToken_STAMPS()
+                        .then(res => {
+                            if (res.token) {
+                                recursiveCaller(
+                                    validate_Address_STAMPS(res.token, payload_Address_Handler(saleOrderDetails))
+                                );
+                                dispatch(STAMPS_TOKEN({ set: true, token: res.token, code: res.code }))
+                            }
+                            console.log("res", res);
+                        });
 
-
-
-                // toast.warn(`${"working on STAMPS"}`, { position: "top-right", autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "light", });
+                };
             } else {
                 toast.warn(`No courier isattached`, { position: "top-right", autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "light", });
             }

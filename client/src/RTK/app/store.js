@@ -24,6 +24,7 @@ const persistConfig = {
     "csv_OrdersDetail",
     "csv_data",
     "csv_fileName",
+    "stamps_token",
   ],
   rootReducer: mainReducer
 }

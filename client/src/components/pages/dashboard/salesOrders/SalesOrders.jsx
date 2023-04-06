@@ -1,4 +1,4 @@
-import { Checkbox, ClickAwayListener, Grow, Hidden, InputAdornment, MenuList, Popper, Stack, TextField, Typography } from '@mui/material';
+import { ClickAwayListener, Grow, Hidden, InputAdornment, MenuList, Popper, Stack, TextField, Typography } from '@mui/material';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -11,14 +11,31 @@ import Pagination from 'react-responsive-pagination';
 import 'bootstrap/dist/css/bootstrap.css';
 import { DeleteOutline, EditOutlined, KeyboardArrowDown, } from '@mui/icons-material';
 import Done from '../../../assets/images/done.png'
-import { BackButton, headInputStyle, scroller, subHeadInputStyle } from '../reUseAbles/ReuseAbles';
+import { BackButton, headInputStyle, scroller } from '../reUseAbles/ReuseAbles';
 import BasicModal from './Modal';
-import { SELECT_PICKING_PRODUCT } from '../../../../RTK/Reducers/Reducers';
+import { SELECTED_SALE_ORDER_DATA, SELECT_PICKING_PRODUCT } from '../../../../RTK/Reducers/Reducers';
 import ConDialog from './ConfirmationModal';
 import Billto from './Billto';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import Shipto from './Shipto';
-import ThumbNailImageSVG from "../../../assets/images/thumbnail2.svg";
+import p0 from "../../../assets/images/p0.png";
+import p1 from "../../../assets/images/p1.png";
+import p2 from "../../../assets/images/p2.png";
+import p3 from "../../../assets/images/p3.png";
+import p4 from "../../../assets/images/p4.png";
+import p5 from "../../../assets/images/p5.png";
+import p6 from "../../../assets/images/p6.png";
+import p7 from "../../../assets/images/p7.png";
+import p8 from "../../../assets/images/p8.png";
+import p9 from "../../../assets/images/p9.png";
+import p10 from "../../../assets/images/p10.png";
+import p11 from "../../../assets/images/p11.png";
+import p12 from "../../../assets/images/p12.png";
+import p13 from "../../../assets/images/p13.png";
+import p14 from "../../../assets/images/p14.png";
+import p15 from "../../../assets/images/p15.png";
+import CreateNewLineItem from '../reUseAbles/CreateNewLineItem';
+import UpdateLineItem from '../reUseAbles/UpdateLineItem';
 
 const SalesOrders = () => {
 
@@ -29,9 +46,7 @@ const SalesOrders = () => {
     const [copy, setCopy] = React.useState([]);
     const [rows, setRows] = React.useState([]);
     const [currentPage, setCurrentPage] = React.useState(1);
-    // const [orderDetail] = React.useState(saleOrderDetails);
     const [showSelectedProduct, setShowSelectedProduct] = React.useState(null);
-    const [dropShipChecked, setDropShipChecked] = React.useState(false);
     // Modal Options
     const [Modalopen, setModalopen] = React.useState(false);
     const handleOpen = () => setModalopen(true);
@@ -41,6 +56,7 @@ const SalesOrders = () => {
     const [billto, setbillto] = React.useState(false);
     const [shipto, setshipto] = React.useState(false);
     const [newItem, setNewItem] = React.useState(false);
+
     // for actions 
     const [open, setOpen] = React.useState(false);
     const anchorRef = React.useRef(null);
@@ -100,30 +116,91 @@ const SalesOrders = () => {
         scroller();
     }
 
+
+    // lineItem UPdate function
+    const handleSubmitUpdateLineItem = (event) => {
+        handleCancel('updateItem')
+        event.preventDefault();
+        const data = new FormData(event.target);
+        const index = rows.indexOf(showSelectedProduct)
+        rows.splice(index, 1, {
+            ...showSelectedProduct,
+            "no": data.get('simpleNo'),
+            "lineNo": data.get('itemNo'),
+            "type": data.get('itemType'),
+            "quantity": data.get('qty'),
+            "outstandingQuantity": data.get('minQty'),
+            "lineAmount": data.get('amount'),
+            "amountIncludingVAT": data.get('amount'),
+            "edcSalesComments": [{ value: data.get('comment') }],
+            "lineDiscountAmount": data.get('discount'),
+            "dropShipment": data.get('dropShip') ? true : false,
+            "unitPrice": data.get('price'),
+            "itemCategoryCode": data.get('description'),
+        })
+        setRows([...rows])
+
+    }
+
+
+    // lineItems Delete function
     const deleteLineItem = (index) => {
         rows.splice(index, 1);
         setRows([...rows]);
     }
 
-
+    // update uppser header section handler
     const handleUpperHeaderSubmit = e => {
         e.preventDefault();
         // const data = new FormData(e.target);
         alert('working to update')
     };
 
-    const handleLineItemSubmit = e => {
-        e.preventDefault();
-        // const data = new FormData(e.target);
-        alert('working to add Line Item')
-    };
+
+    // add new line Item function
+    const handleSubmitLineItem = (event) => {
+        handleCancel('newItem')
+        event.preventDefault();
+        const data = new FormData(event.target);
+        setRows([
+            ...rows,
+            {
+                "no": data.get('simpleNo'),
+                "lineNo": data.get('itemNo'),
+                "type": data.get('itemType'),
+                "quantity": data.get('qty'),
+                "outstandingQuantity": data.get('minQty'),
+                "lineAmount": data.get('amount'),
+                "amountIncludingVAT": data.get('amount'),
+                "edcSalesComments": [{ value: data.get('comment') }],
+                "lineDiscountAmount": data.get('discount'),
+                "dropShipment": data.get('dropShip') ? true : false,
+                "unitPrice": data.get('price'),
+                "itemCategoryCode": data.get('description'),
+                "unitOfMeasureCode": "YDS",
+                "promisedDeliveryDate": saleOrderDetails.shipmentDate,
+                "requestedDeliveryDate": saleOrderDetails.requestedDeliveryDate,
+            }
+        ])
+
+    }
+
+    const handleShippingQuote = () => {
+        dispatch(SELECTED_SALE_ORDER_DATA({
+            ...saleOrderDetails,
+            edcSalesLines: rows
+        }));
+        navigate('/shipping-quote')
+    }
 
 
+    const handleCancel = closeTo => {
+        if (closeTo === "newItem") setNewItem(false)
+        else setShowSelectedProduct(null)
+    }
 
+    const images = [p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15];
 
-
-    // console.log("saleOrderDetails", saleOrderDetails);
-    // console.log("showSelectedProduct", showSelectedProduct);
 
     return (
         <div>
@@ -229,164 +306,14 @@ const SalesOrders = () => {
                     </Grid>
                 </Box>
 
-                <Box sx={{ padding: showSelectedProduct ? '15px' : '0px' }} mb={1}>
+                <Box sx={{ padding: '0px' }} mb={1}>
                     {
                         newItem && !showSelectedProduct &&
-                        <Stack spacing={2} p={showSelectedProduct ? 0 : 1.5} direction={{ xs: 'column', sm: 'row' }} alignItems={{ xs: 'center', sm: 'flex-start' }} sx={{ transition: '.5s', border: '1px solid black', boxShadow: `1px 1px 2px 1px rgba(0, 0, 0, 0.25)` }}>
-                            <Box>
-                                <Box style={{ width: '100%', minWidth: '146px', maxWidth: '146px', cursor: 'pointer', backgroundColor: 'white', minHeight: '150px' }} />
-                            </Box>
-                            {/* form */}
-                            <Box component='form' onSubmit={handleLineItemSubmit}>
-                                <Grid container alignItems='center' spacing={1}>
-                                    <Grid item xs={6} sm={6} md={3} >
-                                        <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Item Type:</Typography>
-                                        <TextField sx={headInputStyle} fullWidth defaultValue={''} placeholder={""} size='small' />
-                                    </Grid>
-
-                                    <Grid item xs={6} sm={6} md={3}>
-                                        <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Item Name: </Typography>
-                                        <TextField sx={headInputStyle} fullWidth defaultValue={''} placeholder={""} size='small' />
-                                    </Grid>
-
-                                    <Grid item xs={6} sm={6} md={4}>
-                                        <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Description: </Typography>
-                                        <TextField sx={headInputStyle} fullWidth defaultValue={''} placeholder={""} size='small' />
-                                    </Grid>
-
-                                    <Grid item xs={6} sm={6} md={2}>
-                                        <Box mt={1}>
-                                            <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Drop Ship: </Typography>
-                                            <Checkbox
-                                                checked={dropShipChecked}
-                                                onChange={e => setDropShipChecked(e.target.checked)}
-                                                inputProps={{ 'aria-label': 'controlled' }}
-                                            />
-                                        </Box>
-                                    </Grid>
-
-                                    <Grid item xs={6} sm={6} md={2}>
-                                        <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Item Number: </Typography>
-                                        <TextField sx={headInputStyle} fullWidth defaultValue={''} placeholder={""} size='small' />
-                                    </Grid>
-
-
-                                    <Grid item xs={6} sm={6} md={2}>
-                                        <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Quantity: </Typography>
-                                        <TextField sx={headInputStyle} fullWidth defaultValue={''} placeholder={""} size='small' />
-                                    </Grid>
-
-                                    <Grid item xs={6} sm={6} md={2}>
-                                        <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Min Quantity: </Typography>
-                                        <TextField sx={headInputStyle} fullWidth defaultValue={''} placeholder={""} size='small' />
-                                    </Grid>
-
-                                    <Grid item xs={6} sm={6} md={2}>
-                                        <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Price: </Typography>
-                                        <TextField sx={headInputStyle} fullWidth defaultValue={''} placeholder={""} size='small' />
-                                    </Grid>
-
-                                    <Grid item xs={6} sm={6} md={2}>
-                                        <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Discount: </Typography>
-                                        <TextField sx={headInputStyle} fullWidth defaultValue={''} placeholder={""} size='small' />
-                                    </Grid>
-
-                                    <Grid item xs={6} sm={6} md={2}>
-                                        <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Amount: </Typography>
-                                        <TextField sx={headInputStyle} fullWidth defaultValue={''} placeholder={""} size='small' />
-                                    </Grid>
-
-                                    <Grid item xs={12}>
-                                        <Stack spacing={1} direction='row' alignItems='center' justifyContent={'center'} >
-                                            <TextField sx={headInputStyle} fullWidth defaultValue={''} placeholder={""} size='small' />
-                                            <Stack direction='row' alignItems='center' justifyContent={'center'}>
-                                                <Button color='error' variant='contained' size='small' onClick={e => setNewItem(false)}>cancel</Button> &nbsp;
-                                                <Button color='primary' variant='contained' size='small'>ok</Button>
-                                            </Stack>
-                                        </Stack>
-                                    </Grid>
-                                </Grid>
-
-                            </Box>
-                        </Stack>
+                        <CreateNewLineItem handleSubmitLineItem={handleSubmitLineItem} handleCancel={handleCancel} />
                     }
-                    <Box sx={{ transition: '.5s', border: '1px solid black', boxShadow: `1px 1px 2px 1px rgba(0, 0, 0, 0.25)`, display: 'flex', alignItems: 'flex-start', padding: showSelectedProduct ? '15px' : '0px' }}>
-                        {showSelectedProduct && !newItem &&
-                            <Stack spacing={2} direction={{ xs: 'column', sm: 'row' }} alignItems={{ xs: 'center', sm: 'flex-start' }}>
-                                <Box>
-                                    <Box component='img' alt='img' style={{ width: '100%', minWidth: '146px', maxWidth: '146px', cursor: 'pointer' }} src={showSelectedProduct.image ? showSelectedProduct.image : ThumbNailImageSVG} />
-                                </Box>
-                                {/* form */}
-                                <Box>
-                                    <Grid container alignItems='center' spacing={1}>
-                                        <Grid item xs={6} sm={6} md={3} >
-                                            <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Item Type: </Typography>
-                                            <TextField defaultValue={showSelectedProduct.type} size='small' sx={headInputStyle} fullWidth />
-                                        </Grid>
-
-                                        <Grid item xs={6} sm={6} md={3}>
-                                            <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Item Name: </Typography>
-                                            <TextField defaultValue={showSelectedProduct.itemCategoryCode} size='small' sx={headInputStyle} fullWidth />
-                                        </Grid>
-
-                                        <Grid item xs={6} sm={6} md={4}>
-                                            <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Description: </Typography>
-                                            <TextField defaultValue={showSelectedProduct.description} size='small' sx={headInputStyle} fullWidth />
-                                        </Grid>
-
-                                        <Grid item xs={6} sm={6} md={2}>
-                                            <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Drop Ship: </Typography>
-                                            <Checkbox
-                                                checked={showSelectedProduct.dropShipment}
-                                                onChange={e => setDropShipChecked(e.target.checked)}
-                                                inputProps={{ 'aria-label': 'controlled' }}
-                                            />
-                                        </Grid>
-
-                                        <Grid item xs={6} sm={6} md={2}>
-                                            <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Item Number: </Typography>
-                                            <TextField defaultValue={showSelectedProduct.no} size='small' sx={subHeadInputStyle} fullWidth />
-                                        </Grid>
-
-                                        <Grid item xs={6} sm={6} md={2}>
-                                            <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Quantity: </Typography>
-                                            <TextField defaultValue={showSelectedProduct.quantity} size='small' sx={headInputStyle} fullWidth />
-                                        </Grid>
-
-                                        <Grid item xs={6} sm={6} md={2}>
-                                            <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Min Quantity: </Typography>
-                                            <TextField defaultValue={showSelectedProduct.outstandingQuantity} size='small' sx={headInputStyle} fullWidth />
-                                        </Grid>
-
-                                        <Grid item xs={6} sm={6} md={2}>
-                                            <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Price: </Typography>
-                                            <TextField defaultValue={showSelectedProduct.unitPrice} size='small' sx={headInputStyle} fullWidth />
-                                        </Grid>
-
-                                        <Grid item xs={6} sm={6} md={2}>
-                                            <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Discount: </Typography>
-                                            <TextField defaultValue={showSelectedProduct.lineDiscountAmount} size='small' sx={headInputStyle} fullWidth />
-                                        </Grid>
-
-                                        <Grid item xs={6} sm={6} md={2}>
-                                            <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Amount: </Typography>
-                                            <TextField defaultValue={showSelectedProduct.lineAmount} size='small' sx={headInputStyle} fullWidth />
-                                        </Grid>
-
-                                        <Grid item xs={12}>
-                                            <Stack spacing={1} direction='row' alignItems='center' justifyContent={'center'} >
-                                                <TextField onClick={handleOpen} placeholder='Comments' sx={headInputStyle} size='small' fullWidth />
-                                                <Stack direction='row' alignItems='center' justifyContent={'center'}>
-                                                    <Button color='error' variant='contained' size='small' onClick={e => setShowSelectedProduct(null)}>cancel</Button> &nbsp;
-                                                    <Button color='primary' variant='contained' size='small'>ok</Button>
-                                                </Stack>
-                                            </Stack>
-                                        </Grid>
-                                    </Grid>
-                                </Box>
-                            </Stack>
-                        }
-                    </Box>
+                    {showSelectedProduct && !newItem &&
+                        <UpdateLineItem handleSubmitUpdateLineItem={handleSubmitUpdateLineItem} handleCancel={handleCancel} product={showSelectedProduct} />
+                    }
                 </Box>
 
 
@@ -399,12 +326,12 @@ const SalesOrders = () => {
                                     <Grid container justifyContent='space-between'>
                                         <Grid xs={6} item sx={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                             {item.status && <Box component='img' alt='img' style={{ maxWidth: '70%', position: 'absolute' }} src={Done} />}
-                                            <Box component='img' alt='img' style={{ width: '100%', maxWidth: '146px', cursor: 'pointer' }} src={item.image ? item.image : require(`../../../assets/images/p${index % 12}.png`)} />
+                                            <Box component='img' alt='img' style={{ width: '100%', maxWidth: '146px', cursor: 'pointer' }} src={item.image ? item.image : images[index]} />
                                         </Grid>
                                         <Grid item container direction={'column'} justifyContent={'space-between'} xs={6} px={1} sx={{ position: 'relative' }}>
 
                                             <Stack sx={{ height: '100%', display: 'flex', justifyContent: 'space-between' }} >
-                                                <Typography textAlign='center' mt={1} variant='h1' fontSize={item.itemCategoryCode.length > 25 ? { xs: '5vw', sm: '2vw', md: '1vw' } : { xs: '6vw', sm: '3vw', md: '2vw' }} fontWeight={500} >{item?.itemCategoryCode || item.description}</Typography>
+                                                <Typography textAlign='center' mt={1} variant='h1' fontSize={item.itemCategoryCode.length > 25 ? { xs: '5vw', sm: '2vw', md: '1vw' } : { xs: '6vw', sm: '2.3vw', md: '1.3vw' }} fontWeight={500} >{item?.itemCategoryCode || item.description}</Typography>
                                                 <Stack direction='row' alignItems={'center'} justifyContent='space-between'>
                                                     <Typography fontSize='12px'>MOQ : <span style={{ fontSize: '20px' }}>{item.outstandingQuantity}</span></Typography>
                                                     <Typography fontSize='12px' textAlign={'right'}>QTY : <span style={{ fontSize: '20px' }}>{item.quantity}</span></Typography>
@@ -440,40 +367,40 @@ const SalesOrders = () => {
                     </Box >
                 </Box>
             </Box >
-           
-                <Grid spacing={3} container direction='row' my={3} textAlign='right' mt={.5} justifyContent={{ xs: 'center', md: 'space-between' }} alignItems={'center'}>
-                    <Grid item>
-                        <Box>
-                            <BackButton onClick={() => navigate(-1)} />
-                            &nbsp; &nbsp; &nbsp;
-                            <Button
-                                variant='contained'
-                                sx={{ backgroundColor: '#495BD6' }}
-                                size='small'
-                                ref={anchorRef}
-                                id="composition-button"
-                                aria-controls={open ? 'composition-menu' : undefined}
-                                aria-expanded={open ? 'true' : undefined}
-                                aria-haspopup="true"
-                                onClick={handleToggle}
-                                endIcon={<KeyboardArrowDown />}
-                            > Actions </Button>
-                        </Box>
-                    </Grid>
-                    <Grid item>
-                        <Button onClick={handleClickNewItem} variant='contained' size='small'> + add new item</Button>
-                    </Grid>
-                    <Grid item>
-                        <Box onClick={scroller}>
-                            <Pagination
-                                total={Math.ceil(copy.length / perPage)}
-                                current={currentPage}
-                                onPageChange={page => handlePageChange(page)}
-                            />
-                        </Box>
-                    </Grid>
+
+            <Grid spacing={3} container direction='row' my={3} textAlign='right' mt={.5} justifyContent={{ xs: 'center', md: 'space-between' }} alignItems={'center'}>
+                <Grid item>
+                    <Box>
+                        <BackButton onClick={() => navigate(-1)} />
+                        &nbsp; &nbsp; &nbsp;
+                        <Button
+                            variant='contained'
+                            sx={{ backgroundColor: '#495BD6' }}
+                            size='small'
+                            ref={anchorRef}
+                            id="composition-button"
+                            aria-controls={open ? 'composition-menu' : undefined}
+                            aria-expanded={open ? 'true' : undefined}
+                            aria-haspopup="true"
+                            onClick={handleToggle}
+                            endIcon={<KeyboardArrowDown />}
+                        > Actions </Button>
+                    </Box>
                 </Grid>
-            
+                <Grid item>
+                    <Button onClick={handleClickNewItem} variant='contained' size='small'> + add new item</Button>
+                </Grid>
+                <Grid item>
+                    <Box onClick={scroller}>
+                        <Pagination
+                            total={Math.ceil(copy.length / perPage)}
+                            current={currentPage}
+                            onPageChange={page => handlePageChange(page)}
+                        />
+                    </Box>
+                </Grid>
+            </Grid>
+
 
             <Popper
                 open={open}
@@ -497,7 +424,7 @@ const SalesOrders = () => {
                                 >
                                     {/* <MenuItem onClick={handleClose}>Profile</MenuItem> */}
                                     <MenuItem sx={{ borderBottom: '1px solid white', fontSize: '13px' }} >RELEASE</MenuItem>
-                                    <MenuItem onClick={() => navigate('/shipping-quote')} sx={{ borderBottom: '1px solid white', fontSize: '13px' }} >SHIP</MenuItem>
+                                    <MenuItem onClick={handleShippingQuote} sx={{ borderBottom: '1px solid white', fontSize: '13px' }} >SHIP</MenuItem>
                                     <MenuItem sx={{ fontSize: '13px' }}>UNRELEASE</MenuItem>
                                 </MenuList>
                             </ClickAwayListener>

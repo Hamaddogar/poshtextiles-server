@@ -2,16 +2,16 @@
 // weight converter
 
 // const ydsToOz = YDS_W => (YDS_W * 16 * 16);
-const ydsToLbs_ounces = YDS_W => YDS_W ? (YDS_W / 16) : .5;
+const ydsToLbs_ounces = YDS_W => YDS_W > 0 ? (YDS_W / 16) : 1;
 
 function addDaysToDate(dateString) {
     const date = new Date(dateString);
-    date.setDate(date.getDate() + 7);
+    date.setDate(date.getDate() + 12);
     const year = date.getFullYear();
     const month = date.getMonth() + 1;
     const day = date.getDate();
     return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-  }
+}
 
 
 
@@ -54,7 +54,7 @@ export const payload_Shipment_Handler = details => {
                             "city": details?.edcCustomers[0]?.city,
                             "stateOrProvinceCode": details?.shipToCounty,
                             "postalCode": details?.edcCustomers[0]?.postCode,
-                            "countryCode": details?.shipToCountryRegionCode
+                            "countryCode": details?.edcCustomers[0]?.countryRegionCode
                         }
                     }
                 ],
@@ -75,11 +75,11 @@ export const payload_Shipment_Handler = details => {
                     "imageType": "PNG",
                     "labelStockType": "PAPER_4X6"
                 },
-                "requestedPackageLineItems": ((details.edcWhseShipments).map((item, index) => {
+                "requestedPackageLineItems": ((details?.edcSalesLines).map((item, index) => {
                     return {
                         "weight": {
-                            "units": details?.edcSalesLines[0]?.unitOfMeasureCode ? "LB" : "LB",
-                            "value": item.GrossWeight
+                            "units": item.unitOfMeasureCode ? "LB" : "LB",
+                            "value": details.edcWhseShipments?.[0]?.GrossWeight > 0 ? details.edcWhseShipments?.[0]?.GrossWeight : 1
                         }
                     }
                 })),
@@ -117,7 +117,7 @@ export const payload_Shipment_Handler = details => {
                             "City": details?.edcCustomers[0]?.city,
                             "StateProvinceCode": details?.shipToCounty,
                             "PostalCode": details?.edcCustomers[0]?.postCode,
-                            "CountryCode": details?.shipToCountryRegionCode
+                            "CountryCode": details?.edcCustomers[0]?.countryRegionCode
                         }
                     },
                     "ShipFrom": {
@@ -149,7 +149,7 @@ export const payload_Shipment_Handler = details => {
                         "Description": "Expedited"
                     },
 
-                    "Package": ((details?.edcWhseShipments).map(item => {
+                    "Package": ((details?.edcSalesLines).map(item => {
                         return {
                             "Description": item.description,
                             "Packaging": {
@@ -157,9 +157,9 @@ export const payload_Shipment_Handler = details => {
                             },
                             "PackageWeight": {
                                 "UnitOfMeasurement": {
-                                    "Code": details?.edcSalesLines[0]?.unitOfMeasureCode ? "LBS" : "LBS"
+                                    "Code": item.unitOfMeasureCode ? "LBS" : "LBS"
                                 },
-                                "Weight": `${item.GrossWeight}`
+                                "Weight": `${details?.edcWhseShipments?.[0]?.GrossWeight > 0 ? details?.edcWhseShipments?.[0]?.GrossWeight : 1}`
                             },
                             "PackageServiceOptions": ""
                         }
@@ -219,15 +219,16 @@ export const payload_Shipment_Handler = details => {
                 "email": details?.edcCustomers[0]?.eMail,
             },
             "service_type": "usps_parcel_select",
-            "packages":
-                ((details?.edcWhseShipments).map(item => {
+            "package":
+                ((details?.edcSalesLines).map((item,indx) => {
                     return {
                         "packaging_type": "package",
                         "weight_unit": "ounce",
-                        "weight": details?.edcSalesLines[0]?.unitOfMeasureCode === "YDS" ? ydsToLbs_ounces(item.GrossWeight) : item.GrossWeight,
-                        "length": item.edcBoxDetails[0]?.["length"],
-                        "width": item.edcBoxDetails[0]?.["width"],
-                        "height": item.edcBoxDetails[0]?.["height"],
+                        // "weight": details?.edcSalesLines[0]?.unitOfMeasureCode === "YDS" ? ydsToLbs_ounces(details.edcWhseShipments?.[0].GrossWeight+indx) : (details.edcWhseShipments?.[0].GrossWeight+indx),
+                        "weight": indx+1,
+                        "length": details.edcWhseShipments?.[0].edcBoxDetails[0]?.["length"],
+                        "width": details.edcWhseShipments?.[0].edcBoxDetails[0]?.["width"],
+                        "height": details.edcWhseShipments?.[0].edcBoxDetails[0]?.["height"],
                         "dimension_unit": "inch"
                     }
                 })),
@@ -262,21 +263,23 @@ export const payload_Rates_Handler = (details) => {
                 "recipient": {
                     "address": {
                         "postalCode": details?.edcCustomers[0]?.postCode,
-                        "countryCode": details?.shipToCountryRegionCode,
+                        "countryCode": details.edcCustomers[0].countryRegionCode,
                         "residential": true
                     }
                 },
                 "pickupType": "DROPOFF_AT_FEDEX_LOCATION",
+                "serviceType": "STANDARD_OVERNIGHT",
+                "packagingType": "FEDEX_SMALL_BOX",
                 "rateRequestType": [
                     "LIST",
                     "ACCOUNT"
                 ],
                 "requestedPackageLineItems":
-                    ((details?.edcWhseShipments).map((item, index) => {
+                    ((details?.edcSalesLines).map((item, index) => {
                         return {
                             "weight": {
-                                "units": `${details?.edcSalesLines[0]?.unitOfMeasureCode === "YDS" ? "LB" : "LB"}`,
-                                "value": details?.edcSalesLines[0]?.unitOfMeasureCode === "YDS" ? Math.ceil(item.GrossWeight) : Math.ceil(item.GrossWeight)
+                                "units": `${item.unitOfMeasureCode === "YDS" ? "LB" : "LB"}`,
+                                "value": item.unitOfMeasureCode === "YDS" ? (details?.edcWhseShipments?.[0]?.GrossWeight + 5) : (details?.edcSalesLines?.[0]?.GrossWeight + 5)
                             },
                             "shipmentSpecialServices": {
                                 "specialServiceTypes": [
@@ -307,14 +310,14 @@ export const payload_Rates_Handler = (details) => {
                         "City": details?.edcCustomers[0]?.city,
                         "StateProvinceCode": details?.shipToCounty,
                         "PostalCode": details?.edcCustomers[0]?.postCode,
-                        "CountryCode": details?.shipToCountryRegionCode
+                        "CountryCode": details?.edcCustomers[0]?.countryRegionCode
                     }
                 },
                 "Service": {
                     "Code": "03",
                     "Description": "Strandred Ground",
                 },
-                "Package": ((details?.edcWhseShipments).map(item => {
+                "Package": ((details?.edcSalesLines).map(item => {
                     return {
                         "PackagingType": {
                             "Code": "02",
@@ -325,16 +328,16 @@ export const payload_Rates_Handler = (details) => {
                                 "Code": "IN",
                                 "Description": "Inches"
                             },
-                            "Length": `${item.edcBoxDetails[0]?.["length"]}`,
-                            "Width": `${item.edcBoxDetails[0]?.["width"]}`,
-                            "Height": `${item.edcBoxDetails[0]?.["height"]}`
+                            "Length": `${details.edcWhseShipments?.[0]?.edcBoxDetails[0]?.["length"]}`,
+                            "Width": `${details.edcWhseShipments?.[0]?.edcBoxDetails[0]?.["width"]}`,
+                            "Height": `${details.edcWhseShipments?.[0]?.edcBoxDetails[0]?.["height"]}`
                         },
                         "PackageWeight": {
                             "UnitOfMeasurement": {
-                                "Code": `${details?.edcSalesLines[0]?.unitOfMeasureCode === "YDS" ? "LBS" : "LBS"}`,
-                                "Description": `${details?.edcSalesLines[0]?.unitOfMeasureCode === "YDS" ? details.edcSalesLines[0].unitOfMeasureCode : "Pounds"}`
+                                "Code": `${item.unitOfMeasureCode === "YDS" ? "LBS" : "LBS"}`,
+                                "Description": `${item.unitOfMeasureCode === "YDS" ? item.unitOfMeasureCode : "Pounds"}`
                             },
-                            "Weight": `${details?.edcSalesLines[0]?.unitOfMeasureCode === "YDS" ? Math.ceil(item.GrossWeight) : Math.ceil(item.GrossWeight)}`
+                            "Weight": `${item.unitOfMeasureCode === "YDS" ? item.GrossWeight+5 : item.GrossWeight+5}`
                         }
                     }
                 })),
@@ -368,16 +371,16 @@ export const payload_Rates_Handler = (details) => {
                 "phone": details?.edcCustomers[0]?.phoneNo,
                 "email": details?.edcCustomers[0]?.eMail,
             },
-            
+
             "packages":
-                ((details?.edcWhseShipments).map(item => {
+                ((details?.edcSalesLines).map(item => {
                     return {
                         "packaging_type": "package",
                         "weight_unit": "ounce",
-                        "weight": details?.edcSalesLines[0]?.unitOfMeasureCode === "YDS" ? ydsToLbs_ounces(item.GrossWeight) : item.GrossWeight,
-                        "length": item.edcBoxDetails[0]?.["length"],
-                        "width": item.edcBoxDetails[0]?.["width"],
-                        "height": item.edcBoxDetails[0]?.["height"],
+                        "weight": item.unitOfMeasureCode === "YDS" ? ydsToLbs_ounces(item.GrossWeight) : item.GrossWeight,
+                        "length": details.edcWhseShipments?.[0]?.edcBoxDetails[0]?.["length"],
+                        "width": details.edcWhseShipments?.[0]?.edcBoxDetails[0]?.["width"],
+                        "height": details.edcWhseShipments?.[0]?.edcBoxDetails[0]?.["height"],
                         "dimension_unit": "inch"
                     }
                 })),

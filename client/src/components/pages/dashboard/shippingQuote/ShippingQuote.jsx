@@ -9,18 +9,20 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import Billfrom from './Billfrom'
 import SearchIcon from '@mui/icons-material/Search';
 import Shipfrom from './Shipfrom'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { BackButton, headInputStyle, styleSlect } from '../reUseAbles/ReuseAbles'
-import { create_Shipment_FEDEXP, create_Shipment_STAMPS, createShipment_UPS, request_AccessToken_FEDEXP, token_STAMPS } from '../../../../utils/API_HELPERS'
+import { create_Shipment_FEDEXP, create_Shipment_STAMPS, createShipment_UPS, request_AccessToken_FEDEXP, request_AccessToken_STAMPS } from '../../../../utils/API_HELPERS'
 import ShipReportDialog from './ShipReportDialog'
 import { payload_Shipment_Handler } from '../../../../utils/Helper'
 import ShipToDialoge from './ShipToDia'
 import { toast } from 'react-toastify'
+import { STAMPS_TOKEN } from '../../../../RTK/Reducers/Reducers'
 
 
 const ShippingQuote = () => {
 
-
+    const { stamps_token } = useSelector(store => store.mainReducer)
+    const dispatch = useDispatch();
     const { saleOrderDetails } = useSelector(store => store.mainReducer);
     const navigate = useNavigate();
     const [drawerstateRate, setdrawerstateRate] = React.useState(false);
@@ -59,6 +61,22 @@ const ShippingQuote = () => {
             } else if ((res.name || res.data.error) && counter < 5) {
                 counter++;
                 recursiveCaller(action, counter)
+            } else if (("error" in res.data || res.data.error) && counter >= 5) {
+                if (res.data.code === 401) {
+                    dispatch(STAMPS_TOKEN({ set: false }))
+                    SetShipReport({
+                        open: true,
+                        response: null,
+                        error: "Please Try Again!",
+                    });
+                } else {
+                    SetShipReport({
+                        open: true,
+                        response: null,
+                        error: res.data.message ? res.data.message : "unexpected Error Try Again",
+                    });
+                }
+
             } else {
                 SetShipReport({
                     open: true,
@@ -89,12 +107,22 @@ const ShippingQuote = () => {
                     createShipment_UPS(payload_Shipment_Handler(saleOrderDetails))
                 )
             } else if (condition && saleOrderDetails?.shippingAgentCode === "STAMPS") {
-                token_STAMPS()
-                    .then(token => {
-                        recursiveCaller(
-                            create_Shipment_STAMPS(token, payload_Shipment_Handler(saleOrderDetails))
-                        );
-                    });
+                if (stamps_token) {
+                    recursiveCaller(
+                        create_Shipment_STAMPS(stamps_token, payload_Shipment_Handler(saleOrderDetails))
+                    );
+                } else {
+                    request_AccessToken_STAMPS()
+                        .then(res => {
+                            if (res.token) {
+                                recursiveCaller(
+                                    create_Shipment_STAMPS(res.token, payload_Shipment_Handler(saleOrderDetails))
+                                );
+                                dispatch(STAMPS_TOKEN({ set: true, token: res.token, code: res.code }))
+                            }
+                            console.log("res", res);
+                        });
+                };
 
             } else if (!condition) {
                 SetShipReport({

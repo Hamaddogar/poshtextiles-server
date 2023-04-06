@@ -31,6 +31,7 @@ import CreateSalesOrderPage from './components/pages/dashboard/createSalesOrder'
 import Preloading from './components/pages/HOC/preloading';
 import CSVOrdersPage from './components/pages/dashboard/csvOrders';
 import CSVOrdersPageDetail from './components/pages/dashboard/csvOrdersDetail';
+import StampsAuthFlow from './components/pages/stamps_Auth_Flow/Stamps_Auth_Flow';
 
 function App() {
 
@@ -71,6 +72,7 @@ function App() {
 
         <Route path='/login' exact element={<Login />} />
         <Route path='/forgot' exact element={<Login />} />
+        <Route path='/auth_stamps' exact element={<StampsAuthFlow />} />
         <Route path='/new-account' exact element={<Login />} />
         <Route path='*' element={<Page404 />} />
 

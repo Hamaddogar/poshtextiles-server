@@ -49,7 +49,20 @@ const UPSRates = ({ rateListData, slider, service }) => {
                     )
                 })
             }
-
+            {
+                rateListData.loading === "responded" && (rateListData.error) &&
+                <Box textAlign={'center'} sx={{ color: '#DE7D69' }} >
+                    {rateListData.error}
+                </Box>
+            }
+            {
+                rateListData.loading === "responded"
+                && (rateListData.allService?.length === 0)
+                && !(rateListData.error) &&
+                <Box textAlign={'center'} >
+                    No Rates Are Found
+                </Box>
+            }
             <Box py={3}></Box>
 
 

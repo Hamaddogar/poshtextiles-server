@@ -31,7 +31,7 @@ const StampsRates = ({ rateListData, slider }) => {
                                             <Typography sx={{ marginRight: "5px", fontSize: '11px' }}>
                                                 {item.serviceType} - {item.serviceName} / {item.days} Days
                                             </Typography>
-                                            <Box sx={{minWidth:'80px'}} >
+                                            <Box sx={{ minWidth: '80px' }} >
                                                 <Button
                                                     // onClick={() => handleClickProduct(item)}
                                                     size='small' sx={{
@@ -52,12 +52,14 @@ const StampsRates = ({ rateListData, slider }) => {
 
             {
                 rateListData.loading === "responded" && (rateListData.error) &&
-                <Box textAlign={'center'} >
+                <Box textAlign={'center'} sx={{ color: '#DE7D69' }} >
                     {rateListData.error}
                 </Box>
             }
             {
-                rateListData.loading === "responded" && (rateListData.allService?.length === 0) &&
+                rateListData.loading === "responded"
+                && (rateListData.allService?.length === 0)
+                && !(rateListData.error) &&
                 <Box textAlign={'center'} >
                     No Rates Are Found
                 </Box>

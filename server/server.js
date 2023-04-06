@@ -57,33 +57,13 @@ const getServiceName = (serviceCode) => {
     return services[serviceCode] || "Unknown Service";
 };
 
-const getServiceDays = (serviceCode) => {
-    const services = {
-        "01": 1,
-        "02": 2,
-        "03": 3,
-        "12": 3,
-        "13": 1,
-        "14": 1,
-        "59": 2,
-        "65": 1,
-        "07": "1-3",
-        "08": "2-5",
-        "11": "1-5",
-        "54": "1-3",
-        "70": "2-5",
-        "71": "1-3",
-        "72": "2-5",
-        "74": "1-3",
-        "90": "1-3",
-        "92": "2-7",
-        "93": "2-7"
-    };
-
-    return services[serviceCode] || "9999";
-};
-
-
+const CLIENT_ID_STAMPS = 'my778N8oCwaKq0dSPT1soKY9807OpicK';
+const REDIRECT_URI_STAMPS = 'http://localhost:3000/auth_stamps';
+const AUTH_ENDPOINT_STAMPS = 'https://signin.testing.stampsendicia.com/authorize';
+const CLIENT_SECRET_STAMPS = 'd_uNVV_XwW8K2wwO7UrEkMIuiokqPLANSUnr6JNP1CcXUbrtgQoTsBSnOJi0ttGF';
+const TOKEN_ENDPOINT_STAMPS = 'https://signin.testing.stampsendicia.com/oauth/token';
+const stampsUsername = "poshtext-01";
+const stampsPassword = "April2023!";
 
 
 
@@ -550,87 +530,25 @@ app.post(routeStrings.rate_list_ups, async (req, res) => {
 // -----------------stamps Routes --------------------- //
 
 
-const CLIENT_ID = 'my778N8oCwaKq0dSPT1soKY9807OpicK';
-const CLIENT_SECRET = 'd_uNVV_XwW8K2wwO7UrEkMIuiokqPLANSUnr6JNP1CcXUbrtgQoTsBSnOJi0ttGF';
-const REDIRECT_URI = 'http://localhost:8080/auth_stamps';
-const AUTH_ENDPOINT = 'https://signin.testing.stampsendicia.com/authorize';
-const TOKEN_ENDPOINT = 'https://signin.testing.stampsendicia.com/oauth/token';
-const stampsUsername = "poshtext-01";
-const stampsPassword = "April2023!";
 
 
-app.get('/auth_stamps', async (req, res) => {
-    const authorizationCode = req.query.code;
-    // console.log("eqe", authorizationCode);
-    try {
-
-        if (authorizationCode) {
-            const tokenResponse = await axios.post(TOKEN_ENDPOINT, {
-                grant_type: 'authorization_code',
-                code: authorizationCode,
-                redirect_uri: REDIRECT_URI,
-                client_id: CLIENT_ID,
-                client_secret: CLIENT_SECRET
-            });
-            res.status(200).send(tokenResponse.data.access_token);
-        } else {
-            const queryParams = querystring.stringify({
-                response_type: 'code',
-                client_id: CLIENT_ID,
-                redirect_uri: REDIRECT_URI
-            });
-
-            const authorizationUrl = `${AUTH_ENDPOINT}?${queryParams}`;
-            // console.log(authorizationUrl);
-            res.redirect(authorizationUrl);
-        }
-
-    } catch (error) {
-        console.error(error);
-        res.send({ ...error });
-    }
-});
-
-
-app.post('/refresh_stamps', async (req, res) => {
-    // const authorizationCode = req.query.code;
-    // console.log("eqe", authorizationCode);
-    try {
-
-        const tokenResponse = await axios.post(TOKEN_ENDPOINT, {
-            "grant_type": "refresh_token",
-            "client_id": CLIENT_ID,
-            "client_secret": CLIENT_SECRET,
-            "refresh_token": `${req.body.token}`
-        });
-
-        console.log("--------", tokenResponse.data);
-
-
-        res.status(200).send({ ...tokenResponse.data });
-
-    } catch (error) {
-        console.error(error);
-        res.send({ ...error });
-    }
-});
 
 app.get('/auth', async (req, res) => {
-
     try {
-        const token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlA3Z3pLRGdfRENlVzcyeXZ3cnpQcCJ9.eyJodHRwczovL3N0YW1wc2VuZGljaWEuY29tL2ludGVncmF0aW9uX2lkIjoiNzc4OTdmNDYtNjg2NS00NzQ1LTlkZjMtZDUzYjc4MTA4YjBjIiwiaHR0cHM6Ly9zdGFtcHNlbmRpY2lhLmNvbS91c2VyX2lkIjozNzI1Mzk5LCJpc3MiOiJodHRwczovL3NpZ25pbi50ZXN0aW5nLnN0YW1wc2VuZGljaWEuY29tLyIsInN1YiI6ImF1dGgwfDM3MjUzOTkiLCJhdWQiOiJodHRwczovL2FwaS5zdGFtcHNlbmRpY2lhLmNvbSIsImlhdCI6MTY4MDYxODc3OSwiZXhwIjoxNjgwNjE5Njc5LCJhenAiOiJteTc3OE44b0N3YUtxMGRTUFQxc29LWTk4MDdPcGljSyJ9.KSjWTxIgC7dOYz59J-kYhgCDDRlg9UIstjfrjlkRkkMuTRTBrWGHGLv3XfxuCDf7p6-P53Il3gXJ9fi8sHEpfiQAr8_T4FY951yugiao5a1gs1fhMBbEPxgb28VBkSHNBF1SijB-Z_Y24_tfqNItF8CY20YDsVSFAPDZnaQciZ4o8b9DHKf0e_Zo-k0IfgDJOo7fhCzS_idONqa0wE4-MR9NVBN6h0-xpTglBZmKLA9hJX0nR3PRJ7w38Eg8P_MmJ_ciMiwX-iUvK4NR946a9pk7BEJVFEqTjn5ocg5wH2GzAfC46YfPhcibedrgCJIeu_HBFBPAVgx1IrQAzUq6kw"
-        res.send(token)
+        const queryParams = querystring.stringify({
+            response_type: 'code',
+            client_id: CLIENT_ID_STAMPS,
+            redirect_uri: REDIRECT_URI_STAMPS
+        });
+
+        const authorizationUrl = `${AUTH_ENDPOINT_STAMPS}?${queryParams}`;
+        res.send(authorizationUrl);
 
     } catch (error) {
         console.error(error);
         res.send({ ...error });
     }
 });
-
-
-
-
-
 
 
 // stamps address validation
@@ -644,7 +562,6 @@ app.post(routeStrings.address_validate_stamps, async (req, res) => {
     };
 
     try {
-
 
         const response = await axios.post(
             "https://api.testing.stampsendicia.com/sera/v1/addresses/validate",
@@ -790,7 +707,12 @@ app.post(routeStrings.rate_list_stamps, async (req, res) => {
         });
 
     } catch (error) {
-        res.send({ code: error.status, message: error.message, error: true })
+        console.log(error);
+        res.send({
+            code: error?.response?.status || error?.status,
+            message: error?.response?.data?.errors?.[0]?.error_message || error?.message,
+            error: true
+        })
     }
 });
 
@@ -798,29 +720,29 @@ app.post(routeStrings.rate_list_stamps, async (req, res) => {
 // stamps shipment & labels
 app.post(routeStrings.shipment_stamps, async (req, res) => {
 
-    const config = {
-        headers: {
-            "Content-Type": "application/json",
-            "X-locale": "en_US",
-            "Authorization": `Bearer ${req.body.token}`,
-            "Idempotency-Key": `${uuidv4()}`
-        }
-    };
     let images = [];
     try {
         const url = "https://api.testing.stampsendicia.com/sera/v1/labels";
 
-        const lineItems = req.body.body.packages;
-        for (let i = 0; i < lineItems.length; i += 4) {
-            const chunk = lineItems.slice(i, i + 4);
+        const lineItems = req.body.body.package;
+        console.log(lineItems);
+        for (let i = 0; i < lineItems.length; i++) {
+            // const chunk = lineItems.slice(i, i + 4);
             let newBody = { ...req.body.body }
-            newBody.packages = chunk;
+            newBody.package = lineItems[i];
             const response = await axios.post(
                 url,
                 newBody,
-                config
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-locale": "en_US",
+                        "Authorization": `Bearer ${req.body.token}`,
+                        "Idempotency-Key": `${uuidv4()}`
+                    }
+                }
             );
-            console.log("resss", response);
+
             if (response.status < 300 && "labels" in (response?.data)) {
                 if (Array.isArray(response.data.labels)) {
                     const new_images = (response.data.labels).map((item) => item.label_data)
@@ -842,31 +764,53 @@ app.post(routeStrings.shipment_stamps, async (req, res) => {
     } catch (error) {
         console.log(error);
         res.send({
-            code: error.status,
-            message: error?.response?.data?.errors?.[0]?.error_message || error?.message
-            , error: true
+            code: error.response.status,
+            message: error?.response?.data?.errors?.[0]?.error_message || error?.message,
+            error: true
         })
     }
 });
 
-// preview file link UPS
-app.get('/report_stamps', (req, res) => {
-    const filePath = path.join(__dirname, '/reports/stamps/STAMPS_labels_report.png');
-    res.sendFile(filePath, {
-        headers: {
-            'Content-Type': 'image/png',
-            'Content-Disposition': 'inline; filename=STAMPS_labels_report.png'
-        }
-    }, (err) => {
-        if (err) {
-            console.error(err);
-            res.status(500).send('Internal Server Error');
-        }
-    });
+
+app.get("/auth_stamps", async (req, res) => {
+
+    try {
+        const token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlA3Z3pLRGdfRENlVzcyeXZ3cnpQcCJ9.eyJodHRwczovL3N0YW1wc2VuZGljaWEuY29tL2ludGVncmF0aW9uX2lkIjoiNzc4OTdmNDYtNjg2NS00NzQ1LTlkZjMtZDUzYjc4MTA4YjBjIiwiaHR0cHM6Ly9zdGFtcHNlbmRpY2lhLmNvbS91c2VyX2lkIjozNzI1Mzk5LCJpc3MiOiJodHRwczovL3NpZ25pbi50ZXN0aW5nLnN0YW1wc2VuZGljaWEuY29tLyIsInN1YiI6ImF1dGgwfDM3MjUzOTkiLCJhdWQiOiJodHRwczovL2FwaS5zdGFtcHNlbmRpY2lhLmNvbSIsImlhdCI6MTY4MDc3Mjg2OCwiZXhwIjoxNjgwNzczNzY4LCJhenAiOiJteTc3OE44b0N3YUtxMGRTUFQxc29LWTk4MDdPcGljSyJ9.C_kpgBYXycvxgtfaF5doJ53BGB1WsJhlK4VZXdyQaoGLU1kTooNovUJfGsTVbC_AA3mAe0nussWvDtRACFlCKpt9ffdKByr4HnDn3krMfNH5zt2_1CDo9bXkjZo0idOot8h93IIRgIp3pc-S-H3pyamoRa1UsxnADaJQj2u_anGeO0QSBiICwr4ybb7MktRh6yYulTXrn7izagT9jmtguClrVf4K4FazESJPAUrgsoOzc9VL0cEgtP27-a8TDaKzwUWYb4Pn8wqFoTxIlz3Pe32amH_trW0vtJqIkQNLAjhnwHUU3LzokIpC0gM9rkw3aGVyN9KkDnGvChhltx8SRg"
+        const response = await axios.post(
+            "https://api.testing.stampsendicia.com/sera/v1/balance/add-funds",
+            {
+                "amount": 5000,
+                "currency": "usd"
+            },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-locale": "en_US",
+                    "Authorization": `Bearer ${token}`,
+                    "Idempotency-Key": `${uuidv4()}`
+                }
+            }
+        )
+
+
+
+
+
+            console.log("ress",response.data);
+
+
+
+        res.status(200).send(response.data)
+
+    } catch (error) {
+        console.log(error);
+        res.send({
+            code: error.response.status,
+            message: error?.response?.data?.errors?.[0]?.error_message || error?.message,
+            error: true
+        })
+    }
 });
-
-
-
 
 
 

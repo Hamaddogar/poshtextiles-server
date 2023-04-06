@@ -9,6 +9,8 @@ import { APIS } from '../../utils/table';
 // ------------------All Asyn Reducers are below ------------------//
 let initialState = {
   perPage: 21,
+  currentPageAllOrders: 1,
+  orderTypeAllOrders: 'all',
   isAuthorised: false,
   loading: false,
   // original data
@@ -41,7 +43,8 @@ let initialState = {
   newOrderData: null,
 
 
-  stamps_token : "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlA3Z3pLRGdfRENlVzcyeXZ3cnpQcCJ9.eyJodHRwczovL3N0YW1wc2VuZGljaWEuY29tL2ludGVncmF0aW9uX2lkIjoiNzc4OTdmNDYtNjg2NS00NzQ1LTlkZjMtZDUzYjc4MTA4YjBjIiwiaHR0cHM6Ly9zdGFtcHNlbmRpY2lhLmNvbS91c2VyX2lkIjozNzI1Mzk5LCJpc3MiOiJodHRwczovL3NpZ25pbi50ZXN0aW5nLnN0YW1wc2VuZGljaWEuY29tLyIsInN1YiI6ImF1dGgwfDM3MjUzOTkiLCJhdWQiOiJodHRwczovL2FwaS5zdGFtcHNlbmRpY2lhLmNvbSIsImlhdCI6MTY4MDYwMDM3NSwiZXhwIjoxNjgwNjAxMjc1LCJhenAiOiJteTc3OE44b0N3YUtxMGRTUFQxc29LWTk4MDdPcGljSyJ9.flqh1Z2iYutMwIFKNNo8cEg-NO67KY-p6TyOqgACPdrs2EXpXwzi0yXZbSy2Xo_vVFxCcPkWjTu2cbCWuv7hmPoomdGJq17dBvlVtfH44jBxbBGj4497oQk5MPRBBnVmNgrsNlm83w0dWQX4vpqZw6oWqEDVfxjwmCRhYGrVldBJmRjjBz8vv2wxEyR6gTldO4c2f9XuWBXGiPX94q6D2_8eKHGj9RZGg_SPRGVnX025hhpdNmyfFI7Je6yQtO39Q8jy9wqB5NXm7C3beS6fc9qyoipBGt3aQUS-w_Bnd6Q6CYsYI63zWECTB6vN6RwJFbFduasfd4i6MpetVd6Fpg"
+  stamps_token: null,
+  stamps_code: null,
 
 
 }
@@ -140,7 +143,6 @@ const mainSlice = createSlice({
       state.inventoryAdjustment.push(payload);
     },
     CSV_PRODUCT_DETAIL: (state, { payload }) => {
-
       state.csv_OrdersDetail = {
         total: payload.total,
         product: payload.product,
@@ -148,7 +150,25 @@ const mainSlice = createSlice({
       state.csv_data = payload.data;
       state.csv_fileName = payload.name;
     },
-
+    STAMPS_TOKEN: (state, { payload }) => {
+      if (payload.set) {
+        state.stamps_token = payload.token;
+        state.stamps_code = payload.code;
+      } else {
+        state.stamps_token = null;
+        state.stamps_code = null;
+      }
+    },
+    PAGE_DEALER_ALL_ORDERS: (state, { payload }) => {
+      if (payload.to === "page") {
+        state.currentPageAllOrders = payload.currentPage
+      } else if (payload.to === "both") {
+        state.orderTypeAllOrders = payload.orderType;
+        state.currentPageAllOrders = payload.currentPage
+      } else {
+        state.orderTypeAllOrders = payload.orderType
+      }
+    },
 
   },
 
@@ -220,6 +240,8 @@ export const { LOG_OUT,
   SELECT_PICKING_PRODUCT,
   ADD_NEW_INVENTORY_PRODUCT,
   CSV_PRODUCT_DETAIL,
+  STAMPS_TOKEN,
+  PAGE_DEALER_ALL_ORDERS,
 } = mainSlice.actions;
 
 

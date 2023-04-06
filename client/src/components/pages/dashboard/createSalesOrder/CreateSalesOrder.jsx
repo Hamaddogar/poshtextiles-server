@@ -1,4 +1,4 @@
-import { Checkbox, FormControl, Hidden, InputAdornment, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
+import { FormControl, Hidden, InputAdornment, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
 import { Grid } from '@mui/material';
@@ -13,11 +13,11 @@ import ThumbNailImageSVG from "../../../assets/images/thumbnail2.svg";
 import { create_New_SaleOrder, request_AccessToken_MICROSOFT } from '../../../../utils/API_HELPERS';
 import { useMsal } from '@azure/msal-react';
 import { toast } from 'react-toastify';
+import CreateNewLineItem from '../reUseAbles/CreateNewLineItem';
 const CreateSalesOrder = () => {
 
     const [lineItems, setLineItems] = React.useState([]);
     const [rows, setRows] = React.useState(lineItems);
-    const [dropShipChecked, setDropShipChecked] = React.useState(false);
     const [currentPage, setCurrentPage] = React.useState(1);
     const [commentModel, setCommentModel] = React.useState({
         open: false,
@@ -141,8 +141,7 @@ const CreateSalesOrder = () => {
 
     const handleSubmitLineItem = (event) => {
         event.preventDefault();
-        const data = new FormData(event.target)
-
+        const data = new FormData(event.target);
 
         setLineItems([
             ...lineItems,
@@ -151,12 +150,9 @@ const CreateSalesOrder = () => {
                 "lineNo": data.get('itemNo'),
                 "type": data.get('itemType'),
                 "quantity": data.get('qty'),
-                "dropShipment": dropShipChecked
+                "dropShipment": data.get('dropShip') ? true : false
             }
         ])
-
-
-
 
     }
 
@@ -249,7 +245,7 @@ const CreateSalesOrder = () => {
                                             value={agentCode}
                                             onChange={e => setAgentCode(e.target.value)}
                                             size='small'
-                                            sx={{ backgroundColor:'#FFFFFF','& input': { fontSize: '13px' }, fontSize: '12px', }}
+                                            sx={{ backgroundColor: '#FFFFFF', '& input': { fontSize: '13px' }, fontSize: '12px', }}
                                         >
                                             {
                                                 shippingAgents.map(option => <MenuItem value={option} sx={{ fontSize: '12px' }}>{option}</MenuItem>)
@@ -299,93 +295,7 @@ const CreateSalesOrder = () => {
 
 
                     {/* box section */}
-                    <Box sx={{ padding: '0px' }} id='lineForm' mb={1} component={'form'} onSubmit={handleSubmitLineItem}>
-
-                        <Stack spacing={2} p={1.5} direction={{ xs: 'column', sm: 'row' }} alignItems={{ xs: 'center', sm: 'flex-start' }} sx={{ transition: '.5s', border: '1px solid black', boxShadow: `1px 1px 2px 1px rgba(0, 0, 0, 0.25)` }}
-                        >
-                            <Box>
-                                <Box component='img' alt='img' style={{ width: '100%', minWidth: '146px', maxWidth: '146px', cursor: 'pointer', backgroundColor: 'white', minHeight: '150px' }} src={ThumbNailImageSVG} />
-                            </Box>
-                            {/* form */}
-                            <Box >
-                                <Grid container alignItems='center' spacing={1}>
-                                    <Grid item xs={6} sm={6} md={3} >
-                                        <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Item Type:</Typography>
-                                        <TextField required sx={headInputStyle} fullWidth defaultValue={''} name={"itemType"} size='small' />
-                                    </Grid>
-
-                                    <Grid item xs={6} sm={6} md={3}>
-                                        <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Item Number: </Typography>
-                                        <TextField required sx={headInputStyle} fullWidth defaultValue={'S10017-003'} name={"simpleNo"} size='small' />
-                                    </Grid>
-
-                                    <Grid item xs={6} sm={6} md={4}>
-                                        <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Description: </Typography>
-                                        <TextField required sx={headInputStyle} fullWidth defaultValue={''} name={"description"} size='small' />
-                                    </Grid>
-
-                                    <Grid item xs={6} sm={6} md={2}>
-                                        <Box mt={1}>
-                                            <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Drop Ship: </Typography>
-                                            <Checkbox
-                                                checked={dropShipChecked}
-                                                onChange={e => setDropShipChecked(e.target.checked)}
-                                                inputProps={{ 'aria-label': 'controlled' }}
-                                            />
-                                        </Box>
-                                    </Grid>
-
-                                    <Grid item xs={6} sm={6} md={2}>
-                                        <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Item Number: </Typography>
-                                        <TextField required sx={headInputStyle} fullWidth defaultValue={''} name={"itemNo"} size='small' />
-                                    </Grid>
-
-
-                                    <Grid item xs={6} sm={6} md={2}>
-                                        <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Quantity: </Typography>
-                                        <TextField required sx={headInputStyle} fullWidth defaultValue={''} type='text' name={"qty"} size='small' />
-                                    </Grid>
-
-                                    <Grid item xs={6} sm={6} md={2}>
-                                        <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Min Quantity: </Typography>
-                                        <TextField required sx={headInputStyle} fullWidth defaultValue={''} type='text' name={"minQty"} size='small' />
-                                    </Grid>
-
-                                    <Grid item xs={6} sm={6} md={2}>
-                                        <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Price: </Typography>
-                                        <TextField required sx={headInputStyle} fullWidth defaultValue={''} type='text' name={""} size='small' />
-                                    </Grid>
-
-                                    <Grid item xs={6} sm={6} md={2}>
-                                        <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Discount: </Typography>
-                                        <TextField required sx={headInputStyle} fullWidth defaultValue={''} type='text' name={"discount"} size='small' />
-                                    </Grid>
-
-                                    <Grid item xs={6} sm={6} md={2}>
-                                        <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Amount: </Typography>
-                                        <TextField required sx={headInputStyle} fullWidth defaultValue={''} type='text' name={"amount"} size='small' />
-                                    </Grid>
-
-                                    <Grid item xs={12}>
-                                        <Stack spacing={1} direction='row' alignItems='center' justifyContent={'center'} >
-                                            <TextField required sx={headInputStyle} fullWidth
-                                                value={commentModel.selected ? commentModel.comment.data : ""}
-                                                name={"comment"} size='small' />
-                                            <Stack direction='row' alignItems='center' justifyContent={'center'}>
-                                                <Button color='error' variant='contained' size='small' type='reset'>cancel</Button> &nbsp;
-                                                <Button color='primary' type='submit' variant='contained' size='small'>ADD</Button>
-                                            </Stack>
-                                        </Stack>
-                                    </Grid>
-                                </Grid>
-
-                            </Box>
-                        </Stack>
-
-
-
-
-                    </Box>
+                    <CreateNewLineItem handleCancel={() => { }} handleSubmitLineItem={handleSubmitLineItem} commentModel={commentModel} />
 
 
                 </Box>
