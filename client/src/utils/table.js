@@ -44,6 +44,7 @@ export const APIS = {
     sale_orders_micro: 'http://localhost:8080/sales',
     history_micro: 'http://localhost:8080/history',
     new_order_micro: 'http://localhost:8080/newOrder',
+    csv_order_micro: 'http://localhost:8080/csv_orders',
 }
 
 

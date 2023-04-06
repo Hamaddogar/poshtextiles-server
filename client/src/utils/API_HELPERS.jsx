@@ -241,7 +241,6 @@ export const print_Labels = async (base64) => {
 
 
 // create new Order Microsoft
-
 export const create_New_SaleOrder = async ({ token, body, toastPermission }) => {
     try {
         const data = await toast.promise(
@@ -254,4 +253,20 @@ export const create_New_SaleOrder = async ({ token, body, toastPermission }) => 
         return error
     }
 }
+
+// 
+export const create_New_CSV_SaleOrder = async (token, body) => {
+    try {
+        const data = await toast.promise(
+            axios.post(APIS.csv_order_micro, { token, body }),
+            { pending: 'Loading Please Wait...', success: "Great news! New order created", error: 'Something Went Wrong' },
+            { autoClose: 1500, hideProgressBar: true }
+        );
+        return data.data;
+    } catch (error) {
+        return error
+    }
+}
+
+
 

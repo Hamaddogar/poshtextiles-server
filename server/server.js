@@ -94,7 +94,7 @@ const routeStrings = {
     history_micro: '/history',
     inventory_micro: '/inventory',
     new_order_micro: '/newOrder',
-    comments_micro: '/comments',
+    csv_orders_micro: '/csv_orders',
 
 }
 
@@ -943,37 +943,47 @@ app.post(routeStrings.new_order_micro, async (req, res) => {
 
     } catch (errorss) {
         console.log("error", errorss);
-        if (errorss?.response?.status) res.status(errorss.response.status).send(
-            {
-                error: {
-                    message: errorss.response.data.error.message,
-                    error: true
-                }
+        if (errorss?.response?.status) res.status(errorss.response.status).send({
+            error: {
+                message: errorss.response.data.error.message,
+                error: true
             }
-        );
+        });
         else res.status(500).send({ error: errorss.message });
     }
 });
 
 // CREATE comments_micro
-app.post(routeStrings.comments_micro, async (req, res) => {
+app.post(routeStrings.csv_orders_micro, async (req, res) => {
     const config = {
         headers: {
             "Authorization": `Bearer ${req.body.token}`,
         }
     };
     try {
-        const response = await axios.post(
-            API_MICROSOFT.comments_micro,
-            req.body.body,
-            config
-        );
+        // const response = await axios.post(
+        //     API_MICROSOFT.comments_micro,
+        //     req.body.body,
+        //     config
+        // );
+        const response = {
+            status: 200,
+            data: req.body.body
+        }
+        setTimeout(() => {
+            res.status(response.status).send({
+                success: true,
+                data: response.data
+            });
+        }, 5000);
 
-        // console.log(response.data);
-        res.send(response.data)
-
-    } catch (error) {
-        res.status(500).send({ error: error.message });
+    } catch (errorCatch) {
+        res.status(errorCatch?.response?.status).send({
+            error: {
+                message: errorCatch?.response?.data?.error?.message,
+                error: true
+            }
+        });
     }
 });
 

@@ -5,25 +5,24 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { Chip, Stack, useMediaQuery, Grid, TextField, Typography } from '@mui/material';
+import { Stack, useMediaQuery, Grid, TextField, Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from '@mui/material';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
 import SearchIcon from '@mui/icons-material/Search';
 import Pagination from 'react-responsive-pagination';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Box } from '@mui/system';
-import { Link, useNavigate } from 'react-router-dom';
-import { CSV_PRODUCT_DETAIL, SELECTED_SALE_ORDER_DATA } from '../../../../RTK/Reducers/Reducers';
-import { BackButton, lnk, NoBorder, Search, searchDropDown, SearchIconWrapper, StyledInputBase, styleSlect } from '../reUseAbles/ReuseAbles';
+import {  useNavigate } from 'react-router-dom';
+import { CSV_DATA_LOCAL_RED, CSV_PRODUCT_DETAIL, csvOrderDealer } from '../../../../RTK/Reducers/Reducers';
+import { BackButton,  NoBorder, Search, SearchIconWrapper, StyledInputBase } from '../reUseAbles/ReuseAbles';
 import PreLoader from '../../HOC/Loading';
 import NoRecord from '../../HOC/NoRecord';
 import Papa from 'papaparse';
 import { toast } from 'react-toastify';
-
+import { request_AccessToken_MICROSOFT } from '../../../../utils/API_HELPERS';
+import { useMsal } from '@azure/msal-react';
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 
 
 
@@ -31,8 +30,8 @@ import { toast } from 'react-toastify';
 
 
 const CSVOrders = () => {
-    const { perPage, csv_data, csv_fileName } = useSelector(store => store.mainReducer);
-
+    const { perPage, csv_data_local, csv_data_responded, csv_fileName, loadingCSV } = useSelector(store => store.mainReducer);
+    const { instance, accounts } = useMsal();
 
     const [loading, setLoading] = React.useState({ load: false, fileName: "" })
     const [copy, setCopy] = React.useState([]);
@@ -52,11 +51,12 @@ const CSVOrders = () => {
     }
 
     React.useLayoutEffect(() => { if (copy.length > 0) setRows(copy?.slice(0, perPage)) }, [copy, perPage]);
-   
+
     React.useEffect(() => {
-        if (csv_data?.length > 0) setCopy(csv_data)
+        if (csv_data_responded?.length > 0) setCopy(csv_data_responded)
+        else if (csv_data_local?.length > 0) setCopy(csv_data_local)
         //eslint-disable-next-line
-    }, [csv_data]);
+    }, [csv_data_local, csv_data_responded]);
     React.useLayoutEffect(() => {
         setRows(copy.filter(item => (item["SKU"])?.toLocaleLowerCase().includes(searchIt)));
         //eslint-disable-next-line
@@ -80,8 +80,6 @@ const CSVOrders = () => {
         dispatch(CSV_PRODUCT_DETAIL({
             total: copy.length,
             product: data,
-            data: copy,
-            name: loading.fileName
         }))
         navigate('/csv-order-detail')
     }
@@ -95,13 +93,17 @@ const CSVOrders = () => {
         setLoading({ load: true, fileName: file.name });
         const allowedExtensions = ["csv"];
         const fileExtension = file.name.split(".").pop();
+
         if (allowedExtensions.includes(fileExtension)) {
             Papa.parse(file, {
                 header: true,
                 complete: (results) => {
-                    // console.log(results.data);
-                    setCopy(results.data)
-                    setLoading({ load: false, fileName: file.name });
+                    dispatch(CSV_DATA_LOCAL_RED({
+                        total: results.data.length,
+                        data: results.data,
+                        name: file.name
+                    }))
+                    setLoading({ load: false });
                 },
             });
         } else {
@@ -112,6 +114,25 @@ const CSVOrders = () => {
     }
 
 
+
+    const handleSendToServer = () => {
+        if (csv_data_local.length > 0) {
+            request_AccessToken_MICROSOFT(instance, accounts)
+                .then(token => {
+                    dispatch(csvOrderDealer({ token: token, body: csv_data_local }))
+                })
+        } else {
+            toast.error('No Data Found Please Upload File Again!', { position: "top-right", autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "light", });
+        }
+    }
+
+
+
+
+
+
+
+
     return (
         <div>
             <Grid container alignItems={'center'} justifyContent='space-between' pb={2} rowGap={1}
@@ -120,7 +141,14 @@ const CSVOrders = () => {
                 <Grid item xs={6} sm={6} >
                     <Stack direction='row' alignItems='center' columnGap={1} component='form' onSubmit={handleCSV} >
                         <TextField size='small' type='file' variant='outlined' name='mycsv' accept='.csv' required sx={NoBorder} />
-                        <Button size='small' type='submit' variant='contained' color='success' sx={{ minWidth: '121px', fontSize: '12px', textTransform: 'captalize' }}>Upload CSV Now</Button>
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Button size='small' type='submit' variant='contained' color='success' sx={{ minWidth: '121px', fontSize: '12px', textTransform: 'captalize' }}>Upload CSV Now</Button> &nbsp; &nbsp; &nbsp;
+                            {
+                                csv_data_local?.length > 0 &&
+                                !(csv_data_responded?.length > 0) &&
+                                <Button onClick={handleSendToServer} size='small' type='submit' variant='contained' color='primary' sx={{ minWidth: '121px', fontSize: '12px', textTransform: 'captalize' }}>Process CSV Now</Button>
+                            }
+                        </Box>
                     </Stack>
                     {(loading.fileName || csv_fileName) && <Typography p={1} > Data from File : {loading.fileName || csv_fileName} </Typography>}
                 </Grid>
@@ -145,7 +173,7 @@ const CSVOrders = () => {
 
 
 
-            <PreLoader loading={loading.load}>
+            <PreLoader loading={loading.load || loadingCSV}>
                 <TableContainer component={Paper} sx={{ padding: '0px 4%' }} className='table-Container'>
                     <Table sx={{ minWidth: 750 }} stickyHeader aria-label="sticky table">
                         <TableHead>
@@ -168,7 +196,8 @@ const CSVOrders = () => {
                                         // backgroundColor: row.delay ? 'rgb(211, 47, 47,.1)' : 'inherit'
                                         '&:hover': { backgroundColor: 'rgb(128, 128, 128,.1)', cursor: 'pointer', transition: '.3s' },
                                         '& .MuiTableCell-root': {
-                                            padding: '10px 16px '
+                                            padding: '10px 16px ',
+                                            backgroundColor: index %2 === 0 ? 'rgb(255, 0, 0,.1)' : 'transparent'
                                         }
                                     }}
                                         onClick={() => handleSlectOrder(row)}
@@ -180,7 +209,7 @@ const CSVOrders = () => {
                                         <TableCell sx={{ maxWidth: '140px' }}>{row["Order Date"] ? row["Order Date"] : "-----"}</TableCell>
                                         <TableCell sx={{ maxWidth: '140px' }}>{row["Quantity"] >= 0 ? row["Quantity"] : "NA"}</TableCell>
                                         <TableCell sx={{ maxWidth: '140px' }}>{row["Shipping Method"] ? row["Shipping Method"].split(' ')[0] : "-----"}</TableCell>
-                                        <TableCell sx={{ maxWidth: '140px' }}>Yes/No</TableCell>
+                                        <TableCell sx={{ maxWidth: '140px' }}>Yes/No <ArrowRightIcon /> </TableCell>
                                         {/* <TableCell sx={{ maxWidth: '140px' }}>
                                             <Chip sx={{
                                                 '&.MuiChip-root': {

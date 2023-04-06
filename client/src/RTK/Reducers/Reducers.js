@@ -31,12 +31,14 @@ let initialState = {
   saleOrderDetails: null,
   pickingSelectedProduct: null,
   csv_OrdersDetail: null,
-  csv_data: null,
+  csv_data_local: [],
+  csv_data_responded: [],
   csv_fileName: null,
   // client info
   client_Info: null,
   // FEDEXP
   loadingHistory: false,
+  loadingCSV: false,
   loadingInventory: false,
 
   loadingNewOrder: false,
@@ -84,6 +86,19 @@ export const historyGetter = createAsyncThunk(
     const data = await toast.promise(
       axios.post(APIS.sale_orders_micro, { token: token }),
       toastPermission ? { pending: 'Loading Please Wait...', success: 'Successfully Loaded', error: 'Something Went Wrong' } : { error: 'Something Went Wrong' },
+      { autoClose: 1500, hideProgressBar: true }
+    );
+    return data.data;
+  }
+);
+
+// History
+export const csvOrderDealer = createAsyncThunk(
+  'mainSlice/csvOrderDealer',
+  async ({ token, body }) => {
+    const data = await toast.promise(
+      axios.post(APIS.csv_order_micro, { token, body }),
+      { pending: 'Loading Please Wait...', success: 'Successfully Loaded', error: 'Something Went Wrong' },
       { autoClose: 1500, hideProgressBar: true }
     );
     return data.data;
@@ -147,7 +162,10 @@ const mainSlice = createSlice({
         total: payload.total,
         product: payload.product,
       };
-      state.csv_data = payload.data;
+    },
+    CSV_DATA_LOCAL_RED: (state, { payload }) => {
+      state.csv_data_local = payload.data;
+      state.csv_data_responded = [];
       state.csv_fileName = payload.name;
     },
     STAMPS_TOKEN: (state, { payload }) => {
@@ -228,6 +246,24 @@ const mainSlice = createSlice({
       })
 
 
+      // csvOrderDealer
+      .addCase(csvOrderDealer.pending, (state) => {
+        state.loadingCSV = true;
+      })
+      .addCase(csvOrderDealer.fulfilled, (state, { payload }) => {
+        state.loadingCSV = false;
+        if (payload.success){ 
+          state.csv_data_local = [];
+          console.log("-------------",payload);
+          state.csv_data_responded = payload.data;
+        }
+      })
+      .addCase(csvOrderDealer.rejected, (state, { error }) => {
+        state.loadingCSV = false;
+        Swal.fire({ icon: 'error', title: error.code, text: error.message })
+      })
+
+
 })
 
 
@@ -240,6 +276,7 @@ export const { LOG_OUT,
   SELECT_PICKING_PRODUCT,
   ADD_NEW_INVENTORY_PRODUCT,
   CSV_PRODUCT_DETAIL,
+  CSV_DATA_LOCAL_RED,
   STAMPS_TOKEN,
   PAGE_DEALER_ALL_ORDERS,
 } = mainSlice.actions;

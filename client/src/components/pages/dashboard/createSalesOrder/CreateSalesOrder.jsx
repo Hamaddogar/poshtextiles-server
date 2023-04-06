@@ -16,6 +16,13 @@ import { toast } from 'react-toastify';
 import CreateNewLineItem from '../reUseAbles/CreateNewLineItem';
 const CreateSalesOrder = () => {
 
+
+    
+
+    const { instance, accounts } = useMsal();
+    const navigate = useNavigate();
+
+
     const [lineItems, setLineItems] = React.useState([]);
     const [rows, setRows] = React.useState(lineItems);
     const [currentPage, setCurrentPage] = React.useState(1);
@@ -48,11 +55,6 @@ const CreateSalesOrder = () => {
         'reqDate': "2023-06-01",
         "shipDate": "2023-06-02",
     }
-
-
-    const { instance, accounts } = useMsal();
-    const navigate = useNavigate();
-
 
 
     React.useEffect(() => {
@@ -95,25 +97,26 @@ const CreateSalesOrder = () => {
         }
 
         if (lineItems.length > 0) {
-            request_AccessToken_MICROSOFT(instance, accounts).then(token => {
-                create_New_SaleOrder({
-                    token: token,
-                    body: body,
-                    toastPermission: true,
-                }).then(response => {
-                    if (response?.response?.data?.error?.error) {
-                        toast.error(`${response?.response?.data?.error?.message}`, {
-                            position: "top-right",
-                            autoClose: false,
-                            hideProgressBar: true
-                        });
-                    } else if (response.created) {
-                        fromResetter("newOrderForm");
-                        fromResetter("newOrderItemForm");
-                        setLineItems([])
-                    }
+            request_AccessToken_MICROSOFT(instance, accounts)
+                .then(token => {
+                    create_New_SaleOrder({
+                        token: token,
+                        body: body,
+                        toastPermission: true,
+                    }).then(response => {
+                        if (response?.response?.data?.error?.error) {
+                            toast.error(`${response?.response?.data?.error?.message}`, {
+                                position: "top-right",
+                                autoClose: false,
+                                hideProgressBar: true
+                            });
+                        } else if (response.created) {
+                            fromResetter("newOrderForm");
+                            fromResetter("newOrderItemForm");
+                            setLineItems([])
+                        }
+                    })
                 })
-            })
         } else {
             toast.error('Line Items must be present', {
                 position: "top-right",
