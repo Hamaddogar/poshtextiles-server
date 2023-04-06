@@ -5,7 +5,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { Chip, Stack, useMediaQuery, Grid,  Menu } from '@mui/material';
+import { Chip, Stack, useMediaQuery, Grid, Menu } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import { useSelector } from 'react-redux';
 import { Button } from '@mui/material';
@@ -20,6 +20,7 @@ import { useNavigate } from 'react-router-dom';
 import BackArrow from '../../../assets/icons/back-arrow.png'
 import Pay from '../../../assets/images/pay.png'
 import { Search, SearchIconWrapper, StyledInputBase, styleSlect } from '../reUseAbles/ReuseAbles';
+import ActionCards from './ActionCards';
 
 
 
@@ -37,15 +38,6 @@ const ChargeCard = () => {
     const [orderType, setOrderType] = React.useState('all');
     const deskTopView = useMediaQuery('(min-width:600px)');
     const navigate = useNavigate();
-
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    const open = Boolean(anchorEl);
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
 
     const handlePageChange = page => {
         setCurrentPage(page);
@@ -114,28 +106,7 @@ const ChargeCard = () => {
                 </Grid>
 
                 <Grid item xs={6} sm={6} md={2} textAlign={{ xs: 'right' }} >
-                    <Button
-                        id="basic-button"
-                        aria-controls={open ? 'basic-menu' : undefined}
-                        aria-haspopup="true"
-                        aria-expanded={open ? 'true' : undefined}
-                        onClick={handleClick}
-                        size='small' variant='contained' color='primary' sx={{ minWidth: '121px', fontSize: '12px', textTransform: 'captalize' }}>
-                        Charge a Card Manually
-                    </Button>
-                    <Menu
-                        id="basic-menu"
-                        anchorEl={anchorEl}
-                        open={open}
-                        onClose={handleClose}
-                        MenuListProps={{
-                            'aria-labelledby': 'basic-button',
-                        }}
-                    >
-                        <MenuItem disableRipple sx={{padding:'0px '}} onClick={handleClose}>
-                            <Box component={'img'} src={Pay} sx={{maxWidth:'350px'}}  />
-                        </MenuItem>
-                    </Menu>
+                    <ActionCards />
                 </Grid>
 
                 <Grid item xs={12} md={3} >

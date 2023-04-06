@@ -22,9 +22,11 @@ const persistConfig = {
     "firstTime",
     "FEDEXP_TOKEN",
     "csv_OrdersDetail",
-    "csv_data",
+    "csv_data_local",
     "csv_fileName",
+    "csv_data_responded",
     "stamps_token",
+    "stamps_code",
   ],
   rootReducer: mainReducer
 }

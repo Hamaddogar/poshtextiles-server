@@ -12,6 +12,11 @@ module.exports = {
         STAMPS_INTEGRATION_ID : "fcaa4f74-9bc2-4506-9420-8ebb99b524f1",
         STAMPS_USERNAME : "SilkCraft-001",
         STAMPS_PASSWORD : "October2020!",
+
+        AUTHORISE_NET_API_LOGIN_ID : "7Jfu8T9M",
+        AUTHORISE_NET_TRANSACTION_KEY : "33vx9gmCXd6485DQ",
+        AUTHORISE_NET_KEY : "SIMON",
+
     }
 
 };
