@@ -771,7 +771,7 @@ app.post(routeStrings.shipment_stamps, async (req, res) => {
     }
 });
 
-
+// add funds to stamps
 app.get("/auth_stamps", async (req, res) => {
 
     try {
@@ -796,7 +796,7 @@ app.get("/auth_stamps", async (req, res) => {
 
 
 
-            console.log("ress",response.data);
+        console.log("ress", response.data);
 
 
 
@@ -922,10 +922,12 @@ app.post(routeStrings.new_order_micro, async (req, res) => {
     const config = {
         headers: {
             "Authorization": `Bearer ${req.body.token}`,
+            "Content-Type": "application/json",
+            "X-locale": "en_US",
+            "If-Match": "*"
         }
     };
-    // console.log(req.body.token);
-    // console.log(req.body.body);
+
     try {
         const response = await axios.post(
             API_MICROSOFT.new_Sale_Order,
@@ -933,30 +935,23 @@ app.post(routeStrings.new_order_micro, async (req, res) => {
             config
         );
 
-        console.log('response', response);
-        res.send(response.data)
-        // if (response?.data?.value) {
+        res.status(response.status).send({
+            error: false,
+            created: true,
+        });
 
 
-
-
-
-
-
-        //     res.status(response.status).send(response.data.value);
-        // } else throw ({
-        //     response: {
-        //         "message": "Server Error!",
-        //         "name": "Error",
-        //         "status": 500
-        //     }
-        // });
-
-    } catch (error) {
-        console.log("error", error);
-        if (error?.status) res.status(error.status).send({ error: error.message });
-        else if (error?.response?.status) res.status(error.response.status).send({ error: error.response.message });
-        else res.status(500).send({ error: error.message });
+    } catch (errorss) {
+        console.log("error", errorss);
+        if (errorss?.response?.status) res.status(errorss.response.status).send(
+            {
+                error: {
+                    message: errorss.response.data.error.message,
+                    error: true
+                }
+            }
+        );
+        else res.status(500).send({ error: errorss.message });
     }
 });
 

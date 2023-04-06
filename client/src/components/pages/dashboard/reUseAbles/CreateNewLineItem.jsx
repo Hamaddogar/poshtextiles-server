@@ -4,9 +4,9 @@ import { headInputStyle } from './ReuseAbles'
 import ThumbNailImageSVG from "../../../assets/images/thumbnail2.svg";
 
 
-const CreateNewLineItem = ({ handleSubmitLineItem,handleCancel }) => {
+const CreateNewLineItem = ({ handleSubmitLineItem, handleCancel }) => {
 
-    const [data, setData] = React.useState({})
+    const [data, setData] = React.useState({ qty: 1 })
 
     const handleChange = (event) => {
         const value = Number(event.target.value)
@@ -18,8 +18,7 @@ const CreateNewLineItem = ({ handleSubmitLineItem,handleCancel }) => {
 
     return (
         <div>
-            <Box sx={{ padding: '0px' }} id='lineForm' mb={1} component={'form'} onSubmit={handleSubmitLineItem}>
-
+            <Box sx={{ padding: '0px' }} id='newOrderItemForm' mb={1} component={'form'} onSubmit={handleSubmitLineItem}>
                 <Stack spacing={2} p={1.5} direction={{ xs: 'column', sm: 'row' }} alignItems={{ xs: 'center', sm: 'flex-start' }} sx={{ transition: '.5s', border: '1px solid black', boxShadow: `1px 1px 2px 1px rgba(0, 0, 0, 0.25)` }}
                 >
                     <Box>
@@ -30,12 +29,12 @@ const CreateNewLineItem = ({ handleSubmitLineItem,handleCancel }) => {
                         <Grid container alignItems='center' spacing={1}>
                             <Grid item xs={6} sm={6} md={3} >
                                 <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Item Type:</Typography>
-                                <TextField required sx={headInputStyle} fullWidth defaultValue={''} name={"itemType"} size='small' />
+                                <TextField required sx={headInputStyle} fullWidth defaultValue={'Item'} name={"itemType"} size='small' />
                             </Grid>
 
                             <Grid item xs={6} sm={6} md={3}>
                                 <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>No. </Typography>
-                                <TextField required sx={headInputStyle} fullWidth defaultValue={'S10017-003'} name={"simpleNo"} size='small' />
+                                <TextField required sx={headInputStyle} fullWidth defaultValue={'S10017-007'} name={"simpleNo"} size='small' />
                             </Grid>
 
                             <Grid item xs={6} sm={6} md={4}>
@@ -54,8 +53,8 @@ const CreateNewLineItem = ({ handleSubmitLineItem,handleCancel }) => {
                             </Grid>
 
                             <Grid item xs={6} sm={6} md={2}>
-                                <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Item Number: </Typography>
-                                <TextField required sx={headInputStyle} fullWidth defaultValue={''} name={"itemNo"} size='small' />
+                                <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Line Number: </Typography>
+                                <TextField required sx={headInputStyle} fullWidth defaultValue={10000} type='number' name={"itemNo"} size='small' />
                             </Grid>
 
 
@@ -90,7 +89,7 @@ const CreateNewLineItem = ({ handleSubmitLineItem,handleCancel }) => {
                                         placeholder='comment here ...'
                                         name={"comment"} size='small' />
                                     <Stack direction='row' alignItems='center' justifyContent={'center'}>
-                                        <Button color='error' variant='contained' size='small' type='reset' onClick={()=>handleCancel('newItem')}>cancel</Button> &nbsp;
+                                        <Button color='error' variant='contained' size='small' type='reset' onClick={() => handleCancel('newItem')}>cancel</Button> &nbsp;
                                         <Button color='primary' type='submit' variant='contained' size='small'>ADD</Button>
                                     </Stack>
                                 </Stack>

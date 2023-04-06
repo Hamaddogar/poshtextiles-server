@@ -6,7 +6,7 @@ import { Button } from '@mui/material';
 import { Box } from '@mui/system';
 import Pagination from 'react-responsive-pagination';
 import 'bootstrap/dist/css/bootstrap.css';
-import { BackButton, headInputStyle } from '../reUseAbles/ReuseAbles';
+import { BackButton, fromResetter, headInputStyle } from '../reUseAbles/ReuseAbles';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import CommentsModel from './commentsModel';
 import ThumbNailImageSVG from "../../../assets/images/thumbnail2.svg";
@@ -28,10 +28,27 @@ const CreateSalesOrder = () => {
 
     const shippingAgents = ["FEDEX", "STAMPS", "UPS"]
 
+    function convertToUpperCase(text) {
+        return text.toUpperCase();
+    }
 
 
     const handleOpen = () => setCommentModel({ ...commentModel, open: true });
-    const orderDetail = {}
+    const orderDetail = {
+        'sellToCustomerNo': "C0003647",
+        'shipToCode': "01",
+        'projectName': "LIBRARY",
+        'contact': "LIBRARY ",
+        "specifier": "",
+        'salesPerson': "BEVERLY J",
+        "campaign": "",
+        'po': "KG-TEST-893",
+        'orderDate': "2022-05-25",
+        'priority': "Sea 3",
+        'reqDate': "2023-06-01",
+        "shipDate": "2023-06-02",
+    }
+
 
     const { instance, accounts } = useMsal();
     const navigate = useNavigate();
@@ -59,66 +76,42 @@ const CreateSalesOrder = () => {
 
         const body = {
             "no": "",
-            "sellToCustomerNo": data.get('sellToCustomerNo'),
+            "sellToCustomerNo": convertToUpperCase(data.get('sellToCustomerNo')),
             "shippingAgentCode": agentCode,
-            "shipToCode": data.get('shipTo'),
-            "projectName": data.get('projectName'),
-            "specifier": data.get('specifier'),
+            "shipToCode": data.get('shipToCode'),
+            "projectName": convertToUpperCase(data.get('projectName')),
+            // "specifier": data.get('specifier'),
+            "specifier": "",
             "orderDate": data.get('orderDate'),
-            "salespersonCode": data.get('salesPerson'),
-            "campaignNo": data.get('campaign'),
+            "salespersonCode": convertToUpperCase(data.get('salesPerson')),
+            "campaignNo": "",
+            // "campaignNo": data.get('campaign'),
             "requestedDeliveryDate": data.get('reqDate'),
-            "contact": data.get('projectName'),
-            "externalDocumentNo": data.get('po'),
-            "shipmentDate": data.get('reqDate'),
+            "contact": convertToUpperCase(data.get('contact')),
+            "externalDocumentNo": convertToUpperCase(data.get('po')),
+            "shipmentDate": data.get('shipDate'),
             "priority": data.get('priority'),
             "edcSalesLines": [...lineItems]
-        }
-
-        // console.log("body", body);
-        const newdata = {
-            "no": "",
-            "sellToCustomerNo": "C0003647",
-            "shipToCode": "01",
-            "projectName": "LIBRARY",
-            "specifier": "",
-            "orderDate": "2022-05-25",
-            "salespersonCode": "BEVERLY J",
-            "campaignNo": "",
-            "requestedDeliveryDate": "2023-06-01",
-            "contact": "LIBRARY ",
-            "shippingAgentCode": "FEDEX",
-            "externalDocumentNo": "KG-TEST-901",
-            "shipmentDate": "2023-06-02",
-            "priority": "Sea 3",
-            "edcSalesLines": [
-                {
-                    "lineNo": 10000,
-                    "type": "Item",
-                    "no": "S10017-007",
-                    "quantity": 1,
-                    "dropShipment": false
-                },
-                {
-                    "lineNo": 20000,
-                    "type": "Item",
-                    "no": "S10017-003",
-                    "quantity": 1,
-                    "dropShipment": false
-                }
-            ]
         }
 
         if (lineItems.length > 0) {
             request_AccessToken_MICROSOFT(instance, accounts).then(token => {
                 create_New_SaleOrder({
                     token: token,
-                    body: newdata,
+                    body: body,
                     toastPermission: true,
                 }).then(response => {
-                    alert('new')
-                    console.log("ressssss", response);
-                    console.log("body", body);
+                    if (response?.response?.data?.error?.error) {
+                        toast.error(`${response?.response?.data?.error?.message}`, {
+                            position: "top-right",
+                            autoClose: false,
+                            hideProgressBar: true
+                        });
+                    } else if (response.created) {
+                        fromResetter("newOrderForm");
+                        fromResetter("newOrderItemForm");
+                        setLineItems([])
+                    }
                 })
             })
         } else {
@@ -146,11 +139,11 @@ const CreateSalesOrder = () => {
         setLineItems([
             ...lineItems,
             {
-                "no": data.get('simpleNo'),
-                "lineNo": data.get('itemNo'),
+                "lineNo": Number(data.get('itemNo')),
                 "type": data.get('itemType'),
-                "quantity": data.get('qty'),
-                "dropShipment": data.get('dropShip') ? true : false
+                "no": data.get('simpleNo'),
+                "quantity": Number(data.get('qty')),
+                "dropShipment": data.get('dropShip') === "on" ? true : false,
             }
         ])
 
@@ -165,20 +158,20 @@ const CreateSalesOrder = () => {
             <CommentsModel commentModel={commentModel} setCommentModel={setCommentModel} />
             <Box>
                 <Box >
-                    <Box component={'form'} noValidate onSubmit={handleSubmit} >
+                    <Box component={'form'} noValidate id='newOrderForm' onSubmit={handleSubmit} >
                         <Grid container sx={{ mt: 1, mb: 2 }} alignItems={'flex-end'} justifyContent='space-between' >
 
                             <Grid container item xs={12} md={10} spacing={1} alignItems={'flex-end'} >
                                 <Grid item xs={6} md={4} >
-                                    <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Bill To: </Typography>
-                                    <TextField required name='billTo' sx={headInputStyle} fullWidth defaultValue={orderDetail.billTo} size='small' InputProps={{
+                                    <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Ship To: </Typography>
+                                    <TextField required name='shipTo' sx={headInputStyle} fullWidth defaultValue={orderDetail.shipTo} size='small' InputProps={{
                                         endAdornment: (<InputAdornment position="end"> <VisibilityIcon sx={{ fontSize: '17px' }} />  </InputAdornment>)
                                     }} />
                                 </Grid>
 
                                 <Grid item xs={6} md={4} >
-                                    <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Ship To: </Typography>
-                                    <TextField required name='shipTo' sx={headInputStyle} fullWidth defaultValue={orderDetail.shipTo} size='small' InputProps={{
+                                    <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Ship To Code: </Typography>
+                                    <TextField required name='shipToCode' sx={headInputStyle} fullWidth defaultValue={orderDetail.shipToCode} size='small' InputProps={{
                                         endAdornment: (<InputAdornment position="end"> <VisibilityIcon sx={{ fontSize: '17px' }} /> </InputAdornment>)
                                     }} />
                                 </Grid>
@@ -186,14 +179,21 @@ const CreateSalesOrder = () => {
                                 <Grid item xs={6} md={4} >
                                     <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Project Name: </Typography>
                                     <TextField required name='projectName' sx={headInputStyle} fullWidth defaultValue={orderDetail.projectName} size='small'
-
                                     />
+                                </Grid>
+
+
+                                <Grid item xs={6} md={2} >
+                                    <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Contact: </Typography>
+                                    <TextField required name='contact' sx={headInputStyle} fullWidth defaultValue={orderDetail.contact} size='small' />
                                 </Grid>
 
                                 <Grid item xs={6} md={2} >
                                     <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Terms: </Typography>
                                     <TextField required name='terms' sx={headInputStyle} fullWidth defaultValue={orderDetail.terms} size='small' />
                                 </Grid>
+
+
 
                                 <Grid item xs={6} md={2} >
                                     <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Priority: </Typography>
@@ -211,8 +211,8 @@ const CreateSalesOrder = () => {
                                 </Grid>
 
                                 <Grid item xs={6} md={2} >
-                                    <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Customer PO: </Typography>
-                                    <TextField sx={headInputStyle} required name='po' fullWidth defaultValue={orderDetail.customerPO} size='small' />
+                                    <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Customer PO *uniqe: </Typography>
+                                    <TextField sx={headInputStyle} required name='po' fullWidth defaultValue={orderDetail.po} size='small' />
                                 </Grid>
 
                                 <Grid item xs={6} md={2} >
@@ -226,13 +226,18 @@ const CreateSalesOrder = () => {
                                 </Grid>
 
                                 <Grid item xs={6} md={2} >
+                                    <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Ship Date: </Typography>
+                                    <TextField sx={headInputStyle} required name='shipDate' fullWidth type={"date"} defaultValue={orderDetail.shipDate} size='small' />
+                                </Grid>
+
+                                <Grid item xs={6} md={2} >
                                     <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Req Ship Date: </Typography>
-                                    <TextField sx={headInputStyle} required name='reqDate' fullWidth type={"date"} defaultValue={orderDetail.reqShipDate} size='small' />
+                                    <TextField sx={headInputStyle} required name='reqDate' fullWidth type={"date"} defaultValue={orderDetail.reqDate} size='small' />
                                 </Grid>
 
                                 <Grid item xs={6} md={2} >
                                     <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Sell Customer No: </Typography>
-                                    <TextField sx={headInputStyle} required name='sellToCustomerNo' fullWidth type={"text"} defaultValue={"C0003647"} size='small' />
+                                    <TextField sx={headInputStyle} required name='sellToCustomerNo' fullWidth type={"text"} defaultValue={orderDetail.sellToCustomerNo} size='small' />
                                 </Grid>
 
                                 <Grid item xs={6} md={2} >

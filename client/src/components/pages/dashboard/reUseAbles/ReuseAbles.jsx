@@ -268,3 +268,11 @@ export const scroller = () => {
     let displayer = document.getElementById('displayer');
     displayer.scrollTop = 0;
 }
+
+
+export const fromResetter = (id) => {
+    let displayer = document.getElementById(id);
+    displayer.reset();
+}
+
+

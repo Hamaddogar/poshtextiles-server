@@ -12,7 +12,6 @@ module.exports = {
         STAMPS_INTEGRATION_ID : "fcaa4f74-9bc2-4506-9420-8ebb99b524f1",
         STAMPS_USERNAME : "SilkCraft-001",
         STAMPS_PASSWORD : "October2020!",
-
     }
 
 };
