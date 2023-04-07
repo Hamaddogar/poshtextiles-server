@@ -254,7 +254,7 @@ export const create_New_SaleOrder = async ({ token, body, toastPermission }) => 
     }
 }
 
-// 
+// CSV DATA Comapre 
 export const create_New_CSV_SaleOrder = async (token, body) => {
     try {
         const data = await toast.promise(
@@ -267,6 +267,20 @@ export const create_New_CSV_SaleOrder = async (token, body) => {
         return error
     }
 }
+
+export const customers_Getter = async (token) => {
+    try {
+        const data = await toast.promise(
+            axios.post(APIS.customers_micro, { token }),
+            { pending: 'Loading Please Wait...', success: "Great news! Loaded Customer", error: 'Something Went Wrong' },
+            { autoClose: 1500, hideProgressBar: true }
+        );
+        return data.data;
+    } catch (error) {
+        return error
+    }
+}
+
 
 
 

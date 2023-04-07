@@ -33,7 +33,8 @@ const Preloading = ({ children }) => {
                         toastPermission: false
                     }));
 
-                }).catch((e) => { console.log("-error ", e) });
+                })
+                .catch((e) => { console.log("-error ", e) });
 
             setTimeout(() => {
                 setPreloading(false)

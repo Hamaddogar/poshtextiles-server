@@ -95,6 +95,7 @@ const routeStrings = {
     inventory_micro: '/inventory',
     new_order_micro: '/newOrder',
     csv_orders_micro: '/csv_orders',
+    customers_micro: '/customers',
 
 }
 
@@ -804,7 +805,7 @@ app.get("/auth_stamps", async (req, res) => {
 
     } catch (error) {
         console.log(error);
-        res.send({
+        res.status(error?.response?.status).send({
             code: error.response.status,
             message: error?.response?.data?.errors?.[0]?.error_message || error?.message,
             error: true
@@ -953,7 +954,7 @@ app.post(routeStrings.new_order_micro, async (req, res) => {
     }
 });
 
-// CREATE comments_micro
+// CSV ORDERS data 
 app.post(routeStrings.csv_orders_micro, async (req, res) => {
     const config = {
         headers: {
@@ -987,6 +988,42 @@ app.post(routeStrings.csv_orders_micro, async (req, res) => {
     }
 });
 
+// custermer getter
+app.post(routeStrings.customers_micro, cache, async (req, res) => {
+    const config = {
+        headers: {
+            "Authorization": `Bearer ${req.body.token}`,
+        }
+    };
+    // // console.log( `Bearer ${req.body.token}`);
+    try {
+        const response = await axios.get(
+            API_MICROSOFT.Customer,
+            config
+        );
+        console.log(response?.data);
+        if (response?.data?.value) {
+            res.status(response.status).send(response.data.value);
+        } else {
+            console.log("-------else-", response);
+            throw ({
+                response: {
+                    "message": "Server Error!",
+                    "name": "Error",
+                    "status": 500
+                }
+            });
+        }
+
+    } catch (error) {
+        console.log(error);
+        res.status(error?.response?.status).send({
+            code: error.response.status,
+            message: error?.response?.data?.errors?.[0]?.error_message || error?.message,
+            error: true
+        })
+    }
+});
 
 
 
