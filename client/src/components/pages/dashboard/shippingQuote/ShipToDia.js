@@ -45,65 +45,63 @@ export default function ShipToDialoge({ shipToDia, setshipToDia, customer }) {
                 open={shipToDia}
                 sx={{ display: 'flex', alignItems: 'center' }}
                 onClose={() => setshipToDia(false)}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
+                aria-labelledby="shiptoDialoge-title"
+                aria-describedby="shiptoDialoge-description"
             >
                 <Box sx={{ ...style, maxWidth: "400px", width: "100%", padding: "8px 14px", maxHeight: '95vh', overflowY: 'auto' }}>
 
                     <Box mt={1}>
                         <Stack direction={"row"} spacing={1} justifyContent={'space-around'}>
-                            <Button sx={{ padding: "12px 30px", background: "#495BD6", color: "black" }}>Customer</Button>
-                            {/* <Button sx={{ padding: "12px 30px", background: "#E0E0E0", color: "#9D9D9D" }}>Customer</Button> */}
+                            <Button sx={{ padding: "12px 30px", background: "#495BD6", color: "#FFFFFF" }}>Ship to details</Button>
                         </Stack>
                     </Box>
 
                     <Box mt={2}>
-                            <label>Customer:</label><br />
-                            <TextField name='customer' placeholder="Customer" defaultValue={customer.name} sx={subHeadInputStyle} />
-
+                        <label>Customer:</label><br />
+                        <TextField name='customer' value={customer.name} sx={subHeadInputStyle} />
                     </Box>
                     <Box mt={1}>
-                            <label>ShipTo:</label><br />
-                            <TextField name='shipTooo' placeholder="0000000" defaultValue={customer.name} sx={subHeadInputStyle} />
+                        <label>ShipTo:</label><br />
+                        <TextField name='shipTooo' value={customer.name} sx={subHeadInputStyle} />
                     </Box>
 
                     <Box mt={1}>
                         <label>Contact:</label><br />
-                        <TextField placeholder="0000000" defaultValue={customer.contact} sx={subHeadInputStyle} />
+                        <TextField value={customer.contact} sx={subHeadInputStyle} />
                     </Box>
                     <Box mt={1}>
                         <label>Address line 1:</label><br />
-                        <TextField placeholder="Street 45" defaultValue={customer.address} sx={subHeadInputStyle} />
+                        <TextField value={customer.address} sx={subHeadInputStyle} />
                     </Box>
                     <Box mt={1}>
                         <label>Address line 2:(Optional)</label><br />
-                        <TextField placeholder="house etc." defaultValue={customer.address2} sx={subHeadInputStyle} />
+                        <TextField value={customer.address2} sx={subHeadInputStyle} />
                     </Box>
                     <Grid container spacing={2} justifyContent={"space-between"}>
                         <Grid mt={0.5} item xs={12} md={6}>
                             <label>City:</label><br />
-                            <TextField placeholder="Berlin" defaultValue={customer.city} sx={subHeadInputStyle} />
+                            <TextField value={customer.city} sx={subHeadInputStyle} />
                         </Grid>
                         <Grid mt={0.5} item xs={12} md={6}>
                             <label>State:</label><br />
-                            <TextField placeholder="Uter Pardesh" defaultValue={customer.county} sx={subHeadInputStyle} />
+                            <TextField value={customer.county} sx={subHeadInputStyle} />
                         </Grid>
                         <Grid item xs={12} md={6}>
                             <label>Zip:</label><br />
-                            <TextField placeholder="493AG45" defaultValue={customer.postCode} sx={subHeadInputStyle} />
+                            <TextField value={customer.postCode} sx={subHeadInputStyle} />
                         </Grid>
                         <Grid item xs={12} md={6}>
                             <label>Country:</label><br />
-                            <TextField placeholder="America" defaultValue={customer.countryRegionCode} sx={subHeadInputStyle} />
+                            <TextField value={customer.countryRegionCode} sx={subHeadInputStyle} />
                         </Grid>
                     </Grid>
                     <Box mt={1}>
                         <label>Phone Number:</label><br />
-                        <TextField placeholder="0000000" defaultValue={customer.phoneNo} sx={subHeadInputStyle} />
+                        <TextField value={customer.phoneNo} sx={subHeadInputStyle} />
                     </Box>
                     <Box mt={1}>
                         <label>Email Address:</label><br />
-                        <TextField type={"email"} placeholder="xyz@gmail.com" defaultValue={customer.eMail} sx={subHeadInputStyle} />
+                        <TextField type={"email"} value={customer.eMail} sx={subHeadInputStyle} />
                     </Box>
                     <Stack justifyContent={"space-between"} mt={2} direction={"row"}>
                         <Button onClick={() => setshipToDia(false)} sx={{

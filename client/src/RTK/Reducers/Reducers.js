@@ -44,10 +44,11 @@ let initialState = {
   loadingNewOrder: false,
   newOrderData: null,
 
-
+// stamps
   stamps_token: null,
   stamps_code: null,
-
+// shipfrom location
+ship_from_location : {},
 
 }
 
@@ -92,7 +93,7 @@ export const historyGetter = createAsyncThunk(
   }
 );
 
-// History
+// csvOrderDealer
 export const csvOrderDealer = createAsyncThunk(
   'mainSlice/csvOrderDealer',
   async ({ token, body }) => {
@@ -101,6 +102,15 @@ export const csvOrderDealer = createAsyncThunk(
       { pending: 'Loading Please Wait...', success: 'Successfully Loaded', error: 'Something Went Wrong' },
       { autoClose: 1500, hideProgressBar: true }
     );
+    return data.data;
+  }
+);
+
+// csvOrderDealer
+export const shipFromLocation = createAsyncThunk(
+  'mainSlice/shipFromLocation',
+  async ({ token, locationCode }) => {
+    const data = await axios.post(APIS.shipFrom, { token, locationCode })
     return data.data;
   }
 );
@@ -262,6 +272,26 @@ const mainSlice = createSlice({
         state.loadingCSV = false;
         Swal.fire({ icon: 'error', title: error.code, text: error.message })
       })
+
+      // shipFromLocation
+      .addCase(shipFromLocation.pending, (state) => {
+        state.loadingCSV = true;
+      })
+      .addCase(shipFromLocation.fulfilled, (state, { payload }) => {
+        if (!(payload.error)){ 
+          state.ship_from_location = payload.location;
+        }
+      })
+      .addCase(shipFromLocation.rejected, (state, { error }) => {
+        Swal.fire({ icon: 'error', title: error.code, text: error.message })
+      })
+
+
+
+
+
+
+
 
 
 })

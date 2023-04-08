@@ -1,70 +1,23 @@
 import * as React from 'react';
-import { Dialog, Grid } from '@mui/material';
+import { Dialog, Grid, Typography } from '@mui/material';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 
-
-
-const Comments = [
-    {
-        status: "Done",
-        data: "Lorem Ipsum Hello etc sit amit"
-    }, {
-        status: "Done",
-        data: "Lorem Ipsum Hello etc sit amit"
-    }, {
-        status: "Done",
-        data: "Lorem Ipsum Hello etc sit amit"
-    }, {
-        status: "Done",
-        data: "Lorem Ipsum Hello etc sit amit"
-    }, {
-        status: "Done",
-        data: "Lorem Ipsum Hello etc sit amit"
-    }, {
-        status: "Done",
-        data: "Lorem Ipsum Hello etc sit amit"
-    }, {
-        status: "Done",
-        data: "Lorem Ipsum Hello etc sit amit"
-    }, {
-        status: "Done",
-        data: "Lorem Ipsum Hello etc sit amit"
-    }, {
-        status: "Done",
-        data: "Lorem Ipsum Hello etc sit amit"
-    }, {
-        status: "Done",
-        data: "Lorem Ipsum Hello etc sit amit"
-    },
-]
-
-export default function CommentsModel({ commentModel, setCommentModel }) {
-
-
-
-
+const CommentsModel = ({ commentModel, setCommentModel, commentsData }) => {
 
     const handleClose = () => {
-        setCommentModel({
-            ...commentModel,
-            open: false,
-        })
+        setCommentModel(false)
     };
 
     const handleClick = comment => {
-        setCommentModel({
-            open: false,
-            selected: true,
-            comment: comment,
-        })
+        setCommentModel(false)
     }
 
 
     return (
         <div>
             <Dialog
-                open={commentModel.open}
+                open={commentModel}
                 onClose={handleClose}
                 scroll={'paper'}
                 aria-labelledby="scroll-dialog-title"
@@ -76,19 +29,26 @@ export default function CommentsModel({ commentModel, setCommentModel }) {
                 <DialogContent dividers>
                     <Grid container >
                         {
-                            Comments.map((obj, indx) => {
+                            commentsData.length > 0 &&
+                            commentsData.map((comment, indx) => {
                                 return <Grid item container xs={12} key={indx}
                                     sx={{ '&:hover': { background: '#E9EDF1', cursor: 'pointer' } }}
-                                    onClick={() => handleClick(obj)}
+                                    onClick={() => handleClick(comment)}
                                 >
                                     <Grid item xs={2} sx={{ border: "1px solid #808080", textAlign: "center" }}>
-                                        {obj.status}
+                                        {comment.date}
                                     </Grid>
                                     <Grid item xs={10} sx={{ border: "1px solid #808080", borderLeft: 0, }}>
-                                        {obj.data}
+                                        {comment.comment}
                                     </Grid>
                                 </Grid>
                             })
+                        }
+                        {
+                            commentsData.length === 0 &&
+                            <Grid item xs={12} sx={{ textAlign: 'center' }}>
+                                <Typography >No Comments</Typography>
+                            </Grid>
                         }
 
                     </Grid>
@@ -97,3 +57,5 @@ export default function CommentsModel({ commentModel, setCommentModel }) {
         </div >
     );
 }
+
+export default CommentsModel;

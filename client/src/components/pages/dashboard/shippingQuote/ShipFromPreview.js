@@ -37,64 +37,64 @@ const styleSlect = {
 const subHeadInputStyle = { ...styleSlect, backgroundColor: 'white', minWidth: '10rem', borderRadius: '4px', '&.MuiOutlinedInput-input': { padding: '0px' }, 'input': { padding: '0px 5px', fontWeight: 500 } }
 
 
-export default function Billfrom({ billfrom, setbillfrom }) {
+export default function ShipFromPreview({ shipFromPreview, setShipFromPreview }) {
 
-    const { saleOrderDetails } = useSelector(store => store.mainReducer);
-    const handleClose = () => setbillfrom(false);
+    const { ship_from_location } = useSelector(store => store.mainReducer);
+    const handleClose = () => setShipFromPreview(false);
 
     return (
         <div>
             <Modal
-                open={billfrom}
+                open={shipFromPreview}
                 onClose={handleClose}
                 sx={{ display: 'flex', alignItems: 'center' }}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
+                aria-labelledby="shipfrompreview-title"
+                aria-describedby="shipfrompreview-description"
             >
                 <Box sx={{ ...style, maxWidth: "400px", width: "100%", padding: "8px 14px", maxHeight: '95vh', overflowY: 'auto' }}>
                     <Box>
                         <label>Name:</label><br />
                         <select id="Posh Textile, Inc." style={{ border: "0px", background: "white", width: "100%", marginTop: "4px" }}>
-                            <option label={saleOrderDetails.shipToName}></option>
+                            <option label={ship_from_location?.name}></option>
                         </select>
                     </Box>
                     <Box mt={1}>
                         <label>Contact:</label><br />
-                        <TextField placeholder="0000000" defaultValue={saleOrderDetails?.sellToContactNo} sx={subHeadInputStyle} />
+                        <TextField value={ship_from_location?.contact} sx={subHeadInputStyle} />
                     </Box>
                     <Box mt={1}>
                         <label>Address line 1:</label><br />
-                        <TextField placeholder="Street 45" defaultValue={saleOrderDetails?.shipToAddress} sx={subHeadInputStyle} />
+                        <TextField value={ship_from_location?.address} sx={subHeadInputStyle} />
                     </Box>
                     <Box mt={1}>
                         <label>Address line 2:(Optional)</label><br />
-                        <TextField placeholder="house etc." defaultValue={saleOrderDetails?.shipToAddress2} sx={subHeadInputStyle} />
+                        <TextField value={ship_from_location?.address2} sx={subHeadInputStyle} />
                     </Box>
                     <Grid container spacing={2} justifyContent={"space-between"}>
                         <Grid mt={0.5} item xs={12} md={6}>
                             <label>City:</label><br />
-                            <TextField placeholder="Berlin" defaultValue={saleOrderDetails?.shipToCity} sx={subHeadInputStyle} />
+                            <TextField value={ship_from_location?.city} sx={subHeadInputStyle} />
                         </Grid>
                         <Grid mt={0.5} item xs={12} md={6}>
                             <label>State:</label><br />
-                            <TextField placeholder="Uter Pardesh" defaultValue={saleOrderDetails?.shipToCountryRegionCode} sx={subHeadInputStyle} />
+                            <TextField value={ship_from_location?.county} sx={subHeadInputStyle} />
                         </Grid>
                         <Grid item xs={12} md={6}>
                             <label>Zip:</label><br />
-                            <TextField placeholder="493AG45" defaultValue={saleOrderDetails?.shipToPostCode} sx={subHeadInputStyle} />
+                            <TextField value={ship_from_location?.postCode} sx={subHeadInputStyle} />
                         </Grid>
                         <Grid item xs={12} md={6}>
                             <label>Country:</label><br />
-                            <TextField placeholder="America" defaultValue={saleOrderDetails?.shipToCountryRegionCode} sx={subHeadInputStyle} />
+                            <TextField value={ship_from_location?.countryRegionCode} sx={subHeadInputStyle} />
                         </Grid>
                     </Grid>
                     <Box mt={1}>
                         <label>Phone Number:</label><br />
-                        <TextField placeholder="0000000" defaultValue={saleOrderDetails?.ShipToPhoneNo} sx={subHeadInputStyle} />
+                        <TextField value={ship_from_location?.phoneNo} sx={subHeadInputStyle} />
                     </Box>
                     <Box mt={1}>
                         <label>Email Address:</label><br />
-                        <TextField type={"email"} placeholder="xyz@gmail.com" defaultValue={saleOrderDetails?.sellToEMail} sx={subHeadInputStyle} />
+                        <TextField type={"email"} value={ship_from_location?.eMail} sx={subHeadInputStyle} />
                     </Box>
                     <Stack justifyContent={"space-between"} mt={2} direction={"row"}>
                         <Button onClick={handleClose} sx={{ background: "red", color: "white", padding: "0px 6px", '&:hover': { background: "red", color: "white" } }}>Delete</Button>
@@ -105,11 +105,11 @@ export default function Billfrom({ billfrom, setbillfrom }) {
         </div >
         // <div>
         //     <Modal
-        //         open={billfrom}
+        //         open={shipFromPreview}
         //         onClose={handleClose}
         //         sx={{ overflowY: "scroll" }}
-        //         aria-labelledby="modal-modal-title"
-        //         aria-describedby="modal-modal-description"
+        //         aria-labelledby="shipfrompreview-title"
+        //         aria-describedby="shipfrompreview-description"
         //     >
         //         <Box sx={{ ...style, maxWidth: "350px", width: "100%", padding: "8px 14px" }}>
         //             <Box>

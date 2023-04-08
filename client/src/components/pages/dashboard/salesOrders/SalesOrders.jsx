@@ -1,4 +1,4 @@
-import { ClickAwayListener, Grow, Hidden, InputAdornment, MenuList, Popper, Stack, TextField, Typography } from '@mui/material';
+import { ClickAwayListener, Grow, MenuList, Popper, Stack, Typography } from '@mui/material';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -11,13 +11,9 @@ import Pagination from 'react-responsive-pagination';
 import 'bootstrap/dist/css/bootstrap.css';
 import { DeleteOutline, EditOutlined, KeyboardArrowDown, } from '@mui/icons-material';
 import Done from '../../../assets/images/done.png'
-import { BackButton, headInputStyle, scroller } from '../reUseAbles/ReuseAbles';
-import BasicModal from './Modal';
+import { BackButton, scroller } from '../reUseAbles/ReuseAbles';
 import { SELECTED_SALE_ORDER_DATA, SELECT_PICKING_PRODUCT } from '../../../../RTK/Reducers/Reducers';
 import ConDialog from './ConfirmationModal';
-import Billto from './Billto';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import Shipto from './Shipto';
 import p0 from "../../../assets/images/p0.png";
 import p1 from "../../../assets/images/p1.png";
 import p2 from "../../../assets/images/p2.png";
@@ -36,32 +32,25 @@ import p14 from "../../../assets/images/p14.png";
 import p15 from "../../../assets/images/p15.png";
 import CreateNewLineItem from '../reUseAbles/CreateNewLineItem';
 import UpdateLineItem from '../reUseAbles/UpdateLineItem';
+import UpperHeader from '../reUseAbles/UpperHeader';
 
 const SalesOrders = () => {
 
     const { saleOrderDetails, perPage } = useSelector(store => store.mainReducer);
     const navigate = useNavigate();
     const dispatch = useDispatch();
+
     // states
     const [copy, setCopy] = React.useState([]);
     const [rows, setRows] = React.useState([]);
     const [currentPage, setCurrentPage] = React.useState(1);
     const [showSelectedProduct, setShowSelectedProduct] = React.useState(null);
-    // Modal Options
-    const [Modalopen, setModalopen] = React.useState(false);
-    const handleOpen = () => setModalopen(true);
-    // Confirmation Modal Options
     const [openConfirmation, setOpenConfirmation] = React.useState({ status: false, deleteIndex: null });
-    // Billto Modal Details
-    const [billto, setbillto] = React.useState(false);
-    const [shipto, setshipto] = React.useState(false);
     const [newItem, setNewItem] = React.useState(false);
-
-    // for actions 
     const [open, setOpen] = React.useState(false);
     const anchorRef = React.useRef(null);
-    // return focus to the button when we transitioned from !open -> open
     const prevOpen = React.useRef(open);
+
 
     const handlePageChange = page => {
         setCurrentPage(page);
@@ -69,9 +58,10 @@ const SalesOrders = () => {
     }
 
     React.useLayoutEffect(() => {
-        setCopy(saleOrderDetails.edcSalesLines)
+        setCopy(saleOrderDetails.edcSalesLines);
         //eslint-disable-next-line
     }, [saleOrderDetails.edcSalesLines]);
+
     React.useEffect(() => { setRows(copy.slice(0, perPage)) }, [copy, perPage]);
 
     React.useEffect(() => {
@@ -85,13 +75,7 @@ const SalesOrders = () => {
     }
 
     const handleSelectedPickingProduct = product => {
-        dispatch(SELECT_PICKING_PRODUCT({
-            selected_item: product,
-            ...saleOrderDetails,
-            edcSalesLines: null,
-            edcCustomers: null,
-            edcWhseShipments: null,
-        }));
+        dispatch(SELECT_PICKING_PRODUCT(product));
         navigate('/picking')
     };
 
@@ -159,7 +143,7 @@ const SalesOrders = () => {
 
     // add new line Item function
     const handleSubmitLineItem = (event) => {
-        handleCancel('newItem')
+        handleCancel('newItem');
         event.preventDefault();
         const data = new FormData(event.target);
         setRows([
@@ -186,132 +170,35 @@ const SalesOrders = () => {
     }
 
     const handleShippingQuote = () => {
+        navigate('/shipping-quote')
         dispatch(SELECTED_SALE_ORDER_DATA({
             ...saleOrderDetails,
             edcSalesLines: rows
         }));
-        navigate('/shipping-quote')
     }
-
 
     const handleCancel = closeTo => {
-        if (closeTo === "newItem") setNewItem(false)
-        else setShowSelectedProduct(null)
+        if (closeTo === "newItem") setNewItem(false);
+        else setShowSelectedProduct(null);
     }
-
     const images = [p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15];
-
 
     return (
         <div>
             <ConDialog openConfirmation={openConfirmation} setOpenConfirmation={setOpenConfirmation} deleteLineItem={deleteLineItem} />
-            <BasicModal Modalopen={Modalopen} setModalopen={setModalopen} />
-            <Billto billto={billto} setbillto={setbillto} />
-            <Shipto shipto={shipto} setshipto={setshipto} />
-
             <Box>
                 {/* Upper Form */}
-                <Box component='form' onSubmit={handleUpperHeaderSubmit} >
-                    <Grid container sx={{ mt: 1, mb: 2 }} alignItems={'flex-end'} justifyContent='space-between' >
-
-                        <Grid container item xs={12} md={10} spacing={1} alignItems={'flex-end'} >
-                            <Grid item xs={6} md={4} >
-                                <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Bill To: </Typography>
-                                <TextField sx={headInputStyle} fullWidth defaultValue={saleOrderDetails?.edcCustomers[0]?.name} size='small' InputProps={{
-                                    endAdornment: (<InputAdornment position="end"> <VisibilityIcon sx={{ fontSize: '17px', cursor: 'pointer' }} onClick={() => setbillto(true)} />  </InputAdornment>)
-                                }} />
-                            </Grid>
-
-                            <Grid item xs={6} md={4} >
-                                <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Ship To: </Typography>
-                                <TextField sx={headInputStyle} fullWidth defaultValue={saleOrderDetails.shipToName} size='small' InputProps={{
-                                    endAdornment: (<InputAdornment position="end"> <VisibilityIcon sx={{ fontSize: '17px', cursor: 'pointer' }} onClick={() => setshipto(true)} /> </InputAdornment>)
-                                }} />
-                            </Grid>
-
-                            <Grid item xs={6} md={4} >
-                                <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Project Name: </Typography>
-                                <TextField sx={headInputStyle} fullWidth defaultValue={saleOrderDetails.projectName} size='small' />
-                            </Grid>
-
-                            <Grid item xs={6} md={2} >
-                                <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Terms: </Typography>
-                                <TextField sx={headInputStyle} fullWidth defaultValue={saleOrderDetails.paymentTermsCode} size='small' />
-                            </Grid>
-
-                            <Grid item xs={6} md={2} >
-                                <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Priority: </Typography>
-                                <TextField sx={headInputStyle} fullWidth defaultValue={saleOrderDetails.priority} size='small' />
-                            </Grid>
-
-                            <Grid item xs={6} md={2} >
-                                <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Specifier: </Typography>
-                                <TextField sx={headInputStyle} fullWidth defaultValue={saleOrderDetails.Specifier} size='small' />
-                            </Grid>
-
-                            <Grid item xs={6} md={2} >
-                                <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Sales Person: </Typography>
-                                <TextField sx={headInputStyle} fullWidth defaultValue={saleOrderDetails.salespersonCode} size='small' />
-                            </Grid>
-
-                            <Grid item xs={6} md={2} >
-                                <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Customer PO: </Typography>
-                                <TextField sx={headInputStyle} fullWidth defaultValue={saleOrderDetails.shipToPostCode} size='small' />
-                            </Grid>
-
-                            <Grid item xs={6} md={2} >
-                                <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Campaign: </Typography>
-                                <TextField sx={headInputStyle} fullWidth defaultValue={saleOrderDetails.campaignNo} size='small' />
-                            </Grid>
-
-                            <Grid item xs={6} md={2} >
-                                <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Order Date: </Typography>
-                                <TextField sx={headInputStyle} fullWidth type={"date"} defaultValue={saleOrderDetails.orderDate} size='small' />
-                            </Grid>
-
-                            <Grid item xs={6} md={2} >
-                                <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Req Ship Date: </Typography>
-                                <TextField sx={headInputStyle} fullWidth type={"date"} defaultValue={saleOrderDetails.requestedDeliveryDate} size='small' />
-                            </Grid>
-
-                            <Hidden mdUp>
-                                <Grid item xs={6}>
-                                    <Box >
-                                        <Button onClick={handleOpen} sx={{
-                                            background: "#FFFFFF", color: "black", padding: "2px 15px", '&:hover': {
-                                                background: "white",
-                                                color: "black",
-                                                fontWeight: '600'
-                                            }
-                                        }}>Comments</Button>
-                                    </Box>
-                                </Grid>
-                            </Hidden>
-
-                        </Grid>
-
-                        <Hidden mdDown>
-                            <Grid item>
-                                <Box >
-                                    <Button onClick={handleOpen} sx={{
-                                        background: "#FFFFFF", color: "black", padding: "2px 15px", '&:hover': {
-                                            background: "white",
-                                            color: "black",
-                                            fontWeight: '600'
-                                        }
-                                    }}>Comments</Button>
-                                </Box>
-                            </Grid>
-                        </Hidden>
-                    </Grid>
-                </Box>
+                <UpperHeader saleOrderDetails={saleOrderDetails} handleUpperHeaderSubmit={handleUpperHeaderSubmit} />
 
                 <Box sx={{ padding: '0px' }} mb={1}>
                     {
-                        newItem && !showSelectedProduct &&
+                        newItem &&
+                        !showSelectedProduct &&
                         <CreateNewLineItem handleSubmitLineItem={handleSubmitLineItem} handleCancel={handleCancel} />
                     }
-                    {showSelectedProduct && !newItem &&
+                    {
+                        showSelectedProduct &&
+                        !newItem &&
                         <UpdateLineItem handleSubmitUpdateLineItem={handleSubmitUpdateLineItem} handleCancel={handleCancel} product={showSelectedProduct} />
                     }
                 </Box>
@@ -331,7 +218,7 @@ const SalesOrders = () => {
                                         <Grid item container direction={'column'} justifyContent={'space-between'} xs={6} px={1} sx={{ position: 'relative' }}>
 
                                             <Stack sx={{ height: '100%', display: 'flex', justifyContent: 'space-between' }} >
-                                                <Typography textAlign='center' mt={1} variant='h1' fontSize={item.itemCategoryCode.length > 25 ? { xs: '5vw', sm: '2vw', md: '1vw' } : { xs: '6vw', sm: '2.3vw', md: '1.3vw' }} fontWeight={500} >{item?.itemCategoryCode || item.description}</Typography>
+                                                <Typography textAlign='center' mt={1} variant='h1' fontSize={item.itemCategoryCode.length > 25 ? { xs: '5vw', sm: '2vw', md: '1vw' } : { xs: '6vw', sm: '2.3vw', md: '1.3vw' }} fontWeight={500} >{item.description}</Typography>
                                                 <Stack direction='row' alignItems={'center'} justifyContent='space-between'>
                                                     <Typography fontSize='12px'>MOQ : <span style={{ fontSize: '20px' }}>{item.outstandingQuantity}</span></Typography>
                                                     <Typography fontSize='12px' textAlign={'right'}>QTY : <span style={{ fontSize: '20px' }}>{item.quantity}</span></Typography>
@@ -388,7 +275,10 @@ const SalesOrders = () => {
                     </Box>
                 </Grid>
                 <Grid item>
-                    <Button onClick={handleClickNewItem} variant='contained' size='small'> + add new item</Button>
+                    <Stack direction='row' alignItems='center' spacing={1}>
+                        <Button onClick={handleClickNewItem} variant='contained' size='small'> + add new item</Button>
+                        <Button variant='contained' size='small' disabled> Next </Button>
+                    </Stack>
                 </Grid>
                 <Grid item>
                     <Box onClick={scroller}>

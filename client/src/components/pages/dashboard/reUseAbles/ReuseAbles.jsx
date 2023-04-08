@@ -194,6 +194,14 @@ export const lnk = {
     color: 'inherit',
 }
 
+export const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    background: '#E9EDF1',
+    boxShadow: 24,
+};
 
 
 
@@ -275,4 +283,4 @@ export const fromResetter = (id) => {
     displayer.reset();
 }
 
-
+export const handleNoAction = () => { }

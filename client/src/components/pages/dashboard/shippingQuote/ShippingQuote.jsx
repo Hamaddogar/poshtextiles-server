@@ -6,9 +6,8 @@ import AddressValidateDrawer from './address-drawer'
 import RateQuoteDrawer from './ratequote-drawer'
 import './quote.css';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import Billfrom from './Billfrom'
 import SearchIcon from '@mui/icons-material/Search';
-import Shipfrom from './Shipfrom'
+import ShipfromDialoge from './ShipfromDialoge'
 import { useDispatch, useSelector } from 'react-redux'
 import { BackButton, headInputStyle, styleSlect } from '../reUseAbles/ReuseAbles'
 import { create_Shipment_FEDEXP, create_Shipment_STAMPS, createShipment_UPS, request_AccessToken_FEDEXP, request_AccessToken_STAMPS } from '../../../../utils/API_HELPERS'
@@ -17,31 +16,34 @@ import { payload_Shipment_Handler } from '../../../../utils/Helper'
 import ShipToDialoge from './ShipToDia'
 import { toast } from 'react-toastify'
 import { STAMPS_TOKEN } from '../../../../RTK/Reducers/Reducers'
+import ShipFromPreview from './ShipFromPreview'
 
 
 const ShippingQuote = () => {
-
     const { stamps_token } = useSelector(store => store.mainReducer)
-    const dispatch = useDispatch();
-    const { saleOrderDetails } = useSelector(store => store.mainReducer);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    const { saleOrderDetails, ship_from_location } = useSelector(store => store.mainReducer);
+    const [drawerStateAddress, setdrawerStateAddress] = React.useState(false);
     const [drawerstateRate, setdrawerstateRate] = React.useState(false);
     const [allowShipment, setAllowShipment] = React.useState(false);
-    const [billfrom, setbillfrom] = React.useState(false);
+    const [shipFromPreview, setShipFromPreview] = React.useState(false);
     const [shipfrom, setshipfrom] = React.useState(false);
     const [shipToDia, setshipToDia] = React.useState(false);
-
-    const [shipReport, SetShipReport] = React.useState({
-        open: false,
-        response: null,
-        error: null
-    });
+    const [shipReport, SetShipReport] = React.useState({ open: false,response: null,error: null});
 
     const [selections, setSelections] = React.useState({
-        printOn: "No Option Avaliable",
+        printOn: `Roll - 4" x 6" Shipping Label`,
         extraServices: "No Option Avaliable",
         carrier: saleOrderDetails?.shippingAgentCode || "No Option Avaliable",
     });
+
+    const printOptions = [
+        `Roll - 4" x 6" Shipping Label`,
+        `Roll - 4" x 6" Shipping Label`,
+        `Roll - 4" x 6" Shipping Label`,
+    ]
 
     const handleChange = event => setSelections({
         ...selections,
@@ -147,7 +149,7 @@ const ShippingQuote = () => {
 
 
     // address
-    const [drawerStateAddress, setdrawerStateAddress] = React.useState(false);
+    
 
     const toggleDrawer = (open) => (event) => {
         if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) { return; }
@@ -159,13 +161,13 @@ const ShippingQuote = () => {
         if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) { return; }
         setdrawerstateRate(open);
     };
-
-    // console.log("---------->", saleOrderDetails);
+    
+    console.log("---------->ship_from_location", saleOrderDetails);
     return (
         <div>
             <Box component={'form'} onSubmit={handleSubmit}>
-                <Billfrom billfrom={billfrom} setbillfrom={setbillfrom} />
-                <Shipfrom shipfrom={shipfrom} setshipfrom={setshipfrom} />
+                <ShipFromPreview shipFromPreview={shipFromPreview} setShipFromPreview={setShipFromPreview} />
+                <ShipfromDialoge shipfrom={shipfrom} setshipfrom={setshipfrom} />
                 <ShipToDialoge shipToDia={shipToDia} setshipToDia={setshipToDia} customer={saleOrderDetails?.edcCustomers[0]} />
                 <ShipReportDialog shipReport={shipReport} SetShipReport={SetShipReport} numbers={saleOrderDetails?.edcSalesLines?.length} />
                 <AddressValidateDrawer saleOrderDetails={saleOrderDetails} allowShipment={allowShipment} setAllowShipment={setAllowShipment} toggleDrawer={toggleDrawer} drawerStateAddress={drawerStateAddress} />
@@ -198,7 +200,7 @@ const ShippingQuote = () => {
                                     :
                                 </Typography>
 
-                                <TextField name='shipFrom' fullWidth onClick={() => setbillfrom(true)} placeholder='Posh Textiles Inc.' size='small' sx={{ ...headInputStyle, maxWidth: '400px' }} InputProps={{
+                                <TextField name='shipFrom' fullWidth onClick={() => setShipFromPreview(true)} value={ship_from_location?.name} size='small' sx={{ ...headInputStyle, maxWidth: '400px' }} InputProps={{
                                     endAdornment: (
                                         <InputAdornment position="end">
                                             <VisibilityIcon sx={{ cursor: 'pointer' }} />
@@ -216,13 +218,13 @@ const ShippingQuote = () => {
 
                                 <TextField
                                     sx={{ ...headInputStyle, maxWidth: '400px', fontSize: '10px', textDecoration: "italic" }}
-                                    defaultValue={
+                                    value={
                                         saleOrderDetails?.edcCustomers[0]?.name + "\n" +
                                         saleOrderDetails?.edcCustomers[0]?.address + "\n" +
                                         saleOrderDetails?.edcCustomers[0]?.address2 + "\n" +
-                                        saleOrderDetails?.edcCustomers[0]?.county + "\n" +
-                                        saleOrderDetails?.edcCustomers[0]?.postCode + "\n" +
                                         saleOrderDetails?.edcCustomers[0]?.city + "\n" +
+                                        saleOrderDetails?.edcCustomers[0]?.postCode + "\n" +
+                                        saleOrderDetails?.edcCustomers[0]?.county + "\n" +
                                         saleOrderDetails?.edcCustomers[0]?.countryRegionCode
                                     }
                                     size='small'
@@ -254,22 +256,22 @@ const ShippingQuote = () => {
 
                             <Stack direction={'row'} alignItems='center'>
                                 <Typography sx={{ color: '#6D6D6D', fontSize: '14px', minWidth: '110px' }}>Service : </Typography>
-                                <TextField defaultValue={saleOrderDetails?.shippingAgentServiceCode} fullWidth placeholder='Service' size='small' sx={{ ...headInputStyle, maxWidth: '400px' }} />
+                                <TextField value={saleOrderDetails?.shippingAgentServiceCode} fullWidth placeholder='Service' size='small' sx={{ ...headInputStyle, maxWidth: '400px' }} />
                             </Stack>
 
                             <Stack direction={'row'} alignItems='center'>
                                 <Typography sx={{ color: '#6D6D6D', fontSize: '14px', minWidth: '110px' }}>Phone No : </Typography>
-                                <TextField defaultValue={saleOrderDetails?.edcCustomers[0].phoneNo} fullWidth placeholder='Carrier' size='small' sx={{ ...headInputStyle, maxWidth: '400px' }} />
+                                <TextField value={saleOrderDetails?.edcCustomers[0].phoneNo} fullWidth placeholder='Carrier' size='small' sx={{ ...headInputStyle, maxWidth: '400px' }} />
                             </Stack>
 
                             <Stack direction={'row'} alignItems='center'>
                                 <Typography sx={{ color: '#6D6D6D', fontSize: '14px', minWidth: '110px' }}>Email Tracking : </Typography>
-                                <TextField defaultValue={saleOrderDetails?.edcCustomers[0].eMail} fullWidth placeholder='Email Tracking' size='small' sx={{ ...headInputStyle, maxWidth: '400px' }} />
+                                <TextField value={saleOrderDetails?.edcCustomers[0].eMail} fullWidth placeholder='Email Tracking' size='small' sx={{ ...headInputStyle, maxWidth: '400px' }} />
                             </Stack>
 
                             <Stack direction={'row'} alignItems='center'>
                                 <Typography sx={{ color: '#6D6D6D', fontSize: '14px', minWidth: '110px' }}>Ship Date : </Typography>
-                                <TextField type="date" defaultValue={saleOrderDetails?.shipmentDate} fullWidth placeholder='Ship Date' size='small' sx={{ ...headInputStyle, maxWidth: '400px' }} />
+                                <TextField type="date" value={saleOrderDetails?.shipmentDate} fullWidth placeholder='Ship Date' size='small' sx={{ ...headInputStyle, maxWidth: '400px' }} />
                             </Stack>
                         </Stack>
 
@@ -277,30 +279,29 @@ const ShippingQuote = () => {
 
                     {/* right section */}
                     <Grid item xs={12} md={6}>
-
                         <Stack rowGap={1} sx={saleOrderDetails?.edcWhseShipments.length ? {} : { pointerEvents: `none`, opacity: '.6' }}>
                             <Stack direction={'row'} alignItems='center'>
                                 <Typography sx={{ color: '#6D6D6D', fontSize: '14px', minWidth: '110px' }}>No. of Boxes : </Typography>
-                                <TextField type="number" defaultValue={saleOrderDetails?.edcWhseShipments[0]?.NoofBoxes} fullWidth placeholder='No. of Boxes' size='small' sx={{ ...headInputStyle, maxWidth: '400px' }} />
+                                <TextField type="number" value={saleOrderDetails?.edcWhseShipments[0]?.NoofBoxes} fullWidth placeholder='No. of Boxes' size='small' sx={{ ...headInputStyle, maxWidth: '400px' }} />
                             </Stack>
-                            {/* Weight section */}
+                            
                             <Stack direction={'row'} alignItems='center' columnGap={1.5}>
 
                                 <Typography sx={{ color: '#6D6D6D', fontSize: '14px', minWidth: '99px' }}>Weight : </Typography>
 
                                 <Stack direction={'row'} alignItems='center'>
-                                    <TextField type="number" defaultValue={saleOrderDetails?.edcWhseShipments[0]?.GrossWeight} fullWidth placeholder='Weight' size='small' sx={{ ...headInputStyle, maxWidth: '80px' }} />
-                                    <Typography sx={{ color: '#6D6D6D', fontSize: '14px' }}>lbs </Typography>
+                                    <TextField type="number" value={saleOrderDetails?.edcWhseShipments[0]?.GrossWeight} fullWidth placeholder='Weight' size='small' sx={{ ...headInputStyle, maxWidth: '80px' }} />
+                                    <Typography sx={{ color: '#6D6D6D', fontSize: '14px' }}>{saleOrderDetails?.edcSalesLines[0].unitOfMeasureCode} </Typography>
                                 </Stack>
 
 
                                 <Stack direction={'row'} alignItems='center'>
-                                    <TextField type="number" defaultValue={0} fullWidth placeholder='Weight' size='small' sx={{ ...headInputStyle, maxWidth: '80px' }} />
+                                    <TextField type="number" value={0} fullWidth placeholder='Weight' size='small' sx={{ ...headInputStyle, maxWidth: '80px' }} />
                                     <Typography sx={{ color: '#6D6D6D', fontSize: '14px' }}>oz </Typography>
                                 </Stack>
 
                                 <Stack direction={'row'} alignItems='center'>
-                                    <TextField type="number" defaultValue={0} fullWidth placeholder='Weight' size='small' sx={{ ...headInputStyle, maxWidth: '80px' }} />
+                                    <TextField type="number" value={0} fullWidth placeholder='Weight' size='small' sx={{ ...headInputStyle, maxWidth: '80px' }} />
                                     <Typography sx={{ color: '#6D6D6D', fontSize: '14px' }}>Auto </Typography>
                                 </Stack>
 
@@ -313,18 +314,18 @@ const ShippingQuote = () => {
                                 <Typography sx={{ color: '#6D6D6D', fontSize: '14px', minWidth: '99px' }}>Dimensions : </Typography>
 
                                 <Stack direction={'row'} alignItems='center'>
-                                    <TextField type="number" defaultValue={saleOrderDetails?.edcWhseShipments[0]?.GrossWeight} fullWidth placeholder='Weight' size='small' sx={{ ...headInputStyle, maxWidth: '80px' }} />
+                                    <TextField type="number" value={saleOrderDetails?.edcWhseShipments?.[0]?.edcBoxDetails?.[0]?.length} fullWidth placeholder='Weight' size='small' sx={{ ...headInputStyle, maxWidth: '80px' }} />
                                     <Typography sx={{ color: '#6D6D6D', fontSize: '14px' }}>"L </Typography>
                                 </Stack>
 
 
                                 <Stack direction={'row'} alignItems='center'>
-                                    <TextField type="number" defaultValue={0} fullWidth placeholder='Weight' size='small' sx={{ ...headInputStyle, maxWidth: '80px' }} />
+                                    <TextField type="number" value={saleOrderDetails?.edcWhseShipments?.[0]?.edcBoxDetails?.[0]?.width} fullWidth placeholder='Weight' size='small' sx={{ ...headInputStyle, maxWidth: '80px' }} />
                                     <Typography sx={{ color: '#6D6D6D', fontSize: '14px' }}>"W</Typography>
                                 </Stack>
 
                                 <Stack direction={'row'} alignItems='center'>
-                                    <TextField type="number" defaultValue={0} fullWidth placeholder='Weight' size='small' sx={{ ...headInputStyle, maxWidth: '80px' }} />
+                                    <TextField type="number" value={saleOrderDetails?.edcWhseShipments?.[0]?.edcBoxDetails?.[0]?.height} fullWidth placeholder='Weight' size='small' sx={{ ...headInputStyle, maxWidth: '80px' }} />
                                     <Typography sx={{ color: '#6D6D6D', fontSize: '14px' }}>"H </Typography>
                                 </Stack>
 
@@ -333,13 +334,13 @@ const ShippingQuote = () => {
 
                             <Stack direction={'row'} alignItems='center'>
                                 <Typography sx={{ color: '#6D6D6D', fontSize: '14px', minWidth: '110px' }}>Insure for $ : </Typography>
-                                <TextField type="number" defaultValue={Number(saleOrderDetails?.edcWhseShipments[0]?.InsuranceAmount)} fullWidth size='small' sx={{ ...headInputStyle, maxWidth: '400px' }} />
+                                <TextField type="number" value={Number(saleOrderDetails?.edcWhseShipments[0]?.InsuranceAmount)} fullWidth size='small' sx={{ ...headInputStyle, maxWidth: '400px' }} />
                             </Stack>
 
 
                             <Stack direction={'row'} alignItems='center'>
                                 <Typography sx={{ color: '#6D6D6D', fontSize: '14px', minWidth: '110px' }}>COD : </Typography>
-                                <TextField type="number" defaultValue={Number(saleOrderDetails?.edcWhseShipments[0]?.CodAmount)} fullWidth size='small' sx={{ ...headInputStyle, maxWidth: '400px' }} />
+                                <TextField type="number" value={Number(saleOrderDetails?.edcWhseShipments[0]?.CodAmount)} fullWidth size='small' sx={{ ...headInputStyle, maxWidth: '400px' }} />
                             </Stack>
 
                             <Stack direction={'row'} alignItems='center'>

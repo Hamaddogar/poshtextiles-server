@@ -17,10 +17,12 @@ import Pagination from 'react-responsive-pagination';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Box } from '@mui/system';
 import { Link, useNavigate } from 'react-router-dom';
-import { PAGE_DEALER_ALL_ORDERS, SELECTED_SALE_ORDER_DATA } from '../../../../RTK/Reducers/Reducers';
+import { PAGE_DEALER_ALL_ORDERS, SELECTED_SALE_ORDER_DATA, shipFromLocation } from '../../../../RTK/Reducers/Reducers';
 import { lnk, Search, searchDropDown, SearchIconWrapper, StyledInputBase, styleSlect } from '../reUseAbles/ReuseAbles';
 import PreLoader from '../../HOC/Loading';
 import NoRecord from '../../HOC/NoRecord';
+import { request_AccessToken_MICROSOFT } from '../../../../utils/API_HELPERS';
+import { useMsal } from '@azure/msal-react';
 
 
 
@@ -39,7 +41,7 @@ const AllOrders = () => {
 
     const navigate = useNavigate();
     const dispatch = useDispatch()
-
+    const { instance, accounts } = useMsal();
 
 
     React.useLayoutEffect(() => {
@@ -70,6 +72,13 @@ const AllOrders = () => {
     const handleSearch = e => setSearchItDebounce((e.target.value).toLocaleLowerCase());
     const handleSlectOrder = data => {
         dispatch(SELECTED_SALE_ORDER_DATA(data))
+        request_AccessToken_MICROSOFT(instance, accounts)
+        .then(token => {
+            dispatch(shipFromLocation({
+                token: token,
+                locationCode: data.edcCustomers[0].locationCode,
+            }))
+        })
         navigate('sale-order')
     }
 

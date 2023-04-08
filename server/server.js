@@ -65,6 +65,35 @@ const TOKEN_ENDPOINT_STAMPS = 'https://signin.testing.stampsendicia.com/oauth/to
 const stampsUsername = "poshtext-01";
 const stampsPassword = "April2023!";
 
+function sortData(arr) {
+    arr.sort((a, b) => {
+        // Extract the numerical part of the 'no' property
+        const aNo = parseInt(a.no.substring(2));
+        const bNo = parseInt(b.no.substring(2));
+
+        // If both 'no' properties start with 'SO', sort by likes
+        if (a.no.startsWith('SO') && b.no.startsWith('SO')) {
+            return b.likes - a.likes;
+        }
+        // If only one 'no' property starts with 'SO', sort it first
+        else if (a.no.startsWith('SO')) {
+            return -1;
+        } else if (b.no.startsWith('SO')) {
+            return 1;
+        }
+        // If neither 'no' property starts with 'SO', sort by numerical value
+        else {
+            return bNo - aNo;
+        }
+    });
+
+    // Filter out objects whose 'no' property does not end with 'SO'
+    const nonSOObjects = arr.filter(obj => !obj.no.endsWith('SO'));
+
+    // Append non-SO objects to the end of the sorted array
+    return arr.filter(obj => obj.no.endsWith('SO')).concat(nonSOObjects);
+}
+
 
 
 
@@ -96,6 +125,7 @@ const routeStrings = {
     new_order_micro: '/newOrder',
     csv_orders_micro: '/csv_orders',
     customers_micro: '/customers',
+    ship_from_location_micro: '/shipfrom'
 
 }
 
@@ -285,7 +315,7 @@ app.post(routeStrings.rate_list_fedexp, async (req, res) => {
             newBody,
             config
         );
-
+        console.log("response", response.data);
         response.data?.output?.rateReplyDetails?.map(service => {
             // respo[0].ratedShipmentDetails[0]
             service.ratedShipmentDetails.map(item => {
@@ -295,7 +325,7 @@ app.post(routeStrings.rate_list_fedexp, async (req, res) => {
                         serviceName: service.serviceName,
                         days: "02",
                         currency: item.currency,
-                        pkgType: item.ratedPackages[0].rateType,
+                        pkgType: item.ratedPackages?.[0]?.rateType,
 
                         rate: item.totalNetCharge,
                         netWeight: item.shipmentRateDetail.totalBillingWeight.value,
@@ -853,6 +883,7 @@ app.post('/printer', async (req, res) => {
 
 
 
+
 // -----------------Microsoft Routes --------------------- //
 
 // microsoft all sales orders
@@ -870,8 +901,8 @@ app.post(routeStrings.sale_orders_micro, cache, async (req, res) => {
         );
         // console.log(response?.data?.value);
         if (response?.data?.value) {
-            data = response.data.value
-            res.status(response.status).send(response.data.value);
+            const sortedData = sortData(response.data.value)
+            res.status(response.status).send(sortedData);
         } else throw ({
             response: {
                 "message": "Server Error!",
@@ -989,7 +1020,7 @@ app.post(routeStrings.csv_orders_micro, async (req, res) => {
 });
 
 // custermer getter
-app.post(routeStrings.customers_micro, cache, async (req, res) => {
+app.post(routeStrings.customers_micro, async (req, res) => {
     const config = {
         headers: {
             "Authorization": `Bearer ${req.body.token}`,
@@ -1025,7 +1056,39 @@ app.post(routeStrings.customers_micro, cache, async (req, res) => {
     }
 });
 
+// ship_from_location_micro
+app.post(routeStrings.ship_from_location_micro, async (req, res) => {
+    const config = {
+        headers: {
+            "Authorization": `Bearer ${req.body.token}`,
+        }
+    };
+    try {
+        const response = await axios.get(
+            API_MICROSOFT.locations(req.body.locationCode),
+            config
+        );
+        if (response?.data?.value?.length > 0) {
+            res.status(response.status).send({ error: false, location: response.data.value[0] });
+        } else {
+            throw ({
+                response: {
+                    "message": "Server Error!",
+                    "name": "Error",
+                    "status": 500
+                }
+            });
+        }
 
+    } catch (error) {
+        console.log(error);
+        res.status(error?.response?.status).send({
+            code: error.response.status,
+            message: error?.response?.data?.errors?.[0]?.error_message || error?.message,
+            error: true
+        })
+    }
+});
 
 // ------------------- Configurations----------------- //
 

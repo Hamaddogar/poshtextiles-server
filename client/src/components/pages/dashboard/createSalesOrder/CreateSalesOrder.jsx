@@ -15,10 +15,6 @@ import { useMsal } from '@azure/msal-react';
 import { toast } from 'react-toastify';
 import CreateNewLineItem from '../reUseAbles/CreateNewLineItem';
 const CreateSalesOrder = () => {
-
-
-    
-
     const { instance, accounts } = useMsal();
     const navigate = useNavigate();
 

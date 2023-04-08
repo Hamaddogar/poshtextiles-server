@@ -46,6 +46,7 @@ export const APIS = {
     new_order_micro: 'http://localhost:8080/newOrder',
     csv_order_micro: 'http://localhost:8080/csv_orders',
     customers_micro: 'http://localhost:8080/customers',
+    shipFrom: 'http://localhost:8080/shipfrom',
     
 }
 
