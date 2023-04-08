@@ -49,7 +49,10 @@ const AllOrders = () => {
         else setCopy(allOrders.filter(item => item.status === orderTypeAllOrders));
         //eslint-disable-next-line
     }, [allOrders]);
-    React.useLayoutEffect(() => { setRows(copy.slice(0, perPage)) }, [copy, perPage]);
+    React.useLayoutEffect(() => { 
+        setRows(copy.slice(0, perPage));
+        handlePageChange(currentPageAllOrders);
+     }, [copy, perPage]);
     React.useLayoutEffect(() => {
         if (orderTypeAllOrders === "all") setRows(copy.filter(item => (item[searchTo])?.toLocaleLowerCase().includes(searchIt)));
         else setRows(copy.filter(item => (item[searchTo])?.toLocaleLowerCase().includes(searchIt) && item.status === orderTypeAllOrders));

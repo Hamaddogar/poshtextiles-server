@@ -27,6 +27,10 @@ const persistConfig = {
     "csv_data_responded",
     "stamps_token",
     "stamps_code",
+    "currentPageAllOrders",
+    "orderTypeAllOrders",
+    "ship_from_location",
+    "client_Info",
   ],
   rootReducer: mainReducer
 }

@@ -901,7 +901,7 @@ app.post(routeStrings.sale_orders_micro, cache, async (req, res) => {
         );
         // console.log(response?.data?.value);
         if (response?.data?.value) {
-            const sortedData = sortData(response.data.value)
+            const sortedData = (response.data.value)
             res.status(response.status).send(sortedData);
         } else throw ({
             response: {
@@ -912,7 +912,7 @@ app.post(routeStrings.sale_orders_micro, cache, async (req, res) => {
         });
 
     } catch (error) {
-        // console.log("error", error.response.data);
+        console.log("error", error);
         if (error?.status) res.status(error.status).send({ error: error.message });
         else if (error?.response?.status) res.status(error.response.status).send({ error: error.response.message });
         else res.status(500).send({ error: error.message });
