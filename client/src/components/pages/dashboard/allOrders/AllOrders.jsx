@@ -52,6 +52,7 @@ const AllOrders = () => {
     React.useLayoutEffect(() => { 
         setRows(copy.slice(0, perPage));
         handlePageChange(currentPageAllOrders);
+        //eslint-disable-next-line
      }, [copy, perPage]);
     React.useLayoutEffect(() => {
         if (orderTypeAllOrders === "all") setRows(copy.filter(item => (item[searchTo])?.toLocaleLowerCase().includes(searchIt)));
@@ -166,8 +167,6 @@ const AllOrders = () => {
                 </Grid>
             </Grid>
 
-
-
             <PreLoader loading={loading}>
                 <TableContainer component={Paper} sx={{ padding: '0px 4%' }} className='table-Container'>
                     <Table sx={{ minWidth: 750 }} stickyHeader aria-label="sticky table">
@@ -218,8 +217,6 @@ const AllOrders = () => {
                         </TableBody>
                     </Table>
                 </TableContainer>
-
-
 
                 {/* pagination */}
                 <Stack direction='row' my={3} mt={2} justifyContent='flex-end' alignItems={'center'}>

@@ -65,36 +65,6 @@ const TOKEN_ENDPOINT_STAMPS = 'https://signin.testing.stampsendicia.com/oauth/to
 const stampsUsername = "poshtext-01";
 const stampsPassword = "April2023!";
 
-function sortData(arr) {
-    arr.sort((a, b) => {
-        // Extract the numerical part of the 'no' property
-        const aNo = parseInt(a.no.substring(2));
-        const bNo = parseInt(b.no.substring(2));
-
-        // If both 'no' properties start with 'SO', sort by likes
-        if (a.no.startsWith('SO') && b.no.startsWith('SO')) {
-            return b.likes - a.likes;
-        }
-        // If only one 'no' property starts with 'SO', sort it first
-        else if (a.no.startsWith('SO')) {
-            return -1;
-        } else if (b.no.startsWith('SO')) {
-            return 1;
-        }
-        // If neither 'no' property starts with 'SO', sort by numerical value
-        else {
-            return bNo - aNo;
-        }
-    });
-
-    // Filter out objects whose 'no' property does not end with 'SO'
-    const nonSOObjects = arr.filter(obj => !obj.no.endsWith('SO'));
-
-    // Append non-SO objects to the end of the sorted array
-    return arr.filter(obj => obj.no.endsWith('SO')).concat(nonSOObjects);
-}
-
-
 
 
 // ---------------- Routes -------------- //
@@ -887,7 +857,7 @@ app.post('/printer', async (req, res) => {
 // -----------------Microsoft Routes --------------------- //
 
 // microsoft all sales orders
-app.post(routeStrings.sale_orders_micro, cache, async (req, res) => {
+app.post(routeStrings.sale_orders_micro, async (req, res) => {
     const config = {
         headers: {
             "Authorization": `Bearer ${req.body.token}`,
@@ -901,8 +871,7 @@ app.post(routeStrings.sale_orders_micro, cache, async (req, res) => {
         );
         // console.log(response?.data?.value);
         if (response?.data?.value) {
-            const sortedData = (response.data.value)
-            res.status(response.status).send(sortedData);
+            res.status(response.status).send(response.data.value);
         } else throw ({
             response: {
                 "message": "Server Error!",

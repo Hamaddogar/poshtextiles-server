@@ -14,10 +14,37 @@ function addDaysToDate(dateString) {
 }
 
 
+const labelSize = (service, size) => {
+
+    switch (service) {
+        case "FEDEX":
+            if (size === "1") { return "PAPER_85X11_TOP_HALF_LABEL" }
+            else if (size === "2") { return "PAPER_4X9" }
+            else if (size === "3") { return "PAPER_4X6" }
+            break;
+        case "UPS":
+            if (size === "1") { return "PAPER_85X11_TOP_HALF_LABEL" }
+            else if (size === "2") { return "PAPER_4X9" }
+            else if (size === "3") { return "PAPER_4X6" }
+            break;
+        case "STAMPS":
+            if (size === "1") { return { "Height": "11", "Width": "8" } }
+            else if (size === "2") { return { "Height": "9", "Width": "4" } }
+            else if (size === "3") { return { "Height": "6", "Width": "4" } }
+            break;
+
+        default:
+            if (size === "1") { return "PAPER_85X11_TOP_HALF_LABEL" }
+            else if (size === "2") { return "PAPER_4X9" }
+            else if (size === "3") { return "PAPER_4X6" }
+            break;
+    }
+}
 
 
 
-export const payload_Shipment_Handler = details => {
+
+export const payload_Shipment_Handler = (details, printOn) => {
     if (details.shippingAgentCode === "FEDEX") {
         return {
             "labelResponseOptions": "URL_ONLY",
@@ -73,7 +100,7 @@ export const payload_Shipment_Handler = details => {
                 },
                 "labelSpecification": {
                     "imageType": "PNG",
-                    "labelStockType": "PAPER_4X6"
+                    "labelStockType": labelSize("FEDEX", printOn)
                 },
                 "requestedPackageLineItems": ((details?.edcSalesLines).map((item, index) => {
                     return {
@@ -175,10 +202,7 @@ export const payload_Shipment_Handler = details => {
                     "LabelImageFormat": {
                         "Code": "PNG"
                     },
-                    "LabelStockSize": {
-                        "Height": "6",
-                        "Width": "4"
-                    }
+                    "LabelStockSize": labelSize("UPS", printOn)
                 }
             }
         }
@@ -220,12 +244,12 @@ export const payload_Shipment_Handler = details => {
             },
             "service_type": "usps_parcel_select",
             "package":
-                ((details?.edcSalesLines).map((item,indx) => {
+                ((details?.edcSalesLines).map((item, indx) => {
                     return {
                         "packaging_type": "package",
                         "weight_unit": "ounce",
                         // "weight": details?.edcSalesLines[0]?.unitOfMeasureCode === "YDS" ? ydsToLbs_ounces(details.edcWhseShipments?.[0].GrossWeight+indx) : (details.edcWhseShipments?.[0].GrossWeight+indx),
-                        "weight": indx+1,
+                        "weight": indx + 1,
                         "length": details.edcWhseShipments?.[0].edcBoxDetails[0]?.["length"],
                         "width": details.edcWhseShipments?.[0].edcBoxDetails[0]?.["width"],
                         "height": details.edcWhseShipments?.[0].edcBoxDetails[0]?.["height"],
@@ -235,7 +259,7 @@ export const payload_Shipment_Handler = details => {
             "ship_date": addDaysToDate(details?.shipmentDate),
             "is_return_label": true,
             "label_options": {
-                "label_size": "4x6",
+                "label_size": labelSize("STAMPS", printOn),
                 "label_format": "png",
                 "label_output_type": "base64"
             },
@@ -337,7 +361,7 @@ export const payload_Rates_Handler = (details) => {
                                 "Code": `${item.unitOfMeasureCode === "YDS" ? "LBS" : "LBS"}`,
                                 "Description": `${item.unitOfMeasureCode === "YDS" ? item.unitOfMeasureCode : "Pounds"}`
                             },
-                            "Weight": `${item.unitOfMeasureCode === "YDS" ? item.GrossWeight+5 : item.GrossWeight+5}`
+                            "Weight": `${item.unitOfMeasureCode === "YDS" ? item.GrossWeight + 5 : item.GrossWeight + 5}`
                         }
                     }
                 })),
