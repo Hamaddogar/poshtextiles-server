@@ -5,12 +5,13 @@
 const ydsToLbs_ounces = YDS_W => YDS_W > 0 ? (YDS_W / 16) : 1;
 
 function addDaysToDate(dateString) {
-    const date = new Date(dateString);
-    date.setDate(date.getDate() + 12);
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+    // const date = new Date(dateString);
+    // date.setDate(date.getDate() + 12);
+    // const year = date.getFullYear();
+    // const month = date.getMonth() + 1;
+    // const day = date.getDate();
+    // return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+    return dateString
 }
 
 
