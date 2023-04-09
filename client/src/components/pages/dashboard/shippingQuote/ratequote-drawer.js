@@ -1,18 +1,18 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
-import SwipeableDrawer from '@mui/material/SwipeableDrawer';
-import { Button, Checkbox, Container, FormControlLabel, Grid, Skeleton, Slider, Stack, Typography } from '@mui/material';
-import { rate_List_FEDEX, rate_List_STAMPS, rate_List_UPS, request_AccessToken_FEDEXP, request_AccessToken_STAMPS } from '../../../../utils/API_HELPERS';
-import { payload_Rates_Handler } from '../../../../utils/Helper';
-import FedexRates from './FedexRates';
 import UPSRates from './UPSRates';
+import Box from '@mui/material/Box';
+import FedexRates from './FedexRates';
 import { toast } from 'react-toastify';
 import StampsRates from './StampsRates';
 import { useDispatch, useSelector } from 'react-redux';
+import SwipeableDrawer from '@mui/material/SwipeableDrawer';
+import { payload_Rates_Handler } from '../../../../utils/Helper';
 import { STAMPS_TOKEN } from '../../../../RTK/Reducers/Reducers';
+import { Button, Checkbox, Container, FormControlLabel, Grid, Skeleton, Slider, Stack, Typography } from '@mui/material';
+import { rate_List_FEDEX, rate_List_STAMPS, rate_List_UPS, request_AccessToken_FEDEXP, request_AccessToken_STAMPS } from '../../../../utils/API_HELPERS';
 
-export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, saleOrderDetails }) {
-    const { stamps_token,ship_from_location } = useSelector(store => store.mainReducer)
+const RateQuoteDrawer = ({ toggleDrawerRate, drawerstateRate, saleOrderDetails }) => {
+    const { stamps_token, ship_from_location } = useSelector(store => store.mainReducer)
     const dispatch = useDispatch();
     const [slider, setSlider] = React.useState([0, 1500]);
     const [reload, setReload] = React.useState(false);
@@ -81,7 +81,7 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
                 request_AccessToken_FEDEXP().then(token => {
                     recursiveCallerRates(rate_List_FEDEX({
                         token: token,
-                        body: payload_Rates_Handler(saleOrderDetails,ship_from_location),
+                        body: payload_Rates_Handler(saleOrderDetails, ship_from_location),
                         toastPermission: true,
                     }))
                 })
@@ -89,19 +89,19 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
             } else if (condition && saleOrderDetails?.shippingAgentCode === "UPS") {
                 loadingFunction();
                 recursiveCallerRates(rate_List_UPS({
-                    body: payload_Rates_Handler(saleOrderDetails,ship_from_location),
+                    body: payload_Rates_Handler(saleOrderDetails, ship_from_location),
                     toastPermission: true,
                 }))
 
             } else if (condition && saleOrderDetails?.shippingAgentCode === "STAMPS") {
                 loadingFunction();
                 if (stamps_token) {
-                    recursiveCallerRates(rate_List_STAMPS(stamps_token, payload_Rates_Handler(saleOrderDetails,ship_from_location)))
+                    recursiveCallerRates(rate_List_STAMPS(stamps_token, payload_Rates_Handler(saleOrderDetails, ship_from_location)))
                 } else {
                     request_AccessToken_STAMPS()
                         .then(res => {
                             if (res.token) {
-                                recursiveCallerRates(rate_List_STAMPS(res.token, payload_Rates_Handler(saleOrderDetails,ship_from_location)))
+                                recursiveCallerRates(rate_List_STAMPS(res.token, payload_Rates_Handler(saleOrderDetails, ship_from_location)))
                                 dispatch(STAMPS_TOKEN({ set: true, token: res.token, code: res.code }))
                             }
                             console.log("res", res);
@@ -242,4 +242,7 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
             </React.Fragment>
         </div>
     );
-}
+};
+
+
+export default RateQuoteDrawer
