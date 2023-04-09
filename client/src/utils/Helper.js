@@ -3,35 +3,38 @@
 
 // const ydsToOz = YDS_W => (YDS_W * 16 * 16);
 const ydsToLbs_ounces = YDS_W => YDS_W > 0 ? (YDS_W / 16) : 1;
+// function ydsToLbs(yds) {
+//     const lbsPerYd = 0.593;
+//     return yds * lbsPerYd;
+//   }
 
 function addDaysToDate(dateString) {
-    // const date = new Date(dateString);
-    // date.setDate(date.getDate() + 12);
-    // const year = date.getFullYear();
-    // const month = date.getMonth() + 1;
-    // const day = date.getDate();
-    // return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-    return dateString
+    const date = new Date(dateString);
+    date.setDate(date.getDate() + 12);
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+    // return dateString
 }
 
 
 const labelSize = (service, size) => {
-
     switch (service) {
         case "FEDEX":
-            if (size === "1") { return "PAPER_85X11_TOP_HALF_LABEL" }
-            else if (size === "2") { return "PAPER_4X9" }
-            else if (size === "3") { return "PAPER_4X6" }
-            break;
-        case "UPS":
-            if (size === "1") { return "PAPER_85X11_TOP_HALF_LABEL" }
-            else if (size === "2") { return "PAPER_4X9" }
-            else if (size === "3") { return "PAPER_4X6" }
+            if (size === "s1") { return "PAPER_85X11_TOP_HALF_LABEL" }
+            else if (size === "s2") { return "PAPER_4X9" }
+            else if (size === "s3") { return "PAPER_4X6" }
             break;
         case "STAMPS":
-            if (size === "1") { return { "Height": "11", "Width": "8" } }
-            else if (size === "2") { return { "Height": "9", "Width": "4" } }
-            else if (size === "3") { return { "Height": "6", "Width": "4" } }
+            if (size === "s1") { return "letter" }
+            else if (size === "s2") { return "letter" }
+            else if (size === "s3") { return "4x6" }
+            break;
+        case "UPS":
+            if (size === "s1") { return { "Height": "11", "Width": "8" } }
+            else if (size === "s2") { return { "Height": "9", "Width": "4" } }
+            else if (size === "s3") { return { "Height": "6", "Width": "4" } }
             break;
 
         default:
@@ -41,6 +44,7 @@ const labelSize = (service, size) => {
             break;
     }
 }
+
 
 
 export const payload_Shipment_Handler = (details, shipFrom, printOn) => {
@@ -86,17 +90,12 @@ export const payload_Shipment_Handler = (details, shipFrom, printOn) => {
                     }
                 ],
                 "shipDatestamp": details?.shipmentDate,
-                "serviceType": details?.shippingAgentServiceCode ? details?.shippingAgentServiceCode : "STANDARD_OVERNIGHT",
-                "packagingType": "FEDEX_SMALL_BOX",
+                "serviceType": "FEDEX_GROUND",
+                "packagingType": "YOUR_PACKAGING",
                 "pickupType": "USE_SCHEDULED_PICKUP",
                 "blockInsightVisibility": false,
                 "shippingChargesPayment": {
                     "paymentType": "SENDER"
-                },
-                "shipmentSpecialServices": {
-                    "specialServiceTypes": [
-                        "FEDEX_ONE_RATE"
-                    ]
                 },
                 "labelSpecification": {
                     "imageType": "PNG",
@@ -154,7 +153,7 @@ export const payload_Shipment_Handler = (details, shipFrom, printOn) => {
                             "Number": shipFrom.phoneNo
                         },
                         "FaxNumber": shipFrom.faxNo,
-                        "TaxIdentificationNumber": shipFrom.licenseNumber,
+                        "TaxIdentificationNumber": "456999",
                         "Address": {
                             "AddressLine": shipFrom.address,
                             "City": shipFrom.city,
@@ -241,7 +240,7 @@ export const payload_Shipment_Handler = (details, shipFrom, printOn) => {
                 "phone": details?.edcCustomers[0]?.phoneNo,
                 "email": details?.edcCustomers[0]?.eMail,
             },
-            "service_type": details?.shippingAgentServiceCode ? details?.shippingAgentServiceCode : "usps_parcel_select",
+            "service_type": details?.shippingAgentServiceCode && false ? details?.shippingAgentServiceCode : "usps_first_class_mail",
             "package":
                 ((details?.edcSalesLines).map((item, indx) => {
                     return {
@@ -294,8 +293,7 @@ export const payload_Rates_Handler = (details, shipFrom) => {
                     }
                 },
                 "pickupType": "DROPOFF_AT_FEDEX_LOCATION",
-                "serviceType": details?.shippingAgentServiceCode ? details?.shippingAgentServiceCode : "STANDARD_OVERNIGHT",
-                "packagingType": "FEDEX_SMALL_BOX",
+                "serviceType": "GROUND_HOME_DELIVERY",
                 "rateRequestType": [
                     "LIST",
                     "ACCOUNT"

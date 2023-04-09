@@ -69,7 +69,7 @@ const UpdateLineItem = ({ handleSubmitUpdateLineItem, product, handleCancel, rea
 
                             <Grid item xs={6} sm={6} md={2}>
                                 <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Min Quantity: </Typography>
-                                <TextField inputProps={{ readOnly: readOnly }} required sx={headInputStyle} fullWidth defaultValue={product?.outstandingQuantity} type='number' name={"minQty"} size='small' />
+                                <TextField inputProps={{ readOnly: readOnly }} required sx={headInputStyle} fullWidth defaultValue={""} name={"minQty"} size='small' />
                             </Grid>
 
                             <Grid item xs={6} sm={6} md={2}>
@@ -90,7 +90,6 @@ const UpdateLineItem = ({ handleSubmitUpdateLineItem, product, handleCancel, rea
                             <Grid item xs={12}>
                                 <Stack spacing={1} direction='row' alignItems='center' justifyContent={'center'} >
                                     <TextField inputProps={{ readOnly: readOnly }} sx={headInputStyle} fullWidth
-                                        placeholder='comment here ...'
                                         defaultValue={product?.edcSalesComments?.[0]?.comment}
                                         name={"comment"} size='small' />
                                     <Stack direction='row' alignItems='center' justifyContent={'center'}>

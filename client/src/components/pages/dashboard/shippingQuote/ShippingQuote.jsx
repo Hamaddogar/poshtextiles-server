@@ -34,25 +34,25 @@ const ShippingQuote = () => {
     const [shipReport, SetShipReport] = React.useState({ open: false, response: null, error: null });
 
     const [selections, setSelections] = React.useState({
-        printOn: "3",
+        printOn: "s3",
         extraServices: "No Option Avaliable",
         carrier: saleOrderDetails?.shippingAgentCode || "No Option Avaliable",
     });
 
     const printOptions = [{
         label: `Shipping Label - 8 1⁄2" x 11" Paper`,
-        value: "1"
+        value: "s1"
     }, {
         label: `Envelop - #10, 4 1⁄8"  x 9 1⁄2"`,
-        value: "2"
+        value: "s2"
     }, {
         label: `Roll - 4" x 6" Shipping Label`,
-        value: "3"
+        value: "s3"
     }]
 
     const handleChange = event => setSelections({
         ...selections,
-        [event.target.name]: [event.target.value]
+        [event.target.name]: event.target.value
     });
 
     // for shipment labels recursiveCaller
@@ -106,24 +106,24 @@ const ShippingQuote = () => {
                 request_AccessToken_FEDEXP()
                     .then(token => {
                         recursiveCaller(
-                            create_Shipment_FEDEXP(payload_Shipment_Handler(saleOrderDetails,ship_from_location,selections.printOn), token)
+                            create_Shipment_FEDEXP(payload_Shipment_Handler(saleOrderDetails, ship_from_location, selections.printOn), token)
                         )
                     });
             } else if (condition && saleOrderDetails?.shippingAgentCode === "UPS") {
                 recursiveCaller(
-                    createShipment_UPS(payload_Shipment_Handler(saleOrderDetails,ship_from_location,selections.printOn))
+                    createShipment_UPS(payload_Shipment_Handler(saleOrderDetails, ship_from_location, selections.printOn))
                 )
             } else if (condition && saleOrderDetails?.shippingAgentCode === "STAMPS") {
                 if (stamps_token) {
                     recursiveCaller(
-                        create_Shipment_STAMPS(stamps_token, payload_Shipment_Handler(saleOrderDetails,ship_from_location,selections.printOn))
+                        create_Shipment_STAMPS(stamps_token, payload_Shipment_Handler(saleOrderDetails, ship_from_location, selections.printOn))
                     );
                 } else {
                     request_AccessToken_STAMPS()
                         .then(res => {
                             if (res.token) {
                                 recursiveCaller(
-                                    create_Shipment_STAMPS(res.token, payload_Shipment_Handler(saleOrderDetails,ship_from_location,selections.printOn))
+                                    create_Shipment_STAMPS(res.token, payload_Shipment_Handler(saleOrderDetails, ship_from_location, selections.printOn))
                                 );
                                 dispatch(STAMPS_TOKEN({ set: true, token: res.token, code: res.code }))
                             }
@@ -151,11 +151,6 @@ const ShippingQuote = () => {
     };
 
 
-
-
-    // address
-
-
     const toggleDrawer = (open) => (event) => {
         if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) { return; }
         setdrawerStateAddress(open);
@@ -167,7 +162,6 @@ const ShippingQuote = () => {
         setdrawerstateRate(open);
     };
 
-    console.log("---------->ship_from_location", ship_from_location);
     return (
         <div>
             <Box component={'form'} onSubmit={handleSubmit}>
@@ -194,8 +188,8 @@ const ShippingQuote = () => {
                                         sx={{ ...styleSlect, maxWidth: '400px', backgroundColor: 'white' }}
                                     >
                                         {
-                                            printOptions.map(item => (
-                                                <MenuItem key={item.value} value={item.value} sx={{ fontSize: '12px' }}>{item.label}</MenuItem>
+                                            printOptions.map((item, indx) => (
+                                                <MenuItem key={indx} value={item.value} sx={{ fontSize: '12px' }}>{item.label}</MenuItem>
                                             ))
                                         }
                                     </Select>
@@ -243,9 +237,7 @@ const ShippingQuote = () => {
                                     fullWidth
                                     name='shipTo'
                                 />
-
                             </Stack>
-
 
                             <Stack direction={'row'} alignItems='center'>
                                 <Typography sx={{ color: '#6D6D6D', fontSize: '14px', minWidth: '110px' }}>Carrier : </Typography>
@@ -295,14 +287,11 @@ const ShippingQuote = () => {
                             </Stack>
 
                             <Stack direction={'row'} alignItems='center' columnGap={1.5}>
-
                                 <Typography sx={{ color: '#6D6D6D', fontSize: '14px', minWidth: '99px' }}>Weight : </Typography>
-
                                 <Stack direction={'row'} alignItems='center'>
                                     <TextField type="number" value={saleOrderDetails?.edcWhseShipments[0]?.GrossWeight} fullWidth placeholder='Weight' size='small' sx={{ ...headInputStyle, maxWidth: '80px' }} />
                                     <Typography sx={{ color: '#6D6D6D', fontSize: '14px' }}>{saleOrderDetails?.edcSalesLines[0].unitOfMeasureCode} </Typography>
                                 </Stack>
-
 
                                 <Stack direction={'row'} alignItems='center'>
                                     <TextField type="number" value={0} fullWidth placeholder='Weight' size='small' sx={{ ...headInputStyle, maxWidth: '80px' }} />
