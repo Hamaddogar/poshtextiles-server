@@ -42,9 +42,7 @@ const labelSize = (service, size) => {
 }
 
 
-
-
-export const payload_Shipment_Handler = (details, printOn) => {
+export const payload_Shipment_Handler = (details, shipFrom, printOn) => {
     if (details.shippingAgentCode === "FEDEX") {
         return {
             "labelResponseOptions": "URL_ONLY",
@@ -52,18 +50,19 @@ export const payload_Shipment_Handler = (details, printOn) => {
             "requestedShipment": {
                 "shipper": {
                     "contact": {
-                        "personName": "Muhammad Hamad",
-                        "phoneNumber": 1234567890,
-                        "companyName": "Posh Textiles"
+                        "personName": shipFrom.name,
+                        "phoneNumber": shipFrom.phoneNo,
+                        "companyName": shipFrom.contact
                     },
                     "address": {
                         "streetLines": [
-                            "7670 N.W. 6th Avenue"
+                            shipFrom.address,
+                            shipFrom.address2,
                         ],
-                        "city": "India",
-                        "stateOrProvinceCode": "AR",
-                        "postalCode": 72601,
-                        "countryCode": "US"
+                        "city": shipFrom.city,
+                        "stateOrProvinceCode": shipFrom.county,
+                        "postalCode": shipFrom.postCode,
+                        "countryCode": shipFrom.countryRegionCode
                     }
                 },
                 "recipients": [
@@ -86,7 +85,7 @@ export const payload_Shipment_Handler = (details, printOn) => {
                     }
                 ],
                 "shipDatestamp": details?.shipmentDate,
-                "serviceType": "STANDARD_OVERNIGHT",
+                "serviceType": details?.shippingAgentServiceCode ? details?.shippingAgentServiceCode : "STANDARD_OVERNIGHT",
                 "packagingType": "FEDEX_SMALL_BOX",
                 "pickupType": "USE_SCHEDULED_PICKUP",
                 "blockInsightVisibility": false,
@@ -121,14 +120,14 @@ export const payload_Shipment_Handler = (details, printOn) => {
                 "Shipment": {
                     "Description": details.externalDocumentNo,
                     "Shipper": {
-                        "Name": "Muhammad Hamad",
-                        "ShipperNumber": "R006V5",
+                        "Name": shipFrom.name,
+                        "ShipperNumber": shipFrom.upsAccount,
                         "Address": {
-                            "AddressLine": "12 Main St",
-                            "City": "Kalali",
-                            "StateProvinceCode": "CA",
-                            "PostalCode": "90503",
-                            "CountryCode": "US"
+                            "AddressLine": shipFrom.address,
+                            "City": shipFrom.city,
+                            "StateProvinceCode": shipFrom.county,
+                            "PostalCode": shipFrom.postCode,
+                            "CountryCode": shipFrom.countryRegionCode
                         }
                     },
                     "ShipTo": {
@@ -148,31 +147,31 @@ export const payload_Shipment_Handler = (details, printOn) => {
                         }
                     },
                     "ShipFrom": {
-                        "Name": "Muhammad Hamad",
-                        "AttentionName": "Muhammad Hamad",
+                        "Name": shipFrom.name,
+                        "AttentionName": shipFrom.contact,
                         "Phone": {
-                            "Number": "1234567890"
+                            "Number": shipFrom.phoneNo
                         },
-                        "FaxNumber": "1234567999",
-                        "TaxIdentificationNumber": "456999",
+                        "FaxNumber": shipFrom.faxNo,
+                        "TaxIdentificationNumber": shipFrom.licenseNumber,
                         "Address": {
-                            "AddressLine": "12 Main St",
-                            "City": "Kalali",
-                            "StateProvinceCode": "CA",
-                            "PostalCode": "90503",
-                            "CountryCode": "US"
+                            "AddressLine": shipFrom.address,
+                            "City": shipFrom.city,
+                            "StateProvinceCode": shipFrom.county,
+                            "PostalCode": shipFrom.postCode,
+                            "CountryCode": shipFrom.countryRegionCode
                         }
                     },
                     "PaymentInformation": {
                         "ShipmentCharge": {
                             "Type": "01",
                             "BillShipper": {
-                                "AccountNumber": "R006V5"
+                                "AccountNumber": shipFrom.upsAccount
                             }
                         }
                     },
                     "Service": {
-                        "Code": "03",
+                        "Code": details?.shippingAgentServiceCode ? details?.shippingAgentServiceCode : "03",
                         "Description": "Expedited"
                     },
 
@@ -209,27 +208,26 @@ export const payload_Shipment_Handler = (details, printOn) => {
     } else if (details.shippingAgentCode === "STAMPS") {
         return {
             "from_address": {
-                "name": "Muhammad Hamad",
-                "company_name": "poshtextiles",
-                "address_line1": "12 Main St",
-                "address_line2": "",
-                "city": "Kalali",
-                "state_province": "CA",
-                "postal_code": "90503",
-                "country_code": "US",
+                "name": shipFrom.name,
+                "company_name": shipFrom.conntact,
+                "address_line1": shipFrom.address,
+                "address_line2": shipFrom.address2,
+                "city": shipFrom.city,
+                "state_province": shipFrom.county,
+                "postal_code": shipFrom.postCode,
+                "country_code": shipFrom.countryRegionCode,
             },
             "return_address": {
-                "name": "Muhammad Hamad",
-                "company_name": "poshtextiles",
-                "address_line1": "12 Main St",
-                "address_line2": "",
-                "city": "Kalali",
-                "state_province": "CA",
-                "postal_code": "90503",
-                "country_code": "US",
+                "name": shipFrom.name,
+                "company_name": shipFrom.conntact,
+                "address_line1": shipFrom.address,
+                "address_line2": shipFrom.address2,
+                "city": shipFrom.city,
+                "state_province": shipFrom.county,
+                "postal_code": shipFrom.postCode,
+                "country_code": shipFrom.countryRegionCode,
             },
             "to_address": {
-
                 "name": details?.edcCustomers[0]?.name,
                 "company_name": details?.edcCustomers[0]?.searchName,
                 "address_line1": details?.edcCustomers[0]?.address,
@@ -242,7 +240,7 @@ export const payload_Shipment_Handler = (details, printOn) => {
                 "phone": details?.edcCustomers[0]?.phoneNo,
                 "email": details?.edcCustomers[0]?.eMail,
             },
-            "service_type": "usps_parcel_select",
+            "service_type": details?.shippingAgentServiceCode ? details?.shippingAgentServiceCode : "usps_parcel_select",
             "package":
                 ((details?.edcSalesLines).map((item, indx) => {
                     return {
@@ -271,7 +269,7 @@ export const payload_Shipment_Handler = (details, printOn) => {
 
 
 
-export const payload_Rates_Handler = (details) => {
+export const payload_Rates_Handler = (details, shipFrom) => {
     if (details.shippingAgentCode === "FEDEX") {
         return {
             "accountNumber": {
@@ -280,10 +278,13 @@ export const payload_Rates_Handler = (details) => {
             "requestedShipment": {
                 "shipper": {
                     "address": {
-                        "postalCode": 65247,
-                        "countryCode": "US"
+                        "city": shipFrom.city,
+                        "stateOrProvinceCode": shipFrom.county,
+                        "postalCode": shipFrom.postCode,
+                        "countryCode": shipFrom.countryRegionCode
                     }
                 },
+
                 "recipient": {
                     "address": {
                         "postalCode": details?.edcCustomers[0]?.postCode,
@@ -292,7 +293,7 @@ export const payload_Rates_Handler = (details) => {
                     }
                 },
                 "pickupType": "DROPOFF_AT_FEDEX_LOCATION",
-                "serviceType": "STANDARD_OVERNIGHT",
+                "serviceType": details?.shippingAgentServiceCode ? details?.shippingAgentServiceCode : "STANDARD_OVERNIGHT",
                 "packagingType": "FEDEX_SMALL_BOX",
                 "rateRequestType": [
                     "LIST",
@@ -318,13 +319,14 @@ export const payload_Rates_Handler = (details) => {
         return {
             "Shipment": {
                 "Shipper": {
-                    "Name": "Muhammad Hamad",
+                    "Name": shipFrom.name,
+                    "ShipperNumber": shipFrom.upsAccount,
                     "Address": {
-                        "AddressLine": "12 Main St",
-                        "City": "Kalali",
-                        "StateProvinceCode": "CA",
-                        "PostalCode": "90503",
-                        "CountryCode": "US"
+                        "AddressLine": shipFrom.address,
+                        "City": shipFrom.city,
+                        "StateProvinceCode": shipFrom.county,
+                        "PostalCode": shipFrom.postCode,
+                        "CountryCode": shipFrom.countryRegionCode
                     }
                 },
                 "ShipTo": {
@@ -339,7 +341,7 @@ export const payload_Rates_Handler = (details) => {
                 },
                 "Service": {
                     "Code": "03",
-                    "Description": "Strandred Ground",
+                    "Description": details?.shippingAgentServiceCode ? details?.shippingAgentServiceCode : "Strandred Ground",
                 },
                 "Package": ((details?.edcSalesLines).map(item => {
                     return {
@@ -373,14 +375,14 @@ export const payload_Rates_Handler = (details) => {
     } else if (details.shippingAgentCode === "STAMPS") {
         return {
             "from_address": {
-                "name": "Muhammad Hamad",
-                "company_name": "poshtextiles",
-                "address_line1": "12 Main St",
-                "address_line2": "",
-                "city": "Kalali",
-                "state_province": "CA",
-                "postal_code": "90503",
-                "country_code": "US",
+                "name": shipFrom.name,
+                "company_name": shipFrom.conntact,
+                "address_line1": shipFrom.address,
+                "address_line2": shipFrom.address2,
+                "city": shipFrom.city,
+                "state_province": shipFrom.county,
+                "postal_code": shipFrom.postCode,
+                "country_code": shipFrom.countryRegionCode,
             },
             "to_address": {
                 "name": details?.edcCustomers[0]?.name,

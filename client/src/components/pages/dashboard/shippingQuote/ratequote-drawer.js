@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { STAMPS_TOKEN } from '../../../../RTK/Reducers/Reducers';
 
 export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, saleOrderDetails }) {
-    const { stamps_token } = useSelector(store => store.mainReducer)
+    const { stamps_token,ship_from_location } = useSelector(store => store.mainReducer)
     const dispatch = useDispatch();
     const [slider, setSlider] = React.useState([0, 1500]);
     const [reload, setReload] = React.useState(false);
@@ -81,7 +81,7 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
                 request_AccessToken_FEDEXP().then(token => {
                     recursiveCallerRates(rate_List_FEDEX({
                         token: token,
-                        body: payload_Rates_Handler(saleOrderDetails),
+                        body: payload_Rates_Handler(saleOrderDetails,ship_from_location),
                         toastPermission: true,
                     }))
                 })
@@ -89,19 +89,19 @@ export default function RateQuoteDrawer({ toggleDrawerRate, drawerstateRate, sal
             } else if (condition && saleOrderDetails?.shippingAgentCode === "UPS") {
                 loadingFunction();
                 recursiveCallerRates(rate_List_UPS({
-                    body: payload_Rates_Handler(saleOrderDetails),
+                    body: payload_Rates_Handler(saleOrderDetails,ship_from_location),
                     toastPermission: true,
                 }))
 
             } else if (condition && saleOrderDetails?.shippingAgentCode === "STAMPS") {
                 loadingFunction();
                 if (stamps_token) {
-                    recursiveCallerRates(rate_List_STAMPS(stamps_token, payload_Rates_Handler(saleOrderDetails)))
+                    recursiveCallerRates(rate_List_STAMPS(stamps_token, payload_Rates_Handler(saleOrderDetails,ship_from_location)))
                 } else {
                     request_AccessToken_STAMPS()
                         .then(res => {
                             if (res.token) {
-                                recursiveCallerRates(rate_List_STAMPS(res.token, payload_Rates_Handler(saleOrderDetails)))
+                                recursiveCallerRates(rate_List_STAMPS(res.token, payload_Rates_Handler(saleOrderDetails,ship_from_location)))
                                 dispatch(STAMPS_TOKEN({ set: true, token: res.token, code: res.code }))
                             }
                             console.log("res", res);

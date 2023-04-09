@@ -106,24 +106,24 @@ const ShippingQuote = () => {
                 request_AccessToken_FEDEXP()
                     .then(token => {
                         recursiveCaller(
-                            create_Shipment_FEDEXP(payload_Shipment_Handler(saleOrderDetails,selections.printOn), token)
+                            create_Shipment_FEDEXP(payload_Shipment_Handler(saleOrderDetails,ship_from_location,selections.printOn), token)
                         )
                     });
             } else if (condition && saleOrderDetails?.shippingAgentCode === "UPS") {
                 recursiveCaller(
-                    createShipment_UPS(payload_Shipment_Handler(saleOrderDetails,selections.printOn))
+                    createShipment_UPS(payload_Shipment_Handler(saleOrderDetails,ship_from_location,selections.printOn))
                 )
             } else if (condition && saleOrderDetails?.shippingAgentCode === "STAMPS") {
                 if (stamps_token) {
                     recursiveCaller(
-                        create_Shipment_STAMPS(stamps_token, payload_Shipment_Handler(saleOrderDetails,selections.printOn))
+                        create_Shipment_STAMPS(stamps_token, payload_Shipment_Handler(saleOrderDetails,ship_from_location,selections.printOn))
                     );
                 } else {
                     request_AccessToken_STAMPS()
                         .then(res => {
                             if (res.token) {
                                 recursiveCaller(
-                                    create_Shipment_STAMPS(res.token, payload_Shipment_Handler(saleOrderDetails,selections.printOn))
+                                    create_Shipment_STAMPS(res.token, payload_Shipment_Handler(saleOrderDetails,ship_from_location,selections.printOn))
                                 );
                                 dispatch(STAMPS_TOKEN({ set: true, token: res.token, code: res.code }))
                             }
@@ -167,7 +167,7 @@ const ShippingQuote = () => {
         setdrawerstateRate(open);
     };
 
-    console.log("---------->ship_from_location", saleOrderDetails);
+    console.log("---------->ship_from_location", ship_from_location);
     return (
         <div>
             <Box component={'form'} onSubmit={handleSubmit}>
