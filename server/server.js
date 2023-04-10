@@ -520,7 +520,7 @@ app.post(routeStrings.rate_list_ups, async (req, res) => {
         });
 
     } catch (error) {
-        console.log("error", error);
+        console.log("error Rates", error);
         if (error?.response?.status) res.send({ error: true, message: error?.response?.data?.response?.errors[0]?.message });
         else res.status(500).send({ error: true, message: error.message });
     }

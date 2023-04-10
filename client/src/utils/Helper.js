@@ -2,20 +2,20 @@
 // weight converter
 
 // const ydsToOz = YDS_W => (YDS_W * 16 * 16);
-const ydsToLbs_ounces = YDS_W => YDS_W > 0 ? (YDS_W / 16) : 1;
-// function ydsToLbs(yds) {
-//     const lbsPerYd = 0.593;
-//     return yds * lbsPerYd;
-//   }
+// const ydsToLbs_ounces = YDS_W => YDS_W > 0 ? (YDS_W / 16) : 1;
+function ydsToLbs_ounces(yds) {
+    const lbsPerYd = 0.593;
+    return yds * lbsPerYd;
+}
 
 function addDaysToDate(dateString) {
-    const date = new Date(dateString);
-    date.setDate(date.getDate() + 12);
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-    // return dateString
+    // const date = new Date(dateString);
+    // date.setDate(date.getDate() + 12);
+    // const year = date.getFullYear();
+    // const month = date.getMonth() + 1;
+    // const day = date.getDate();
+    // return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+    return dateString
 }
 
 
@@ -303,7 +303,7 @@ export const payload_Rates_Handler = (details, shipFrom) => {
                         return {
                             "weight": {
                                 "units": `${item.unitOfMeasureCode === "YDS" ? "LB" : "LB"}`,
-                                "value": item.unitOfMeasureCode === "YDS" ? (details?.edcWhseShipments?.[0]?.GrossWeight + 5) : (details?.edcSalesLines?.[0]?.GrossWeight + 5)
+                                "value": item.unitOfMeasureCode === "YDS" ? ydsToLbs_ounces(details.edcWhseShipments?.[0]?.GrossWeight) : ydsToLbs_ounces(details.edcWhseShipments?.[0]?.GrossWeight)
                             },
                             "shipmentSpecialServices": {
                                 "specialServiceTypes": [
@@ -339,7 +339,7 @@ export const payload_Rates_Handler = (details, shipFrom) => {
                     }
                 },
                 "Service": {
-                    "Code": "03",
+                    "Code": details?.shippingAgentServiceCode ? details?.shippingAgentServiceCode : "03",
                     "Description": details?.shippingAgentServiceCode ? details?.shippingAgentServiceCode : "Strandred Ground",
                 },
                 "Package": ((details?.edcSalesLines).map(item => {
@@ -362,7 +362,7 @@ export const payload_Rates_Handler = (details, shipFrom) => {
                                 "Code": `${item.unitOfMeasureCode === "YDS" ? "LBS" : "LBS"}`,
                                 "Description": `${item.unitOfMeasureCode === "YDS" ? item.unitOfMeasureCode : "Pounds"}`
                             },
-                            "Weight": `${item.unitOfMeasureCode === "YDS" ? item.GrossWeight + 5 : item.GrossWeight + 5}`
+                            "Weight": `${ydsToLbs_ounces(details.edcWhseShipments?.[0]?.GrossWeight)}`
                         }
                     }
                 })),
