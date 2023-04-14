@@ -268,6 +268,7 @@ export const create_New_CSV_SaleOrder = async (token, body) => {
     }
 }
 
+// Payment Billto Custer Auth.net
 export const customers_Getter = async (token) => {
     try {
         const data = await toast.promise(
@@ -281,6 +282,44 @@ export const customers_Getter = async (token) => {
     }
 }
 
+// Create new WH Shipment
+export const create_New_Shipment = async (token, body) => {
+    try {
+        const data = await axios.post(APIS.create_Shipment_micro, { token, body });
+        return data.data;
+    } catch (error) {
+        return error
+    }
+}
 
+// check_Pick_Details
+export const check_Pick_Details = async (token, pickCode) => {
+    try {
+        const data = await axios.post(APIS.pick_details_micro, { token, pickCode });
+        return data.data;
+    } catch (error) {
+        return error
+    }
+}
+
+// request_pick_micro
+export const request_New_Pick = async (token, body) => {
+    try {
+        const data = await axios.post(APIS.request_pick_micro, { token, body });
+        return data.data;
+    } catch (error) {
+        return error
+    }
+}
+
+// pickingPageDealer
+export const pickingPageDealer = async ({ token, picks }) => {
+    try {
+        const data = await axios.post(APIS.pickingPage_micro, { token, picks })
+        return data.data;
+    } catch (error) {
+        return error
+    }
+}
 
 

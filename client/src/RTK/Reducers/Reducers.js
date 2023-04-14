@@ -5,7 +5,58 @@ import Swal from 'sweetalert2';
 import axios from 'axios';
 import { APIS } from '../../utils/table';
 
-
+const ppp = [
+  {
+    "@odata.etag": "W/\"JzE5OzU3MzMzNzU5NTM5MDIzMTcwNDExOzAwOyc=\"",
+    "activityType": "Pick",
+    "no": "PI042123",
+    "lineNo": 10000,
+    "sourceDocument": "Sales Order",
+    "sourceNo": "SO34596",
+    "sourceLineNo": 10000,
+    "locationCode": "SYOSSET",
+    "itemNo": "I10969-016",
+    "description": "RADIANT-CAPRI",
+    "lotNo": "",
+    "quantity": 12,
+    "qtyToHandle": 12,
+    "qtyHandled": 0,
+    "qtyOutstanding": 12,
+    "scanned": false,
+    "unitOfMeasureCode": "YDS",
+    "qtyPerUnitOfMeasure": 1,
+    "destinationType": "Customer",
+    "destinationNo": "C06371",
+    "actionType": "Take",
+    "packageNo": "",
+    "WhseDocumentNo": "SH042058"
+  },
+  {
+    "@odata.etag": "W/\"JzIwOzEzNzE2ODAyMDUyODUwNDk3ODIyMTswMDsn\"",
+    "activityType": "Pick",
+    "no": "PI042123",
+    "lineNo": 20000,
+    "sourceDocument": "Sales Order",
+    "sourceNo": "SO34596",
+    "sourceLineNo": 10000,
+    "locationCode": "SYOSSET",
+    "itemNo": "I10969-016",
+    "description": "RADIANT-CAPRI",
+    "lotNo": "",
+    "quantity": 12,
+    "qtyToHandle": 12,
+    "qtyHandled": 0,
+    "qtyOutstanding": 12,
+    "scanned": false,
+    "unitOfMeasureCode": "YDS",
+    "qtyPerUnitOfMeasure": 1,
+    "destinationType": "Customer",
+    "destinationNo": "C06371",
+    "actionType": "Place",
+    "packageNo": "",
+    "WhseDocumentNo": "SH042058"
+  }
+]
 // ------------------All Asyn Reducers are below ------------------//
 let initialState = {
   perPage: 21,
@@ -44,11 +95,14 @@ let initialState = {
   loadingNewOrder: false,
   newOrderData: null,
 
-// stamps
+  // stamps
   stamps_token: null,
   stamps_code: null,
-// shipfrom location
-ship_from_location : {},
+  // shipfrom location
+  ship_from_location: {},
+  successPickData0: ppp,
+  successPickData1: ppp,
+  ins_cut_item_detail: null,
 
 }
 
@@ -115,6 +169,16 @@ export const shipFromLocation = createAsyncThunk(
   }
 );
 
+// successPick_micro
+export const successPickDetails = createAsyncThunk(
+  'mainSlice/successPickDetails',
+  async (token, pickCode) => {
+    const data = await axios.post(APIS.successPick_micro, { token, pickCode })
+    return data.data;
+  }
+);
+
+// pickingPageDealer
 
 
 
@@ -132,10 +196,43 @@ export const shipFromLocation = createAsyncThunk(
 
 
 
+const Toaster = (type, error) => {
+
+  switch (type) {
+    case 'loading':
+      toast.loading('Loading...', {
+        position: "top-right",
+        autoClose: false,
+        hideProgressBar: true
+      });
+      break;
+    case 'success':
+      toast.success('Loaded', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true
+      });
+      break;
+    case 'error':
+      toast.success(`${error}`, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true
+      });
+      break;
+
+    default:
+      break;
+  }
 
 
 
 
+
+
+
+
+}
 
 
 
@@ -197,6 +294,9 @@ const mainSlice = createSlice({
         state.orderTypeAllOrders = payload.orderType
       }
     },
+    INS_CUT_ITEM: (state, { payload }) => {
+      state.ins_cut_item_detail = payload
+    }
 
   },
 
@@ -262,9 +362,9 @@ const mainSlice = createSlice({
       })
       .addCase(csvOrderDealer.fulfilled, (state, { payload }) => {
         state.loadingCSV = false;
-        if (payload.success){ 
+        if (payload.success) {
           state.csv_data_local = [];
-          console.log("-------------",payload);
+          console.log("-------------", payload);
           state.csv_data_responded = payload.data;
         }
       })
@@ -278,7 +378,7 @@ const mainSlice = createSlice({
         state.loadingCSV = true;
       })
       .addCase(shipFromLocation.fulfilled, (state, { payload }) => {
-        if (!(payload.error)){ 
+        if (!(payload.error)) {
           state.ship_from_location = payload.location;
         }
       })
@@ -286,9 +386,20 @@ const mainSlice = createSlice({
         Swal.fire({ icon: 'error', title: error.code, text: error.message })
       })
 
+      // successPickDetails
+      .addCase(successPickDetails.pending, (state) => {
+        Toaster('loading')
+      })
+      .addCase(successPickDetails.fulfilled, (state, { payload }) => {
+        toast.dismiss();
+        state.successPickData0 = payload?.NOC?.value
+      })
+      .addCase(successPickDetails.rejected, (state, { error }) => {
+        toast.dismiss();
+        Swal.fire({ icon: 'error', title: error.code, text: error.message })
+      })
 
-
-
+  // pickingPageDealer
 
 
 
@@ -309,6 +420,7 @@ export const { LOG_OUT,
   CSV_DATA_LOCAL_RED,
   STAMPS_TOKEN,
   PAGE_DEALER_ALL_ORDERS,
+  INS_CUT_ITEM,
 } = mainSlice.actions;
 
 

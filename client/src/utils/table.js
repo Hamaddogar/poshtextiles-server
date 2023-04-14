@@ -47,6 +47,11 @@ export const APIS = {
     csv_order_micro: 'http://localhost:8080/csv_orders',
     customers_micro: 'http://localhost:8080/customers',
     shipFrom: 'http://localhost:8080/shipfrom',
+    create_Shipment_micro: 'http://localhost:8080/createShipment',
+    pick_details_micro: 'http://localhost:8080/pickDetails',
+    request_pick_micro: 'http://localhost:8080/requestPick',
+    successPick_micro: 'http://localhost:8080/successPick',
+    pickingPage_micro :'http://localhost:8080/pickingPage',
     
 }
 

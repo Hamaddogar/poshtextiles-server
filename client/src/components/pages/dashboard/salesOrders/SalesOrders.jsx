@@ -33,6 +33,7 @@ import p15 from "../../../assets/images/p15.png";
 import CreateNewLineItem from '../reUseAbles/CreateNewLineItem';
 import UpdateLineItem from '../reUseAbles/UpdateLineItem';
 import UpperHeader from '../reUseAbles/UpperHeader';
+import WHShipmentModelView from '../reUseAbles/WHShipmentModelView';
 
 const SalesOrders = () => {
 
@@ -50,6 +51,7 @@ const SalesOrders = () => {
     const [open, setOpen] = React.useState(false);
     const anchorRef = React.useRef(null);
     const prevOpen = React.useRef(open);
+    const [openCreateWHShip, setOpenCreateWHShip] = React.useState(false);
 
 
     const handlePageChange = page => {
@@ -183,8 +185,20 @@ const SalesOrders = () => {
     }
     const images = [p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15];
 
+
+
+
+    const handleCreateWHShip = () => {
+        setOpenCreateWHShip(true);
+    }
+
+
+
+
+
     return (
         <div>
+            <WHShipmentModelView openCreateWHShip={openCreateWHShip} setOpenCreateWHShip={setOpenCreateWHShip} SNO={saleOrderDetails.no} />
             <ConDialog openConfirmation={openConfirmation} setOpenConfirmation={setOpenConfirmation} deleteLineItem={deleteLineItem} />
             <Box>
                 {/* Upper Form */}
@@ -313,9 +327,10 @@ const SalesOrders = () => {
                                     onClick={handleClose}
                                 >
                                     {/* <MenuItem onClick={handleClose}>Profile</MenuItem> */}
-                                    <MenuItem sx={{ borderBottom: '1px solid white', fontSize: '13px' }} >RELEASE</MenuItem>
-                                    <MenuItem onClick={handleShippingQuote} sx={{ borderBottom: '1px solid white', fontSize: '13px' }} >SHIP</MenuItem>
-                                    <MenuItem sx={{ fontSize: '13px' }}>UNRELEASE</MenuItem>
+                                    <MenuItem sx={{ borderBottom: '1px solid white', fontSize: '13px' }} >RELEASE Now</MenuItem>
+                                    <MenuItem onClick={handleCreateWHShip} sx={{ borderBottom: '1px solid white', fontSize: '13px' }} >Create WH Shipment</MenuItem>
+                                    <MenuItem onClick={handleShippingQuote} sx={{ borderBottom: '1px solid white', fontSize: '13px' }} >SHIP Now</MenuItem>
+                                    <MenuItem sx={{ fontSize: '13px' }}>UNRELEASE nOW</MenuItem>
                                 </MenuList>
                             </ClickAwayListener>
                         </Paper>

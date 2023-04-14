@@ -21,7 +21,7 @@ import UpdateLineItem from '../reUseAbles/UpdateLineItem';
 
 const Picking = () => {
 
-    const { pickingSelectedProduct, status, saleOrderDetails } = useSelector(store => store.mainReducer);
+    const { pickingSelectedProduct, status, saleOrderDetails, } = useSelector(store => store.mainReducer);
     const navigate = useNavigate();
 
     return (

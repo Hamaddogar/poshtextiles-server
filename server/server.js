@@ -95,7 +95,12 @@ const routeStrings = {
     new_order_micro: '/newOrder',
     csv_orders_micro: '/csv_orders',
     customers_micro: '/customers',
-    ship_from_location_micro: '/shipfrom'
+    ship_from_location_micro: '/shipfrom',
+    create_shipment: '/createShipment',
+    get_pick_details_micro: '/pickDetails',
+    request_pick_micro: '/requestPick',
+    success_pick_detail_micro: '/successPick',
+    picking_page_detail_micro: '/pickingPage'
 
 }
 
@@ -1058,6 +1063,159 @@ app.post(routeStrings.ship_from_location_micro, async (req, res) => {
         })
     }
 });
+
+// create_shpment
+app.post(routeStrings.create_shipment, async (req, res) => {
+    const config = {
+        headers: {
+            "Authorization": `Bearer ${req.body.token}`,
+        }
+    };
+    try {
+        const response = await axios.post(
+            API_MICROSOFT.create_WH_Shipment,
+            req.body.body,
+            config
+        );
+        res.send({ creation: response.data });
+
+    } catch (error) {
+        console.log(error);
+        res.status(error?.response?.status).send({
+            code: error.response.status,
+            message: error?.response?.data?.errors?.[0]?.error_message || error?.message,
+            error: true
+        })
+    }
+});
+
+// get_pick_details
+app.post(routeStrings.get_pick_details_micro, async (req, res) => {
+    const config = {
+        headers: {
+            "Authorization": `Bearer ${req.body.token}`,
+        }
+    };
+    try {
+        const response = await axios.get(
+            API_MICROSOFT.get_pick_details(req.body.pickCode),
+            config
+        );
+        res.send({ error: false, pickDetails: response.data });
+
+    } catch (error) {
+        console.log(error);
+        res.status(error?.response?.status).send({
+            code: error.response.status,
+            message: error?.response?.data?.errors?.[0]?.error_message || error?.message,
+            error: true
+        })
+    }
+});
+
+// request_to_pick
+app.post(routeStrings.request_pick_micro, async (req, res) => {
+    const config = {
+        headers: {
+            "Authorization": `Bearer ${req.body.token}`,
+        }
+    };
+    try {
+        const response = await axios.post(
+            API_MICROSOFT.request_to_pick,
+            req.body.body,
+            config
+        );
+        res.send({ requested: response.data });
+
+    } catch (error) {
+        console.log(error);
+        res.status(error?.response?.status).send({
+            code: error.response.status,
+            message: error?.response?.data?.errors?.[0]?.error_message || error?.message,
+            error: true
+        })
+    }
+});
+
+// success_pick_detail
+app.post(routeStrings.success_pick_detail_micro, async (req, res) => {
+    const config = {
+        headers: {
+            "Authorization": `Bearer ${req.body.token}`,
+        }
+    };
+    try {
+        const response = await axios.get(
+            API_MICROSOFT.success_pick_detail(req.body.pickCode),
+            config
+        );
+        res.send({ error: false, NOC: response.data });
+
+    } catch (error) {
+        console.log(error);
+        res.status(error?.response?.status).send({
+            code: error.response.status,
+            message: error?.response?.data?.errors?.[0]?.error_message || error?.message,
+            error: true
+        })
+    }
+});
+
+
+// bin and inventory
+app.post(routeStrings.picking_page_detail_micro, async (req, res) => {
+    const config = {
+        headers: {
+            "Authorization": `Bearer ${req.body.token}`,
+        }
+    };
+    console.log("------------", req.body.picks);
+    const allPickingDetails = req.body.picks;
+    const dataToSend = []
+    try {
+
+
+        for (let index = 0; index < allPickingDetails.length; index++) {
+            const item = allPickingDetails[index];
+
+            const responseInventory = await axios.get(
+                API_MICROSOFT.inventory_pick_detail(item.itemNo, item.locationCode),
+                config
+            );
+
+            const responseBin = await axios.get(
+                API_MICROSOFT.bin_pick_detail(item.itemNo, item.locationCode),
+                config
+            );
+
+
+            dataToSend.push({
+                ...responseInventory?.data?.value?.[0],
+                ...responseBin?.data?.value?.[0],
+            })
+
+        }
+
+        res.send({ error: false, data: dataToSend });
+
+    } catch (error) {
+        console.log(error);
+        res.status(error?.response?.status).send({
+            code: error.response.status,
+            message: error?.response?.data?.errors?.[0]?.error_message || error?.message,
+            error: true
+        })
+    }
+});
+
+
+
+
+
+
+
+
 
 // ------------------- Configurations----------------- //
 
