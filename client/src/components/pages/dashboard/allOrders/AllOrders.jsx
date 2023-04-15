@@ -31,6 +31,7 @@ import { request_AccessToken_MICROSOFT } from '../../../../utils/API_HELPERS';
 
 const AllOrders = () => {
     const { allOrders, perPage, loading, currentPageAllOrders, orderTypeAllOrders } = useSelector(store => store.mainReducer);
+    const [one, setOne] = React.useState(false);
     const [copy, setCopy] = React.useState([]);
     const [rows, setRows] = React.useState([]);
     const [searchIt, setSearchIt] = React.useState("");
@@ -53,14 +54,15 @@ const AllOrders = () => {
         //eslint-disable-next-line
     }, [copy, perPage]);
     React.useLayoutEffect(() => {
-        if (orderTypeAllOrders === "all") setRows(copy.filter(item => (item[searchTo])?.toLocaleLowerCase().includes(searchIt)));
-        else setRows(copy.filter(item => (item[searchTo])?.toLocaleLowerCase().includes(searchIt) && item.status === orderTypeAllOrders));
+        if (one) setRows(copy.filter(item => (item[searchTo])?.toLocaleLowerCase().includes(searchIt)));
+        else if (one) setRows(copy.filter(item => (item[searchTo])?.toLocaleLowerCase().includes(searchIt) && item.status === orderTypeAllOrders));
         //eslint-disable-next-line
     }, [searchIt]);
     React.useLayoutEffect(() => {
+        setOne(true);
         const getSearched = setTimeout(() => {
             setSearchIt(searchItDebounce.toLocaleLowerCase());
-        }, 800);
+        }, 300);
         return () => clearTimeout(getSearched)
         //eslint-disable-next-line
     }, [searchItDebounce]);

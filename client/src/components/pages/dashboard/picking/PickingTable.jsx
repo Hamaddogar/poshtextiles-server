@@ -16,7 +16,7 @@ import PreLoader from '../../HOC/Loading';
 import { INS_CUT_ITEM } from '../../../../RTK/Reducers/Reducers';
 
 const PickingTable = () => {
-    const { successPickData0, successPickData1 } = useSelector(store => store.mainReducer);
+    const { successPickData0 } = useSelector(store => store.mainReducer);
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [loading, setLoading] = React.useState(false);
@@ -29,7 +29,7 @@ const PickingTable = () => {
                 if (decide.success) {
                     pickingPageDealer({
                         token: decide.token,
-                        picks: successPickData1,
+                        picks: successPickData0,
                     }).then(res => {
                         if (!(res.error)) {
                             setRows(res.data);

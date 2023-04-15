@@ -8,9 +8,10 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import { check_Pick_Details, create_New_Shipment, request_AccessToken_MICROSOFT, request_New_Pick } from '../../../../utils/API_HELPERS';
 import { Box, CircularProgress, Divider, Typography } from '@mui/material';
-import { successPickDetails } from '../../../../RTK/Reducers/Reducers';
+import { saleOrderNoFilter, successPickDetails } from '../../../../RTK/Reducers/Reducers';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { Send } from '@mui/icons-material';
 
 const WHShipmentModelView = ({ openCreateWHShip, setOpenCreateWHShip, SNO }) => {
 
@@ -60,6 +61,10 @@ const WHShipmentModelView = ({ openCreateWHShip, setOpenCreateWHShip, SNO }) => 
                             code: code,
                             message: response.creation.responseMsg
                         })
+                        if (response.creation.responseMsg.includes("was already created.")) {
+                            handlePickDetailsStatus(code);
+                            handleRequestPick(code);
+                        }
                     } else {
                         setResponse({
                             error: true,
@@ -74,9 +79,9 @@ const WHShipmentModelView = ({ openCreateWHShip, setOpenCreateWHShip, SNO }) => 
     }, [SNO, openCreateWHShip, microSoftToken])
 
     // handleNextAction
-    const handleNextAction = () => {
+    const handlePickDetailsStatus = (code) => {
         setResponsePick("loading")
-        check_Pick_Details(microSoftToken, response.code)
+        check_Pick_Details(microSoftToken, code || response.code)
             .then(response => {
                 if (response?.pickDetails?.value?.length === 0) {
                     setResponsePick({
@@ -95,25 +100,29 @@ const WHShipmentModelView = ({ openCreateWHShip, setOpenCreateWHShip, SNO }) => 
             })
     }
 
+
+    const alreadyConditionCheck = (response) => !(response?.message?.includes("was already created."))
+
     // handleRequestPick
-    const handleRequestPick = () => {
-        console.log("code", response.code);
+    const handleRequestPick = (code) => {
         setResponsePickWH("loading")
-        request_New_Pick(microSoftToken, { "whseShipNo": response.code })
+        request_New_Pick(microSoftToken, { "whseShipNo": code || response.code })
             .then(response => {
-                console.log("<<<<<<<<response>>>>>>>>>>", response);
                 setResponsePickWH(response?.requested)
+                console.log("<<<<<<<<handleRequestPick>>>>>>>>>>", response);
+                dispatch(saleOrderNoFilter({
+                    token: microSoftToken,
+                    toastPermission: false
+                }));
             })
-
-
     }
 
 
-    const handleSuccessPickDetail = () => {
-        dispatch(successPickDetails(microSoftToken, response.code))
+    const handleSuccessPickDetail = (code) => {
+        dispatch(successPickDetails({ token: microSoftToken, pickCode: code || response.code }))
             .then(res => {
-                console.log("<<<<<>>>>>>>>>>>>", res.payload);
-                if (res?.payload?.NOC) {
+                console.log("<<<<<<<<<<<<<handleSuccessPickDetail>>>>>>>>>>>>", res.payload);
+                if (res?.payload?.NOC?.value?.length > 0) {
                     setpickPageSender(true)
                 }
             })
@@ -135,6 +144,7 @@ const WHShipmentModelView = ({ openCreateWHShip, setOpenCreateWHShip, SNO }) => 
                             :
                             "Your Response is Loaded..."
                     }
+                    <Typography sx={{ float: 'right', clear: 'both', fontSize: '13px' }}>Order No : {SNO}</Typography>
                 </DialogTitle>
 
 
@@ -148,11 +158,15 @@ const WHShipmentModelView = ({ openCreateWHShip, setOpenCreateWHShip, SNO }) => 
                         <Box>
                             <Typography textAlign={'left'} sx={{ color: '#2E7D32' }}>Picking Details are below</Typography>
                             <Typography>Record Found : {responsePick?.data?.length}</Typography>
+                            <Button variant='contained' size='small' onClick={e => handleSuccessPickDetail()} autoFocus>
+                                Get Pick Details
+                            </Button>
                         </Box>}
 
-                    {responsePick?.reqPick && responsePick !== null && responsePick !== "loading" &&
+                    {alreadyConditionCheck(response) && responsePick?.reqPick && responsePick !== null && responsePick !== "loading" &&
                         <Box>
-                            <Typography textAlign={'left'} sx={{ color: '#2E7D32' }}>Picking Details are below</Typography>
+                            <Typography textAlign={'left'} sx={{ color: '#2E7D32' }}>Picking Details Status is below</Typography>
+                            <Typography>Record Found : 0 </Typography>
                             <Typography>Order is Ready to Pick</Typography>
                         </Box>
                     }
@@ -166,6 +180,16 @@ const WHShipmentModelView = ({ openCreateWHShip, setOpenCreateWHShip, SNO }) => 
                             <Typography textAlign='left'>whseShipNo : {responsePickWH?.whseShipNo} </Typography>
                             <Typography>{responsePickWH?.responseMsg} </Typography>
                         </Box>}
+                    <Divider sx={{ borderColor: '#1E1E1E' }} />
+                    {pickPageSender && <Box>
+                        <Typography textAlign={'left'} sx={{ color: '#9C27B0' }}>Now You Can Visit Picking Section</Typography>
+
+                        <Link to='/picking'>
+                            <Button variant='contained' color='secondary' size='small' endIcon={<Send />} autoFocus>
+                                Move to picking
+                            </Button>
+                        </Link>
+                    </Box>}
 
                 </DialogContent>
 
@@ -174,20 +198,16 @@ const WHShipmentModelView = ({ openCreateWHShip, setOpenCreateWHShip, SNO }) => 
                     <Button color='error' variant='contained' size='small' autoFocus onClick={handleClose}>
                         Close
                     </Button>
-                    <Button color='success' variant='contained' size='small' disabled={response?.code ? false : true} onClick={handleNextAction} autoFocus>
-                        Check Pick Details
+                    <Button color='success' variant='contained' size='small' disabled={response?.code && alreadyConditionCheck(response) ? false : true} onClick={e => handlePickDetailsStatus()} autoFocus>
+                        Check Pick Status
                     </Button>
-                    <Button variant='contained' size='small' disabled={responsePick?.reqPick ? false : true} onClick={handleRequestPick} autoFocus>
+                    <Button variant='contained' size='small' disabled={responsePick?.reqPick && alreadyConditionCheck(response) ? false : true} onClick={e => handleRequestPick()} autoFocus>
                         Request Pick
                     </Button>
-                    <Button variant='contained' size='small' onClick={handleSuccessPickDetail} autoFocus>
-                        Check Pick Details
+                    <Button variant='contained' disabled={(responsePickWH === "loading" || responsePickWH === null || responsePickWH?.responseMsg === "Nothing to handle. .") || !alreadyConditionCheck(response) ? true : false} size='small' onClick={e => handleSuccessPickDetail()} autoFocus>
+                        Get Pick Details
                     </Button>
-                    {pickPageSender && <Link to='/picking'>
-                        <Button variant='contained' size='small' autoFocus>
-                            Move to picking
-                        </Button>
-                    </Link>}
+
 
                 </DialogActions>
             </Dialog>

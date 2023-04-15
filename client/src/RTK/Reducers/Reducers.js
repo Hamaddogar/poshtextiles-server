@@ -172,7 +172,7 @@ export const shipFromLocation = createAsyncThunk(
 // successPick_micro
 export const successPickDetails = createAsyncThunk(
   'mainSlice/successPickDetails',
-  async (token, pickCode) => {
+  async ({ token, pickCode }) => {
     const data = await axios.post(APIS.successPick_micro, { token, pickCode })
     return data.data;
   }

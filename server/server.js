@@ -1171,6 +1171,7 @@ app.post(routeStrings.success_pick_detail_micro, async (req, res) => {
             "Authorization": `Bearer ${req.body.token}`,
         }
     };
+
     try {
         const response = await axios.get(
             API_MICROSOFT.success_pick_detail(req.body.pickCode),
