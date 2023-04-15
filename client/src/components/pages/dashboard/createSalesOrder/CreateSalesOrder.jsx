@@ -11,11 +11,12 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import CommentsModel from './commentsModel';
 import ThumbNailImageSVG from "../../../assets/images/thumbnail2.svg";
 import { create_New_SaleOrder, request_AccessToken_MICROSOFT } from '../../../../utils/API_HELPERS';
-import { useMsal } from '@azure/msal-react';
 import { toast } from 'react-toastify';
 import CreateNewLineItem from '../reUseAbles/CreateNewLineItem';
+
+
+
 const CreateSalesOrder = () => {
-    const { instance, accounts } = useMsal();
     const navigate = useNavigate();
 
 
@@ -93,25 +94,28 @@ const CreateSalesOrder = () => {
         }
 
         if (lineItems.length > 0) {
-            request_AccessToken_MICROSOFT(instance, accounts)
-                .then(token => {
-                    create_New_SaleOrder({
-                        token: token,
-                        body: body,
-                        toastPermission: true,
-                    }).then(response => {
-                        if (response?.response?.data?.error?.error) {
-                            toast.error(`${response?.response?.data?.error?.message}`, {
-                                position: "top-right",
-                                autoClose: false,
-                                hideProgressBar: true
-                            });
-                        } else if (response.created) {
-                            fromResetter("newOrderForm");
-                            fromResetter("newOrderItemForm");
-                            setLineItems([])
-                        }
-                    })
+
+            request_AccessToken_MICROSOFT()
+                .then(decide => {
+                    if (decide.success) {
+                        create_New_SaleOrder({
+                            token: decide.token,
+                            body: body,
+                            toastPermission: true,
+                        }).then(response => {
+                            if (response?.response?.data?.error?.error) {
+                                toast.error(`${response?.response?.data?.error?.message}`, {
+                                    position: "top-right",
+                                    autoClose: false,
+                                    hideProgressBar: true
+                                });
+                            } else if (response.created) {
+                                fromResetter("newOrderForm");
+                                fromResetter("newOrderItemForm");
+                                setLineItems([])
+                            }
+                        })
+                    }
                 })
         } else {
             toast.error('Line Items must be present', {
@@ -119,14 +123,7 @@ const CreateSalesOrder = () => {
                 autoClose: false,
                 hideProgressBar: true
             });
-            // toast.loading('Validating Address...', {
-            //     position: "top-right",
-            //     autoClose: false,
-            //     hideProgressBar: true
-            // });
         }
-
-
 
     }
 

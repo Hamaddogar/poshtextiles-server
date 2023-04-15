@@ -7,7 +7,6 @@ import DialogTitle from '@mui/material/DialogTitle';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import { check_Pick_Details, create_New_Shipment, request_AccessToken_MICROSOFT, request_New_Pick } from '../../../../utils/API_HELPERS';
-import { useMsal } from '@azure/msal-react';
 import { Box, CircularProgress, Divider, Typography } from '@mui/material';
 import { successPickDetails } from '../../../../RTK/Reducers/Reducers';
 import { useDispatch } from 'react-redux';
@@ -18,11 +17,11 @@ const WHShipmentModelView = ({ openCreateWHShip, setOpenCreateWHShip, SNO }) => 
     const dispatch = useDispatch();
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
-    const { instance, accounts } = useMsal();
     const [response, setResponse] = React.useState(null);
     const [responsePick, setResponsePick] = React.useState(null);
     const [responsePickWH, setResponsePickWH] = React.useState(null);
     const [pickPageSender, setpickPageSender] = React.useState(false)
+    const [microSoftToken, setMicroSoftToken] = React.useState(null)
 
 
     const handleClose = () => {
@@ -30,62 +29,69 @@ const WHShipmentModelView = ({ openCreateWHShip, setOpenCreateWHShip, SNO }) => 
         setResponse(null);
         setResponsePick(null);
         setResponsePickWH(null);
+        setMicroSoftToken(null);
     };
+
+    React.useLayoutEffect(() => {
+        if (openCreateWHShip) {
+            request_AccessToken_MICROSOFT()
+                .then(decide => {
+                    if (decide.success) {
+                        setMicroSoftToken(decide.token)
+                    }
+                })
+        }
+    }, [SNO, openCreateWHShip])
 
     React.useEffect(() => {
         const body = {
             "orderNo": SNO,
             "createWarehouseShipment": true
         }
-        if (openCreateWHShip) {
-            request_AccessToken_MICROSOFT(instance, accounts)
-                .then(token => {
-                    create_New_Shipment(token, body)
-                        .then(response => {
-                            const codeCheck = /SH\d{6}/;
-                            if ("responseMsg" in response?.creation && (response.creation.responseMsg.match(codeCheck))) {
-                                const code = response.creation.responseMsg.match(/SH\d+/)[0];
-                                setResponse({
-                                    error: false,
-                                    code: code,
-                                    message: response.creation.responseMsg
-                                })
-                            } else {
-                                setResponse({
-                                    error: true,
-                                    message: response.creation.responseMsg
-                                })
-
-                            }
+        if (openCreateWHShip && microSoftToken) {
+            create_New_Shipment(microSoftToken, body)
+                .then(response => {
+                    console.log("---------", response);
+                    const codeCheck = /SH\d{6}/;
+                    if ("responseMsg" in response?.creation && (response.creation.responseMsg.match(codeCheck))) {
+                        const code = response.creation.responseMsg.match(/SH\d+/)[0];
+                        setResponse({
+                            error: false,
+                            code: code,
+                            message: response.creation.responseMsg
                         })
+                    } else {
+                        setResponse({
+                            error: true,
+                            message: response.creation.responseMsg
+                        })
+
+                    }
                 })
         }
 
         //eslint-disable-next-line
-    }, [SNO, openCreateWHShip])
+    }, [SNO, openCreateWHShip, microSoftToken])
 
     // handleNextAction
     const handleNextAction = () => {
         setResponsePick("loading")
-        request_AccessToken_MICROSOFT(instance, accounts)
-            .then(token => {
-                check_Pick_Details(token, response.code)
-                    .then(response => {
-                        if (response?.pickDetails?.value?.length === 0) {
-                            setResponsePick({
-                                error: false,
-                                data: response?.pickDetails?.value,
-                                reqPick: true
-                            })
-                        } else {
-                            setResponsePick({
-                                error: false,
-                                data: response?.pickDetails?.value,
-                                reqPick: false
-                            })
-                        }
-
+        check_Pick_Details(microSoftToken, response.code)
+            .then(response => {
+                if (response?.pickDetails?.value?.length === 0) {
+                    setResponsePick({
+                        error: false,
+                        data: response?.pickDetails?.value,
+                        reqPick: true
                     })
+                } else {
+                    setResponsePick({
+                        error: false,
+                        data: response?.pickDetails?.value,
+                        reqPick: false
+                    })
+                }
+
             })
     }
 
@@ -93,13 +99,10 @@ const WHShipmentModelView = ({ openCreateWHShip, setOpenCreateWHShip, SNO }) => 
     const handleRequestPick = () => {
         console.log("code", response.code);
         setResponsePickWH("loading")
-        request_AccessToken_MICROSOFT(instance, accounts)
-            .then(token => {
-                request_New_Pick(token, { "whseShipNo": response.code })
-                    .then(response => {
-                        console.log("<<<<<<<<response>>>>>>>>>>", response);
-                        setResponsePickWH(response?.requested)
-                    })
+        request_New_Pick(microSoftToken, { "whseShipNo": response.code })
+            .then(response => {
+                console.log("<<<<<<<<response>>>>>>>>>>", response);
+                setResponsePickWH(response?.requested)
             })
 
 
@@ -107,15 +110,12 @@ const WHShipmentModelView = ({ openCreateWHShip, setOpenCreateWHShip, SNO }) => 
 
 
     const handleSuccessPickDetail = () => {
-        request_AccessToken_MICROSOFT(instance, accounts)
-            .then(token => {
-                dispatch(successPickDetails(token, response.code))
-                    .then(res => {
-                        console.log("<<<<<>>>>>>>>>>>>", res.payload);
-                        if (res?.payload?.NOC) {
-                            setpickPageSender(true)
-                        }
-                    })
+        dispatch(successPickDetails(microSoftToken, response.code))
+            .then(res => {
+                console.log("<<<<<>>>>>>>>>>>>", res.payload);
+                if (res?.payload?.NOC) {
+                    setpickPageSender(true)
+                }
             })
     }
 

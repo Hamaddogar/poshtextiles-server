@@ -13,15 +13,14 @@ import SearchIcon from '@mui/icons-material/Search';
 import Pagination from 'react-responsive-pagination';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Box } from '@mui/system';
-import {  useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { CSV_DATA_LOCAL_RED, CSV_PRODUCT_DETAIL, csvOrderDealer } from '../../../../RTK/Reducers/Reducers';
-import { BackButton,  NoBorder, Search, SearchIconWrapper, StyledInputBase } from '../reUseAbles/ReuseAbles';
+import { BackButton, NoBorder, Search, SearchIconWrapper, StyledInputBase } from '../reUseAbles/ReuseAbles';
 import PreLoader from '../../HOC/Loading';
 import NoRecord from '../../HOC/NoRecord';
 import Papa from 'papaparse';
 import { toast } from 'react-toastify';
 import { request_AccessToken_MICROSOFT } from '../../../../utils/API_HELPERS';
-import { useMsal } from '@azure/msal-react';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 
 
@@ -31,7 +30,6 @@ import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 
 const CSVOrders = () => {
     const { perPage, csv_data_local, csv_data_responded, csv_fileName, loadingCSV } = useSelector(store => store.mainReducer);
-    const { instance, accounts } = useMsal();
 
     const [loading, setLoading] = React.useState({ load: false, fileName: "" })
     const [copy, setCopy] = React.useState([]);
@@ -117,9 +115,11 @@ const CSVOrders = () => {
 
     const handleSendToServer = () => {
         if (csv_data_local.length > 0) {
-            request_AccessToken_MICROSOFT(instance, accounts)
-                .then(token => {
-                    dispatch(csvOrderDealer({ token: token, body: csv_data_local }))
+            request_AccessToken_MICROSOFT()
+                .then(decide => {
+                    if (decide.success) {
+                        dispatch(csvOrderDealer({ token: decide.token, body: csv_data_local }))
+                    }
                 })
         } else {
             toast.error('No Data Found Please Upload File Again!', { position: "top-right", autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "light", });
@@ -197,7 +197,7 @@ const CSVOrders = () => {
                                         '&:hover': { backgroundColor: 'rgb(128, 128, 128,.1)', cursor: 'pointer', transition: '.3s' },
                                         '& .MuiTableCell-root': {
                                             padding: '10px 16px ',
-                                            backgroundColor: index %2 === 0 ? 'rgb(255, 0, 0,.1)' : 'transparent'
+                                            backgroundColor: index % 2 === 0 ? 'rgb(255, 0, 0,.1)' : 'transparent'
                                         }
                                     }}
                                         onClick={() => handleSlectOrder(row)}

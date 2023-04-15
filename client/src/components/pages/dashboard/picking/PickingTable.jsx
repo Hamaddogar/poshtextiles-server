@@ -11,7 +11,6 @@ import scissors from '../../../assets/icons/scissors.png';
 import inspectionBtn from '../../../assets/icons/inspectionbtn.png';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { useMsal } from '@azure/msal-react';
 import { pickingPageDealer, request_AccessToken_MICROSOFT } from '../../../../utils/API_HELPERS';
 import PreLoader from '../../HOC/Loading';
 import { INS_CUT_ITEM } from '../../../../RTK/Reducers/Reducers';
@@ -22,23 +21,24 @@ const PickingTable = () => {
     const dispatch = useDispatch();
     const [loading, setLoading] = React.useState(false);
     const [rows, setRows] = React.useState([]);
-    const { instance, accounts } = useMsal();
 
     React.useEffect(() => {
         setLoading(true);
-        request_AccessToken_MICROSOFT(instance, accounts)
-            .then(token => {
-                pickingPageDealer({
-                    token: token,
-                    picks: successPickData1,
-                }).then(res => {
-                    if (!(res.error)) {
-                        setRows(res.data);
-                        setLoading(false);
-                    }
-                })
-
+        request_AccessToken_MICROSOFT()
+            .then(decide => {
+                if (decide.success) {
+                    pickingPageDealer({
+                        token: decide.token,
+                        picks: successPickData1,
+                    }).then(res => {
+                        if (!(res.error)) {
+                            setRows(res.data);
+                            setLoading(false);
+                        }
+                    })
+                }
             })
+
         //eslint-disable-next-line
     }, [successPickData0])
 
@@ -47,10 +47,6 @@ const PickingTable = () => {
         dispatch(INS_CUT_ITEM(item));
         navigate(NTO);
     }
-
-
-
-
 
 
     return (

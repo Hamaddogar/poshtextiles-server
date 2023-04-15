@@ -1,6 +1,5 @@
 import axios from "axios";
 import { toast } from "react-toastify";
-import { loginRequest } from "./authConfig";
 import { APIS } from "./table";
 
 
@@ -24,13 +23,13 @@ export const request_AccessToken_FEDEXP = async () => {
 
 
 // Microsoft
-export const request_AccessToken_MICROSOFT = async (instance, accounts) => {
-    return instance
-        .acquireTokenSilent({
-            ...loginRequest,
-            account: accounts[0],
-        })
-        .then((response) => response.accessToken)
+export const request_AccessToken_MICROSOFT = async () => {
+    try {
+        const response = await axios.post(APIS.token_micro);
+        return response.data;
+    } catch (error) {
+        return error
+    }
 };
 
 // STTAMPS

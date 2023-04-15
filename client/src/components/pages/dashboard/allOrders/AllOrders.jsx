@@ -22,7 +22,6 @@ import { lnk, Search, searchDropDown, SearchIconWrapper, StyledInputBase, styleS
 import PreLoader from '../../HOC/Loading';
 import NoRecord from '../../HOC/NoRecord';
 import { request_AccessToken_MICROSOFT } from '../../../../utils/API_HELPERS';
-import { useMsal } from '@azure/msal-react';
 
 
 
@@ -41,7 +40,6 @@ const AllOrders = () => {
 
     const navigate = useNavigate();
     const dispatch = useDispatch()
-    const { instance, accounts } = useMsal();
 
 
     React.useLayoutEffect(() => {
@@ -49,11 +47,11 @@ const AllOrders = () => {
         else setCopy(allOrders.filter(item => item.status === orderTypeAllOrders));
         //eslint-disable-next-line
     }, [allOrders]);
-    React.useLayoutEffect(() => { 
+    React.useLayoutEffect(() => {
         setRows(copy.slice(0, perPage));
         handlePageChange(currentPageAllOrders);
         //eslint-disable-next-line
-     }, [copy, perPage]);
+    }, [copy, perPage]);
     React.useLayoutEffect(() => {
         if (orderTypeAllOrders === "all") setRows(copy.filter(item => (item[searchTo])?.toLocaleLowerCase().includes(searchIt)));
         else setRows(copy.filter(item => (item[searchTo])?.toLocaleLowerCase().includes(searchIt) && item.status === orderTypeAllOrders));
@@ -76,13 +74,15 @@ const AllOrders = () => {
     const handleSearch = e => setSearchItDebounce((e.target.value).toLocaleLowerCase());
     const handleSlectOrder = data => {
         dispatch(SELECTED_SALE_ORDER_DATA(data))
-        request_AccessToken_MICROSOFT(instance, accounts)
-        .then(token => {
-            dispatch(shipFromLocation({
-                token: token,
-                locationCode: data.edcCustomers[0].locationCode,
-            }))
-        })
+        request_AccessToken_MICROSOFT()
+            .then(decide => {
+                if (decide.success) {
+                    dispatch(shipFromLocation({
+                        token: decide.token,
+                        locationCode: data.edcCustomers[0].locationCode,
+                    }))
+                }
+            })
         navigate('sale-order')
     }
 

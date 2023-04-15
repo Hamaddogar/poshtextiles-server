@@ -70,6 +70,7 @@ const stampsPassword = "April2023!";
 // ---------------- Routes -------------- //
 const routeStrings = {
     // tokens
+    token_micro: '/token_microsoft',
     token_fed: '/fedexp_token',
     token_stamps: '/stamps_token',
 
@@ -860,6 +861,31 @@ app.post('/printer', async (req, res) => {
 
 
 // -----------------Microsoft Routes --------------------- //
+
+// ==========token============
+app.post(routeStrings.token_micro, async (req, res) => {
+    const config = {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    };
+
+    const body = {
+        grant_type: SECRETS.GRANT_TYPE_MICROSOFT,
+        client_id: SECRETS.CLIENT_ID_MICROSOFT,
+        scope: SECRETS.SCOPE_MICROSOFT,
+        client_secret: SECRETS.CLIENT_SECRET_MICROSOFT
+    };
+    try {
+        const response = await axios.post(
+            SECRETS.AUTH_URL,
+            new URLSearchParams(body).toString(),
+            config
+        );
+        res.send({ success: true, token: response.data.access_token })
+    } catch (error) {
+        console.log(error);
+        res.send({ error: true });
+    }
+});
 
 // microsoft all sales orders
 app.post(routeStrings.sale_orders_micro, async (req, res) => {
