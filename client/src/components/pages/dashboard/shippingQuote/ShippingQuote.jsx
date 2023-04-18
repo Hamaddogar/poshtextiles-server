@@ -10,7 +10,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import ShipfromDialoge from './ShipfromDialoge'
 import { useDispatch, useSelector } from 'react-redux'
 import { BackButton, headInputStyle, styleSlect } from '../reUseAbles/ReuseAbles'
-import { create_Shipment_FEDEXP, create_Shipment_STAMPS, createShipment_UPS, request_AccessToken_FEDEXP, request_AccessToken_STAMPS } from '../../../../utils/API_HELPERS'
+import { create_Shipment_FEDEXP, create_Shipment_STAMPS, createShipment_UPS, request_AccessToken_FEDEXP, request_AccessToken_STAMPS_server } from '../../../../utils/API_HELPERS'
 import ShipReportDialog from './ShipReportDialog'
 import { payload_Shipment_Handler } from '../../../../utils/Helper'
 import ShipToDialoge from './ShipToDia'
@@ -119,7 +119,7 @@ const ShippingQuote = () => {
                         create_Shipment_STAMPS(stamps_token, payload_Shipment_Handler(saleOrderDetails, ship_from_location, selections.printOn))
                     );
                 } else {
-                    request_AccessToken_STAMPS()
+                    request_AccessToken_STAMPS_server()
                         .then(res => {
                             if (res.token) {
                                 recursiveCaller(

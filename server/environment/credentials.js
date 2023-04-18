@@ -19,6 +19,16 @@ module.exports = {
         AUTHORISE_NET_TRANSACTION_KEY: "33vx9gmCXd6485DQ",
         AUTHORISE_NET_KEY: "SIMON",
 
+
+
+
+        // test accounts
+        CLIENT_ID_STAMPS: 'my778N8oCwaKq0dSPT1soKY9807OpicK',
+        REDIRECT_URI_STAMPS: 'http://localhost:8080/auth_stamps',
+        CLIENT_SECRET_STAMPS: 'd_uNVV_XwW8K2wwO7UrEkMIuiokqPLANSUnr6JNP1CcXUbrtgQoTsBSnOJi0ttGF',
+        stampsUsername: "poshtext-01",
+        stampsPassword: "April2023!",
+
     }
 
 };

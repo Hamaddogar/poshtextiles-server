@@ -5,7 +5,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { Grid, TextField, Typography } from '@mui/material';
 import { headInputStyle } from '../reUseAbles/ReuseAbles';
 import { Container } from '@mui/system';
-import { request_AccessToken_FEDEXP, request_AccessToken_STAMPS, validate_Address_FEDEX, validate_Address_STAMPS, validate_Address_UPS } from '../../../../utils/API_HELPERS';
+import { request_AccessToken_FEDEXP, request_AccessToken_STAMPS_server, validate_Address_FEDEX, validate_Address_STAMPS, validate_Address_UPS } from '../../../../utils/API_HELPERS';
 // import { validateAddressFEDEXP, validateAddressUPS } from '../../../../RTK/Reducers/Reducers';
 import { toast } from 'react-toastify';
 import { payload_Address_Handler } from '../../../../utils/Helper';
@@ -89,7 +89,7 @@ export default function AddressValidateDrawer({
                         validate_Address_STAMPS(stamps_token, payload_Address_Handler(saleOrderDetails))
                     );
                 } else {
-                    request_AccessToken_STAMPS()
+                    request_AccessToken_STAMPS_server()
                         .then(res => {
                             if (res.token) {
                                 recursiveCaller(

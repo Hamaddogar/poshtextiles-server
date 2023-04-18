@@ -36,7 +36,7 @@ export const request_AccessToken_MICROSOFT = async () => {
 export const request_AccessToken_STAMPS = async () => {
 
     try {
-        const response = await axios.get("http://localhost:8080/auth")
+        const response = await axios.get(APIS.token_stamps)
         const authWindow = window.open(response.data, '_blank')
 
         // Wait for code URL to appear
@@ -71,7 +71,7 @@ export const request_AccessToken_STAMPS = async () => {
 
 export const funds_STAMPS = async (token) => {
     try {
-        const response = await axios.post("http://localhost:8080/auth_stamps", { token })
+        const response = await axios.post(APIS.funds_STAMP, { token })
         console.log("balance", response.data);
         return response.data
     } catch (error) {
@@ -79,6 +79,18 @@ export const funds_STAMPS = async (token) => {
     }
 };
 
+// 
+export const request_AccessToken_STAMPS_server = async () => {
+
+    try {
+        const response = await axios.get(APIS.token_stamps)
+        alert()
+        console.log("<<<<<<<<<request_AccessToken_STAMPS_server>>>>>>>>>>>>>", response);
+        return { token: response.data.access_token ? response.data.access_token : null }
+    } catch (error) {
+        return error
+    }
+};
 
 // --------------------- create shipment and LABELS --------------------- //
 

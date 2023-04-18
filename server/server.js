@@ -57,13 +57,7 @@ const getServiceName = (serviceCode) => {
     return services[serviceCode] || "Unknown Service";
 };
 
-const CLIENT_ID_STAMPS = 'my778N8oCwaKq0dSPT1soKY9807OpicK';
-const REDIRECT_URI_STAMPS = 'http://localhost:3000/auth_stamps';
-const AUTH_ENDPOINT_STAMPS = 'https://signin.testing.stampsendicia.com/authorize';
-const CLIENT_SECRET_STAMPS = 'd_uNVV_XwW8K2wwO7UrEkMIuiokqPLANSUnr6JNP1CcXUbrtgQoTsBSnOJi0ttGF';
-const TOKEN_ENDPOINT_STAMPS = 'https://signin.testing.stampsendicia.com/oauth/token';
-const stampsUsername = "poshtext-01";
-const stampsPassword = "April2023!";
+
 
 
 
@@ -537,15 +531,12 @@ app.post(routeStrings.rate_list_ups, async (req, res) => {
 // -----------------stamps Routes --------------------- //
 
 
-
-
-
 app.get('/auth', async (req, res) => {
     try {
         const queryParams = querystring.stringify({
             response_type: 'code',
-            client_id: CLIENT_ID_STAMPS,
-            redirect_uri: REDIRECT_URI_STAMPS
+            client_id: SECRETS.CLIENT_ID_STAMPS,
+            redirect_uri: SECRETS.REDIRECT_URI_STAMPS
         });
 
         const authorizationUrl = `${AUTH_ENDPOINT_STAMPS}?${queryParams}`;
@@ -569,9 +560,8 @@ app.post(routeStrings.address_validate_stamps, async (req, res) => {
     };
 
     try {
-
         const response = await axios.post(
-            "https://api.testing.stampsendicia.com/sera/v1/addresses/validate",
+            API_STAMPS.Validate_Address,
             req.body.body,
             config
         );
@@ -674,9 +664,8 @@ app.post(routeStrings.rate_list_stamps, async (req, res) => {
 
     let allRates = []
     try {
-        const url = "https://api.testing.stampsendicia.com/sera/v1/rates"
         const response = await axios.post(
-            url,
+            API_STAMPS.rate_list,
             req.body.body,
             config
         );
@@ -729,8 +718,6 @@ app.post(routeStrings.shipment_stamps, async (req, res) => {
 
     let images = [];
     try {
-        const url = "https://api.testing.stampsendicia.com/sera/v1/labels";
-
         const lineItems = req.body.body.package;
         console.log(lineItems);
         for (let i = 0; i < lineItems.length; i++) {
@@ -738,7 +725,7 @@ app.post(routeStrings.shipment_stamps, async (req, res) => {
             let newBody = { ...req.body.body }
             newBody.package = lineItems[i];
             const response = await axios.post(
-                url,
+                API_STAMPS.Create_Shipment,
                 newBody,
                 {
                     headers: {
@@ -779,14 +766,14 @@ app.post(routeStrings.shipment_stamps, async (req, res) => {
 });
 
 // add funds to stamps
-app.get("/auth_stamps", async (req, res) => {
+app.get("/funds_stamps", async (req, res) => {
 
     try {
-        const token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlA3Z3pLRGdfRENlVzcyeXZ3cnpQcCJ9.eyJodHRwczovL3N0YW1wc2VuZGljaWEuY29tL2ludGVncmF0aW9uX2lkIjoiNzc4OTdmNDYtNjg2NS00NzQ1LTlkZjMtZDUzYjc4MTA4YjBjIiwiaHR0cHM6Ly9zdGFtcHNlbmRpY2lhLmNvbS91c2VyX2lkIjozNzI1Mzk5LCJpc3MiOiJodHRwczovL3NpZ25pbi50ZXN0aW5nLnN0YW1wc2VuZGljaWEuY29tLyIsInN1YiI6ImF1dGgwfDM3MjUzOTkiLCJhdWQiOiJodHRwczovL2FwaS5zdGFtcHNlbmRpY2lhLmNvbSIsImlhdCI6MTY4MDc3Mjg2OCwiZXhwIjoxNjgwNzczNzY4LCJhenAiOiJteTc3OE44b0N3YUtxMGRTUFQxc29LWTk4MDdPcGljSyJ9.C_kpgBYXycvxgtfaF5doJ53BGB1WsJhlK4VZXdyQaoGLU1kTooNovUJfGsTVbC_AA3mAe0nussWvDtRACFlCKpt9ffdKByr4HnDn3krMfNH5zt2_1CDo9bXkjZo0idOot8h93IIRgIp3pc-S-H3pyamoRa1UsxnADaJQj2u_anGeO0QSBiICwr4ybb7MktRh6yYulTXrn7izagT9jmtguClrVf4K4FazESJPAUrgsoOzc9VL0cEgtP27-a8TDaKzwUWYb4Pn8wqFoTxIlz3Pe32amH_trW0vtJqIkQNLAjhnwHUU3LzokIpC0gM9rkw3aGVyN9KkDnGvChhltx8SRg"
+        const token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlA3Z3pLRGdfRENlVzcyeXZ3cnpQcCJ9.eyJodHRwczovL3N0YW1wc2VuZGljaWEuY29tL2ludGVncmF0aW9uX2lkIjoiNzc4OTdmNDYtNjg2NS00NzQ1LTlkZjMtZDUzYjc4MTA4YjBjIiwiaHR0cHM6Ly9zdGFtcHNlbmRpY2lhLmNvbS91c2VyX2lkIjozNzI1Mzk5LCJpc3MiOiJodHRwczovL3NpZ25pbi50ZXN0aW5nLnN0YW1wc2VuZGljaWEuY29tLyIsInN1YiI6ImF1dGgwfDM3MjUzOTkiLCJhdWQiOiJodHRwczovL2FwaS5zdGFtcHNlbmRpY2lhLmNvbSIsImlhdCI6MTY4MTg0Mzg1NCwiZXhwIjoxNjgxODQ0NzU0LCJhenAiOiJteTc3OE44b0N3YUtxMGRTUFQxc29LWTk4MDdPcGljSyJ9.P_aK30O80t65epfIBVi86kb6aBl_sfpPqGaGC5RCLxMJ0bJ5E79jc_EoH0OO20jrXN3UqqMRjGMbzoEfCHWt9zLULzquEG3vw3ofixfsRANjfAG9W2PGQ5da6nS1nebraqTISqZK6GIdIO1i3QorUEQAe-pBURllzzRgAs_n6NKbd3kXw_ddvAsetZcpD0JZqMzvOboO-WW8hbO3ojlBpMWxccUhRFERfnR1RpsS57lg3_Ne7U7I_yC431eWG0q-XMCQMNbyOxzySdhMadhn7bkaemEP5mbHDjkbtvrFzPCEU_uk8XhJ5EFCeHx7bQ5taNpK54K8fFCYyDGDD09jgA"
         const response = await axios.post(
             "https://api.testing.stampsendicia.com/sera/v1/balance/add-funds",
             {
-                "amount": 5000,
+                "amount": 1000,
                 "currency": "usd"
             },
             {
@@ -819,6 +806,41 @@ app.get("/auth_stamps", async (req, res) => {
     }
 });
 
+
+app.get('/auth_stamps', async (req, res) => {
+    try {
+        // Step 1: Redirect the user to the Stamps.com authentication endpoint
+        if (!req.query.code) {
+            const queryParams = querystring.stringify({
+                response_type: 'code',
+                client_id: SECRETS.CLIENT_ID_STAMPS,
+                redirect_uri: SECRETS.REDIRECT_URI_STAMPS,
+            });
+            const authorizationUrl = `${API_STAMPS.AUTH_ENDPOINT}?${queryParams}`;
+            return res.redirect(authorizationUrl);
+        }
+
+        // Step 2: Handle the authorization code and exchange it for an access token
+        const authorizationCode = req.query.code;
+        const tokenRequest = {
+            grant_type: 'authorization_code',
+            code: authorizationCode,
+            redirect_uri: SECRETS.REDIRECT_URI_STAMPS,
+            client_id: SECRETS.CLIENT_ID_STAMPS,
+            client_secret: SECRETS.CLIENT_SECRET_STAMPS,
+        };
+
+        const { data: tokenResponse } = await axios.post(API_STAMPS.TOKEN_ENDPOINT, querystring.stringify(tokenRequest), {
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        });
+
+        const accessToken = tokenResponse?.access_token;
+        res.send(accessToken);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error getting access token or making API request');
+    }
+});
 
 
 

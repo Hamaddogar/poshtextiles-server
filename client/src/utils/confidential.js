@@ -6,20 +6,8 @@ export const MICROSOFT_CLIENT_ID = "da8dc534-e642-46e2-8f28-57bc71d854c0";
 export const MICROSOFT_AUTHORITY = "https://login.microsoftonline.com/organizations";
 
 
-
-
-
-
 export const FEDEXP_Production_Server = "https://apis.fedex.com";
 export const FEDEXP_Sandbox_Server = "https://apis-sandbox.fedex.com";
-export const CORS_Proxy = 'https://cors-anywhere.herokuapp.com/';
-
-
-
-
-
-
-
 
 
 

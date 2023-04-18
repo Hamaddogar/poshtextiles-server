@@ -5,8 +5,10 @@ export const msalConfig = {
     auth: {
         clientId: MICROSOFT_CLIENT_ID,
         authority: MICROSOFT_AUTHORITY,
-        redirectUri: "http://localhost:3000/",
+        // redirectUri: "http://localhost:3000/",
+        redirectUri: "http://localhost:8080/",
         // redirectUri: "https://poshtextiles.netlify.app/",
+        // redirectUri: "https://silktex.com/",
     },
     cache: {
         cacheLocation: "sessionStorage", // This configures where your cache will be stored

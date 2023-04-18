@@ -12,51 +12,53 @@ export const table = {
     Ecom_Product_List: 'Ecom_Product_List',
 };
 
+
+const server = "http://localhost:8080"
+
+
 export const APIS = {
-    token_fed: 'http://localhost:8080/fedexp_token',
-    token_stamps: 'http://localhost:8080/auth_stamps',
-    token_micro: 'http://localhost:8080/token_microsoft',
-    inventory_micro: "http://localhost:8080/inventory",
-    token_refresh_stamps: 'http://localhost:8080/refresh_stamps',
+    token_fed: server + '/fedexp_token',
+    token_stamps: server + '/auth_stamps',
+    token_micro: server + '/token_microsoft',
+    inventory_micro: server + "/inventory",
+    token_refresh_stamps: server + '/refresh_stamps',
 
 
 
     // fedexp 
-    create_shipment: 'http://localhost:8080/shipment',
-    check_address_fedexp: 'http://localhost:8080/address_validate_fedexp',
-    rate_list_fedexp: 'http://localhost:8080/rate_list_fedexp',
-    printFEDEX: "http://localhost:8080/print_fedex",
+    create_shipment: server + '/shipment',
+    check_address_fedexp: server + '/address_validate_fedexp',
+    rate_list_fedexp: server + '/rate_list_fedexp',
+    printFEDEX: server + "/print_fedex",
 
     // ups
-    create_Shipment_UPS: 'http://localhost:8080/ups_shipment',
-    check_address_ups: 'http://localhost:8080/address_validate_ups',
-    rate_list_ups: 'http://localhost:8080/rate_list_ups',
+    create_Shipment_UPS: server + '/ups_shipment',
+    check_address_ups: server + '/address_validate_ups',
+    rate_list_ups: server + '/rate_list_ups',
 
     // printer
-    printer: "http://localhost:8080/printer",
+    printer: server + "/printer",
 
     // stamps
-    create_shipment_stamps: 'http://localhost:8080/stamps_shipment',
-    check_address_stamps: 'http://localhost:8080/address_validate_stamps',
-    rate_list_stamps: 'http://localhost:8080/rate_list_stamps',
+    funds_STAMP: server + "/funds_stamps",
+    create_shipment_stamps: server + '/stamps_shipment',
+    check_address_stamps: server + '/address_validate_stamps',
+    rate_list_stamps: server + '/rate_list_stamps',
 
     // microsoft
-    sale_orders_micro: 'http://localhost:8080/sales',
-    history_micro: 'http://localhost:8080/history',
-    new_order_micro: 'http://localhost:8080/newOrder',
-    csv_order_micro: 'http://localhost:8080/csv_orders',
-    customers_micro: 'http://localhost:8080/customers',
-    shipFrom: 'http://localhost:8080/shipfrom',
-    create_Shipment_micro: 'http://localhost:8080/createShipment',
-    pick_details_micro: 'http://localhost:8080/pickDetails',
-    request_pick_micro: 'http://localhost:8080/requestPick',
-    successPick_micro: 'http://localhost:8080/successPick',
-    pickingPage_micro :'http://localhost:8080/pickingPage',
-    
+    sale_orders_micro: server + '/sales',
+    history_micro: server + '/history',
+    new_order_micro: server + '/newOrder',
+    csv_order_micro: server + '/csv_orders',
+    customers_micro: server + '/customers',
+    shipFrom: server + '/shipfrom',
+    create_Shipment_micro: server + '/createShipment',
+    pick_details_micro: server + '/pickDetails',
+    request_pick_micro: server + '/requestPick',
+    successPick_micro: server + '/successPick',
+    pickingPage_micro: server + '/pickingPage',
+
 }
-
-
-
 
 
 

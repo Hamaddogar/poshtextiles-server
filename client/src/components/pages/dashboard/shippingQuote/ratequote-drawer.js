@@ -9,7 +9,7 @@ import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { payload_Rates_Handler } from '../../../../utils/Helper';
 import { STAMPS_TOKEN } from '../../../../RTK/Reducers/Reducers';
 import { Button, Checkbox, Container, FormControlLabel, Grid, Skeleton, Slider, Stack, Typography } from '@mui/material';
-import { rate_List_FEDEX, rate_List_STAMPS, rate_List_UPS, request_AccessToken_FEDEXP, request_AccessToken_STAMPS } from '../../../../utils/API_HELPERS';
+import { rate_List_FEDEX, rate_List_STAMPS, rate_List_UPS, request_AccessToken_FEDEXP, request_AccessToken_STAMPS_server } from '../../../../utils/API_HELPERS';
 
 const RateQuoteDrawer = ({ toggleDrawerRate, drawerstateRate, saleOrderDetails }) => {
     const { stamps_token, ship_from_location } = useSelector(store => store.mainReducer)
@@ -98,7 +98,7 @@ const RateQuoteDrawer = ({ toggleDrawerRate, drawerstateRate, saleOrderDetails }
                 if (stamps_token) {
                     recursiveCallerRates(rate_List_STAMPS(stamps_token, payload_Rates_Handler(saleOrderDetails, ship_from_location)))
                 } else {
-                    request_AccessToken_STAMPS()
+                    request_AccessToken_STAMPS_server()
                         .then(res => {
                             if (res.token) {
                                 recursiveCallerRates(rate_List_STAMPS(res.token, payload_Rates_Handler(saleOrderDetails, ship_from_location)))

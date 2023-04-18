@@ -48,10 +48,11 @@ module.exports = {
     },
 
     API_STAMPS: {
-        Token: "https://signin.testing.stampsendicia.com/oauth/token",
-        Validate_Address: "/v1/addresses/validate",
-        Create_Shipment: " ",
-        rate_list: ' '
+        AUTH_ENDPOINT: 'https://signin.testing.stampsendicia.com/connect/authorize',
+        TOKEN_ENDPOINT: 'https://signin.testing.stampsendicia.com/oauth/token',
+        Validate_Address: "https://api.testing.stampsendicia.com/sera/v1/addresses/validate",
+        Create_Shipment: "https://api.testing.stampsendicia.com/sera/v1/labels",
+        rate_list: "https://api.testing.stampsendicia.com/sera/v1/rates"
     }
 
 };
