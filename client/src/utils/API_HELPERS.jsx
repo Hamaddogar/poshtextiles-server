@@ -333,4 +333,13 @@ export const pickingPageDealer = async ({ token, picks }) => {
     }
 }
 
-
+// --------------------- Authorise Net --------------------- //
+// auth_net_charge :"/charge_card",
+export const chargeCard = async ({ amount, cardNumber, expirationDate, cvv }) => {
+    try {
+        const data = await axios.post(APIS.auth_net_charge, { amount, cardNumber, expirationDate, cvv })
+        return data.data;
+    } catch (error) {
+        return error
+    }
+}

@@ -21,13 +21,13 @@ import UpperHeader from '../reUseAbles/UpperHeader';
 
 const Picking = () => {
 
-    const { pickingSelectedProduct, status, saleOrderDetails, } = useSelector(store => store.mainReducer);
+    const { saleOrderDetails, } = useSelector(store => store.mainReducer);
     const navigate = useNavigate();
 
     return (
         <div>
-            {!pickingSelectedProduct && status !== 'pending' && <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}><CircularProgress /></Box>}
-            {pickingSelectedProduct && <Box>
+            {!saleOrderDetails && <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}><CircularProgress /></Box>}
+            {saleOrderDetails && <Box>
                 <UpperHeader saleOrderDetails={saleOrderDetails} handleUpperHeaderSubmit={handleNoAction} />
                 {/* <UpdateLineItem handleSubmitUpdateLineItem={handleNoAction} handleCancel={handleNoAction} product={pickingSelectedProduct} readOnly={true} /> */}
 

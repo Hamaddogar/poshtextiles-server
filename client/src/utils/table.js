@@ -20,7 +20,7 @@ export const APIS = {
     token_fed: server + '/fedexp_token',
     token_stamps: server + '/auth_stamps',
     token_micro: server + '/token_microsoft',
-    inventory_micro: server + "/inventory",
+    inventory_micro: "/inventory",
     token_refresh_stamps: server + '/refresh_stamps',
 
 
@@ -29,7 +29,7 @@ export const APIS = {
     create_shipment: server + '/shipment',
     check_address_fedexp: server + '/address_validate_fedexp',
     rate_list_fedexp: server + '/rate_list_fedexp',
-    printFEDEX: server + "/print_fedex",
+    printFEDEX: "/print_fedex",
 
     // ups
     create_Shipment_UPS: server + '/ups_shipment',
@@ -44,6 +44,9 @@ export const APIS = {
     create_shipment_stamps: server + '/stamps_shipment',
     check_address_stamps: server + '/address_validate_stamps',
     rate_list_stamps: server + '/rate_list_stamps',
+
+    // authorise.net
+    auth_net_charge: server + "/charge_card",
 
     // microsoft
     sale_orders_micro: server + '/sales',

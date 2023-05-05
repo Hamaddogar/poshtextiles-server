@@ -5,7 +5,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { Chip, Stack, useMediaQuery, Grid, Menu } from '@mui/material';
+import { Chip, Stack, useMediaQuery, Grid } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import { useSelector } from 'react-redux';
 import { Button } from '@mui/material';
@@ -15,10 +15,8 @@ import Select from '@mui/material/Select';
 import SearchIcon from '@mui/icons-material/Search';
 import Pagination from 'react-responsive-pagination';
 import 'bootstrap/dist/css/bootstrap.css';
-import { Box } from '@mui/system';
 import { useNavigate } from 'react-router-dom';
 import BackArrow from '../../../assets/icons/back-arrow.png'
-import Pay from '../../../assets/images/pay.png'
 import { Search, SearchIconWrapper, StyledInputBase, styleSlect } from '../reUseAbles/ReuseAbles';
 import ActionCards from './ActionCards';
 
@@ -95,7 +93,7 @@ const ChargeCard = () => {
                             value={orderType}
                             onChange={handleChange}
                             size='small'
-                            sx={styleSlect}
+                            sx={{ ...styleSlect, maxWidth: '170px' }}
                         >
                             <MenuItem value='all' sx={{ fontSize: '12px' }}>All Credit Card Orders</MenuItem>
                             <MenuItem value='Authorized' sx={{ fontSize: '12px' }}>Authorized</MenuItem>
@@ -115,7 +113,7 @@ const ChargeCard = () => {
                             <SearchIcon sx={{ fontSize: '18px' }} />
                         </SearchIconWrapper>
                         <StyledInputBase
-                            placeholder="Search…"
+                            placeholder="Customer Name…"
                             inputProps={{ 'aria-label': 'search', width: '100%' }}
                             size='small'
                             fullWidth
