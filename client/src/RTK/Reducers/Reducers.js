@@ -100,9 +100,11 @@ let initialState = {
   stamps_code: null,
   // shipfrom location
   ship_from_location: {},
-  successPickData0: ppp,
+  successPickData0: [],
   successPickData1: ppp,
   ins_cut_item_detail: null,
+
+  sale_order_paking : false,
 
 }
 
@@ -296,7 +298,16 @@ const mainSlice = createSlice({
     },
     INS_CUT_ITEM: (state, { payload }) => {
       state.ins_cut_item_detail = payload
-    }
+    },
+    MARK_DONE_CUTTING_GREEN_PACKING: (state, { payload }) => {
+      if (payload) {
+        state.successPickData0 = [];
+        state.sale_order_paking = true;
+      } else {
+        state.successPickData0 = [];
+        state.sale_order_paking = false;
+      }
+    },
 
   },
 
@@ -421,6 +432,7 @@ export const { LOG_OUT,
   STAMPS_TOKEN,
   PAGE_DEALER_ALL_ORDERS,
   INS_CUT_ITEM,
+  MARK_DONE_CUTTING_GREEN_PACKING
 } = mainSlice.actions;
 
 

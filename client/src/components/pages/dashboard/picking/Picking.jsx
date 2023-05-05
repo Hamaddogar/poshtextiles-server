@@ -1,4 +1,4 @@
-import { CircularProgress, Stack } from '@mui/material';
+import { CircularProgress, FormControl, MenuItem, Select, Stack } from '@mui/material';
 import React from 'react'
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -6,11 +6,12 @@ import { Grid } from '@mui/material';
 import { Button } from '@mui/material';
 import { Box } from '@mui/system';
 import 'bootstrap/dist/css/bootstrap.css';
-import { BackButton, handleNoAction } from '../reUseAbles/ReuseAbles';
+import { BackButton, Search, SearchIconWrapper, StyledInputBase, handleNoAction, searchDropDown } from '../reUseAbles/ReuseAbles';
 import PickingTable from './PickingTable';
 import fabric from '../../../assets/icons/fabric.png';
 import shelf from '../../../assets/icons/shelf.png';
 import UpperHeader from '../reUseAbles/UpperHeader';
+import { SearchSharp } from '@mui/icons-material';
 // import UpdateLineItem from '../reUseAbles/UpdateLineItem';
 
 
@@ -23,6 +24,13 @@ const Picking = () => {
 
     const { saleOrderDetails, } = useSelector(store => store.mainReducer);
     const navigate = useNavigate();
+
+    const [searchIt, setSearchIt] = React.useState("");
+    const [searchToBL, setSearchToBL] = React.useState('lot');
+
+    const handleSearchTo = event => setSearchToBL(event.target.value);
+    const handleSearchIt = event => setSearchIt(event.target.value);
+
 
     return (
         <div>
@@ -47,8 +55,37 @@ const Picking = () => {
                                 
                             </Stack>
 
+                    <Stack direction='row' justifyContent={'center'} sx={{backgroundColor:'#E9EDF1'}} py={.6}>
+                        <FormControl>
+                            <Select
+                                labelId="searchTo-select-label"
+                                id="searchTo-select"
+                                value={searchToBL}
+                                onChange={handleSearchTo}
+                                size='small'
+                                sx={searchDropDown}
+                            > 
+                                <MenuItem value='bin' sx={{ fontSize: '12px' }}>Scan Bin</MenuItem>
+                                <MenuItem value='lot' sx={{ fontSize: '12px' }}>Scan LOT</MenuItem>
+                            </Select>
+                        </FormControl>
+
+                        <Search>
+                            <SearchIconWrapper>
+                                <SearchSharp sx={{ fontSize: '18px' }} />
+                            </SearchIconWrapper>
+                            <StyledInputBase
+                                placeholder="Search…"
+                                inputProps={{ 'aria-label': 'search', width: '100%' }}
+                                size='small'
+                                fullWidth
+                                onChange={handleSearchIt}
+                            />
+                        </Search>
+                    </Stack>
+
                             <Box maxWidth={'sm'} margin='20px auto auto auto' >
-                                <PickingTable />
+                                <PickingTable searchToBL={searchToBL} searchIt={searchIt} />
                             </Box>
 
                         </Box>

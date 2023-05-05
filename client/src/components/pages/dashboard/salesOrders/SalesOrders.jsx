@@ -34,10 +34,11 @@ import CreateNewLineItem from '../reUseAbles/CreateNewLineItem';
 import UpdateLineItem from '../reUseAbles/UpdateLineItem';
 import UpperHeader from '../reUseAbles/UpperHeader';
 import WHShipmentModelView from '../reUseAbles/WHShipmentModelView';
+import PackingDrawer from './packing-drawer';
 
 const SalesOrders = () => {
 
-    const { saleOrderDetails, perPage } = useSelector(store => store.mainReducer);
+    const { saleOrderDetails, perPage, sale_order_paking } = useSelector(store => store.mainReducer);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -52,6 +53,8 @@ const SalesOrders = () => {
     const anchorRef = React.useRef(null);
     const prevOpen = React.useRef(open);
     const [openCreateWHShip, setOpenCreateWHShip] = React.useState(false);
+    const [packingSideBar, setPackingSideBar] = React.useState(false);
+
 
 
     const handlePageChange = page => {
@@ -191,13 +194,22 @@ const SalesOrders = () => {
     const handleCreateWHShip = () => {
         setOpenCreateWHShip(true);
     }
+    const handleCreatePACKING = () => {
+        alert('processing PACKING')
+    }
 
+    // const handlePackingSideBar = () => {
+    //     setPackingSideBar(true);
+    // }
 
-
-
+    const toggleDrawerPacking = (open) => (event) => {
+        if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) { return; }
+        setPackingSideBar(open);
+    };
 
     return (
         <div>
+            <PackingDrawer toggleDrawer={toggleDrawerPacking} packingSideBar={packingSideBar} />
             <WHShipmentModelView openCreateWHShip={openCreateWHShip} setOpenCreateWHShip={setOpenCreateWHShip} SNO={saleOrderDetails.no} />
             <ConDialog openConfirmation={openConfirmation} setOpenConfirmation={setOpenConfirmation} deleteLineItem={deleteLineItem} />
             <Box>
@@ -223,11 +235,11 @@ const SalesOrders = () => {
                     <Box sx={{ padding: '15px', border: '1px solid black', borderStyle: 'inset', minHeight: '600px' }}>
                         <Grid container alignItems={'center'} rowGap={3} sx={{ margin: '10px' }}>
                             {rows && rows.map((item, index) => <Grid xs={12} sm={6} md={4} item justifyContent='space-between' key={index} sx={{ minHeight: '100px', }} >
-                                <Box sx={{ cursor: item.status ? "default" : 'pointer' }} px={{ xs: '1', md: 2, lg: 3 }} onClick={() => item.status ? null : handleSelectedPickingProduct(item)}>
+                                <Box sx={{ cursor: sale_order_paking ? "default" : 'pointer' }} px={{ xs: '1', md: 2, lg: 3 }} onClick={() => sale_order_paking ? null : handleSelectedPickingProduct(item)}>
                                     <Grid container justifyContent='space-between'>
                                         <Grid xs={6} item sx={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                            {item.status && <Box component='img' alt='img' style={{ maxWidth: '70%', position: 'absolute' }} src={Done} />}
-                                            <Box component='img' alt='img' style={{ width: '100%', maxWidth: '146px', cursor: 'pointer' }} src={item.image ? item.image : images[index]} />
+                                            {sale_order_paking && <Box component='img' alt='img' style={{ maxWidth: '70%', position: 'absolute' }} src={Done} />}
+                                            <Box component='img' alt='img' style={{ width: '100%', maxWidth: '146px', cursor: 'pointer' }} src={item.image ? item.image : images[index % 15]} />
                                         </Grid>
                                         <Grid item container direction={'column'} justifyContent={'space-between'} xs={6} px={1} sx={{ position: 'relative' }}>
 
@@ -239,7 +251,7 @@ const SalesOrders = () => {
                                                 </Stack>
                                             </Stack>
                                             {
-                                                !item.status && <Stack sx={{ position: 'absolute', right: { xs: '0px', sm: '0px', md: '-10px' } }}>
+                                                !sale_order_paking && <Stack sx={{ position: 'absolute', right: { xs: '0px', sm: '0px', md: '-10px' } }}>
                                                     <DeleteOutline sx={{ fontSize: { xs: '22px', sm: '18px', md: '22px' }, cursor: 'pointer', color: '#9A5123', tranisition: '.5s', '&:hover': { color: '#E23C2F' } }}
                                                         onClick={e => {
                                                             e.stopPropagation();
@@ -272,7 +284,7 @@ const SalesOrders = () => {
             <Grid spacing={3} container direction='row' my={3} textAlign='right' mt={.5} justifyContent={{ xs: 'center', md: 'space-between' }} alignItems={'center'}>
                 <Grid item>
                     <Box>
-                        <BackButton onClick={() => navigate(-1)} />
+                        <BackButton onClick={() => navigate('/')} />
                         &nbsp; &nbsp; &nbsp;
                         <Button
                             variant='contained'
@@ -291,7 +303,7 @@ const SalesOrders = () => {
                 <Grid item>
                     <Stack direction='row' alignItems='center' spacing={1}>
                         <Button onClick={handleClickNewItem} variant='contained' size='small'> + add new item</Button>
-                        <Button variant='contained' size='small' disabled> Next </Button>
+                        <Button variant='contained' size='small' disabled={sale_order_paking} onClick={toggleDrawerPacking(true)}> Next Packing</Button>
                     </Stack>
                 </Grid>
                 <Grid item>
@@ -328,9 +340,14 @@ const SalesOrders = () => {
                                 >
                                     {/* <MenuItem onClick={handleClose}>Profile</MenuItem> */}
                                     <MenuItem sx={{ borderBottom: '1px solid white', fontSize: '13px' }} >RELEASE Now</MenuItem>
-                                    <MenuItem onClick={handleCreateWHShip} sx={{ borderBottom: '1px solid white', fontSize: '13px' }} >Create WH Shipment</MenuItem>
+                                    {
+                                        sale_order_paking ?
+                                            <MenuItem onClick={handleCreatePACKING} sx={{ borderBottom: '1px solid white', fontSize: '13px' }} >Create PACKING</MenuItem>
+                                            :
+                                            <MenuItem onClick={handleCreateWHShip} sx={{ borderBottom: '1px solid white', fontSize: '13px' }} >Create WH Shipment</MenuItem>
+                                    }
                                     <MenuItem onClick={handleShippingQuote} sx={{ borderBottom: '1px solid white', fontSize: '13px' }} >SHIP Now</MenuItem>
-                                    <MenuItem sx={{ fontSize: '13px' }}>UNRELEASE nOW</MenuItem>
+                                    <MenuItem sx={{ fontSize: '13px' }}>UNRELEASE Now</MenuItem>
                                 </MenuList>
                             </ClickAwayListener>
                         </Paper>

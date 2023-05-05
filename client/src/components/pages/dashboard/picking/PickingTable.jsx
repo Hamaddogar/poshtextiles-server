@@ -15,11 +15,12 @@ import { pickingPageDealer, request_AccessToken_MICROSOFT } from '../../../../ut
 import PreLoader from '../../HOC/Loading';
 import { INS_CUT_ITEM } from '../../../../RTK/Reducers/Reducers';
 
-const PickingTable = () => {
+const PickingTable = ({ searchToBL, searchIt }) => {
     const { successPickData0 } = useSelector(store => store.mainReducer);
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [loading, setLoading] = React.useState(false);
+    const [data, setData] = React.useState([]);
     const [rows, setRows] = React.useState([]);
 
     React.useEffect(() => {
@@ -32,6 +33,7 @@ const PickingTable = () => {
                         picks: successPickData0,
                     }).then(res => {
                         if (!(res.error)) {
+                            setData(res.data);
                             setRows(res.data);
                             setLoading(false);
                         }
@@ -41,6 +43,20 @@ const PickingTable = () => {
 
         //eslint-disable-next-line
     }, [successPickData0])
+
+    React.useEffect(() => {
+        // binCode.lotNo
+        if (searchToBL === 'lot' && searchIt) {
+            const filtered = data.filter(item => item.lotNo === searchIt);
+            setRows(filtered)
+        } else if (searchToBL === 'bin' && searchIt) {
+            const filtered = data.filter(item => item.binCode === searchIt);
+            setRows(filtered)
+        } else if (searchIt === '') {
+            setRows(data)
+        }
+        //eslint-disable-next-line
+    }, [searchIt, searchToBL])
 
 
     const handleClick = (item, NTO) => {

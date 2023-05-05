@@ -1,24 +1,34 @@
 import React from 'react'
-import { Button, Grid, Typography, Checkbox, CircularProgress, TextField } from '@mui/material'
+import { Button, Grid, Typography, CircularProgress, TextField } from '@mui/material'
 import { Box } from '@mui/system'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import BackArrow from '../../../../assets/icons/back-arrow.png'
-import { subHeadInputStyle, Wrapper } from '../../reUseAbles/ReuseAbles';
+import { BackButton, subHeadInputStyle, Wrapper } from '../../reUseAbles/ReuseAbles';
 import { orderDetail } from '../../../../../RTK/Reducers/fakeData';
 import scissors from '../../../../assets/icons/scissors.png';
+import { MARK_DONE_CUTTING_GREEN_PACKING } from '../../../../../RTK/Reducers/Reducers';
 
 
 
 
 
 const Cutting = () => {
-
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const { pickingSelectedProduct, status } = useSelector(store => store.mainReducer);
     const [showSelectedProduct, setShowSelectedProduct] = React.useState(null);
-    const [dropShipChecked, setDropShipChecked] = React.useState(false);
-    const navigate = useNavigate();
-    React.useLayoutEffect(() => { setShowSelectedProduct(pickingSelectedProduct) }, [pickingSelectedProduct]);
+    // const [dropShipChecked, setDropShipChecked] = React.useState(false);
+    React.useLayoutEffect(() => {
+        setShowSelectedProduct(pickingSelectedProduct);
+    }, [pickingSelectedProduct]);
+
+
+    const handleDoneCutting = () => {
+        dispatch(MARK_DONE_CUTTING_GREEN_PACKING(true))
+        navigate('/sale-order');
+    }
+
+
 
     return (
         <div>
@@ -26,7 +36,7 @@ const Cutting = () => {
             <Box>
                 {!showSelectedProduct && status !== 'pending' && <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}><CircularProgress /></Box>}
                 {showSelectedProduct && <Box>
-                    <Box sx={{ padding: showSelectedProduct ? '15px' : '0px' }} mb={1}>
+                    {/* <Box sx={{ padding: showSelectedProduct ? '15px' : '0px' }} mb={1}>
                         <Box sx={{ transition: '.5s', border: '1px solid black', boxShadow: `1px 1px 2px 1px rgba(0, 0, 0, 0.25)`, display: 'flex', alignItems: 'flex-start', padding: showSelectedProduct ? '15px' : '0px' }}>
                             {showSelectedProduct && <>
                                 <Box>
@@ -97,7 +107,7 @@ const Cutting = () => {
                             </>
                             }
                         </Box>
-                    </Box>
+                    </Box> */}
 
                     <Box sx={{ padding: '15px', backgroundColor: 'white' }}>
                         <Box sx={{ padding: '15px', border: '1px solid black', borderStyle: 'inset', minHeight: '500px' }}>
@@ -132,7 +142,10 @@ const Cutting = () => {
 
                 <Grid container direction='row' my={1} textAlign='right' mt={2} justifyContent={{ xs: 'center', md: 'space-between' }} alignItems={'center'}>
                     <Grid item>
-                        <Button startIcon={<img src={BackArrow} alt='back' width='18px' />} variant='contained' color='error' size='small' onClick={() => navigate(-1)}> Go back</Button>
+                        <BackButton onClick={() => navigate(-1)} />
+                    </Grid>
+                    <Grid item>
+                        <Button variant='contained' color='success' size='small' onClick={handleDoneCutting}> DONE CUTTING</Button>
                     </Grid>
                 </Grid>
 

@@ -17,7 +17,7 @@ import Pagination from 'react-responsive-pagination';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Box } from '@mui/system';
 import { Link, useNavigate } from 'react-router-dom';
-import { PAGE_DEALER_ALL_ORDERS, SELECTED_SALE_ORDER_DATA, shipFromLocation } from '../../../../RTK/Reducers/Reducers';
+import { MARK_DONE_CUTTING_GREEN_PACKING, PAGE_DEALER_ALL_ORDERS, SELECTED_SALE_ORDER_DATA, shipFromLocation } from '../../../../RTK/Reducers/Reducers';
 import { lnk, Search, searchDropDown, SearchIconWrapper, StyledInputBase, styleSlect } from '../reUseAbles/ReuseAbles';
 import PreLoader from '../../HOC/Loading';
 import NoRecord from '../../HOC/NoRecord';
@@ -76,6 +76,7 @@ const AllOrders = () => {
     const handleSearch = e => setSearchItDebounce((e.target.value).toLocaleLowerCase());
     const handleSlectOrder = data => {
         dispatch(SELECTED_SALE_ORDER_DATA(data))
+        dispatch(MARK_DONE_CUTTING_GREEN_PACKING(false))
         request_AccessToken_MICROSOFT()
             .then(decide => {
                 if (decide.success) {
