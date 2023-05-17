@@ -14,7 +14,7 @@ import UpperHeader from '../reUseAbles/UpperHeader';
 import { SearchSharp } from '@mui/icons-material';
 import PreLoader from '../../HOC/Loading';
 // import UpdateLineItem from '../reUseAbles/UpdateLineItem';
-
+import printHtmlToPDF from "print-html-to-pdf";
 
 
 
@@ -79,10 +79,32 @@ const PackingPreview = () => {
     const handleSearchIt = event => setSearchIt(event.target.value);
 
 
+
+    const pagePrint = async () => {
+        const node = document.getElementById("print-me");
+        const pdfOption = {
+            jsPDF: {
+                unit: 'px',
+                format: 'a4',
+            },
+            spin: true,
+            fileName: saleOrderDetails.shipToAddress,
+            fitToPage: false,
+            margin: {
+                left: 10,
+                right: 10
+            },
+        }
+        // await html2pdf().set(pdfOption).from(node).save()
+        await printHtmlToPDF.print(node, pdfOption);
+    }
+
+    console.log(saleOrderDetails);
+
     return (
         <div>
             {!saleOrderDetails && <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}><CircularProgress /></Box>}
-            {saleOrderDetails && <Box>
+            {saleOrderDetails && <Box id="print-me">
                 <UpperHeader saleOrderDetails={saleOrderDetails} handleUpperHeaderSubmit={handleNoAction} />
                 {/* <UpdateLineItem handleSubmitUpdateLineItem={handleNoAction} handleCancel={handleNoAction} product={pickingSelectedProduct} readOnly={true} /> */}
 
@@ -209,6 +231,7 @@ const PackingPreview = () => {
                                                         <TableCell>{row.qty} </TableCell>
                                                         <TableCell>{row.qty} </TableCell>
                                                         <TableCell>{row.qty} </TableCell>
+                                                        <TableCell>{row.qty} </TableCell>
 
                                                     </TableRow>
                                                 ))}
@@ -227,7 +250,7 @@ const PackingPreview = () => {
                     <BackButton onClick={() => navigate(-1)} />
                 </Grid>
                 <Grid item>
-                    <Button variant='contained' size='small' > Print </Button>
+                    <Button variant='contained' size='small' onClick={pagePrint} > Print </Button>
                 </Grid>
             </Grid>
 
