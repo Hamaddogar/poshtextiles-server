@@ -59,6 +59,9 @@ export const APIS = {
     request_pick_micro: server + '/requestPick',
     successPick_micro: server + '/successPick',
     pickingPage_micro: server + '/pickingPage',
+    createPaking_micro: server + '/create-picking',
+    getPacking_micro: server + '/get-picking',
+    postPacking_micro: server + '/post-picking',
 
 }
 

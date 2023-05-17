@@ -32,6 +32,7 @@ import Preloading from './components/pages/HOC/preloading';
 import CSVOrdersPage from './components/pages/dashboard/csvOrders';
 import CSVOrdersPageDetail from './components/pages/dashboard/csvOrdersDetail';
 import StampsAuthFlow from './components/pages/stamps_Auth_Flow/Stamps_Auth_Flow';
+import PackingPreviewPage from './components/pages/dashboard/PackingPreview';
 
 function App() {
 
@@ -50,6 +51,7 @@ function App() {
           <Route path="charge-card" element={<ChargeCardPage />} />
           <Route path="history" element={<HistoryPage />} />
           <Route path="stock-details" element={<StockDetailsPage />} />
+          <Route path="packing-preview" element={<PackingPreviewPage />} />
           <Route path="inventory" element={<InventoryManagementPage />} />
           <Route path="bin" element={<BinTransferPage />} />
           <Route path="bintransfer" element={<BinTransferPage2 />} />

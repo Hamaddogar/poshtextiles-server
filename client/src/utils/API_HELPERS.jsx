@@ -333,6 +333,35 @@ export const pickingPageDealer = async ({ token, picks }) => {
     }
 }
 
+// PACKING
+export const createPacking = async ({ token, body }) => {
+    try {
+        const data = await axios.post(APIS.createPaking_micro, { token, body })
+        return data.data;
+    } catch (error) {
+        return error
+    }
+}
+
+// GET-PACKING
+export const getPacking = async ({ token, code }) => {
+    try {
+        const data = await axios.post(APIS.getPacking_micro, { token, code })
+        return data.data;
+    } catch (error) {
+        return error
+    }
+}
+// POST-PACKING
+export const postPacking = async ({ token, code }) => {
+    try {
+        const data = await axios.post(APIS.postPacking_micro, { token, code })
+        return data.data;
+    } catch (error) {
+        return error
+    }
+}
+
 // --------------------- Authorise Net --------------------- //
 // auth_net_charge :"/charge_card",
 export const chargeCard = async ({ amount, cardNumber, expirationDate, cvv }) => {

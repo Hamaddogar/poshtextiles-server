@@ -12,7 +12,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import { DeleteOutline, EditOutlined, KeyboardArrowDown, } from '@mui/icons-material';
 import Done from '../../../assets/images/done.png'
 import { BackButton, scroller } from '../reUseAbles/ReuseAbles';
-import { SELECTED_SALE_ORDER_DATA, SELECT_PICKING_PRODUCT } from '../../../../RTK/Reducers/Reducers';
+import { PACKING_NO_FUN, SELECTED_SALE_ORDER_DATA, SELECT_PICKING_PRODUCT, WH_SHIP_NO_FUN } from '../../../../RTK/Reducers/Reducers';
 import ConDialog from './ConfirmationModal';
 import p0 from "../../../assets/images/p0.png";
 import p1 from "../../../assets/images/p1.png";
@@ -35,10 +35,12 @@ import UpdateLineItem from '../reUseAbles/UpdateLineItem';
 import UpperHeader from '../reUseAbles/UpperHeader';
 import WHShipmentModelView from '../reUseAbles/WHShipmentModelView';
 import PackingDrawer from './packing-drawer';
+import { createPacking, request_AccessToken_MICROSOFT } from '../../../../utils/API_HELPERS';
+import { Toaster } from '../reUseAbles/Toasters';
 
 const SalesOrders = () => {
 
-    const { saleOrderDetails, perPage, sale_order_paking } = useSelector(store => store.mainReducer);
+    const { saleOrderDetails, perPage, sale_order_paking, WH_SHIP_NO } = useSelector(store => store.mainReducer);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -54,6 +56,7 @@ const SalesOrders = () => {
     const prevOpen = React.useRef(open);
     const [openCreateWHShip, setOpenCreateWHShip] = React.useState(false);
     const [packingSideBar, setPackingSideBar] = React.useState(false);
+    const [packingSideBarAllow, setPackingSideBarAllow] = React.useState(false);
 
 
 
@@ -89,7 +92,6 @@ const SalesOrders = () => {
     const handleClose = (event) => {
         if (anchorRef.current && anchorRef.current.contains(event.target)) { return; }
         setOpen(false);
-        scroller()
     };
 
     function handleListKeyDown(event) {
@@ -180,6 +182,7 @@ const SalesOrders = () => {
             ...saleOrderDetails,
             edcSalesLines: rows
         }));
+        scroller();
     }
 
     const handleCancel = closeTo => {
@@ -193,9 +196,50 @@ const SalesOrders = () => {
 
     const handleCreateWHShip = () => {
         setOpenCreateWHShip(true);
+        scroller();
     }
     const handleCreatePACKING = () => {
-        alert('processing PACKING')
+
+        Toaster('loading', `Loading...`)
+        request_AccessToken_MICROSOFT()
+            .then(decide => {
+                if (decide.success) {
+                    createPacking({ token: decide.token, body: { "whseShipNo": WH_SHIP_NO } })
+                        .then(response => {
+                            console.log("<<<<<createPacking>>>>>>>", response);
+                            if ("packingNo" in response?.newPacking &&
+                                response?.newPacking?.responseMsg === "Created"
+                            ) {
+                                dispatch(PACKING_NO_FUN(response?.newPacking?.packingNo))
+                                Toaster('success', `Packing already ${response?.newPacking?.responseMsg}`)
+                                setPackingSideBarAllow(true);
+                            } else if (
+                                "packingNo" in response?.newPacking &&
+                                response?.newPacking?.responseMsg === "Exists"
+                            ) {
+                                dispatch(PACKING_NO_FUN(response?.newPacking?.packingNo))
+                                Toaster('warn', `Packing already ${response?.newPacking?.responseMsg}`)
+                                setPackingSideBarAllow(true);
+                            } else {
+                                Toaster('error', ``)
+                            }
+                        })
+                }
+            })
+
+
+
+
+
+
+        // alert('processing PACKING')
+        // alert(sale_order_paking)
+    }
+
+    const handleBack = () => {
+        dispatch(WH_SHIP_NO_FUN(null));
+        navigate('/');
+        scroller()
     }
 
     // const handlePackingSideBar = () => {
@@ -284,7 +328,8 @@ const SalesOrders = () => {
             <Grid spacing={3} container direction='row' my={3} textAlign='right' mt={.5} justifyContent={{ xs: 'center', md: 'space-between' }} alignItems={'center'}>
                 <Grid item>
                     <Box>
-                        <BackButton onClick={() => navigate('/')} />
+
+                        <BackButton onClick={handleBack} />
                         &nbsp; &nbsp; &nbsp;
                         <Button
                             variant='contained'
@@ -303,7 +348,10 @@ const SalesOrders = () => {
                 <Grid item>
                     <Stack direction='row' alignItems='center' spacing={1}>
                         <Button onClick={handleClickNewItem} variant='contained' size='small'> + add new item</Button>
-                        <Button variant='contained' size='small' disabled={sale_order_paking} onClick={toggleDrawerPacking(true)}> Next Packing</Button>
+                        <Button variant='contained' size='small'
+                            disabled={!packingSideBarAllow}
+                            onClick={toggleDrawerPacking(true)
+                            }> Next Packing</Button>
                     </Stack>
                 </Grid>
                 <Grid item>

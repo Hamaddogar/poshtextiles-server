@@ -5,58 +5,7 @@ import Swal from 'sweetalert2';
 import axios from 'axios';
 import { APIS } from '../../utils/table';
 
-const ppp = [
-  {
-    "@odata.etag": "W/\"JzE5OzU3MzMzNzU5NTM5MDIzMTcwNDExOzAwOyc=\"",
-    "activityType": "Pick",
-    "no": "PI042123",
-    "lineNo": 10000,
-    "sourceDocument": "Sales Order",
-    "sourceNo": "SO34596",
-    "sourceLineNo": 10000,
-    "locationCode": "SYOSSET",
-    "itemNo": "I10969-016",
-    "description": "RADIANT-CAPRI",
-    "lotNo": "",
-    "quantity": 12,
-    "qtyToHandle": 12,
-    "qtyHandled": 0,
-    "qtyOutstanding": 12,
-    "scanned": false,
-    "unitOfMeasureCode": "YDS",
-    "qtyPerUnitOfMeasure": 1,
-    "destinationType": "Customer",
-    "destinationNo": "C06371",
-    "actionType": "Take",
-    "packageNo": "",
-    "WhseDocumentNo": "SH042058"
-  },
-  {
-    "@odata.etag": "W/\"JzIwOzEzNzE2ODAyMDUyODUwNDk3ODIyMTswMDsn\"",
-    "activityType": "Pick",
-    "no": "PI042123",
-    "lineNo": 20000,
-    "sourceDocument": "Sales Order",
-    "sourceNo": "SO34596",
-    "sourceLineNo": 10000,
-    "locationCode": "SYOSSET",
-    "itemNo": "I10969-016",
-    "description": "RADIANT-CAPRI",
-    "lotNo": "",
-    "quantity": 12,
-    "qtyToHandle": 12,
-    "qtyHandled": 0,
-    "qtyOutstanding": 12,
-    "scanned": false,
-    "unitOfMeasureCode": "YDS",
-    "qtyPerUnitOfMeasure": 1,
-    "destinationType": "Customer",
-    "destinationNo": "C06371",
-    "actionType": "Place",
-    "packageNo": "",
-    "WhseDocumentNo": "SH042058"
-  }
-]
+
 // ------------------All Asyn Reducers are below ------------------//
 let initialState = {
   perPage: 21,
@@ -101,10 +50,13 @@ let initialState = {
   // shipfrom location
   ship_from_location: {},
   successPickData0: [],
-  successPickData1: ppp,
   ins_cut_item_detail: null,
 
-  sale_order_paking : false,
+  sale_order_paking: false,
+  WH_SHIP_NO: null,
+  PACKING_NO: null,
+  PACKING_PREVIEW: null,
+  PACKING_PAGE_INDEX: 0,
 
 }
 
@@ -216,7 +168,7 @@ const Toaster = (type, error) => {
       });
       break;
     case 'error':
-      toast.success(`${error}`, {
+      toast.error(`${error}`, {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: true
@@ -307,6 +259,25 @@ const mainSlice = createSlice({
         state.successPickData0 = [];
         state.sale_order_paking = false;
       }
+    },
+    WH_SHIP_NO_FUN: (state, { payload }) => {
+      if (payload) {
+        state.WH_SHIP_NO = payload;
+      }
+      else {
+        state.WH_SHIP_NO = payload;
+        state.PACKING_NO = payload;
+        state.PACKING_PREVIEW = payload;
+      }
+    },
+    PACKING_NO_FUN: (state, { payload }) => {
+      state.PACKING_NO = payload;
+    },
+    PACKING_PREVIEW_FUN: (state, { payload }) => {
+      state.PACKING_PREVIEW = payload;
+    },
+    PACKING_PAGE_INDEX_FUN: (state, { payload }) => {
+      state.PACKING_PAGE_INDEX = payload;
     },
 
   },
@@ -432,7 +403,11 @@ export const { LOG_OUT,
   STAMPS_TOKEN,
   PAGE_DEALER_ALL_ORDERS,
   INS_CUT_ITEM,
-  MARK_DONE_CUTTING_GREEN_PACKING
+  MARK_DONE_CUTTING_GREEN_PACKING,
+  WH_SHIP_NO_FUN,
+  PACKING_NO_FUN,
+  PACKING_PREVIEW_FUN,
+  PACKING_PAGE_INDEX_FUN,
 } = mainSlice.actions;
 
 

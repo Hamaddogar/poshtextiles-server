@@ -8,7 +8,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import { check_Pick_Details, create_New_Shipment, request_AccessToken_MICROSOFT, request_New_Pick } from '../../../../utils/API_HELPERS';
 import { Box, CircularProgress, Divider, Typography } from '@mui/material';
-import { saleOrderNoFilter, successPickDetails } from '../../../../RTK/Reducers/Reducers';
+import { WH_SHIP_NO_FUN, saleOrderNoFilter, successPickDetails } from '../../../../RTK/Reducers/Reducers';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Send } from '@mui/icons-material';
@@ -114,6 +114,7 @@ const WHShipmentModelView = ({ openCreateWHShip, setOpenCreateWHShip, SNO }) => 
                     token: microSoftToken,
                     toastPermission: false
                 }));
+                dispatch(WH_SHIP_NO_FUN(response?.requested?.whseShipNo));
             })
     }
 
@@ -126,6 +127,10 @@ const WHShipmentModelView = ({ openCreateWHShip, setOpenCreateWHShip, SNO }) => 
                     setpickPageSender(true)
                 }
             })
+    }
+
+    const handleSaveShipNo = () => {
+
     }
 
 
@@ -185,7 +190,7 @@ const WHShipmentModelView = ({ openCreateWHShip, setOpenCreateWHShip, SNO }) => 
                         <Typography textAlign={'left'} sx={{ color: '#9C27B0' }}>Now You Can Visit Picking Section</Typography>
 
                         <Link to='/picking'>
-                            <Button variant='contained' color='secondary' size='small' endIcon={<Send />} autoFocus>
+                            <Button onClick={handleSaveShipNo} variant='contained' color='secondary' size='small' endIcon={<Send />} autoFocus>
                                 Move to picking
                             </Button>
                         </Link>

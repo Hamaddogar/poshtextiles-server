@@ -101,7 +101,10 @@ const routeStrings = {
     get_pick_details_micro: '/pickDetails',
     request_pick_micro: '/requestPick',
     success_pick_detail_micro: '/successPick',
-    picking_page_detail_micro: '/pickingPage'
+    picking_page_detail_micro: '/pickingPage',
+    create_new_packing_micro: '/create-picking',
+    get_packing_micro: '/get-picking',
+    post_packing_micro: '/post-picking',
 
 }
 
@@ -1264,7 +1267,56 @@ app.post(routeStrings.picking_page_detail_micro, async (req, res) => {
     }
 });
 
+// create_new_packing
+app.post(routeStrings.create_new_packing_micro, async (req, res) => {
+    const config = {
+        headers: {
+            "Authorization": `Bearer ${req.body.token}`,
+        }
+    };
+    try {
+        const response = await axios.post(
+            API_MICROSOFT.create_to_packing,
+            req.body.body,
+            config
+        );
+        res.send({ newPacking: response.data });
 
+    } catch (error) {
+        console.log(error);
+        res.status(error?.response?.status).send({
+            code: error.response.status,
+            message: error?.response?.data?.errors?.[0]?.error_message || error?.message,
+            error: true
+        })
+    }
+});
+
+
+// get_packing_details
+app.post(routeStrings.get_packing_micro, async (req, res) => {
+    const config = {
+        headers: {
+            "Authorization": `Bearer ${req.body.token}`,
+        }
+    };
+    console.log(req.body.code);
+    try {
+        const response = await axios.get(
+            API_MICROSOFT.packing_detail(req.body.code),
+            config
+        );
+        res.send({ getPacking: response.data });
+
+    } catch (error) {
+        console.log(error);
+        res.status(error?.response?.status).send({
+            code: error.response.status,
+            message: error?.response?.data?.errors?.[0]?.error_message || error?.message,
+            error: true
+        })
+    }
+});
 
 
 
