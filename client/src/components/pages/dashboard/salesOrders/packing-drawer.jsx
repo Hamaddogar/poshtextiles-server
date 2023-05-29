@@ -12,7 +12,7 @@ import { Toaster } from '../reUseAbles/Toasters';
 import { PACKING_PAGE_INDEX_FUN, PACKING_PREVIEW_FUN } from '../../../../RTK/Reducers/Reducers';
 
 
-const PackingDrawer = ({ toggleDrawer, packingSideBar }) => {
+const PackingDrawer = ({ toggleDrawer, packingSideBar, handleShippingQuote }) => {
 
 
     const { PACKING_NO, PACKING_PREVIEW } = useSelector(store => store.mainReducer)
@@ -78,11 +78,6 @@ const PackingDrawer = ({ toggleDrawer, packingSideBar }) => {
                         role="presentation"
                     >
                         <PreLoader loading={loading.load}>
-
-
-
-
-
                             <Grid container spacing={.4} justifyContent={'space-between'} alignItems={'center'} sx={{ color: '#919191' }} >
                                 <Grid item xs={12} sx={{ borderBottom: '1px solid black' }}>
                                     <Stack direction='row' alignItems={'center'} justifyContent={'space-around'}>
@@ -162,44 +157,15 @@ const PackingDrawer = ({ toggleDrawer, packingSideBar }) => {
                                                 {PACKING_PREVIEW?.[boxIndex]?.packingLines?.[0]?.weight}
                                             </Typography>
                                         </Grid>
-
                                     </Grid>
-
-
-
                                 }
 
                                 <Grid item xs={12} mt={1} sx={{ textAlign: 'right' }}>
                                     <Divider />
-                                    <Button sx={{ fontSize: '13px', textransform: 'captalize' }} variant='contained' size='small' onClick={handlePakingPreview}>Preview</Button>
+                                    <Button sx={{ fontSize: '13px', textTransform: 'captalize' }} variant='contained' size='small' color='success' onClick={handleShippingQuote}>Ship Now</Button> &nbsp; &nbsp; &nbsp;
+                                    <Button sx={{ fontSize: '13px', textTransform: 'captalize' }} variant='contained' size='small' onClick={handlePakingPreview}>Preview</Button>
                                 </Grid>
                             </Grid>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                         </PreLoader>
 
                     </Box>

@@ -272,9 +272,13 @@ export const myRoutes = [
 ]
 
 
-export const scroller = () => {
+export const scroller = (top = true) => {
     let displayer = document.getElementById('displayer');
-    displayer.scrollTop = 0;
+    if (top) {
+        displayer.scrollTop = 0;
+    } else {
+        displayer.scrollTop = displayer.scrollHeight;
+    }
 }
 
 

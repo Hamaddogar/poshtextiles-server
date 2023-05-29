@@ -12,7 +12,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import { DeleteOutline, EditOutlined, KeyboardArrowDown, } from '@mui/icons-material';
 import Done from '../../../assets/images/done.png'
 import { BackButton, scroller } from '../reUseAbles/ReuseAbles';
-import { PACKING_NO_FUN, SELECTED_SALE_ORDER_DATA, SELECT_PICKING_PRODUCT, WH_SHIP_NO_FUN } from '../../../../RTK/Reducers/Reducers';
+import { PACKING_NO_FUN, SELECTED_SALE_ORDER_DATA, WH_SHIP_NO_FUN } from '../../../../RTK/Reducers/Reducers';
 import ConDialog from './ConfirmationModal';
 import p0 from "../../../assets/images/p0.png";
 import p1 from "../../../assets/images/p1.png";
@@ -83,8 +83,9 @@ const SalesOrders = () => {
     }
 
     const handleSelectedPickingProduct = product => {
-        dispatch(SELECT_PICKING_PRODUCT(product));
-        navigate('/picking')
+        Toaster('warn', 'Create WH Shipment!')
+        scroller(false);
+        setOpen(true);
     };
 
     const handleToggle = () => setOpen((prevOpen) => !prevOpen);
@@ -106,7 +107,6 @@ const SalesOrders = () => {
         setNewItem(true);
         scroller();
     }
-
 
     // lineItem UPdate function
     const handleSubmitUpdateLineItem = (event) => {
@@ -133,7 +133,6 @@ const SalesOrders = () => {
 
     }
 
-
     // lineItems Delete function
     const deleteLineItem = (index) => {
         rows.splice(index, 1);
@@ -146,7 +145,6 @@ const SalesOrders = () => {
         // const data = new FormData(e.target);
         alert('working to update')
     };
-
 
     // add new line Item function
     const handleSubmitLineItem = (event) => {
@@ -191,9 +189,6 @@ const SalesOrders = () => {
     }
     const images = [p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15];
 
-
-
-
     const handleCreateWHShip = () => {
         setOpenCreateWHShip(true);
         scroller();
@@ -206,7 +201,7 @@ const SalesOrders = () => {
                 if (decide.success) {
                     createPacking({ token: decide.token, body: { "whseShipNo": WH_SHIP_NO } })
                         .then(response => {
-                            console.log("<<<<<createPacking>>>>>>>", response);
+                            // console.log("<<<<<createPacking>>>>>>>", response);
                             if ("packingNo" in response?.newPacking &&
                                 response?.newPacking?.responseMsg === "Created"
                             ) {
@@ -227,11 +222,6 @@ const SalesOrders = () => {
                 }
             })
 
-
-
-
-
-
         // alert('processing PACKING')
         // alert(sale_order_paking)
     }
@@ -242,10 +232,6 @@ const SalesOrders = () => {
         scroller()
     }
 
-    // const handlePackingSideBar = () => {
-    //     setPackingSideBar(true);
-    // }
-
     const toggleDrawerPacking = (open) => (event) => {
         if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) { return; }
         setPackingSideBar(open);
@@ -253,7 +239,7 @@ const SalesOrders = () => {
 
     return (
         <div>
-            <PackingDrawer toggleDrawer={toggleDrawerPacking} packingSideBar={packingSideBar} />
+            <PackingDrawer handleShippingQuote={handleShippingQuote} toggleDrawer={toggleDrawerPacking} packingSideBar={packingSideBar} />
             <WHShipmentModelView openCreateWHShip={openCreateWHShip} setOpenCreateWHShip={setOpenCreateWHShip} SNO={saleOrderDetails.no} />
             <ConDialog openConfirmation={openConfirmation} setOpenConfirmation={setOpenConfirmation} deleteLineItem={deleteLineItem} />
             <Box>
@@ -348,10 +334,13 @@ const SalesOrders = () => {
                 <Grid item>
                     <Stack direction='row' alignItems='center' spacing={1}>
                         <Button onClick={handleClickNewItem} variant='contained' size='small'> + add new item</Button>
-                        <Button variant='contained' size='small'
-                            disabled={!packingSideBarAllow}
-                            onClick={toggleDrawerPacking(true)
-                            }> Next Packing</Button>
+                        { sale_order_paking && !packingSideBarAllow &&
+                            <Button variant='contained' size='small'
+                                onClick={handleCreatePACKING}> Create PACKING </Button> }
+                        { packingSideBarAllow && sale_order_paking &&
+                            <Button variant='contained' size='small' color='success'
+                                disabled={!packingSideBarAllow}
+                                onClick={toggleDrawerPacking(true)}> Next Packing </Button> }
                     </Stack>
                 </Grid>
                 <Grid item>
@@ -386,15 +375,12 @@ const SalesOrders = () => {
                                     sx={{ backgroundColor: '#495BD6', color: 'white' }}
                                     onClick={handleClose}
                                 >
-                                    {/* <MenuItem onClick={handleClose}>Profile</MenuItem> */}
                                     <MenuItem sx={{ borderBottom: '1px solid white', fontSize: '13px' }} >RELEASE Now</MenuItem>
-                                    {
-                                        sale_order_paking ?
-                                            <MenuItem onClick={handleCreatePACKING} sx={{ borderBottom: '1px solid white', fontSize: '13px' }} >Create PACKING</MenuItem>
+                                    { sale_order_paking ?
+                                            null
                                             :
                                             <MenuItem onClick={handleCreateWHShip} sx={{ borderBottom: '1px solid white', fontSize: '13px' }} >Create WH Shipment</MenuItem>
                                     }
-                                    <MenuItem onClick={handleShippingQuote} sx={{ borderBottom: '1px solid white', fontSize: '13px' }} >SHIP Now</MenuItem>
                                     <MenuItem sx={{ fontSize: '13px' }}>UNRELEASE Now</MenuItem>
                                 </MenuList>
                             </ClickAwayListener>
