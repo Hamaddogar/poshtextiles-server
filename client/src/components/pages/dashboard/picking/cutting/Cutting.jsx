@@ -3,10 +3,11 @@ import { Button, Grid, Typography, CircularProgress, TextField } from '@mui/mate
 import { Box } from '@mui/system'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { BackButton, subHeadInputStyle, Wrapper } from '../../reUseAbles/ReuseAbles';
+import { BackButton, handleNoAction, subHeadInputStyle, Wrapper } from '../../reUseAbles/ReuseAbles';
 import { orderDetail } from '../../../../../RTK/Reducers/fakeData';
 import scissors from '../../../../assets/icons/scissors.png';
 import { MARK_DONE_CUTTING_GREEN_PACKING } from '../../../../../RTK/Reducers/Reducers';
+import UpperHeader from '../../reUseAbles/UpperHeader';
 
 
 
@@ -15,17 +16,10 @@ import { MARK_DONE_CUTTING_GREEN_PACKING } from '../../../../../RTK/Reducers/Red
 const Cutting = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { pickingSelectedProduct, status } = useSelector(store => store.mainReducer);
-    const [showSelectedProduct, setShowSelectedProduct] = React.useState(null);
-    // const [dropShipChecked, setDropShipChecked] = React.useState(false);
-    React.useLayoutEffect(() => {
-        setShowSelectedProduct(pickingSelectedProduct);
-    }, [pickingSelectedProduct]);
-
-
+    const { ins_cut_item_detail, saleOrderDetails,status } = useSelector(store => store.mainReducer);
     const handleDoneCutting = () => {
         dispatch(MARK_DONE_CUTTING_GREEN_PACKING(true))
-        navigate('/sale-order');
+        navigate('/picking');
     }
 
 
@@ -34,13 +28,15 @@ const Cutting = () => {
         <div>
             {/* <Picking /> */}
             <Box>
-                {!showSelectedProduct && status !== 'pending' && <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}><CircularProgress /></Box>}
-                {showSelectedProduct && <Box>
-                    {/* <Box sx={{ padding: showSelectedProduct ? '15px' : '0px' }} mb={1}>
-                        <Box sx={{ transition: '.5s', border: '1px solid black', boxShadow: `1px 1px 2px 1px rgba(0, 0, 0, 0.25)`, display: 'flex', alignItems: 'flex-start', padding: showSelectedProduct ? '15px' : '0px' }}>
-                            {showSelectedProduct && <>
+            <UpperHeader saleOrderDetails={saleOrderDetails} handleUpperHeaderSubmit={handleNoAction} />
+
+                {!ins_cut_item_detail && status !== 'pending' && <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}><CircularProgress /></Box>}
+                {ins_cut_item_detail && <Box>
+                    {/* <Box sx={{ padding: ins_cut_item_detail ? '15px' : '0px' }} mb={1}>
+                        <Box sx={{ transition: '.5s', border: '1px solid black', boxShadow: `1px 1px 2px 1px rgba(0, 0, 0, 0.25)`, display: 'flex', alignItems: 'flex-start', padding: ins_cut_item_detail ? '15px' : '0px' }}>
+                            {ins_cut_item_detail && <>
                                 <Box>
-                                    <Box component='img' alt='img' style={{ width: '100%', minWidth: '146px', maxWidth: '146px', cursor: 'pointer' }} src={showSelectedProduct.image} />
+                                    <Box component='img' alt='img' style={{ width: '100%', minWidth: '146px', maxWidth: '146px', cursor: 'pointer' }} src={ins_cut_item_detail.image} />
                                 </Box>
                                 <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
 
@@ -93,7 +89,7 @@ const Cutting = () => {
                                         <Wrapper justifyContent={{ xs: 'center', md: 'space-between' }} margin='3px 10px' width='100%' spacing={2} >
                                             <TextField defaultValue={orderDetail.priority} size='small' sx={{ ...subHeadInputStyle, minWidth: '80%', }} fullWidth />
                                             <Box margin='5px 0px'>
-                                                <Button color='error' variant='contained' size='small' onClick={e => setShowSelectedProduct(pickingSelectedProduct)}>cancel</Button> &nbsp;
+                                                <Button color='error' variant='contained' size='small' onClick={e => setins_cut_item_detail(pickingSelectedProduct)}>cancel</Button> &nbsp;
                                                 <Button color='primary' variant='contained' size='small'>ok</Button>
                                             </Box>
                                         </Wrapper>

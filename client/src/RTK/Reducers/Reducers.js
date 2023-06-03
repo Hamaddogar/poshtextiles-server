@@ -49,13 +49,30 @@ let initialState = {
   stamps_code: null,
   // shipfrom location
   ship_from_location: {},
-  successPickData0: [],
   ins_cut_item_detail: null,
 
   sale_order_paking: false,
+  successPickData0: [],
   WH_SHIP_NO: null,
+  WH_SHIP_DETAILS: {
+    status: false,
+    already: false,
+    shipNo: "",
+    SNo: "",
+    shipItems: [],
+  },
+
+  PACKING_DETAILS: {
+    status: false,
+    shipNo: "",
+    SNo: "",
+    pkNo: "",
+  },
+
+
+
   PACKING_NO: null,
-  PACKING_PREVIEW: null,
+  PACKING_BOXES_PREVIEW: null,
   PACKING_PAGE_INDEX: 0,
 
 }
@@ -267,18 +284,40 @@ const mainSlice = createSlice({
       else {
         state.WH_SHIP_NO = payload;
         state.PACKING_NO = payload;
-        state.PACKING_PREVIEW = payload;
+        state.PACKING_BOXES_PREVIEW = payload;
       }
     },
-    PACKING_NO_FUN: (state, { payload }) => {
-      state.PACKING_NO = payload;
+    WH_SHIP_DETAILS_FUN: (state, { payload }) => {
+      if (payload) {
+        state.WH_SHIP_DETAILS = payload;
+      }
+      else {
+        state.WH_SHIP_DETAILS.status = false;
+        state.WH_SHIP_DETAILS.already = false;
+        state.WH_SHIP_DETAILS.shipNo = "";
+        state.WH_SHIP_DETAILS.SNo = "";
+        state.WH_SHIP_DETAILS.shipItems = [];
+      }
     },
-    PACKING_PREVIEW_FUN: (state, { payload }) => {
-      state.PACKING_PREVIEW = payload;
+    PACKING_DETAILS_FUN: (state, { payload }) => {
+      if (payload) {
+        state.PACKING_DETAILS = payload;
+      }
+      else {
+        state.PACKING_DETAILS.status = false;
+        state.PACKING_DETAILS.shipNo = "";
+        state.PACKING_DETAILS.SNo = "";
+        state.PACKING_DETAILS.pkNo = "";
+      }
+    },
+    PACKING_BOXES_PREVIEW_FUN: (state, { payload }) => {
+      state.PACKING_BOXES_PREVIEW = payload;
     },
     PACKING_PAGE_INDEX_FUN: (state, { payload }) => {
       state.PACKING_PAGE_INDEX = payload;
     },
+
+
 
   },
 
@@ -374,7 +413,6 @@ const mainSlice = createSlice({
       })
       .addCase(successPickDetails.fulfilled, (state, { payload }) => {
         toast.dismiss();
-        state.successPickData0 = payload?.NOC?.value
       })
       .addCase(successPickDetails.rejected, (state, { error }) => {
         toast.dismiss();
@@ -405,8 +443,9 @@ export const { LOG_OUT,
   INS_CUT_ITEM,
   MARK_DONE_CUTTING_GREEN_PACKING,
   WH_SHIP_NO_FUN,
-  PACKING_NO_FUN,
-  PACKING_PREVIEW_FUN,
+  WH_SHIP_DETAILS_FUN,
+  PACKING_DETAILS_FUN,
+  PACKING_BOXES_PREVIEW_FUN,
   PACKING_PAGE_INDEX_FUN,
 } = mainSlice.actions;
 

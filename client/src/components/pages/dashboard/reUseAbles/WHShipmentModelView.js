@@ -8,7 +8,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import { check_Pick_Details, create_New_Shipment, request_AccessToken_MICROSOFT, request_New_Pick } from '../../../../utils/API_HELPERS';
 import { Box, CircularProgress, Divider, Typography } from '@mui/material';
-import { WH_SHIP_NO_FUN, saleOrderNoFilter, successPickDetails } from '../../../../RTK/Reducers/Reducers';
+import { PACKING_DETAILS_FUN, WH_SHIP_DETAILS_FUN, WH_SHIP_NO_FUN, saleOrderNoFilter, successPickDetails } from '../../../../RTK/Reducers/Reducers';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Send } from '@mui/icons-material';
@@ -50,25 +50,27 @@ const WHShipmentModelView = ({ openCreateWHShip, setOpenCreateWHShip, SNO }) => 
             "createWarehouseShipment": true
         }
         if (openCreateWHShip && microSoftToken) {
+            dispatch(WH_SHIP_NO_FUN(null));
+            dispatch(WH_SHIP_DETAILS_FUN(null));
+
             create_New_Shipment(microSoftToken, body)
-                .then(response => {
-                    console.log("---------", response);
+                .then(thisResponse => {
+                    console.log("---------", thisResponse);
                     const codeCheck = /SH\d{6}/;
-                    if ("responseMsg" in response?.creation && (response.creation.responseMsg.match(codeCheck))) {
-                        const code = response.creation.responseMsg.match(/SH\d+/)[0];
+                    if ("responseMsg" in thisResponse?.creation && (thisResponse.creation.responseMsg.match(codeCheck))) {
+                        const code = thisResponse.creation.responseMsg.match(/SH\d+/)[0];
                         setResponse({
                             error: false,
                             code: code,
-                            message: response.creation.responseMsg
+                            message: thisResponse.creation.responseMsg
                         })
-                        if (response.creation.responseMsg.includes("was already created.")) {
-                            handlePickDetailsStatus(code);
-                            handleRequestPick(code);
-                        }
+                        // auto check next step condition
+                        if (thisResponse.creation.responseMsg.includes("was already created.")) handlePickDetailsStatus(code);
+
                     } else {
                         setResponse({
                             error: true,
-                            message: response.creation.responseMsg
+                            message: thisResponse.creation.responseMsg
                         })
 
                     }
@@ -82,21 +84,31 @@ const WHShipmentModelView = ({ openCreateWHShip, setOpenCreateWHShip, SNO }) => 
     const handlePickDetailsStatus = (code) => {
         setResponsePick("loading")
         check_Pick_Details(microSoftToken, code || response.code)
-            .then(response => {
-                if (response?.pickDetails?.value?.length === 0) {
+            .then(thisResponse => {
+                console.log("----handlePickDetailsStatus-----", thisResponse);
+                if (thisResponse?.pickDetails?.value?.length === 0) {
                     setResponsePick({
                         error: false,
-                        data: response?.pickDetails?.value,
+                        data: thisResponse?.pickDetails?.value,
                         reqPick: true
                     })
                 } else {
                     setResponsePick({
                         error: false,
-                        data: response?.pickDetails?.value,
+                        data: thisResponse?.pickDetails?.value,
                         reqPick: false
                     })
+                    dispatch(WH_SHIP_DETAILS_FUN({
+                        status: true,
+                        already: true,
+                        shipNo: code || response.code,
+                        SNo: SNO,
+                        shipItems: thisResponse?.pickDetails?.value,
+                        pickCode: code || response.code
+                    }))
                 }
-
+                // auto check handleRequestPick
+                if (code) handleRequestPick(code);
             })
     }
 
@@ -107,14 +119,14 @@ const WHShipmentModelView = ({ openCreateWHShip, setOpenCreateWHShip, SNO }) => 
     const handleRequestPick = (code) => {
         setResponsePickWH("loading")
         request_New_Pick(microSoftToken, { "whseShipNo": code || response.code })
-            .then(response => {
-                setResponsePickWH(response?.requested)
-                console.log("<<<<<<<<handleRequestPick>>>>>>>>>>", response);
+            .then(thisResponse => {
+                setResponsePickWH(thisResponse?.requested)
+                console.log("<<<<<<<<handleRequestPick>>>>>>>>>>", thisResponse);
                 dispatch(saleOrderNoFilter({
                     token: microSoftToken,
                     toastPermission: false
                 }));
-                dispatch(WH_SHIP_NO_FUN(response?.requested?.whseShipNo));
+                dispatch(WH_SHIP_NO_FUN({ WHno: code || response?.code || thisResponse?.requested?.whseShipNo, sno: SNO }));
             })
     }
 
@@ -125,14 +137,17 @@ const WHShipmentModelView = ({ openCreateWHShip, setOpenCreateWHShip, SNO }) => 
                 console.log("<<<<<<<<<<<<<handleSuccessPickDetail>>>>>>>>>>>>", res.payload);
                 if (res?.payload?.NOC?.value?.length > 0) {
                     setpickPageSender(true)
+                    dispatch(WH_SHIP_DETAILS_FUN({
+                        status: true,
+                        already: code ? true : false,
+                        shipNo: code || response.code,
+                        SNo: SNO,
+                        shipItems: res?.payload?.NOC?.value,
+                        pickCode: code || response.code
+                    }))
                 }
             })
     }
-
-    const handleSaveShipNo = () => {
-
-    }
-
 
     return (
         <div>
@@ -159,7 +174,7 @@ const WHShipmentModelView = ({ openCreateWHShip, setOpenCreateWHShip, SNO }) => 
                     {response?.error && <Typography sx={{ color: "#CB0087" }}>{response?.message}</Typography>}
                     <Divider sx={{ borderColor: '#1E1E1E' }} />
                     {responsePick === "loading" && <CircularProgress />}
-                    {!(responsePick?.reqPick) && responsePick !== null && responsePick !== "loading" &&
+                    {!(responsePick?.reqPick) && responsePick !== null && responsePick !== "loading" && responsePick?.data?.length > 0 &&
                         <Box>
                             <Typography textAlign={'left'} sx={{ color: '#2E7D32' }}>Picking Details are below</Typography>
                             <Typography>Record Found : {responsePick?.data?.length}</Typography>
@@ -188,9 +203,8 @@ const WHShipmentModelView = ({ openCreateWHShip, setOpenCreateWHShip, SNO }) => 
                     <Divider sx={{ borderColor: '#1E1E1E' }} />
                     {pickPageSender && <Box>
                         <Typography textAlign={'left'} sx={{ color: '#9C27B0' }}>Now You Can Visit Picking Section</Typography>
-
                         <Link to='/picking'>
-                            <Button onClick={handleSaveShipNo} variant='contained' color='secondary' size='small' endIcon={<Send />} autoFocus>
+                            <Button variant='contained' color='secondary' size='small' endIcon={<Send />} autoFocus>
                                 Move to picking
                             </Button>
                         </Link>

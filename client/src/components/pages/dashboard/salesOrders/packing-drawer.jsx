@@ -9,13 +9,13 @@ import PreLoader from '../../HOC/Loading';
 import { Delete, KeyboardDoubleArrowLeft, KeyboardDoubleArrowRight } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { Toaster } from '../reUseAbles/Toasters';
-import { PACKING_PAGE_INDEX_FUN, PACKING_PREVIEW_FUN } from '../../../../RTK/Reducers/Reducers';
+import { PACKING_PAGE_INDEX_FUN, PACKING_BOXES_PREVIEW_FUN } from '../../../../RTK/Reducers/Reducers';
 
 
 const PackingDrawer = ({ toggleDrawer, packingSideBar, handleShippingQuote }) => {
 
 
-    const { PACKING_NO, PACKING_PREVIEW } = useSelector(store => store.mainReducer)
+    const { PACKING_BOXES_PREVIEW, WH_SHIP_NO, WH_SHIP_DETAILS, PACKING_DETAILS } = useSelector(store => store.mainReducer)
     const dispatch = useDispatch();
     const [loading, setLoading] = React.useState({ load: true, valid: false })
     const [boxIndex, setBoxIndex] = React.useState(0)
@@ -27,28 +27,20 @@ const PackingDrawer = ({ toggleDrawer, packingSideBar, handleShippingQuote }) =>
         navigate('/packing-preview');
     }
 
-    const handleIndex = (suffer) => {
-        // setBoxIndex(Math.abs((boxIndex + suffer)))
-        setBoxIndex(Math.abs((boxIndex + suffer) % PACKING_PREVIEW.length))
-    }
+    const handleIndex = (suffer) => setBoxIndex(Math.abs((boxIndex + suffer) % PACKING_BOXES_PREVIEW.length))
 
 
     React.useLayoutEffect(() => {
-
-        if (packingSideBar && PACKING_NO) {
-            // alert(PACKING_NO)
-            // setLoading({ ...loading, load: true });
+        if (packingSideBar && PACKING_DETAILS.pkNo) {
+            dispatch(PACKING_BOXES_PREVIEW_FUN(null));
             request_AccessToken_MICROSOFT()
                 .then(decide => {
                     if (decide.success) {
-                        getPacking({ token: decide.token, code: PACKING_NO })
+                        getPacking({ token: decide.token, code: PACKING_DETAILS.pkNo })
                             .then(response => {
-                                console.log("<<<<<createPacking>>>>>>>", response);
+                                console.log("<<<<<create----------Packing>>>>>>>", response);
                                 setLoading({ ...loading, load: false });
-                                if ("value" in response?.getPacking) {
-                                    dispatch(PACKING_PREVIEW_FUN(response?.getPacking?.value))
-                                    // setRows(response?.getPacking?.value?.[0]?.packingLines)
-                                }
+                                if ("value" in response?.getPacking) dispatch(PACKING_BOXES_PREVIEW_FUN(response?.getPacking?.value))
                                 else Toaster('error', ``)
                             })
                             .catch(error => {
@@ -82,7 +74,7 @@ const PackingDrawer = ({ toggleDrawer, packingSideBar, handleShippingQuote }) =>
                                 <Grid item xs={12} sx={{ borderBottom: '1px solid black' }}>
                                     <Stack direction='row' alignItems={'center'} justifyContent={'space-around'}>
                                         <KeyboardDoubleArrowLeft onClick={() => handleIndex(-1)} color='error' sx={{ cursor: 'pointer' }} />
-                                        <Typography variant='h5'>Box {boxIndex + 1}/{PACKING_PREVIEW?.length}</Typography>
+                                        <Typography variant='h5'>Box {boxIndex + 1}/{PACKING_BOXES_PREVIEW?.length}</Typography>
                                         <KeyboardDoubleArrowRight onClick={() => handleIndex(+1)} color='success' sx={{ cursor: 'pointer' }} />
                                     </Stack>
                                     <Box my={3} sx={{ textAlign: 'center' }}>
@@ -93,7 +85,7 @@ const PackingDrawer = ({ toggleDrawer, packingSideBar, handleShippingQuote }) =>
                                 <Grid item xs={12}>
                                     <Box sx={{ height: '60vh' }} className='scroll'>
                                         {
-                                            PACKING_PREVIEW?.length > 0 ?
+                                            PACKING_BOXES_PREVIEW?.length > 0 ?
                                                 <TableContainer component={Paper} className="bsn">
                                                     <Table size="small" aria-label="a dense table">
                                                         <TableHead sx={{ backgroundColor: '#F1F3F4' }}>
@@ -103,24 +95,24 @@ const PackingDrawer = ({ toggleDrawer, packingSideBar, handleShippingQuote }) =>
                                                                 <TableCell > Weight </TableCell>
                                                             </TableRow>
                                                         </TableHead>
-                                                        <TableBody>
-                                                            {PACKING_PREVIEW?.[boxIndex]?.packingLines?.length > 0 ?
-                                                                PACKING_PREVIEW?.[boxIndex]?.packingLines?.map((row, indx) => (
+                                                        {PACKING_BOXES_PREVIEW?.[boxIndex]?.packingLines?.length > 0 ?
+                                                            <TableBody>
+                                                                {PACKING_BOXES_PREVIEW?.[boxIndex]?.packingLines?.map((row, indx) => (
                                                                     <TableRow key={indx} sx={{ '&:td, &:th': { border: 0 } }}
                                                                     // onClick={e => handleSelect(row)}
                                                                     >
-                                                                        <TableCell> {PACKING_PREVIEW?.[boxIndex]?.sourceNo} </TableCell>
+                                                                        <TableCell> {PACKING_BOXES_PREVIEW?.[boxIndex]?.sourceNo} </TableCell>
                                                                         <TableCell>{row.LineNo}</TableCell>
                                                                         <TableCell>{row.billedWeight} <Delete sx={{ color: 'gray', fontSize: '15px' }} /></TableCell>
 
                                                                     </TableRow>
-                                                                ))
-                                                                :
-                                                                <Typography sx={{ color: 'red', textAlign: 'center' }} mt={5}>
-                                                                    No Packing-Lines Found
-                                                                </Typography>
-                                                            }
-                                                        </TableBody>
+                                                                ))}
+                                                            </TableBody>
+                                                            :
+                                                            <Typography sx={{ color: 'red', textAlign: 'center' }} mt={5}>
+                                                                No Packing-Lines Found
+                                                            </Typography>
+                                                        }
                                                     </Table>
                                                 </TableContainer>
                                                 :
@@ -132,7 +124,7 @@ const PackingDrawer = ({ toggleDrawer, packingSideBar, handleShippingQuote }) =>
                                 </Grid>
 
                                 {
-                                    PACKING_PREVIEW?.[boxIndex]?.packingLines?.length > 0 &&
+                                    PACKING_BOXES_PREVIEW?.[boxIndex]?.packingLines?.length > 0 &&
                                     <Grid item container alignItems='center' justifyContent={'space-between'} xs={12}>
                                         <Grid item xs={6}>
                                             <Typography>
@@ -142,7 +134,7 @@ const PackingDrawer = ({ toggleDrawer, packingSideBar, handleShippingQuote }) =>
 
                                         <Grid item xs={6}>
                                             <Typography sx={{ textAlign: 'right' }}>
-                                                {PACKING_PREVIEW?.[boxIndex]?.packingLines?.[0]?.insuredValue}
+                                                {PACKING_BOXES_PREVIEW?.[boxIndex]?.packingLines?.[0]?.insuredValue}
                                             </Typography>
                                         </Grid>
 
@@ -154,7 +146,7 @@ const PackingDrawer = ({ toggleDrawer, packingSideBar, handleShippingQuote }) =>
 
                                         <Grid item xs={6}>
                                             <Typography sx={{ textAlign: 'right' }}>
-                                                {PACKING_PREVIEW?.[boxIndex]?.packingLines?.[0]?.weight}
+                                                {PACKING_BOXES_PREVIEW?.[boxIndex]?.packingLines?.[0]?.weight}
                                             </Typography>
                                         </Grid>
                                     </Grid>

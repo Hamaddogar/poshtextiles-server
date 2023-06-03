@@ -84,7 +84,7 @@ const Picking = () => {
                         </Search>
                     </Stack>
 
-                            <Box maxWidth={'sm'} margin='20px auto auto auto' >
+                            <Box maxWidth={'md'} margin='20px auto auto auto' >
                                 <PickingTable searchToBL={searchToBL} searchIt={searchIt} />
                             </Box>
 
@@ -94,8 +94,11 @@ const Picking = () => {
 
             </Box >}
             <Grid spacing={3} container direction='row' my={3} textAlign='right' mt={2} justifyContent={{ xs: 'center', md: 'space-between' }} alignItems={'center'}>
+            <Grid item>
+                    <BackButton onClick={() => navigate('/sale-order')} />
+                </Grid>
                 <Grid item>
-                    <BackButton onClick={() => navigate(-1)} />
+                    <Button size='small' variant='contained'>Complete Picking</Button>
                 </Grid>
             </Grid>
 

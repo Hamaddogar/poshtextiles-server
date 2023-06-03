@@ -919,7 +919,7 @@ app.post(routeStrings.token_micro, async (req, res) => {
 });
 
 // microsoft all sales orders
-app.post(routeStrings.sale_orders_micro, async (req, res) => {
+app.post(routeStrings.sale_orders_micro,cache, async (req, res) => {
     const config = {
         headers: {
             "Authorization": `Bearer ${req.body.token}`,
@@ -932,6 +932,7 @@ app.post(routeStrings.sale_orders_micro, async (req, res) => {
             config
         );
         // console.log(response?.data?.value);
+        data = response?.data?.value
         if (response?.data?.value) {
             res.status(response.status).send(response.data.value);
         } else throw ({
@@ -1228,9 +1229,9 @@ app.post(routeStrings.picking_page_detail_micro, async (req, res) => {
             "Authorization": `Bearer ${req.body.token}`,
         }
     };
-    console.log("------------", req.body.picks);
     const allPickingDetails = req.body.picks;
     const dataToSend = []
+    const dataToSendRaw = []
     try {
 
 
@@ -1249,6 +1250,9 @@ app.post(routeStrings.picking_page_detail_micro, async (req, res) => {
 
 
             dataToSend.push({
+                name : item.description,
+                WhseDocumentNo : item.WhseDocumentNo,
+                sourceNo : item.sourceNo,
                 ...responseInventory?.data?.value?.[0],
                 ...responseBin?.data?.value?.[0],
             })

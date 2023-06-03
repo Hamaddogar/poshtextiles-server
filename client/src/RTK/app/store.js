@@ -32,8 +32,9 @@ const persistConfig = {
     "ship_from_location",
     "client_Info",
     "WH_SHIP_NO",
+    "WH_SHIP_DETAILS",
     "PACKING_NO",
-    "PACKING_PREVIEW",
+    "PACKING_BOXES_PREVIEW",
     "PACKING_PAGE_INDEX",
   ],
   rootReducer: mainReducer

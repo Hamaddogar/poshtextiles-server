@@ -7,10 +7,21 @@ import ThumbNailImageSVG from "../../../assets/images/thumbnail2.svg";
 const UpdateLineItem = ({ handleSubmitUpdateLineItem, product, handleCancel, readOnly = false }) => {
 
     const [data, setData] = React.useState({
-        qty: product.quantity,
-        price: product.unitPrice,
-        discount: product.lineDiscountAmount
-    })
+        qty: 0,
+        price: 0,
+        discount: 0,
+        minimumQty: 0
+    });
+
+    React.useEffect(() => {
+        setData({
+            qty: product.quantity,
+            price: product.unitPrice,
+            discount: product.lineDiscountAmount,
+            minimumQty: product.minimumQty
+        })
+    }, [product])
+
 
     const handleChange = (event) => {
         setData({
@@ -69,7 +80,7 @@ const UpdateLineItem = ({ handleSubmitUpdateLineItem, product, handleCancel, rea
 
                             <Grid item xs={6} sm={6} md={2}>
                                 <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Min Quantity: </Typography>
-                                <TextField inputProps={{ readOnly: readOnly }} required sx={headInputStyle} fullWidth defaultValue={""} name={"minQty"} size='small' />
+                                <TextField inputProps={{ readOnly: readOnly }} required sx={headInputStyle} fullWidth value={data.minimumQty} name={"minQty"} size='small' />
                             </Grid>
 
                             <Grid item xs={6} sm={6} md={2}>

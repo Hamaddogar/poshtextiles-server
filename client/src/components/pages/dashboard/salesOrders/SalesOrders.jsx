@@ -1,7 +1,7 @@
 import { ClickAwayListener, Grow, MenuList, Popper, Stack, Typography } from '@mui/material';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Grid } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import { Button } from '@mui/material';
@@ -12,7 +12,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import { DeleteOutline, EditOutlined, KeyboardArrowDown, } from '@mui/icons-material';
 import Done from '../../../assets/images/done.png'
 import { BackButton, scroller } from '../reUseAbles/ReuseAbles';
-import { PACKING_NO_FUN, SELECTED_SALE_ORDER_DATA, WH_SHIP_NO_FUN } from '../../../../RTK/Reducers/Reducers';
+import { PACKING_DETAILS_FUN, SELECTED_SALE_ORDER_DATA, WH_SHIP_DETAILS_FUN, WH_SHIP_NO_FUN } from '../../../../RTK/Reducers/Reducers';
 import ConDialog from './ConfirmationModal';
 import p0 from "../../../assets/images/p0.png";
 import p1 from "../../../assets/images/p1.png";
@@ -40,10 +40,11 @@ import { Toaster } from '../reUseAbles/Toasters';
 
 const SalesOrders = () => {
 
-    const { saleOrderDetails, perPage, sale_order_paking, WH_SHIP_NO } = useSelector(store => store.mainReducer);
+    const { saleOrderDetails, perPage, sale_order_paking, WH_SHIP_NO, WH_SHIP_DETAILS, PACKING_DETAILS } = useSelector(store => store.mainReducer);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
+    console.log("---saleOrderDetails---", saleOrderDetails);
     // states
     const [copy, setCopy] = React.useState([]);
     const [rows, setRows] = React.useState([]);
@@ -55,8 +56,7 @@ const SalesOrders = () => {
     const anchorRef = React.useRef(null);
     const prevOpen = React.useRef(open);
     const [openCreateWHShip, setOpenCreateWHShip] = React.useState(false);
-    const [packingSideBar, setPackingSideBar] = React.useState(false);
-    const [packingSideBarAllow, setPackingSideBarAllow] = React.useState(false);
+    const [packingSideBar, setPackingSideBar] = React.useState((WH_SHIP_NO?.WHno && WH_SHIP_NO?.sno === saleOrderDetails?.no && PACKING_DETAILS?.status && PACKING_DETAILS?.pkNo) ? true : false);
 
 
 
@@ -83,9 +83,13 @@ const SalesOrders = () => {
     }
 
     const handleSelectedPickingProduct = product => {
-        Toaster('warn', 'Create WH Shipment!')
-        scroller(false);
-        setOpen(true);
+        if (WH_SHIP_NO?.WHno && WH_SHIP_NO?.sno === saleOrderDetails?.no && WH_SHIP_DETAILS?.status && WH_SHIP_DETAILS?.shipItems?.length > 0) {
+            navigate('/picking')
+        } else {
+            Toaster('warn', 'Create WH Shipment!')
+            setOpen(true);
+            scroller(false);
+        }
     };
 
     const handleToggle = () => setOpen((prevOpen) => !prevOpen);
@@ -194,40 +198,37 @@ const SalesOrders = () => {
         scroller();
     }
     const handleCreatePACKING = () => {
-
-        Toaster('loading', `Loading...`)
+        dispatch(PACKING_DETAILS_FUN(null));
+        Toaster('loading', `Loading Packing...`)
         request_AccessToken_MICROSOFT()
             .then(decide => {
                 if (decide.success) {
-                    createPacking({ token: decide.token, body: { "whseShipNo": WH_SHIP_NO } })
+                    createPacking({ token: decide.token, body: { "whseShipNo": WH_SHIP_NO?.WHno } })
                         .then(response => {
-                            // console.log("<<<<<createPacking>>>>>>>", response);
-                            if ("packingNo" in response?.newPacking &&
-                                response?.newPacking?.responseMsg === "Created"
-                            ) {
-                                dispatch(PACKING_NO_FUN(response?.newPacking?.packingNo))
-                                Toaster('success', `Packing already ${response?.newPacking?.responseMsg}`)
-                                setPackingSideBarAllow(true);
-                            } else if (
-                                "packingNo" in response?.newPacking &&
-                                response?.newPacking?.responseMsg === "Exists"
-                            ) {
-                                dispatch(PACKING_NO_FUN(response?.newPacking?.packingNo))
-                                Toaster('warn', `Packing already ${response?.newPacking?.responseMsg}`)
-                                setPackingSideBarAllow(true);
+                            console.log("<<<<<createPacking>>>>>>>", response);
+                            if ("packingNo" in response?.newPacking) {
+                                dispatch(PACKING_DETAILS_FUN({
+                                    status: true,
+                                    shipNo: response?.newPacking?.whseShipNo,
+                                    SNo: WH_SHIP_NO?.sno,
+                                    pkNo: response?.newPacking?.packingNo,
+                                }));
+                                if (response?.newPacking?.responseMsg === "Created") {
+                                    Toaster('success', `Packing ${response?.newPacking?.responseMsg}`)
+                                } else {
+                                    Toaster('warn', `Packing already ${response?.newPacking?.responseMsg}`)
+                                }
                             } else {
-                                Toaster('error', ``)
+                                Toaster('error', `Something Went Wrong!`)
                             }
                         })
                 }
             })
-
-        // alert('processing PACKING')
-        // alert(sale_order_paking)
     }
 
     const handleBack = () => {
-        dispatch(WH_SHIP_NO_FUN(null));
+        // dispatch(WH_SHIP_NO_FUN(null));
+        // dispatch(WH_SHIP_DETAILS_FUN(null));
         navigate('/');
         scroller()
     }
@@ -276,7 +277,7 @@ const SalesOrders = () => {
                                             <Stack sx={{ height: '100%', display: 'flex', justifyContent: 'space-between' }} >
                                                 <Typography textAlign='center' mt={1} variant='h1' fontSize={item.itemCategoryCode.length > 25 ? { xs: '5vw', sm: '2vw', md: '1vw' } : { xs: '6vw', sm: '2.3vw', md: '1.3vw' }} fontWeight={500} >{item.description}</Typography>
                                                 <Stack direction='row' alignItems={'center'} justifyContent='space-between'>
-                                                    <Typography fontSize='12px'>MOQ : <span style={{ fontSize: '20px' }}>{item.outstandingQuantity}</span></Typography>
+                                                    <Typography fontSize='12px'>MOQ : <span style={{ fontSize: '20px' }}>{item.minimumQty}</span></Typography>
                                                     <Typography fontSize='12px' textAlign={'right'}>QTY : <span style={{ fontSize: '20px' }}>{item.quantity}</span></Typography>
                                                 </Stack>
                                             </Stack>
@@ -334,13 +335,14 @@ const SalesOrders = () => {
                 <Grid item>
                     <Stack direction='row' alignItems='center' spacing={1}>
                         <Button onClick={handleClickNewItem} variant='contained' size='small'> + add new item</Button>
-                        { sale_order_paking && !packingSideBarAllow &&
-                            <Button variant='contained' size='small'
-                                onClick={handleCreatePACKING}> Create PACKING </Button> }
-                        { packingSideBarAllow && sale_order_paking &&
+
+                        {WH_SHIP_NO?.WHno && WH_SHIP_NO?.sno === saleOrderDetails?.no && PACKING_DETAILS?.status && PACKING_DETAILS?.pkNo ?
                             <Button variant='contained' size='small' color='success'
-                                disabled={!packingSideBarAllow}
-                                onClick={toggleDrawerPacking(true)}> Next Packing </Button> }
+                                onClick={toggleDrawerPacking(true)}> Next Packing </Button>
+                            :
+                            <Button variant='contained' size='small' disabled={WH_SHIP_NO?.sno !== saleOrderDetails?.no}
+                                onClick={handleCreatePACKING}> Create PACKING </Button>
+                        }
                     </Stack>
                 </Grid>
                 <Grid item>
@@ -376,10 +378,12 @@ const SalesOrders = () => {
                                     onClick={handleClose}
                                 >
                                     <MenuItem sx={{ borderBottom: '1px solid white', fontSize: '13px' }} >RELEASE Now</MenuItem>
-                                    { sale_order_paking ?
-                                            null
-                                            :
-                                            <MenuItem onClick={handleCreateWHShip} sx={{ borderBottom: '1px solid white', fontSize: '13px' }} >Create WH Shipment</MenuItem>
+                                    {WH_SHIP_NO?.WHno && WH_SHIP_NO?.sno === saleOrderDetails?.no && WH_SHIP_DETAILS?.status && WH_SHIP_DETAILS?.shipItems?.length > 0 ?
+                                        <Link to='/picking' style={{ color: 'inherit', textDecoration: 'none' }}>
+                                            <MenuItem sx={{ borderBottom: '1px solid white', fontSize: '13px' }} >Shipment is Done <br /> Move to Picking</MenuItem>
+                                        </Link>
+                                        :
+                                        <MenuItem onClick={handleCreateWHShip} sx={{ borderBottom: '1px solid white', fontSize: '13px' }} >Create WH Shipment</MenuItem>
                                     }
                                     <MenuItem sx={{ fontSize: '13px' }}>UNRELEASE Now</MenuItem>
                                 </MenuList>

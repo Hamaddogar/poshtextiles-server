@@ -65,7 +65,7 @@ const UpperHeader = ({ handleUpperHeaderSubmit, saleOrderDetails }) => {
 
                         <Grid item xs={6} md={2} >
                             <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Customer PO: </Typography>
-                            <TextField sx={headInputStyle} fullWidth value={saleOrderDetails?.shipToPostCode} size='small' />
+                            <TextField sx={headInputStyle} fullWidth value={saleOrderDetails?.externalDocumentNo} size='small' />
                         </Grid>
 
                         <Grid item xs={6} md={2} >
