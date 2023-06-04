@@ -341,6 +341,26 @@ export const createPacking = async ({ token, body }) => {
     } catch (error) {
         return error
     }
+};
+// PACKING-REGISTER
+export const registerPacking = async ({ token, pkCode }) => {
+    try {
+        const data = await axios.post(APIS.registerPacking_micro, { token, pkCode })
+        return data.data;
+    } catch (error) {
+        return error
+    }
+}
+// item.itemNo, item.locationCode
+
+// pickingPageDealer
+export const getLots = async ({ token, item, locationCode }) => {
+    try {
+        const data = await axios.post(APIS.gets_lots_detail_micro, { token, item, locationCode })
+        return data.data;
+    } catch (error) {
+        return error
+    }
 }
 
 // GET-PACKING

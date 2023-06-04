@@ -1,18 +1,14 @@
-import { ClickAwayListener, Grow, MenuList, Popper, Stack, Typography } from '@mui/material';
+import { ClickAwayListener, Grid, Grow, MenuList, Popper, Stack, Typography, Button, MenuItem, Paper } from '@mui/material';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { Grid } from '@mui/material';
-import Paper from '@mui/material/Paper';
-import { Button } from '@mui/material';
-import MenuItem from '@mui/material/MenuItem';
 import { Box } from '@mui/system';
 import Pagination from 'react-responsive-pagination';
 import 'bootstrap/dist/css/bootstrap.css';
 import { DeleteOutline, EditOutlined, KeyboardArrowDown, } from '@mui/icons-material';
 import Done from '../../../assets/images/done.png'
 import { BackButton, scroller } from '../reUseAbles/ReuseAbles';
-import { PACKING_DETAILS_FUN, SELECTED_SALE_ORDER_DATA, WH_SHIP_DETAILS_FUN, WH_SHIP_NO_FUN } from '../../../../RTK/Reducers/Reducers';
+import { PACKING_DETAILS_FUN, SELECTED_SALE_ORDER_DATA } from '../../../../RTK/Reducers/Reducers';
 import ConDialog from './ConfirmationModal';
 import p0 from "../../../assets/images/p0.png";
 import p1 from "../../../assets/images/p1.png";
@@ -38,13 +34,16 @@ import PackingDrawer from './packing-drawer';
 import { createPacking, request_AccessToken_MICROSOFT } from '../../../../utils/API_HELPERS';
 import { Toaster } from '../reUseAbles/Toasters';
 
+const images = [p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15];
+
+
+
 const SalesOrders = () => {
 
     const { saleOrderDetails, perPage, sale_order_paking, WH_SHIP_NO, WH_SHIP_DETAILS, PACKING_DETAILS } = useSelector(store => store.mainReducer);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    console.log("---saleOrderDetails---", saleOrderDetails);
     // states
     const [copy, setCopy] = React.useState([]);
     const [rows, setRows] = React.useState([]);
@@ -58,13 +57,6 @@ const SalesOrders = () => {
     const [openCreateWHShip, setOpenCreateWHShip] = React.useState(false);
     const [packingSideBar, setPackingSideBar] = React.useState((WH_SHIP_NO?.WHno && WH_SHIP_NO?.sno === saleOrderDetails?.no && PACKING_DETAILS?.status && PACKING_DETAILS?.pkNo) ? true : false);
 
-
-
-    const handlePageChange = page => {
-        setCurrentPage(page);
-        setRows(copy.slice(((page - 1) * perPage), ((((page - 1) * perPage)) + perPage)))
-    }
-
     React.useLayoutEffect(() => {
         setCopy(saleOrderDetails.edcSalesLines);
         //eslint-disable-next-line
@@ -75,12 +67,18 @@ const SalesOrders = () => {
     React.useEffect(() => {
         if (prevOpen.current === true && open === false) anchorRef.current.focus();
         prevOpen.current = open;
+        //eslint-disable-next-line
     }, [open]);
+
+    const handlePageChange = page => {
+        setCurrentPage(page);
+        setRows(copy.slice(((page - 1) * perPage), ((((page - 1) * perPage)) + perPage)))
+    };
 
     const handleShowSelectedProduct = product => {
         setShowSelectedProduct(product);
         scroller();
-    }
+    };
 
     const handleSelectedPickingProduct = product => {
         if (WH_SHIP_NO?.WHno && WH_SHIP_NO?.sno === saleOrderDetails?.no && WH_SHIP_DETAILS?.status && WH_SHIP_DETAILS?.shipItems?.length > 0) {
@@ -191,15 +189,15 @@ const SalesOrders = () => {
         if (closeTo === "newItem") setNewItem(false);
         else setShowSelectedProduct(null);
     }
-    const images = [p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15];
 
     const handleCreateWHShip = () => {
         setOpenCreateWHShip(true);
         scroller();
     }
+
     const handleCreatePACKING = () => {
         dispatch(PACKING_DETAILS_FUN(null));
-        Toaster('loading', `Loading Packing...`)
+        Toaster('loading', `Creating Packing...`)
         request_AccessToken_MICROSOFT()
             .then(decide => {
                 if (decide.success) {
@@ -227,16 +225,13 @@ const SalesOrders = () => {
     }
 
     const handleBack = () => {
-        // dispatch(WH_SHIP_NO_FUN(null));
-        // dispatch(WH_SHIP_DETAILS_FUN(null));
         navigate('/');
         scroller()
     }
 
-    const toggleDrawerPacking = (open) => (event) => {
-        if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) { return; }
-        setPackingSideBar(open);
-    };
+    const toggleDrawerPacking = (open) => (event) => setPackingSideBar(open);
+
+
 
     return (
         <div>
@@ -246,7 +241,6 @@ const SalesOrders = () => {
             <Box>
                 {/* Upper Form */}
                 <UpperHeader saleOrderDetails={saleOrderDetails} handleUpperHeaderSubmit={handleUpperHeaderSubmit} />
-
                 <Box sx={{ padding: '0px' }} mb={1}>
                     {
                         newItem &&
@@ -335,12 +329,13 @@ const SalesOrders = () => {
                 <Grid item>
                     <Stack direction='row' alignItems='center' spacing={1}>
                         <Button onClick={handleClickNewItem} variant='contained' size='small'> + add new item</Button>
-
+                        <Button variant='contained' size='small'
+                                onClick={handleCreatePACKING}> Create PACKING </Button>
                         {WH_SHIP_NO?.WHno && WH_SHIP_NO?.sno === saleOrderDetails?.no && PACKING_DETAILS?.status && PACKING_DETAILS?.pkNo ?
                             <Button variant='contained' size='small' color='success'
                                 onClick={toggleDrawerPacking(true)}> Next Packing </Button>
                             :
-                            <Button variant='contained' size='small' disabled={WH_SHIP_NO?.sno !== saleOrderDetails?.no}
+                            <Button variant='contained' size='small' disabled={WH_SHIP_NO?.WHno ? false : true}
                                 onClick={handleCreatePACKING}> Create PACKING </Button>
                         }
                     </Stack>

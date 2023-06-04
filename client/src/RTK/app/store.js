@@ -36,6 +36,8 @@ const persistConfig = {
     "PACKING_NO",
     "PACKING_BOXES_PREVIEW",
     "PACKING_PAGE_INDEX",
+    "PACKING_DETAILS",
+    "sale_order_paking"
   ],
   rootReducer: mainReducer
 }

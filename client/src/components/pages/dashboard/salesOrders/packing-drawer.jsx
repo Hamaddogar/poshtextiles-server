@@ -1,36 +1,28 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
-import { Button, Divider, Grid, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Button, Divider, Grid, Stack } from '@mui/material';
 import { getPacking, request_AccessToken_MICROSOFT } from '../../../../utils/API_HELPERS';
-// import { validateAddressFEDEXP, validateAddressUPS } from '../../../../RTK/Reducers/Reducers';
 import { useDispatch, useSelector } from 'react-redux';
 import PreLoader from '../../HOC/Loading';
-import { Delete, KeyboardDoubleArrowLeft, KeyboardDoubleArrowRight } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { Toaster } from '../reUseAbles/Toasters';
-import { PACKING_PAGE_INDEX_FUN, PACKING_BOXES_PREVIEW_FUN } from '../../../../RTK/Reducers/Reducers';
+import { PACKING_BOXES_PREVIEW_FUN } from '../../../../RTK/Reducers/Reducers';
+import SwipeableTextMobileStepper from './SwipeableTextMobileStepper';
 
 
 const PackingDrawer = ({ toggleDrawer, packingSideBar, handleShippingQuote }) => {
 
 
-    const { PACKING_BOXES_PREVIEW, WH_SHIP_NO, WH_SHIP_DETAILS, PACKING_DETAILS } = useSelector(store => store.mainReducer)
+    const { PACKING_DETAILS,PACKING_BOXES_PREVIEW } = useSelector(store => store.mainReducer);
     const dispatch = useDispatch();
-    const [loading, setLoading] = React.useState({ load: true, valid: false })
-    const [boxIndex, setBoxIndex] = React.useState(0)
-
+    const [loading, setLoading] = React.useState({ loading: true, valid: false })
     const navigate = useNavigate();
 
-    const handlePakingPreview = () => {
-        dispatch(PACKING_PAGE_INDEX_FUN(boxIndex));
-        navigate('/packing-preview');
-    }
-
-    const handleIndex = (suffer) => setBoxIndex(Math.abs((boxIndex + suffer) % PACKING_BOXES_PREVIEW.length))
-
+    const handlePakingPreview = () => navigate('/packing-preview');
 
     React.useLayoutEffect(() => {
+        setLoading(pv => ({ ...pv, loading: true }));
         if (packingSideBar && PACKING_DETAILS.pkNo) {
             dispatch(PACKING_BOXES_PREVIEW_FUN(null));
             request_AccessToken_MICROSOFT()
@@ -39,125 +31,46 @@ const PackingDrawer = ({ toggleDrawer, packingSideBar, handleShippingQuote }) =>
                         getPacking({ token: decide.token, code: PACKING_DETAILS.pkNo })
                             .then(response => {
                                 console.log("<<<<<create----------Packing>>>>>>>", response);
-                                setLoading({ ...loading, load: false });
+                                setLoading(pv => ({ ...pv, loading: false }));
+                                // response?.getPacking?.value
                                 if ("value" in response?.getPacking) dispatch(PACKING_BOXES_PREVIEW_FUN(response?.getPacking?.value))
                                 else Toaster('error', ``)
                             })
                             .catch(error => {
                                 console.log("<<<<<", error);
-                                setLoading({ ...loading, load: false });
+                                setLoading(pv => ({ ...pv, loading: false }));
                             })
                     }
                 })
         }
-
+        //eslint-disable-next-line
     }, [packingSideBar])
 
 
     return (
         <div>
             <React.Fragment>
-
                 <SwipeableDrawer
                     anchor={"right"}
                     open={packingSideBar}
-                    // onClose={loading.loading === "loading" ? () => { } : toggleDrawer(false)}
-                    onClose={toggleDrawer(false)}
-                    onOpen={toggleDrawer(true)}
                 >
                     <Box
                         sx={{ width: 500, height: "100vh", padding: "10px 20px 0px 20px", background: "#FFFFFF" }}
                         role="presentation"
                     >
-                        <PreLoader loading={loading.load}>
-                            <Grid container spacing={.4} justifyContent={'space-between'} alignItems={'center'} sx={{ color: '#919191' }} >
-                                <Grid item xs={12} sx={{ borderBottom: '1px solid black' }}>
-                                    <Stack direction='row' alignItems={'center'} justifyContent={'space-around'}>
-                                        <KeyboardDoubleArrowLeft onClick={() => handleIndex(-1)} color='error' sx={{ cursor: 'pointer' }} />
-                                        <Typography variant='h5'>Box {boxIndex + 1}/{PACKING_BOXES_PREVIEW?.length}</Typography>
-                                        <KeyboardDoubleArrowRight onClick={() => handleIndex(+1)} color='success' sx={{ cursor: 'pointer' }} />
-                                    </Stack>
-                                    <Box my={3} sx={{ textAlign: 'center' }}>
-                                        <Button variant='outlined'>Scan LOT</Button>
-                                    </Box>
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <Box sx={{ height: '60vh' }} className='scroll'>
-                                        {
-                                            PACKING_BOXES_PREVIEW?.length > 0 ?
-                                                <TableContainer component={Paper} className="bsn">
-                                                    <Table size="small" aria-label="a dense table">
-                                                        <TableHead sx={{ backgroundColor: '#F1F3F4' }}>
-                                                            <TableRow sx={{ 'td, th': { border: 0 } }}>
-                                                                <TableCell> Item Source </TableCell>
-                                                                <TableCell >Line No</TableCell>
-                                                                <TableCell > Weight </TableCell>
-                                                            </TableRow>
-                                                        </TableHead>
-                                                        {PACKING_BOXES_PREVIEW?.[boxIndex]?.packingLines?.length > 0 ?
-                                                            <TableBody>
-                                                                {PACKING_BOXES_PREVIEW?.[boxIndex]?.packingLines?.map((row, indx) => (
-                                                                    <TableRow key={indx} sx={{ '&:td, &:th': { border: 0 } }}
-                                                                    // onClick={e => handleSelect(row)}
-                                                                    >
-                                                                        <TableCell> {PACKING_BOXES_PREVIEW?.[boxIndex]?.sourceNo} </TableCell>
-                                                                        <TableCell>{row.LineNo}</TableCell>
-                                                                        <TableCell>{row.billedWeight} <Delete sx={{ color: 'gray', fontSize: '15px' }} /></TableCell>
-
-                                                                    </TableRow>
-                                                                ))}
-                                                            </TableBody>
-                                                            :
-                                                            <Typography sx={{ color: 'red', textAlign: 'center' }} mt={5}>
-                                                                No Packing-Lines Found
-                                                            </Typography>
-                                                        }
-                                                    </Table>
-                                                </TableContainer>
-                                                :
-                                                <Typography sx={{ color: 'red', textAlign: 'center' }} mt={5}>
-                                                    No Boxes are Found
-                                                </Typography>
-                                        }
-                                    </Box>
-                                </Grid>
-
-                                {
-                                    PACKING_BOXES_PREVIEW?.[boxIndex]?.packingLines?.length > 0 &&
-                                    <Grid item container alignItems='center' justifyContent={'space-between'} xs={12}>
-                                        <Grid item xs={6}>
-                                            <Typography>
-                                                Total QTY :
-                                            </Typography>
-                                        </Grid>
-
-                                        <Grid item xs={6}>
-                                            <Typography sx={{ textAlign: 'right' }}>
-                                                {PACKING_BOXES_PREVIEW?.[boxIndex]?.packingLines?.[0]?.insuredValue}
-                                            </Typography>
-                                        </Grid>
-
-                                        <Grid item xs={6}>
-                                            <Typography>
-                                                Box Weight :
-                                            </Typography>
-                                        </Grid>
-
-                                        <Grid item xs={6}>
-                                            <Typography sx={{ textAlign: 'right' }}>
-                                                {PACKING_BOXES_PREVIEW?.[boxIndex]?.packingLines?.[0]?.weight}
-                                            </Typography>
-                                        </Grid>
-                                    </Grid>
-                                }
-
+                        <PreLoader loading={loading.loading}>
+                            <SwipeableTextMobileStepper >
                                 <Grid item xs={12} mt={1} sx={{ textAlign: 'right' }}>
                                     <Divider />
-                                    <Button sx={{ fontSize: '13px', textTransform: 'captalize' }} variant='contained' size='small' color='success' onClick={handleShippingQuote}>Ship Now</Button> &nbsp; &nbsp; &nbsp;
-                                    <Button sx={{ fontSize: '13px', textTransform: 'captalize' }} variant='contained' size='small' onClick={handlePakingPreview}>Preview</Button>
+                                    <Stack direction='row' alignItems='center' justifyContent={'space-between'}>
+                                        <Button color='error' sx={{ fontSize: '13px', textTransform: 'captalize' }} variant='contained' size='small' onClick={loading.loading ? () => { } : toggleDrawer(false)}>Close</Button>
+                                        <Box>
+                                            <Button sx={{ fontSize: '13px', textTransform: 'captalize' }} variant='contained' size='small' color='success' onClick={handleShippingQuote}>Move to Shipment </Button> &nbsp;
+                                            <Button disabled={PACKING_BOXES_PREVIEW?.length > 0 ? false : true} sx={{ fontSize: '13px', textTransform: 'captalize' }} variant='contained' size='small' onClick={handlePakingPreview}>Preview Box</Button>
+                                        </Box>
+                                    </Stack>
                                 </Grid>
-                            </Grid>
+                            </SwipeableTextMobileStepper>
                         </PreLoader>
 
                     </Box>

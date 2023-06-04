@@ -17,7 +17,7 @@ import Pagination from 'react-responsive-pagination';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Box } from '@mui/system';
 import { Link, useNavigate } from 'react-router-dom';
-import { MARK_DONE_CUTTING_GREEN_PACKING, PAGE_DEALER_ALL_ORDERS, SELECTED_SALE_ORDER_DATA, shipFromLocation } from '../../../../RTK/Reducers/Reducers';
+import { MARK_DONE_CUTTING_GREEN_PACKING, PACKING_DETAILS_FUN, PACKING_PAGE_INDEX_FUN, PAGE_DEALER_ALL_ORDERS, SELECTED_SALE_ORDER_DATA, WH_SHIP_DETAILS_FUN, WH_SHIP_NO_FUN, shipFromLocation } from '../../../../RTK/Reducers/Reducers';
 import { lnk, Search, searchDropDown, SearchIconWrapper, StyledInputBase, styleSlect } from '../reUseAbles/ReuseAbles';
 import PreLoader from '../../HOC/Loading';
 import NoRecord from '../../HOC/NoRecord';
@@ -30,7 +30,7 @@ import { request_AccessToken_MICROSOFT } from '../../../../utils/API_HELPERS';
 
 
 const AllOrders = () => {
-    const { allOrders, perPage, loading, currentPageAllOrders, orderTypeAllOrders } = useSelector(store => store.mainReducer);
+    const { allOrders, perPage, loading, currentPageAllOrders, orderTypeAllOrders, sale_order_paking } = useSelector(store => store.mainReducer);
     const [one, setOne] = React.useState(false);
     const [copy, setCopy] = React.useState([]);
     const [rows, setRows] = React.useState([]);
@@ -41,6 +41,19 @@ const AllOrders = () => {
 
     const navigate = useNavigate();
     const dispatch = useDispatch()
+
+    React.useEffect(() => {
+        if (sale_order_paking) {
+            alert('Cleaning up Shipment - Packing ')
+            // 'Cleaning up Shipment - Packing '
+            dispatch(PACKING_DETAILS_FUN(null));
+            dispatch(WH_SHIP_DETAILS_FUN(null));
+            dispatch(WH_SHIP_NO_FUN(null));
+            dispatch(MARK_DONE_CUTTING_GREEN_PACKING(null));
+            dispatch(PACKING_PAGE_INDEX_FUN(0));
+        }
+        //eslint-disable-next-line
+    }, [sale_order_paking])
 
 
     React.useLayoutEffect(() => {

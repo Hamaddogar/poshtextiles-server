@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import { APIS } from '../../utils/table';
+import { Toaster } from '../../components/pages/dashboard/reUseAbles/Toasters';
 
 
 // ------------------All Asyn Reducers are below ------------------//
@@ -52,7 +53,6 @@ let initialState = {
   ins_cut_item_detail: null,
 
   sale_order_paking: false,
-  successPickData0: [],
   WH_SHIP_NO: null,
   WH_SHIP_DETAILS: {
     status: false,
@@ -68,8 +68,6 @@ let initialState = {
     SNo: "",
     pkNo: "",
   },
-
-
 
   PACKING_NO: null,
   PACKING_BOXES_PREVIEW: null,
@@ -154,61 +152,6 @@ export const successPickDetails = createAsyncThunk(
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-const Toaster = (type, error) => {
-
-  switch (type) {
-    case 'loading':
-      toast.loading('Loading...', {
-        position: "top-right",
-        autoClose: false,
-        hideProgressBar: true
-      });
-      break;
-    case 'success':
-      toast.success('Loaded', {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: true
-      });
-      break;
-    case 'error':
-      toast.error(`${error}`, {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: true
-      });
-      break;
-
-    default:
-      break;
-  }
-
-
-
-
-
-
-
-
-}
-
-
-
-
-
 // asyn setter
 const mainSlice = createSlice({
   name: 'mainSlice',
@@ -270,10 +213,8 @@ const mainSlice = createSlice({
     },
     MARK_DONE_CUTTING_GREEN_PACKING: (state, { payload }) => {
       if (payload) {
-        state.successPickData0 = [];
         state.sale_order_paking = true;
       } else {
-        state.successPickData0 = [];
         state.sale_order_paking = false;
       }
     },
@@ -409,7 +350,7 @@ const mainSlice = createSlice({
 
       // successPickDetails
       .addCase(successPickDetails.pending, (state) => {
-        Toaster('loading')
+        Toaster('loading','Loading ...')
       })
       .addCase(successPickDetails.fulfilled, (state, { payload }) => {
         toast.dismiss();
@@ -447,6 +388,7 @@ export const { LOG_OUT,
   PACKING_DETAILS_FUN,
   PACKING_BOXES_PREVIEW_FUN,
   PACKING_PAGE_INDEX_FUN,
+  PACKING_PAGE_RESPONSED_FUN,
 } = mainSlice.actions;
 
 

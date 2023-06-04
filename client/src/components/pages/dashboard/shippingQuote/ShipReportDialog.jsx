@@ -30,8 +30,6 @@ export default function ShipReportDialog({ shipReport, SetShipReport, numbers })
         })
     };
 
-
-
     const handlePrint = async (data) => {
         setprintProcess({
             loading: true,
@@ -63,7 +61,6 @@ export default function ShipReportDialog({ shipReport, SetShipReport, numbers })
 
     return (
         <div>
-{/* <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIA..." alt="base64 encoded image"> */}
             <Dialog
                 fullScreen={fullScreen}
                 open={shipReport.open}
@@ -112,7 +109,6 @@ export default function ShipReportDialog({ shipReport, SetShipReport, numbers })
                         <Button size='small' color='error' variant='contained'
                             onClick={ShipReportDialogClose}
                         >Close</Button>
-
                         <LoadingButton
                             // sx={{ marginTop: "15px", fontSize: '14px' }}
                             loading={printProcess.loading}
@@ -125,12 +121,6 @@ export default function ShipReportDialog({ shipReport, SetShipReport, numbers })
                         >
                             {printProcess.loading ? "Printing" : "Print Labels"}
                         </LoadingButton>
-
-
-
-
-
-
                     </>}
                     {shipReport.error && <Button color='error' variant='contained'
                         onClick={ShipReportDialogClose}

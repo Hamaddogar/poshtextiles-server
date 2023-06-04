@@ -1,31 +1,21 @@
-import { CircularProgress, Divider, FormControl, MenuItem, Paper, Select, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { CircularProgress, Divider, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { BackButton, handleNoAction } from '../reUseAbles/ReuseAbles';
 import React from 'react'
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Grid } from '@mui/material';
 import { Button } from '@mui/material';
 import { Box } from '@mui/system';
-import 'bootstrap/dist/css/bootstrap.css';
-import { BackButton, Search, SearchIconWrapper, StyledInputBase, handleNoAction, searchDropDown } from '../reUseAbles/ReuseAbles';
-import PickingTable from './PickingTable';
-import fabric from '../../../assets/icons/fabric.png';
-import shelf from '../../../assets/icons/shelf.png';
 import UpperHeader from '../reUseAbles/UpperHeader';
-import { SearchSharp } from '@mui/icons-material';
 import PreLoader from '../../HOC/Loading';
 // import UpdateLineItem from '../reUseAbles/UpdateLineItem';
 import printHtmlToPDF from "print-html-to-pdf";
 
 
-
-
-
-
 const PackingPreview = () => {
-
-    const { saleOrderDetails, } = useSelector(store => store.mainReducer);
+    const { saleOrderDetails, PACKING_BOXES_PREVIEW } = useSelector(store => store.mainReducer);
     const navigate = useNavigate();
-    const [rows, setRows] = React.useState([
+    const [rows] = React.useState([
         {
             name: 'SONNEL TEA',
             lotNo: '23232323',
@@ -68,17 +58,9 @@ const PackingPreview = () => {
             qty: '23.43'
         },
     ]);
-    // const [rows, setRows] = React.useState([])
-    const [loading, setLoading] = React.useState({
+    const [loading] = React.useState({
         loading: false
     });
-    const [searchIt, setSearchIt] = React.useState("");
-    const [searchToBL, setSearchToBL] = React.useState('lot');
-
-    const handleSearchTo = event => setSearchToBL(event.target.value);
-    const handleSearchIt = event => setSearchIt(event.target.value);
-
-
 
     const pagePrint = async () => {
         const node = document.getElementById("print-me");
@@ -99,15 +81,11 @@ const PackingPreview = () => {
         await printHtmlToPDF.print(node, pdfOption);
     }
 
-    console.log(saleOrderDetails);
-
     return (
         <div>
             {!saleOrderDetails && <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}><CircularProgress /></Box>}
             {saleOrderDetails && <Box id="print-me">
                 <UpperHeader saleOrderDetails={saleOrderDetails} handleUpperHeaderSubmit={handleNoAction} />
-                {/* <UpdateLineItem handleSubmitUpdateLineItem={handleNoAction} handleCancel={handleNoAction} product={pickingSelectedProduct} readOnly={true} /> */}
-
                 {/* main body */}
                 <Box sx={{ padding: '15px', backgroundColor: 'white' }}>
                     <Box sx={{ padding: '15px', border: '1px solid black', borderStyle: 'inset' }}>
@@ -175,13 +153,14 @@ const PackingPreview = () => {
                                         <Typography sx={{ color: '#767676', fontSize: '12px' }}>
                                             Bill Shipping Charges to:
                                         </Typography>
-
                                         <Grid container >
                                             <Grid item xs={6}>
-                                                <Typography sx={{ fontSize: '12px' }}>Nice Customer </Typography>
-                                                <Typography sx={{ fontSize: '12px' }}>123 Main St </Typography>
-                                                <Typography sx={{ fontSize: '12px' }}>Williams Shopping Center </Typography>
-                                                <Typography sx={{ fontSize: '12px' }}>Rye, NJ, 09012  USA </Typography>
+                                                <Typography sx={{ fontSize: '12px' }}>{saleOrderDetails?.edcCustomers?.[0]?.name} </Typography>
+                                                <Typography sx={{ fontSize: '12px' }}>{saleOrderDetails?.edcCustomers?.[0]?.address} </Typography>
+                                                <Typography sx={{ fontSize: '12px' }}>{saleOrderDetails?.edcCustomers?.[0]?.address2} </Typography>
+                                                <Typography sx={{ fontSize: '12px' }}>
+                                                    {` ${saleOrderDetails?.edcCustomers?.[0]?.city}, ${saleOrderDetails?.edcCustomers?.[0]?.county}, ${saleOrderDetails?.edcCustomers?.[0]?.postCode}, ${saleOrderDetails?.edcCustomers?.[0]?.countryRegionCode} `}
+                                                </Typography>
                                             </Grid>
                                             <Grid item xs={6}>
                                                 <Stack direction='row' spacing={1} mb={1}>
@@ -194,11 +173,10 @@ const PackingPreview = () => {
                                                 </Stack>
                                                 <Stack direction='row' spacing={1} mb={1}>
                                                     <Typography sx={{ fontSize: '12px' }}>Total Boxes : </Typography>
-                                                    <Typography sx={{ backgroundColor: '#D9D9D9', fontSize: '12px' }} px={2} py={.1} >1</Typography>
+                                                    <Typography sx={{ backgroundColor: '#D9D9D9', fontSize: '12px' }} px={2} py={.1} >{PACKING_BOXES_PREVIEW?.length}</Typography>
                                                 </Stack>
                                             </Grid>
                                         </Grid>
-
                                     </Box>
                                 </PreLoader>
                             </Grid>
@@ -243,7 +221,6 @@ const PackingPreview = () => {
                         </Grid>
                     </Box >
                 </Box>
-
             </Box >}
             <Grid spacing={3} container direction='row' my={3} textAlign='right' mt={2} justifyContent={{ xs: 'center', md: 'space-between' }} alignItems={'center'}>
                 <Grid item>
@@ -253,7 +230,6 @@ const PackingPreview = () => {
                     <Button variant='contained' size='small' onClick={pagePrint} > Print </Button>
                 </Grid>
             </Grid>
-
         </div >
     )
 }

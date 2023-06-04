@@ -103,9 +103,11 @@ const routeStrings = {
     success_pick_detail_micro: '/successPick',
     picking_page_detail_micro: '/pickingPage',
     create_new_packing_micro: '/create-picking',
+    register_new_packing_micro: '/register-picking',
     get_packing_micro: '/get-picking',
     post_packing_micro: '/post-picking',
-
+    gets_lots_detail_micro:'/lots'
+    
 }
 
 // ---------------- Routes -------------- //
@@ -919,7 +921,7 @@ app.post(routeStrings.token_micro, async (req, res) => {
 });
 
 // microsoft all sales orders
-app.post(routeStrings.sale_orders_micro,cache, async (req, res) => {
+app.post(routeStrings.sale_orders_micro, cache, async (req, res) => {
     const config = {
         headers: {
             "Authorization": `Bearer ${req.body.token}`,
@@ -1248,23 +1250,26 @@ app.post(routeStrings.picking_page_detail_micro, async (req, res) => {
                 config
             );
 
-
+            dataToSendRaw.push({ inv : responseInventory?.data, bin :responseBin?.data })
             dataToSend.push({
-                name : item.description,
-                WhseDocumentNo : item.WhseDocumentNo,
-                sourceNo : item.sourceNo,
+                name: item.description,
+                WhseDocumentNo: item.WhseDocumentNo,
+                sourceNo: item.sourceNo,
+                WHPickNo: item.no,
+                destinationNo: item.destinationNo,
+                WhseDocumentNo:item.WhseDocumentNo,
                 ...responseInventory?.data?.value?.[0],
                 ...responseBin?.data?.value?.[0],
             })
 
         }
 
-        res.send({ error: false, data: dataToSend });
+        res.send({ error: false, data: dataToSend ,dataToSendRaw});
 
     } catch (error) {
         console.log(error);
         res.status(error?.response?.status).send({
-            code: error.response.status,
+            code: error?.response?.status,
             message: error?.response?.data?.errors?.[0]?.error_message || error?.message,
             error: true
         })
@@ -1284,7 +1289,7 @@ app.post(routeStrings.create_new_packing_micro, async (req, res) => {
             req.body.body,
             config
         );
-        res.send({ newPacking: response.data });
+        res.send({ newPacking: response.data, body:req.body.body });
 
     } catch (error) {
         console.log(error);
@@ -1322,8 +1327,60 @@ app.post(routeStrings.get_packing_micro, async (req, res) => {
     }
 });
 
+// register_new_packing_micro
+app.post(routeStrings.register_new_packing_micro, async (req, res) => {
+    const config = {
+        headers: {
+            "Authorization": `Bearer ${req.body.token}`,
+        }
+    };
+    const body = {
+        "WhsePickNo" : req.body.pkCode
+    }
+    try {
+        const registerPickResponse = await axios.post(
+            API_MICROSOFT.register_pick,
+            body,
+            config
+        );
 
+        res.send({ error: false, registerDetail: registerPickResponse.data });
 
+    } catch (error) {
+        console.log(error);
+        res.status(error?.response?.status).send({
+            code: error?.response?.status,
+            message: error?.response?.data?.errors?.[0]?.error_message || error?.message,
+            error: true
+        })
+    }
+});
+
+// get lots
+app.post(routeStrings.gets_lots_detail_micro, async (req, res) => {
+    const config = {
+        headers: {
+            "Authorization": `Bearer ${req.body.token}`,
+        }
+    };
+    
+    try {
+
+        const responseInventory = await axios.get(
+            API_MICROSOFT.inventory_pick_detail(req.body.item.no, req.body.item.locationCode),
+            config
+        );
+        res.send({ error: false, lots: responseInventory?.data?.value});
+
+    } catch (error) {
+        console.log(error);
+        res.status(error?.response?.status).send({
+            code: error?.response?.status,
+            message: error?.response?.data?.errors?.[0]?.error_message || error?.message,
+            error: true
+        })
+    }
+});
 
 
 
