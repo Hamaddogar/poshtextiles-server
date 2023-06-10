@@ -10,13 +10,14 @@ import SearchIcon from '@mui/icons-material/Search';
 import ShipfromDialoge from './ShipfromDialoge'
 import { useDispatch, useSelector } from 'react-redux'
 import { BackButton, headInputStyle, styleSlect } from '../reUseAbles/ReuseAbles'
-import { create_Shipment_FEDEXP, create_Shipment_STAMPS, createShipment_UPS, request_AccessToken_FEDEXP, request_AccessToken_STAMPS, request_AccessToken_STAMPS_server } from '../../../../utils/API_HELPERS'
+import { create_Shipment_FEDEXP, create_Shipment_STAMPS, createShipment_UPS, request_AccessToken_FEDEXP, request_AccessToken_MICROSOFT, request_AccessToken_STAMPS_server } from '../../../../utils/API_HELPERS'
 import ShipReportDialog from './ShipReportDialog'
 import { payload_Shipment_Handler } from '../../../../utils/Helper'
 import ShipToDialoge from './ShipToDia'
 import { toast } from 'react-toastify'
 import { STAMPS_TOKEN } from '../../../../RTK/Reducers/Reducers'
 import ShipFromPreview from './ShipFromPreview'
+import Actions, { ActionMenuItem } from '../reUseAbles/Actions'
 
 
 const ShippingQuote = () => {
@@ -119,7 +120,7 @@ const ShippingQuote = () => {
                         create_Shipment_STAMPS(stamps_token, payload_Shipment_Handler(saleOrderDetails, ship_from_location, selections.printOn))
                     );
                 } else {
-                    request_AccessToken_STAMPS()
+                    request_AccessToken_STAMPS_server()
                         .then(res => {
                             if (res.token) {
                                 recursiveCaller(
@@ -150,7 +151,6 @@ const ShippingQuote = () => {
 
     };
 
-
     const toggleDrawer = (open) => (event) => {
         if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) { return; }
         setdrawerStateAddress(open);
@@ -160,6 +160,30 @@ const ShippingQuote = () => {
     const toggleDrawerRate = (open) => (event) => {
         if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) { return; }
         setdrawerstateRate(open);
+    };
+
+    const handlePostShipment = () => {
+        request_AccessToken_MICROSOFT()
+            .then(decide => {
+                if (decide.success) {
+                    // dispatch(shipFromLocation({
+                    //     token: decide.token,
+                    //     locationCode: data.edcCustomers[0].locationCode,
+                    // }))
+                }
+            })
+    };
+
+    const handlePostInvoice = () => {
+        request_AccessToken_MICROSOFT()
+            .then(decide => {
+                if (decide.success) {
+                    // dispatch(shipFromLocation({
+                    //     token: decide.token,
+                    //     locationCode: data.edcCustomers[0].locationCode,
+                    // }))
+                }
+            })
     };
 
     return (
@@ -364,7 +388,7 @@ const ShippingQuote = () => {
 
                     {/* footer actions */}
                     <Grid item container mt={.5}>
-                        <Grid item xs={6}>
+                        <Grid item xs={4}>
                             <Box>
                                 <Button
                                     style={{ background: "#4B5AD8", marginTop: "15px", padding: "0px 6px", color: "white" }}
@@ -375,7 +399,15 @@ const ShippingQuote = () => {
                                 </Box>
                             </Box>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={4}>
+                            <Box>
+                                <Actions id={'shipment-menu'}>
+                                    <ActionMenuItem click={handlePostShipment} label={'Post Shipment'} />
+                                    <ActionMenuItem click={handlePostInvoice} label={'Post Invoices'} last={true} />
+                                </Actions>
+                            </Box>
+                        </Grid>
+                        <Grid item xs={4}>
                             <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                                 <Button style={{ background: "#4B5AD8", marginTop: "15px", padding: "2px 6px", color: "white" }} onClick={toggleDrawerRate(true)}>RATE QUOTE</Button>
                                 <Button
@@ -386,9 +418,7 @@ const ShippingQuote = () => {
                                 > Ship </Button>
                             </Box>
                         </Grid>
-
                     </Grid>
-
                 </Grid>
             </Box>
         </div>

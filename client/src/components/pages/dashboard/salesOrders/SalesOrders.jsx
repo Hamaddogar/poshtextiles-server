@@ -1,11 +1,11 @@
-import { ClickAwayListener, Grid, Grow, MenuList, Popper, Stack, Typography, Button, MenuItem, Paper } from '@mui/material';
+import { Grid, Stack, Typography, Button } from '@mui/material';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { Box } from '@mui/system';
 import Pagination from 'react-responsive-pagination';
 import 'bootstrap/dist/css/bootstrap.css';
-import { DeleteOutline, EditOutlined, KeyboardArrowDown, } from '@mui/icons-material';
+import { DeleteOutline, EditOutlined, } from '@mui/icons-material';
 import Done from '../../../assets/images/done.png'
 import { BackButton, scroller } from '../reUseAbles/ReuseAbles';
 import { PACKING_DETAILS_FUN, SELECTED_SALE_ORDER_DATA } from '../../../../RTK/Reducers/Reducers';
@@ -33,10 +33,9 @@ import WHShipmentModelView from '../reUseAbles/WHShipmentModelView';
 import PackingDrawer from './packing-drawer';
 import { createPacking, request_AccessToken_MICROSOFT } from '../../../../utils/API_HELPERS';
 import { Toaster } from '../reUseAbles/Toasters';
+import Actions, { ActionMenuItem } from '../reUseAbles/Actions';
 
 const images = [p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15];
-
-
 
 const SalesOrders = () => {
 
@@ -51,24 +50,15 @@ const SalesOrders = () => {
     const [showSelectedProduct, setShowSelectedProduct] = React.useState(null);
     const [openConfirmation, setOpenConfirmation] = React.useState({ status: false, deleteIndex: null });
     const [newItem, setNewItem] = React.useState(false);
-    const [open, setOpen] = React.useState(false);
-    const anchorRef = React.useRef(null);
-    const prevOpen = React.useRef(open);
     const [openCreateWHShip, setOpenCreateWHShip] = React.useState(false);
     const [packingSideBar, setPackingSideBar] = React.useState((WH_SHIP_NO?.WHno && WH_SHIP_NO?.sno === saleOrderDetails?.no && PACKING_DETAILS?.status && PACKING_DETAILS?.pkNo) ? true : false);
 
-    React.useLayoutEffect(() => {
+    React.useEffect(() => {
         setCopy(saleOrderDetails.edcSalesLines);
         //eslint-disable-next-line
     }, [saleOrderDetails.edcSalesLines]);
 
     React.useEffect(() => { setRows(copy.slice(0, perPage)) }, [copy, perPage]);
-
-    React.useEffect(() => {
-        if (prevOpen.current === true && open === false) anchorRef.current.focus();
-        prevOpen.current = open;
-        //eslint-disable-next-line
-    }, [open]);
 
     const handlePageChange = page => {
         setCurrentPage(page);
@@ -84,31 +74,16 @@ const SalesOrders = () => {
         if (WH_SHIP_NO?.WHno && WH_SHIP_NO?.sno === saleOrderDetails?.no && WH_SHIP_DETAILS?.status && WH_SHIP_DETAILS?.shipItems?.length > 0) {
             navigate('/picking')
         } else {
-            Toaster('warn', 'Create WH Shipment!')
-            setOpen(true);
+            Toaster('warn', 'Create WH Shipment!');
             scroller(false);
         }
     };
-
-    const handleToggle = () => setOpen((prevOpen) => !prevOpen);
-
-    const handleClose = (event) => {
-        if (anchorRef.current && anchorRef.current.contains(event.target)) { return; }
-        setOpen(false);
-    };
-
-    function handleListKeyDown(event) {
-        if (event.key === 'Tab') {
-            event.preventDefault();
-            setOpen(false);
-        } else if (event.key === 'Escape') setOpen(false);
-    }
 
     const handleClickNewItem = () => {
         setShowSelectedProduct(null);
         setNewItem(true);
         scroller();
-    }
+    };
 
     // lineItem UPdate function
     const handleSubmitUpdateLineItem = (event) => {
@@ -133,13 +108,13 @@ const SalesOrders = () => {
         })
         setRows([...rows])
 
-    }
+    };
 
     // lineItems Delete function
     const deleteLineItem = (index) => {
         rows.splice(index, 1);
         setRows([...rows]);
-    }
+    };
 
     // update uppser header section handler
     const handleUpperHeaderSubmit = e => {
@@ -174,7 +149,7 @@ const SalesOrders = () => {
             }
         ])
 
-    }
+    };
 
     const handleShippingQuote = () => {
         navigate('/shipping-quote')
@@ -183,17 +158,17 @@ const SalesOrders = () => {
             edcSalesLines: rows
         }));
         scroller();
-    }
+    };
 
     const handleCancel = closeTo => {
         if (closeTo === "newItem") setNewItem(false);
         else setShowSelectedProduct(null);
-    }
+    };
 
     const handleCreateWHShip = () => {
         setOpenCreateWHShip(true);
         scroller();
-    }
+    };
 
     const handleCreatePACKING = () => {
         dispatch(PACKING_DETAILS_FUN(null));
@@ -214,7 +189,7 @@ const SalesOrders = () => {
                                 if (response?.newPacking?.responseMsg === "Created") {
                                     Toaster('success', `Packing ${response?.newPacking?.responseMsg}`)
                                 } else {
-                                    Toaster('warn', `Packing already ${response?.newPacking?.responseMsg}`)
+                                    Toaster('dismiss')
                                 }
                             } else {
                                 Toaster('error', `Something Went Wrong!`)
@@ -222,12 +197,12 @@ const SalesOrders = () => {
                         })
                 }
             })
-    }
+    };
 
     const handleBack = () => {
         navigate('/');
         scroller()
-    }
+    };
 
     const toggleDrawerPacking = (open) => (event) => setPackingSideBar(open);
 
@@ -312,32 +287,28 @@ const SalesOrders = () => {
 
                         <BackButton onClick={handleBack} />
                         &nbsp; &nbsp; &nbsp;
-                        <Button
-                            variant='contained'
-                            sx={{ backgroundColor: '#495BD6' }}
-                            size='small'
-                            ref={anchorRef}
-                            id="composition-button"
-                            aria-controls={open ? 'composition-menu' : undefined}
-                            aria-expanded={open ? 'true' : undefined}
-                            aria-haspopup="true"
-                            onClick={handleToggle}
-                            endIcon={<KeyboardArrowDown />}
-                        > Actions </Button>
+                        <Actions id={'slaeOrder-menu'}>
+                            <ActionMenuItem label={'RELEASE NOW'} />
+                            {WH_SHIP_NO?.WHno && WH_SHIP_NO?.sno === saleOrderDetails?.no && WH_SHIP_DETAILS?.status && WH_SHIP_DETAILS?.shipItems?.length > 0 ?
+                                <Link to='/picking' style={{ color: 'inherit', textDecoration: 'none' }}>
+                                    <ActionMenuItem label={'Shipment is Done <br /> Move to Picking'} />
+                                </Link>
+                                :
+                                <ActionMenuItem click={handleCreateWHShip} label={'Create WH Shipment'} />
+                            }
+                            <ActionMenuItem label={'UNRELEASE NOW'} last={true} />
+                        </Actions>
                     </Box>
                 </Grid>
                 <Grid item>
                     <Stack direction='row' alignItems='center' spacing={1}>
                         <Button onClick={handleClickNewItem} variant='contained' size='small'> + add new item</Button>
-                        <Button variant='contained' size='small'
-                                onClick={handleCreatePACKING}> Create PACKING </Button>
                         {WH_SHIP_NO?.WHno && WH_SHIP_NO?.sno === saleOrderDetails?.no && PACKING_DETAILS?.status && PACKING_DETAILS?.pkNo ?
                             <Button variant='contained' size='small' color='success'
                                 onClick={toggleDrawerPacking(true)}> Next Packing </Button>
                             :
                             <Button variant='contained' size='small' disabled={WH_SHIP_NO?.WHno ? false : true}
-                                onClick={handleCreatePACKING}> Create PACKING </Button>
-                        }
+                                onClick={handleCreatePACKING}> Create PACKING </Button>}
                     </Stack>
                 </Grid>
                 <Grid item>
@@ -350,43 +321,6 @@ const SalesOrders = () => {
                     </Box>
                 </Grid>
             </Grid>
-
-
-            <Popper
-                open={open}
-                anchorEl={anchorRef.current}
-                role={undefined}
-                placement="bottom-start"
-                transition
-                disablePortal
-            >
-                {({ TransitionProps, placement }) => (
-                    <Grow {...TransitionProps} style={{ transformOrigin: placement === 'bottom-start' ? 'left top' : 'left bottom', }}>
-                        <Paper>
-                            <ClickAwayListener onClickAway={handleClose}>
-                                <MenuList
-                                    autoFocusItem={open}
-                                    id="composition-menu"
-                                    aria-labelledby="composition-button"
-                                    onKeyDown={handleListKeyDown}
-                                    sx={{ backgroundColor: '#495BD6', color: 'white' }}
-                                    onClick={handleClose}
-                                >
-                                    <MenuItem sx={{ borderBottom: '1px solid white', fontSize: '13px' }} >RELEASE Now</MenuItem>
-                                    {WH_SHIP_NO?.WHno && WH_SHIP_NO?.sno === saleOrderDetails?.no && WH_SHIP_DETAILS?.status && WH_SHIP_DETAILS?.shipItems?.length > 0 ?
-                                        <Link to='/picking' style={{ color: 'inherit', textDecoration: 'none' }}>
-                                            <MenuItem sx={{ borderBottom: '1px solid white', fontSize: '13px' }} >Shipment is Done <br /> Move to Picking</MenuItem>
-                                        </Link>
-                                        :
-                                        <MenuItem onClick={handleCreateWHShip} sx={{ borderBottom: '1px solid white', fontSize: '13px' }} >Create WH Shipment</MenuItem>
-                                    }
-                                    <MenuItem sx={{ fontSize: '13px' }}>UNRELEASE Now</MenuItem>
-                                </MenuList>
-                            </ClickAwayListener>
-                        </Paper>
-                    </Grow>
-                )}
-            </Popper>
         </div >
     )
 }

@@ -36,7 +36,9 @@ export const Toaster = (type, msg) => {
                 hideProgressBar: true
             });
             break;
-
+        case 'dismiss':
+            toast.dismiss();
+            break;
         default:
             break;
     }

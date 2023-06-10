@@ -102,11 +102,13 @@ const routeStrings = {
     request_pick_micro: '/requestPick',
     success_pick_detail_micro: '/successPick',
     picking_page_detail_micro: '/pickingPage',
-    create_new_packing_micro: '/create-picking',
+    create_new_packing_micro: '/create-packing',
     register_new_packing_micro: '/register-picking',
     get_packing_micro: '/get-picking',
     post_packing_micro: '/post-picking',
-    gets_lots_detail_micro:'/lots'
+    gets_lots_detail_micro:'/lots',
+    post_wh_shipment_micro : '/post-shipment',
+    post_wh_invoice_micro : '/post-invoice',
     
 }
 
@@ -1382,6 +1384,58 @@ app.post(routeStrings.gets_lots_detail_micro, async (req, res) => {
     }
 });
 
+// post_wh_shipment_micro
+app.post(routeStrings.post_wh_shipment_micro, async (req, res) => {
+    const config = {
+        headers: {
+            "Authorization": `Bearer ${req.body.token}`,
+        }
+    };
+    
+    try {
+        const response = await axios.post(
+            API_MICROSOFT.post_wh_shipment,
+            req.body.body,
+            config
+        );
+        res.send({ error: false, lots: response?.data});
+
+    } catch (error) {
+        console.log(error);
+        res.status(error?.response?.status).send({
+            code: error?.response?.status,
+            message: error?.response?.data?.errors?.[0]?.error_message || error?.message,
+            error: true
+        })
+    }
+});
+
+// post_wh_shipment_micro
+app.post(routeStrings.post_wh_invoice_micro, async (req, res) => {
+    const config = {
+        headers: {
+            "Authorization": `Bearer ${req.body.token}`,
+        }
+    };
+    
+    try {
+
+        const response = await axios.post(
+            API_MICROSOFT.post_wh_invoice,
+            req.body.body,
+            config
+        );
+        res.send({ error: false, lots: response?.data});
+
+    } catch (error) {
+        console.log(error);
+        res.status(error?.response?.status).send({
+            code: error?.response?.status,
+            message: error?.response?.data?.errors?.[0]?.error_message || error?.message,
+            error: true
+        })
+    }
+});
 
 
 // ------------------- Authorise.net payment ----------------- //

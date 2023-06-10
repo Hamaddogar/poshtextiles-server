@@ -57,6 +57,8 @@ let initialState = {
   WH_SHIP_DETAILS: {
     status: false,
     already: false,
+    postInvoice: false,
+    postShipment: false,
     shipNo: "",
     SNo: "",
     shipItems: [],
@@ -143,6 +145,24 @@ export const successPickDetails = createAsyncThunk(
   'mainSlice/successPickDetails',
   async ({ token, pickCode }) => {
     const data = await axios.post(APIS.successPick_micro, { token, pickCode })
+    return data.data;
+  }
+);
+
+// successPick_micro
+export const postShipment = createAsyncThunk(
+  'mainSlice/postShipment',
+  async ({ token, body }) => {
+    const data = await axios.post(APIS.post_shipment_micro, { token, body })
+    return data.data;
+  }
+);
+
+// successPick_micro
+export const postInvoice = createAsyncThunk(
+  'mainSlice/postInvoice',
+  async ({ token, body }) => {
+    const data = await axios.post(APIS.post_shipment_micro, { token, body })
     return data.data;
   }
 );
@@ -238,6 +258,8 @@ const mainSlice = createSlice({
         state.WH_SHIP_DETAILS.shipNo = "";
         state.WH_SHIP_DETAILS.SNo = "";
         state.WH_SHIP_DETAILS.shipItems = [];
+        state.WH_SHIP_DETAILS.postInvoice = false;
+        state.WH_SHIP_DETAILS.postShipment = false;
       }
     },
     PACKING_DETAILS_FUN: (state, { payload }) => {
@@ -350,12 +372,48 @@ const mainSlice = createSlice({
 
       // successPickDetails
       .addCase(successPickDetails.pending, (state) => {
-        Toaster('loading','Loading ...')
+        Toaster('loading', 'Loading ...')
       })
       .addCase(successPickDetails.fulfilled, (state, { payload }) => {
         toast.dismiss();
       })
       .addCase(successPickDetails.rejected, (state, { error }) => {
+        toast.dismiss();
+        Swal.fire({ icon: 'error', title: error.code, text: error.message })
+      })
+
+
+      // postShipment
+      .addCase(postShipment.pending, (state) => {
+        Toaster('loading', 'Loading ...')
+        state.loading = true;
+      })
+      .addCase(postShipment.fulfilled, (state, { payload }) => {
+        toast.dismiss();
+        if (payload.success) {
+          state.loading = false;
+          state.WH_SHIP_DETAILS.postShipment = true;
+        }
+      })
+      .addCase(postShipment.rejected, (state, { error }) => {
+        toast.dismiss();
+        Swal.fire({ icon: 'error', title: error.code, text: error.message })
+      })
+
+
+      // postInvoice
+      .addCase(postInvoice.pending, (state) => {
+        Toaster('loading', 'Loading ...')
+        state.loading = true;
+      })
+      .addCase(postInvoice.fulfilled, (state, { payload }) => {
+        toast.dismiss();
+        if (payload.success) {
+          state.loading = false;
+          state.WH_SHIP_DETAILS.postInvoice = true;
+        }
+      })
+      .addCase(postInvoice.rejected, (state, { error }) => {
         toast.dismiss();
         Swal.fire({ icon: 'error', title: error.code, text: error.message })
       })

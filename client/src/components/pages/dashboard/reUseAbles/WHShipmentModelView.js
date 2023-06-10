@@ -8,7 +8,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import { check_Pick_Details, create_New_Shipment, request_AccessToken_MICROSOFT, request_New_Pick } from '../../../../utils/API_HELPERS';
 import { Box, CircularProgress, Divider, Typography } from '@mui/material';
-import { PACKING_DETAILS_FUN, WH_SHIP_DETAILS_FUN, WH_SHIP_NO_FUN, saleOrderNoFilter, successPickDetails } from '../../../../RTK/Reducers/Reducers';
+import { WH_SHIP_DETAILS_FUN, WH_SHIP_NO_FUN, saleOrderNoFilter, successPickDetails } from '../../../../RTK/Reducers/Reducers';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Send } from '@mui/icons-material';
@@ -85,7 +85,7 @@ const WHShipmentModelView = ({ openCreateWHShip, setOpenCreateWHShip, SNO }) => 
         setResponsePick("loading")
         check_Pick_Details(microSoftToken, code || response.code)
             .then(thisResponse => {
-                console.log("----handlePickDetailsStatus-----", thisResponse);
+                console.log("----handlegetPickDetailsStatus-----", thisResponse);
                 if (thisResponse?.pickDetails?.value?.length === 0) {
                     setResponsePick({
                         error: false,

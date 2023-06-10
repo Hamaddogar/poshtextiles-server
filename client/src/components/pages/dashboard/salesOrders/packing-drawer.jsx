@@ -21,7 +21,7 @@ const PackingDrawer = ({ toggleDrawer, packingSideBar, handleShippingQuote }) =>
 
     const handlePakingPreview = () => navigate('/packing-preview');
 
-    React.useLayoutEffect(() => {
+    React.useEffect(() => {
         setLoading(pv => ({ ...pv, loading: true }));
         if (packingSideBar && PACKING_DETAILS.pkNo) {
             dispatch(PACKING_BOXES_PREVIEW_FUN(null));

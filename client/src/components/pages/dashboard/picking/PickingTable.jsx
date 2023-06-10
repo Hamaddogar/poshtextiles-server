@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getLots, pickingPageDealer, request_AccessToken_MICROSOFT } from '../../../../utils/API_HELPERS';
 import PreLoader from '../../HOC/Loading';
-import { INS_CUT_ITEM } from '../../../../RTK/Reducers/Reducers';
+import { INS_CUT_ITEM, WH_SHIP_DETAILS_FUN } from '../../../../RTK/Reducers/Reducers';
 import GeneralModel from '../reUseAbles/GeneralModel';
 import { MoreVert } from '@mui/icons-material';
 import { Toaster } from '../reUseAbles/Toasters';
@@ -25,9 +25,9 @@ const PickingTable = ({ searchToBL, searchIt, selected, setSelected }) => {
     const [loading, setLoading] = React.useState(false);
     const [data, setData] = React.useState([]);
     const [rows, setRows] = React.useState([]);
-    const [lots, setLots] = React.useState({ loading: false, data: [], selected: "" });
+    const [lots, setLots] = React.useState({ loading: false, data: [] });
     const [generalModel, setGeneralModel] = React.useState(false)
-    // console.log("WH_SHIP_DETAILS", WH_SHIP_DETAILS);
+    console.log("WH_SHIP_DETAILS", WH_SHIP_DETAILS);
 
     // console.log("PACKING_PAGE_RESPONSED",);
     React.useEffect(() => {
@@ -42,8 +42,12 @@ const PickingTable = ({ searchToBL, searchIt, selected, setSelected }) => {
                         }).then(res => {
                             console.log("---------pickingPageDealer---", res);
                             if (!(res.error)) {
-                                setData(res.data);
-                                setRows(res.data);
+                                const withId = res.data.map((item, indx) => {
+                                    const uid = `${item?.name}-${indx}-main`;
+                                    return { id: uid, ...item }
+                                })
+                                setData(withId);
+                                setRows(withId);
                                 setLoading(false);
                                 // dispatch(PACKING_PAGE_RESPONSED_FUN(res.data))
                             }
@@ -52,7 +56,7 @@ const PickingTable = ({ searchToBL, searchIt, selected, setSelected }) => {
                 })
         };
         //eslint-disable-next-line
-    }, [WH_SHIP_DETAILS?.shipItems])
+    }, [])
 
     React.useEffect(() => {
         // binCode.lotNo
@@ -69,19 +73,16 @@ const PickingTable = ({ searchToBL, searchIt, selected, setSelected }) => {
     }, [searchIt, searchToBL])
 
 
-    const handleClick = (item, NTO) => {
+    const handleClickINS_CUT_ITEM = (item, NTO) => {
         dispatch(INS_CUT_ITEM(item));
         navigate(NTO);
     }
 
-    const handleSelected = (id, item) => {
-        // console.log(id, item);
-        setSelected({ id, item });
-    }
+    const handleSelected = (indx, id, item) => setSelected({ id, item }); 
 
     const handleLots = (item) => () => {
-        console.log("item", item.WHPickNo, item.locationCode);
-        setLots({ loading: true, data: [], selected: "" })
+        // console.log("item", item.WHPickNo, item.locationCode);
+        setLots({ loading: true, data: [] })
         setGeneralModel(true);
         request_AccessToken_MICROSOFT()
             .then(decide => {
@@ -89,12 +90,16 @@ const PickingTable = ({ searchToBL, searchIt, selected, setSelected }) => {
                     getLots({
                         token: decide.token,
                         item: {
-                            no: item.WHPickNo,
+                            no: item.itemNo,
                             locationCode: item.locationCode
                         }
                     }).then(res => {
+                        const withId = res.lots.map((item, indx) => {
+                            const uid = `${item?.name}-${indx}-lot`;
+                            return { id: uid, ...item }
+                        })
                         console.log("---------lots---", res);
-                        setLots({ loading: false, selected: "", data: res.lots });
+                        setLots({ loading: false, data: withId });
                     })
                 }
             })
@@ -102,13 +107,28 @@ const PickingTable = ({ searchToBL, searchIt, selected, setSelected }) => {
 
 
     const handleSelectedLotNo = (lotDeails) => {
-        console.log("---------lotDeails---", lotDeails);
-        setLots(pv => ({ ...pv, selected: lotDeails.lotNo }));
-        Toaster('success', 'Lot No Selected')
+        // console.log("---------lotDeails---", lotDeails.lotNo);
+        setSelected(pv => ({ ...pv, item: { ...pv.item, lotNo: lotDeails.lotNo } }));
+        const newData = data.map(item => item.id === selected.id ? { ...item, lotNo: lotDeails.lotNo } : item)
+        setData(newData);
+        setRows(newData);
+        // const itemIndex = lots.findIndex(item => item.id === lotDeails.id);
+
+        const patchedLotNoItems = WH_SHIP_DETAILS?.shipItems.map(item =>
+            (item.description === selected.item.name &&
+                item.WhseDocumentNo === selected.item.WhseDocumentNo &&
+                item.destinationNo === selected.item.destinationNo &&
+                item.locationCode === selected.item.locationCode
+            ) ? { ...item, lotNo: lotDeails.lotNo } : item);
+
+        dispatch(WH_SHIP_DETAILS_FUN({
+            ...WH_SHIP_DETAILS,
+            shipItems: patchedLotNoItems,
+        }))
+        console.log("-----Patched-Lot-No---", WH_SHIP_DETAILS.shipItems);
+        Toaster('success', 'Lot No Selected');
+        Toaster('warn', 'Lot is Selected But how BCModel will be updated, reguarding this lot change ?');
     };
-
-
-
 
 
     return (
@@ -168,37 +188,35 @@ const PickingTable = ({ searchToBL, searchIt, selected, setSelected }) => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {rows?.map((row, indx) => {
-                                const uid = `${row?.name}-${indx}`;
-                                return (
-                                    <TableRow key={indx} sx={{
-                                        '&:last-child td, &:last-child th': { border: 0 },
-                                        '&:hover': { backgroundColor: "rgb(233, 237, 241,.3)" },
-                                        cursor: 'pointer',
-                                        backgroundColor: selected.id === uid ? "rgb(233, 237, 241,.6)" : "none"
-                                    }}
-                                        onClick={e => handleSelected(uid, row)}
-                                    >
-                                        <TableCell> {row?.name} </TableCell>
-                                        <TableCell> {row?.binCode} </TableCell>
-                                        <TableCell >
-                                            <Stack direction='row' alignItems={'center'} justifyContent={'space-between'}>
-                                                <span>{row?.lotNo}</span> <MoreVert sx={{ '&:hover': { color: '#495BD6' } }} onClick={handleLots(row)} />
-                                            </Stack>
-                                        </TableCell>
-                                        <TableCell>{row?.quantityBase}</TableCell>
+                            {rows?.map((row, indx) => (
+                                <TableRow key={indx} sx={{
+                                    '&:last-child td, &:last-child th': { border: 0 },
+                                    '&:hover': { backgroundColor: "rgb(233, 237, 241,.3)" },
+                                    cursor: 'pointer',
+                                    backgroundColor: selected.id === row.id ? "rgb(233, 237, 241,.6)" : "none"
+                                }}
+                                    onClick={e => handleSelected(indx, row.id, row)}
+                                >
+                                    <TableCell> {row?.name} </TableCell>
+                                    <TableCell> {row?.binCode} </TableCell>
+                                    <TableCell >
+                                        <Stack direction='row' alignItems={'center'} justifyContent={'space-between'}>
+                                            <span>{row?.lotNo}</span> <MoreVert sx={{ '&:hover': { color: '#495BD6' } }} onClick={handleLots(row)} />
+                                        </Stack>
+                                    </TableCell>
+                                    <TableCell>{row?.quantityBase}</TableCell>
 
-                                        <TableCell align='right'>
-                                            <Button variant='contained' startIcon={<img style={{ width: '20px' }} alt='scissors' src={inspectionBtn} />} sx={{ backgroundColor: '#49D668', fontSize: '11px' }}
-                                                onClick={() => handleClick(row, '/inspection')}
-                                            >Inspect</Button> &nbsp; &nbsp;
-                                            <Button variant='contained' startIcon={<img style={{ width: '20px' }} alt='scissors' src={scissors} />} sx={{ backgroundColor: '#9747FF', fontSize: '11px' }}
-                                                onClick={() => handleClick(row, '/cutting')}
-                                            >cut</Button>
-                                        </TableCell>
-                                    </TableRow>
-                                )
-                            })}
+                                    <TableCell align='right'>
+                                        <Button variant='contained' startIcon={<img style={{ width: '20px' }} alt='scissors' src={inspectionBtn} />} sx={{ backgroundColor: '#49D668', fontSize: '11px' }}
+                                            onClick={() => handleClickINS_CUT_ITEM(row, '/inspection')}
+                                        >Inspect</Button> &nbsp; &nbsp;
+                                        <Button variant='contained' startIcon={<img style={{ width: '20px' }} alt='scissors' src={scissors} />} sx={{ backgroundColor: '#9747FF', fontSize: '11px' }}
+                                            onClick={() => handleClickINS_CUT_ITEM(row, '/cutting')}
+                                        >cut</Button>
+                                    </TableCell>
+                                </TableRow>
+                            )
+                            )}
                         </TableBody>
                     </Table>
                 </TableContainer>

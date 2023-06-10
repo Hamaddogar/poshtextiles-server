@@ -21,7 +21,6 @@ export const request_AccessToken_FEDEXP = async () => {
     }
 };
 
-
 // Microsoft
 export const request_AccessToken_MICROSOFT = async () => {
     try {
@@ -32,7 +31,7 @@ export const request_AccessToken_MICROSOFT = async () => {
     }
 };
 
-// STTAMPS
+// STAMPS
 export const request_AccessToken_STAMPS = async () => {
 
     try {
@@ -79,13 +78,10 @@ export const funds_STAMPS = async (token) => {
     }
 };
 
-// 
+// request_AccessToken_STAMPS_server
 export const request_AccessToken_STAMPS_server = async () => {
-
     try {
         const response = await axios.get(APIS.token_stamps)
-        alert()
-        console.log("<<<<<<<<<request_AccessToken_STAMPS_server>>>>>>>>>>>>>", response);
         return { token: response.data.access_token ? response.data.access_token : null }
     } catch (error) {
         return error

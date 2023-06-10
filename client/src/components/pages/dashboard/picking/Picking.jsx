@@ -1,4 +1,4 @@
-import { CircularProgress, ClickAwayListener, FormControl, Grow, MenuItem, MenuList, Paper, Popper, Select, Stack, Typography } from '@mui/material';
+import { CircularProgress, FormControl, MenuItem, Select, Stack, Typography } from '@mui/material';
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -11,14 +11,12 @@ import PickingTable from './PickingTable';
 import fabric from '../../../assets/icons/fabric.png';
 import shelf from '../../../assets/icons/shelf.png';
 import UpperHeader from '../reUseAbles/UpperHeader';
-import { KeyboardArrowDown, SearchSharp } from '@mui/icons-material';
+import { SearchSharp } from '@mui/icons-material';
 import { MARK_DONE_CUTTING_GREEN_PACKING } from '../../../../RTK/Reducers/Reducers';
 import { registerPacking, request_AccessToken_MICROSOFT } from '../../../../utils/API_HELPERS';
 import GeneralModel from '../reUseAbles/GeneralModel';
 import { Toaster } from '../reUseAbles/Toasters';
-// import UpdateLineItem from '../reUseAbles/UpdateLineItem';
-
-
+import Actions, { ActionMenuItem } from '../reUseAbles/Actions';
 
 
 
@@ -39,27 +37,6 @@ const Picking = () => {
     const handleSearchTo = event => setSearchToBL(event.target.value);
     const handleSearchIt = event => setSearchIt(event.target.value);
 
-
-    // Actions UI-Reserved-S
-    const [open, setOpen] = React.useState(false);
-    const anchorRef = React.useRef(null);
-    const prevOpen = React.useRef(open);
-    React.useEffect(() => {
-        if (prevOpen.current === true && open === false) anchorRef.current.focus();
-        prevOpen.current = open;
-    }, [open]);
-    const handleToggle = () => setOpen((prevOpen) => !prevOpen);
-    const handleClose = (event) => {
-        if (anchorRef.current && anchorRef.current.contains(event.target)) { return; }
-        setOpen(false);
-    };
-    function handleListKeyDown(event) {
-        if (event.key === 'Tab') {
-            event.preventDefault();
-            setOpen(false);
-        } else if (event.key === 'Escape') setOpen(false);
-    }
-    // Actions UI-Reserved-E
 
     const handleCompleteHere = () => {
         dispatch(MARK_DONE_CUTTING_GREEN_PACKING(true));
@@ -186,50 +163,13 @@ const Picking = () => {
                     <Box>
                         <BackButton onClick={() => navigate('/sale-order')} />
                         &nbsp; &nbsp; &nbsp;
-                        <Button
-                            variant='contained'
-                            sx={{ backgroundColor: '#495BD6' }}
-                            size='small'
-                            ref={anchorRef}
-                            id="composition-button"
-                            aria-controls={open ? 'composition-menu' : undefined}
-                            aria-expanded={open ? 'true' : undefined}
-                            aria-haspopup="true"
-                            onClick={handleToggle}
-                            endIcon={<KeyboardArrowDown />}
-                        > Actions </Button>
+                        <Actions id='picking-menu'>
+                            <ActionMenuItem click={handleRegisterPickItem} label={'Register Pick Now'} />
+                            <ActionMenuItem click={handleCompleteHere} label={'Complete Picking'} last={true} />
+                        </Actions>
                     </Box>
                 </Grid>
             </Grid>
-
-            <Popper
-                open={open}
-                anchorEl={anchorRef.current}
-                role={undefined}
-                placement="bottom-start"
-                transition
-                disablePortal
-            >
-                {({ TransitionProps, placement }) => (
-                    <Grow {...TransitionProps} style={{ transformOrigin: placement === 'bottom-start' ? 'left top' : 'left bottom', }}>
-                        <Paper>
-                            <ClickAwayListener onClickAway={handleClose}>
-                                <MenuList
-                                    autoFocusItem={open}
-                                    id="composition-menu"
-                                    aria-labelledby="composition-button"
-                                    onKeyDown={handleListKeyDown}
-                                    sx={{ backgroundColor: '#495BD6', color: 'white' }}
-                                    onClick={handleClose}
-                                >
-                                    <MenuItem sx={{ borderBottom: '1px solid white', fontSize: '13px' }} onClick={handleRegisterPickItem} >Register Pick Now</MenuItem>
-                                    <MenuItem sx={{ fontSize: '13px' }} onClick={handleCompleteHere}>Complete Picking</MenuItem>
-                                </MenuList>
-                            </ClickAwayListener>
-                        </Paper>
-                    </Grow>
-                )}
-            </Popper>
         </div >
     )
 }

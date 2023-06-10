@@ -59,11 +59,13 @@ export const APIS = {
     request_pick_micro: server + '/requestPick',
     successPick_micro: server + '/successPick',
     pickingPage_micro: server + '/pickingPage',
-    createPaking_micro: server + '/create-picking',
+    createPaking_micro: server + '/create-packing',
     registerPacking_micro: server + '/register-picking',
     getPacking_micro: server + '/get-picking',
     postPacking_micro: server + '/post-picking',
     gets_lots_detail_micro: server + '/lots',
+    post_shipment_micro: server + '/post-shipment',
+    post_invoice_micro: server + '/post-invoice',
 
 
 }
