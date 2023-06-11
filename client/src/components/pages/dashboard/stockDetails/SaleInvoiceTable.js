@@ -20,8 +20,8 @@ const SaleInvoiceTable = ({ data, perPage }) => {
     const navigate = useNavigate();
     const deskTopView = useMediaQuery('(min-width:600px)');
 
-    React.useLayoutEffect(() => { setRows(copy.slice(0, perPage)) }, [copy, perPage]);
-    React.useLayoutEffect(() => { setCopy(data) }, [data]);
+    React.useEffect(() => { setRows(copy.slice(0, perPage)) }, [copy, perPage]);
+    React.useEffect(() => { setCopy(data) }, [data]);
     const handlePageChange = page => {
         setCurrentPage(page);
         setRows(copy.slice(((page - 1) * perPage), ((((page - 1) * perPage)) + perPage)))

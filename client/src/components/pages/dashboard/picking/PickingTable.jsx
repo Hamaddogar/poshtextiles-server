@@ -27,9 +27,7 @@ const PickingTable = ({ searchToBL, searchIt, selected, setSelected }) => {
     const [rows, setRows] = React.useState([]);
     const [lots, setLots] = React.useState({ loading: false, data: [] });
     const [generalModel, setGeneralModel] = React.useState(false)
-    console.log("WH_SHIP_DETAILS", WH_SHIP_DETAILS);
 
-    // console.log("PACKING_PAGE_RESPONSED",);
     React.useEffect(() => {
         setLoading(true);
         if (WH_SHIP_DETAILS?.shipItems?.length) {
@@ -40,7 +38,6 @@ const PickingTable = ({ searchToBL, searchIt, selected, setSelected }) => {
                             token: decide.token,
                             picks: WH_SHIP_DETAILS?.shipItems,
                         }).then(res => {
-                            console.log("---------pickingPageDealer---", res);
                             if (!(res.error)) {
                                 const withId = res.data.map((item, indx) => {
                                     const uid = `${item?.name}-${indx}-main`;
@@ -49,7 +46,6 @@ const PickingTable = ({ searchToBL, searchIt, selected, setSelected }) => {
                                 setData(withId);
                                 setRows(withId);
                                 setLoading(false);
-                                // dispatch(PACKING_PAGE_RESPONSED_FUN(res.data))
                             }
                         })
                     }
@@ -81,7 +77,6 @@ const PickingTable = ({ searchToBL, searchIt, selected, setSelected }) => {
     const handleSelected = (indx, id, item) => setSelected({ id, item }); 
 
     const handleLots = (item) => () => {
-        // console.log("item", item.WHPickNo, item.locationCode);
         setLots({ loading: true, data: [] })
         setGeneralModel(true);
         request_AccessToken_MICROSOFT()
@@ -98,7 +93,6 @@ const PickingTable = ({ searchToBL, searchIt, selected, setSelected }) => {
                             const uid = `${item?.name}-${indx}-lot`;
                             return { id: uid, ...item }
                         })
-                        console.log("---------lots---", res);
                         setLots({ loading: false, data: withId });
                     })
                 }
@@ -107,12 +101,10 @@ const PickingTable = ({ searchToBL, searchIt, selected, setSelected }) => {
 
 
     const handleSelectedLotNo = (lotDeails) => {
-        // console.log("---------lotDeails---", lotDeails.lotNo);
         setSelected(pv => ({ ...pv, item: { ...pv.item, lotNo: lotDeails.lotNo } }));
         const newData = data.map(item => item.id === selected.id ? { ...item, lotNo: lotDeails.lotNo } : item)
         setData(newData);
         setRows(newData);
-        // const itemIndex = lots.findIndex(item => item.id === lotDeails.id);
 
         const patchedLotNoItems = WH_SHIP_DETAILS?.shipItems.map(item =>
             (item.description === selected.item.name &&
@@ -125,7 +117,6 @@ const PickingTable = ({ searchToBL, searchIt, selected, setSelected }) => {
             ...WH_SHIP_DETAILS,
             shipItems: patchedLotNoItems,
         }))
-        console.log("-----Patched-Lot-No---", WH_SHIP_DETAILS.shipItems);
         Toaster('success', 'Lot No Selected');
         Toaster('warn', 'Lot is Selected But how BCModel will be updated, reguarding this lot change ?');
     };

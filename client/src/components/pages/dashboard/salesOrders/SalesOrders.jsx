@@ -51,7 +51,7 @@ const SalesOrders = () => {
     const [openConfirmation, setOpenConfirmation] = React.useState({ status: false, deleteIndex: null });
     const [newItem, setNewItem] = React.useState(false);
     const [openCreateWHShip, setOpenCreateWHShip] = React.useState(false);
-    const [packingSideBar, setPackingSideBar] = React.useState((WH_SHIP_NO?.WHno && WH_SHIP_NO?.sno === saleOrderDetails?.no && PACKING_DETAILS?.status && PACKING_DETAILS?.pkNo) ? true : false);
+    const [packingSideBar, setPackingSideBar] = React.useState(false);
 
     React.useEffect(() => {
         setCopy(saleOrderDetails.edcSalesLines);
@@ -120,7 +120,6 @@ const SalesOrders = () => {
     const handleUpperHeaderSubmit = e => {
         e.preventDefault();
         // const data = new FormData(e.target);
-        alert('working to update')
     };
 
     // add new line Item function
@@ -178,7 +177,6 @@ const SalesOrders = () => {
                 if (decide.success) {
                     createPacking({ token: decide.token, body: { "whseShipNo": WH_SHIP_NO?.WHno } })
                         .then(response => {
-                            console.log("<<<<<createPacking>>>>>>>", response);
                             if ("packingNo" in response?.newPacking) {
                                 dispatch(PACKING_DETAILS_FUN({
                                     status: true,
@@ -283,7 +281,7 @@ const SalesOrders = () => {
 
             <Grid spacing={3} container direction='row' my={3} textAlign='right' mt={.5} justifyContent={{ xs: 'center', md: 'space-between' }} alignItems={'center'}>
                 <Grid item>
-                    <Box>
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
 
                         <BackButton onClick={handleBack} />
                         &nbsp; &nbsp; &nbsp;
@@ -291,7 +289,7 @@ const SalesOrders = () => {
                             <ActionMenuItem label={'RELEASE NOW'} />
                             {WH_SHIP_NO?.WHno && WH_SHIP_NO?.sno === saleOrderDetails?.no && WH_SHIP_DETAILS?.status && WH_SHIP_DETAILS?.shipItems?.length > 0 ?
                                 <Link to='/picking' style={{ color: 'inherit', textDecoration: 'none' }}>
-                                    <ActionMenuItem label={'Shipment is Done <br /> Move to Picking'} />
+                                    <ActionMenuItem label={'Shipment is Done Move to Picking'} />
                                 </Link>
                                 :
                                 <ActionMenuItem click={handleCreateWHShip} label={'Create WH Shipment'} />

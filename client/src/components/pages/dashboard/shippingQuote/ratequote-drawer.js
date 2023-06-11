@@ -36,7 +36,6 @@ const RateQuoteDrawer = ({ toggleDrawerRate, drawerstateRate, saleOrderDetails }
         // calling function 
         action
             .then(response => {
-                console.log("-----rates--------", response);
                 if (("allServices" in response) && !(response.error)) {
                     setRateListData({
                         loading: "responded",
@@ -72,7 +71,7 @@ const RateQuoteDrawer = ({ toggleDrawerRate, drawerstateRate, saleOrderDetails }
                 }
             })
     };
-    React.useLayoutEffect(() => {
+    React.useEffect(() => {
         const condition = rateListData.loading === "idle" && drawerstateRate;
         // calling apis
         if (saleOrderDetails.edcWhseShipments.length > 0) {
@@ -104,7 +103,6 @@ const RateQuoteDrawer = ({ toggleDrawerRate, drawerstateRate, saleOrderDetails }
                                 recursiveCallerRates(rate_List_STAMPS(res.token, payload_Rates_Handler(saleOrderDetails, ship_from_location)))
                                 dispatch(STAMPS_TOKEN({ set: true, token: res.token, code: res.code }))
                             }
-                            console.log("res", res);
                         })
                 }
 

@@ -41,14 +41,14 @@ const History = () => {
         setRows(copy.slice(((page - 1) * perPage), ((((page - 1) * perPage)) + perPage)))
     }
 
-    React.useLayoutEffect(() => { setRows(copy.slice(0, perPage)) }, [copy, perPage]);
-    React.useLayoutEffect(() => { setCopy(historyData) }, [historyData]);
-    React.useLayoutEffect(() => {
+    React.useEffect(() => { setRows(copy.slice(0, perPage)) }, [copy, perPage]);
+    React.useEffect(() => { setCopy(historyData) }, [historyData]);
+    React.useEffect(() => {
         if (orderType === "all") setRows(copy.filter(item => (item[searchTo])?.toLocaleLowerCase().includes(searchIt)));
         else setRows(copy.filter(item => (item[searchTo])?.toLocaleLowerCase().includes(searchIt) && item.status === orderType));
         //eslint-disable-next-line
     }, [searchIt]);
-    React.useLayoutEffect(() => {
+    React.useEffect(() => {
         const getSearched = setTimeout(() => {
             setSearchIt(searchItDebounce.toLocaleLowerCase());
         }, 600)

@@ -106,10 +106,10 @@ const routeStrings = {
     register_new_packing_micro: '/register-picking',
     get_packing_micro: '/get-picking',
     post_packing_micro: '/post-picking',
-    gets_lots_detail_micro:'/lots',
-    post_wh_shipment_micro : '/post-shipment',
-    post_wh_invoice_micro : '/post-invoice',
-    
+    gets_lots_detail_micro: '/lots',
+    post_wh_shipment_micro: '/post-shipment',
+    post_wh_invoice_micro: '/post-invoice',
+
 }
 
 // ---------------- Routes -------------- //
@@ -147,9 +147,8 @@ app.get(routeStrings.token_fed, async (req, res) => {
 
 
     } catch (error) {
-        console.log(error);
         if (error?.response?.status) res.send({ error: true, message: error.response.data.errors[0].message });
-        else res.status(500).send({ error: error.message });
+        else res.status(500).send({ error: error?.message });
     }
 });
 
@@ -176,7 +175,6 @@ app.post(routeStrings.shipment_fedexp, async (req, res) => {
                 newBody,
                 config
             );
-            // console.log("resss", response);
             if (response?.data?.output?.transactionShipments?.[0]?.pieceResponses?.[0]?.packageDocuments?.[0]?.url) {
                 const pdfUrls = ((response.data.output.transactionShipments[0].pieceResponses).map(item => {
                     return item.packageDocuments[0].url;
@@ -216,7 +214,6 @@ app.post(routeStrings.shipment_fedexp, async (req, res) => {
         })
 
     } catch (error) {
-        console.log(error);
         if (error?.response?.status) res.send({ message: error?.response?.data?.errors[0]?.message, error: true, code: error?.response?.data?.errors[0]?.code });
         else res.send({ message: "Request failed with status code 500", error: true });
     }
@@ -264,14 +261,13 @@ app.post(routeStrings.address_validate_fedexp, async (req, res) => {
         }
 
     } catch (error) {
-        console.log(error);
-        if (error?.status) res.send({ code: error.status, message: error.message, error: true });
+        if (error?.status) res.send({ code: error.status, message: error?.message, error: true });
         else if (error?.response?.status) res.send({
             code: error.response?.status,
-            message: ((error?.response?.data?.errors[0]?.code) || (error?.response?.data?.response?.errors[0]?.message) || error.response.message),
+            message: ((error?.response?.data?.errors[0]?.code) || (error?.response?.data?.response?.errors[0]?.message) || error?.response?.message),
             error: true
         });
-        else res.send({ code: error.status, message: error.message, error: true });
+        else res.send({ code: error.status, message: error?.message, error: true });
     }
 });
 
@@ -298,7 +294,6 @@ app.post(routeStrings.rate_list_fedexp, async (req, res) => {
             newBody,
             config
         );
-        console.log("response", response.data);
         response.data?.output?.rateReplyDetails?.map(service => {
             // respo[0].ratedShipmentDetails[0]
             service.ratedShipmentDetails.map(item => {
@@ -327,14 +322,13 @@ app.post(routeStrings.rate_list_fedexp, async (req, res) => {
         });
 
     } catch (error) {
-        console.log(error);
-        if (error?.status) res.send({ code: error.status, message: error.message, error: true });
+        if (error?.status) res.send({ code: error.status, message: error?.message, error: true });
         else if (error?.response?.status) res.send({
             code: error.response?.status,
             message: ((error?.response?.data?.errors[0]?.message) || (error?.response?.data?.response?.errors[0]?.message)),
             error: true
         });
-        else res.send({ code: error.status, message: error.message, error: true });
+        else res.send({ code: error.status, message: error?.message, error: true });
     }
 });
 
@@ -393,7 +387,6 @@ app.post(routeStrings.shipment_ups, async (req, res) => {
             error: false
         })
     } catch (error) {
-        console.log(error);
         if (error?.response?.status) res.send({ message: error.response.data.response.errors[0].message, error: true });
         else res.send({ message: 'Request failed with status code 500', error: true });
     }
@@ -446,7 +439,6 @@ app.post(routeStrings.address_validate_ups, async (req, res) => {
         }
 
     } catch (error) {
-        console.log(error);
         // res.send(error)
         if (error?.status) res.send({ code: error.status, message: ((error?.response?.data?.errors[0]?.code) || (error?.response?.data?.response?.errors[0]?.message)), error: true });
         else if (error?.response?.status) res.send({
@@ -454,7 +446,7 @@ app.post(routeStrings.address_validate_ups, async (req, res) => {
             message: ((error?.response?.data?.response?.errors[0]?.message) || (error?.response?.data?.errors[0]?.code) || error?.response?.message),
             error: true
         });
-        else res.send({ code: error.status, message: error.message, error: true });
+        else res.send({ code: error.status, message: error?.message, error: true });
     }
 });
 
@@ -533,9 +525,8 @@ app.post(routeStrings.rate_list_ups, async (req, res) => {
         });
 
     } catch (error) {
-        console.log("error Rates", error);
         if (error?.response?.status) res.send({ error: true, message: error?.response?.data?.response?.errors[0]?.message });
-        else res.status(500).send({ error: true, message: error.message });
+        else res.status(500).send({ error: true, message: error?.message });
     }
 });
 
@@ -653,14 +644,13 @@ app.post(routeStrings.address_validate_stamps, async (req, res) => {
             })
         }
     } catch (error) {
-        console.log(error);
         if (error?.status) res.send({ code: error.status, message: ((error?.response?.data?.errors[0]?.code) || (error?.response?.data?.response?.errors[0]?.message)), error: true });
         else if (error?.response?.status) res.send({
             code: error.response?.status,
             message: ((error?.response?.data?.message) || (error?.response?.data?.errors[0]?.code) || error?.response?.message),
             error: true
         });
-        else res.send({ code: 'error.status', message: 'error.message', error: true });
+        else res.send({ code: 'error.status', message: 'error?.message', error: true });
     }
 });
 
@@ -716,7 +706,6 @@ app.post(routeStrings.rate_list_stamps, async (req, res) => {
         });
 
     } catch (error) {
-        console.log(error);
         res.send({
             code: error?.response?.status || error?.status,
             message: error?.response?.data?.errors?.[0]?.error_message || error?.message,
@@ -732,7 +721,6 @@ app.post(routeStrings.shipment_stamps, async (req, res) => {
     let images = [];
     try {
         const lineItems = req.body.body.package;
-        console.log(lineItems);
         for (let i = 0; i < lineItems.length; i++) {
             // const chunk = lineItems.slice(i, i + 4);
             let newBody = { ...req.body.body }
@@ -769,9 +757,8 @@ app.post(routeStrings.shipment_stamps, async (req, res) => {
         })
 
     } catch (error) {
-        console.log(error);
         res.send({
-            code: error.response.status,
+            code: error?.response?.status,
             message: error?.response?.data?.errors?.[0]?.error_message || error?.message,
             error: true
         })
@@ -801,18 +788,11 @@ app.get("/funds_stamps", async (req, res) => {
 
 
 
-
-
-        console.log("ress", response.data);
-
-
-
         res.status(200).send(response.data)
 
     } catch (error) {
-        console.log(error);
         res.status(error?.response?.status).send({
-            code: error.response.status,
+            code: error?.response?.status,
             message: error?.response?.data?.errors?.[0]?.error_message || error?.message,
             error: true
         })
@@ -883,8 +863,7 @@ app.post('/printer', async (req, res) => {
             printed: true,
         })
     } catch (error) {
-        console.log(error);
-        if (error?.name) res.send({ message: error.message, error: true });
+        if (error?.name) res.send({ message: error?.message, error: true });
         else res.send({ message: 'Request failed with status code 500', error: true });
     }
 
@@ -917,26 +896,23 @@ app.post(routeStrings.token_micro, async (req, res) => {
         );
         res.send({ success: true, token: response.data.access_token })
     } catch (error) {
-        console.log(error);
         res.send({ error: true });
     }
 });
 
 // microsoft all sales orders
-app.post(routeStrings.sale_orders_micro, cache, async (req, res) => {
+app.post(routeStrings.sale_orders_micro, async (req, res) => {
     const config = {
         headers: {
             "Authorization": `Bearer ${req.body.token}`,
         }
     };
-    // // console.log( `Bearer ${req.body.token}`);
     try {
         const response = await axios.get(
             API_MICROSOFT.Sales_Orders,
             config
         );
-        // console.log(response?.data?.value);
-        data = response?.data?.value
+        // data = response?.data?.value
         if (response?.data?.value) {
             res.status(response.status).send(response.data.value);
         } else throw ({
@@ -948,10 +924,9 @@ app.post(routeStrings.sale_orders_micro, cache, async (req, res) => {
         });
 
     } catch (error) {
-        console.log("error", error);
-        if (error?.status) res.status(error.status).send({ error: error.message });
-        else if (error?.response?.status) res.status(error.response.status).send({ error: error.response.message });
-        else res.status(500).send({ error: error.message });
+        if (error?.status) res.status(error.status).send({ error: error?.message });
+        else if (error?.response?.status) res.status(error?.response?.status).send({ error: error?.response?.message });
+        else res.status(500).send({ error: error?.message });
     }
 });
 
@@ -978,10 +953,9 @@ app.post(routeStrings.inventory_micro, async (req, res) => {
         });
 
     } catch (error) {
-        // console.log("error", error.response);
-        if (error?.status) res.status(error.status).send({ error: error.message });
-        else if (error?.response?.status) res.status(error.response.status).send({ error: error.response.message });
-        else res.status(500).send({ error: error.message });
+        if (error?.status) res.status(error.status).send({ error: error?.message });
+        else if (error?.response?.status) res.status(error?.response?.status).send({ error: error?.response?.message });
+        else res.status(500).send({ error: error?.message });
     }
 });
 
@@ -1010,10 +984,9 @@ app.post(routeStrings.new_order_micro, async (req, res) => {
 
 
     } catch (errorss) {
-        console.log("error", errorss);
         if (errorss?.response?.status) res.status(errorss.response.status).send({
             error: {
-                message: errorss.response.data.error.message,
+                message: errorss.response.data.error?.message,
                 error: true
             }
         });
@@ -1062,17 +1035,14 @@ app.post(routeStrings.customers_micro, async (req, res) => {
             "Authorization": `Bearer ${req.body.token}`,
         }
     };
-    // // console.log( `Bearer ${req.body.token}`);
     try {
         const response = await axios.get(
             API_MICROSOFT.Customer,
             config
         );
-        console.log(response?.data);
         if (response?.data?.value) {
             res.status(response.status).send(response.data.value);
         } else {
-            console.log("-------else-", response);
             throw ({
                 response: {
                     "message": "Server Error!",
@@ -1083,9 +1053,8 @@ app.post(routeStrings.customers_micro, async (req, res) => {
         }
 
     } catch (error) {
-        console.log(error);
         res.status(error?.response?.status).send({
-            code: error.response.status,
+            code: error?.response?.status,
             message: error?.response?.data?.errors?.[0]?.error_message || error?.message,
             error: true
         })
@@ -1117,9 +1086,8 @@ app.post(routeStrings.ship_from_location_micro, async (req, res) => {
         }
 
     } catch (error) {
-        console.log(error);
         res.status(error?.response?.status).send({
-            code: error.response.status,
+            code: error?.response?.status,
             message: error?.response?.data?.errors?.[0]?.error_message || error?.message,
             error: true
         })
@@ -1142,9 +1110,8 @@ app.post(routeStrings.create_shipment, async (req, res) => {
         res.send({ creation: response.data });
 
     } catch (error) {
-        console.log(error);
         res.status(error?.response?.status).send({
-            code: error.response.status,
+            code: error?.response?.status,
             message: error?.response?.data?.errors?.[0]?.error_message || error?.message,
             error: true
         })
@@ -1166,9 +1133,8 @@ app.post(routeStrings.get_pick_details_micro, async (req, res) => {
         res.send({ error: false, pickDetails: response.data });
 
     } catch (error) {
-        console.log(error);
         res.status(error?.response?.status).send({
-            code: error.response.status,
+            code: error?.response?.status,
             message: error?.response?.data?.errors?.[0]?.error_message || error?.message,
             error: true
         })
@@ -1191,9 +1157,8 @@ app.post(routeStrings.request_pick_micro, async (req, res) => {
         res.send({ requested: response.data });
 
     } catch (error) {
-        console.log(error);
         res.status(error?.response?.status).send({
-            code: error.response.status,
+            code: error?.response?.status,
             message: error?.response?.data?.errors?.[0]?.error_message || error?.message,
             error: true
         })
@@ -1216,9 +1181,8 @@ app.post(routeStrings.success_pick_detail_micro, async (req, res) => {
         res.send({ error: false, NOC: response.data });
 
     } catch (error) {
-        console.log(error);
         res.status(error?.response?.status).send({
-            code: error.response.status,
+            code: error?.response?.status,
             message: error?.response?.data?.errors?.[0]?.error_message || error?.message,
             error: true
         })
@@ -1252,24 +1216,23 @@ app.post(routeStrings.picking_page_detail_micro, async (req, res) => {
                 config
             );
 
-            dataToSendRaw.push({ inv : responseInventory?.data, bin :responseBin?.data })
+            dataToSendRaw.push({ inv: responseInventory?.data, bin: responseBin?.data })
             dataToSend.push({
                 name: item.description,
                 WhseDocumentNo: item.WhseDocumentNo,
                 sourceNo: item.sourceNo,
                 WHPickNo: item.no,
                 destinationNo: item.destinationNo,
-                WhseDocumentNo:item.WhseDocumentNo,
+                WhseDocumentNo: item.WhseDocumentNo,
                 ...responseInventory?.data?.value?.[0],
                 ...responseBin?.data?.value?.[0],
             })
 
         }
 
-        res.send({ error: false, data: dataToSend ,dataToSendRaw});
+        res.send({ error: false, data: dataToSend, dataToSendRaw });
 
     } catch (error) {
-        console.log(error);
         res.status(error?.response?.status).send({
             code: error?.response?.status,
             message: error?.response?.data?.errors?.[0]?.error_message || error?.message,
@@ -1291,12 +1254,11 @@ app.post(routeStrings.create_new_packing_micro, async (req, res) => {
             req.body.body,
             config
         );
-        res.send({ newPacking: response.data, body:req.body.body });
+        res.send({ newPacking: response.data, body: req.body.body });
 
     } catch (error) {
-        console.log(error);
         res.status(error?.response?.status).send({
-            code: error.response.status,
+            code: error?.response?.status,
             message: error?.response?.data?.errors?.[0]?.error_message || error?.message,
             error: true
         })
@@ -1311,7 +1273,6 @@ app.post(routeStrings.get_packing_micro, async (req, res) => {
             "Authorization": `Bearer ${req.body.token}`,
         }
     };
-    console.log(req.body.code);
     try {
         const response = await axios.get(
             API_MICROSOFT.packing_detail(req.body.code),
@@ -1320,9 +1281,8 @@ app.post(routeStrings.get_packing_micro, async (req, res) => {
         res.send({ getPacking: response.data });
 
     } catch (error) {
-        console.log(error);
         res.status(error?.response?.status).send({
-            code: error.response.status,
+            code: error?.response?.status,
             message: error?.response?.data?.errors?.[0]?.error_message || error?.message,
             error: true
         })
@@ -1337,7 +1297,7 @@ app.post(routeStrings.register_new_packing_micro, async (req, res) => {
         }
     };
     const body = {
-        "WhsePickNo" : req.body.pkCode
+        "WhsePickNo": req.body.pkCode
     }
     try {
         const registerPickResponse = await axios.post(
@@ -1349,7 +1309,6 @@ app.post(routeStrings.register_new_packing_micro, async (req, res) => {
         res.send({ error: false, registerDetail: registerPickResponse.data });
 
     } catch (error) {
-        console.log(error);
         res.status(error?.response?.status).send({
             code: error?.response?.status,
             message: error?.response?.data?.errors?.[0]?.error_message || error?.message,
@@ -1365,17 +1324,16 @@ app.post(routeStrings.gets_lots_detail_micro, async (req, res) => {
             "Authorization": `Bearer ${req.body.token}`,
         }
     };
-    
+
     try {
 
         const responseInventory = await axios.get(
             API_MICROSOFT.inventory_pick_detail(req.body.item.no, req.body.item.locationCode),
             config
         );
-        res.send({ error: false, lots: responseInventory?.data?.value});
+        res.send({ error: false, lots: responseInventory?.data?.value });
 
     } catch (error) {
-        console.log(error);
         res.status(error?.response?.status).send({
             code: error?.response?.status,
             message: error?.response?.data?.errors?.[0]?.error_message || error?.message,
@@ -1386,22 +1344,16 @@ app.post(routeStrings.gets_lots_detail_micro, async (req, res) => {
 
 // post_wh_shipment_micro
 app.post(routeStrings.post_wh_shipment_micro, async (req, res) => {
-    const config = {
-        headers: {
-            "Authorization": `Bearer ${req.body.token}`,
-        }
-    };
-    
+    const config = { headers: { "Authorization": `Bearer ${req.body.token}`, } };
     try {
         const response = await axios.post(
             API_MICROSOFT.post_wh_shipment,
             req.body.body,
             config
         );
-        res.send({ error: false, lots: response?.data});
+        res.send({ error: false, postShipment: response?.data });
 
     } catch (error) {
-        console.log(error);
         res.status(error?.response?.status).send({
             code: error?.response?.status,
             message: error?.response?.data?.errors?.[0]?.error_message || error?.message,
@@ -1410,25 +1362,18 @@ app.post(routeStrings.post_wh_shipment_micro, async (req, res) => {
     }
 });
 
-// post_wh_shipment_micro
+// post_wh_INVOICE_micro
 app.post(routeStrings.post_wh_invoice_micro, async (req, res) => {
-    const config = {
-        headers: {
-            "Authorization": `Bearer ${req.body.token}`,
-        }
-    };
-    
+    const config = { headers: { "Authorization": `Bearer ${req.body.token}`, } };
     try {
-
         const response = await axios.post(
             API_MICROSOFT.post_wh_invoice,
             req.body.body,
             config
         );
-        res.send({ error: false, lots: response?.data});
+        res.send({ error: false, postInvoice: response?.data });
 
     } catch (error) {
-        console.log(error);
         res.status(error?.response?.status).send({
             code: error?.response?.status,
             message: error?.response?.data?.errors?.[0]?.error_message || error?.message,
@@ -1574,7 +1519,6 @@ app.post(routeStrings.auth_net_charge, async (req, res) => {
         createRequest.setTransactionRequest(transactionRequestType);
 
         //pretty print request
-        console.log(JSON.stringify(createRequest.getJSON(), null, 2));
 
         var ctrl = new ApiControllers.CreateTransactionController(createRequest.getJSON());
         //Defaults to sandbox
@@ -1583,42 +1527,28 @@ app.post(routeStrings.auth_net_charge, async (req, res) => {
             var apiResponse = ctrl.getResponse();
             var response = new ApiContracts.CreateTransactionResponse(apiResponse);
             //pretty print response
-            // console.log(JSON.stringify(response, null, 2));
 
             if (response != null) {
                 if (response.getMessages().getResultCode() == ApiContracts.MessageTypeEnum.OK) {
                     if (response.getTransactionResponse().getMessages() != null) {
-                        // console.log('Successfully created transaction with Transaction ID: ' + response.getTransactionResponse().getTransId());
-                        // console.log('Response Code: ' + response.getTransactionResponse().getResponseCode());
-                        // console.log('Message Code: ' + response.getTransactionResponse().getMessages().getMessage()[0].getCode());
-                        // console.log('Description: ' + response.getTransactionResponse().getMessages().getMessage()[0].getDescription());
                         res.status(200).send({ success: true, response });
                     }
                     else {
-                        // console.log('Failed Transaction.');
                         if (response.getTransactionResponse().getErrors() != null) {
-                            // console.log('Error Code: ' + response.getTransactionResponse().getErrors().getError()[0].getErrorCode());
-                            // console.log('Error message: ' + response.getTransactionResponse().getErrors().getError()[0].getErrorText());
                             res.send(response.getTransactionResponse().getErrors());
                         }
                     }
                 }
                 else {
-                    // console.log('Failed Transaction. ');
                     res.send({ success: false, response });
                     if (response.getTransactionResponse() != null && response.getTransactionResponse().getErrors() != null) {
 
-                        // console.log('Error Code: ' + response.getTransactionResponse().getErrors().getError()[0].getErrorCode());
-                        // console.log('Error message: ' + response.getTransactionResponse().getErrors().getError()[0].getErrorText());
                     }
                     else {
-                        // console.log('Error Code: ' + response.getMessages().getMessage()[0].getCode());
-                        // console.log('Error message: ' + response.getMessages().getMessage()[0].getText());
                     }
                 }
             }
             else {
-                // console.log('Null Response.');
                 res.send({ success: false, response });
             }
 
@@ -1638,7 +1568,13 @@ app.post(routeStrings.auth_net_charge, async (req, res) => {
 
 // ------------------- Configurations----------------- //
 
-
+if (process.env.NODE_ENV === "production") {
+    app.use(express.static("build"));
+    const path = require("path");
+    app.get("*", (req, res) => {
+        res.sendFile(path.resolve(__dirname, 'build', 'index.html'));
+    })
+}
 // server configuration
 const PORT = process.env.PORT || 8080;
 

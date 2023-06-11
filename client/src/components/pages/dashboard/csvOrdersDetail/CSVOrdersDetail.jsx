@@ -5,28 +5,14 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { Chip, Stack, useMediaQuery, Grid, TextField, Typography } from '@mui/material';
+import { Stack, useMediaQuery, Grid, Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Button } from '@mui/material';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import SearchIcon from '@mui/icons-material/Search';
-import Pagination from 'react-responsive-pagination';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Box } from '@mui/system';
-import { Link, useNavigate } from 'react-router-dom';
-import { SELECTED_SALE_ORDER_DATA } from '../../../../RTK/Reducers/Reducers';
-import { BackButton, lnk, NoBorder, Search, searchDropDown, SearchIconWrapper, StyledInputBase, styleSlect } from '../reUseAbles/ReuseAbles';
-import PreLoader from '../../HOC/Loading';
-import NoRecord from '../../HOC/NoRecord';
-import Papa from 'papaparse';
-import { toast } from 'react-toastify';
-
-
-
-
+import { useNavigate } from 'react-router-dom';
+import { BackButton } from '../reUseAbles/ReuseAbles';
 
 
 
@@ -37,7 +23,7 @@ const CSVOrdersDetail = () => {
     const deskTopView = useMediaQuery('(min-width:600px)');
     const navigate = useNavigate();
 
-    React.useLayoutEffect(() => { setCopyDetails(csv_OrdersDetail) }, [csv_OrdersDetail]);
+    React.useEffect(() => { setCopyDetails(csv_OrdersDetail) }, [csv_OrdersDetail]);
 
 
     return (

@@ -1,20 +1,16 @@
-import { Box, Button, TextField, Typography } from '@mui/material'
-import { Stack } from '@mui/system';
+import { Box } from '@mui/material'
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { ADD_NEW_INVENTORY_PRODUCT } from '../../../../RTK/Reducers/Reducers';
-import { subHeadInputStyle, Wrapper } from '../reUseAbles/ReuseAbles'
+import { handleNoAction } from '../reUseAbles/ReuseAbles'
 import InventoryAdjustmentTable from './InventoryAdjustmentTable';
+import CreateNewLineItem from '../reUseAbles/CreateNewLineItem';
 
 
 const InventoryAdjustment = () => {
-    const { pickingSelectedProduct, inventoryAdjustment, perPage } = useSelector(store => store.mainReducer);
+    const { inventoryAdjustment, perPage } = useSelector(store => store.mainReducer);
 
-    const [showSelectedProduct, setShowSelectedProduct] = React.useState(null);
     const dispatch = useDispatch();
-    React.useLayoutEffect(() => { setShowSelectedProduct(pickingSelectedProduct) }, [pickingSelectedProduct]);
-
-
 
     const handleSubmit = e => {
         e.preventDefault()
@@ -25,14 +21,10 @@ const InventoryAdjustment = () => {
     }
 
 
-
-
-
-
     return (
         <div>
             <Box mb={1}>
-                <Box sx={{ transition: '.5s', border: '1px solid black', boxShadow: `1px 1px 2px 1px rgba(0, 0, 0, 0.25)`, display: 'flex', alignItems: 'flex-start', padding: showSelectedProduct ? '15px' : '0px' }}>
+                {/* <Box sx={{ transition: '.5s', border: '1px solid black', boxShadow: `1px 1px 2px 1px rgba(0, 0, 0, 0.25)`, display: 'flex', alignItems: 'flex-start', padding: showSelectedProduct ? '15px' : '0px' }}>
                     <Box sx={{ padding: '15px' }} >
                         <Box style={{ width: '100%', minWidth: '146px', maxWidth: '146px', cursor: 'pointer', backgroundColor: 'white', minHeight: '140px' }}></Box>
                     </Box>
@@ -75,7 +67,10 @@ const InventoryAdjustment = () => {
                         </Wrapper>
 
                     </Box>
-                </Box>
+                </Box> */}
+
+                <CreateNewLineItem readOnly={true} handleSubmitLineItem={handleSubmit} handleCancel={handleNoAction} />
+
 
                 {/* table */}
                 <Box>

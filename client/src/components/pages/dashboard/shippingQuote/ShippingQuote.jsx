@@ -15,16 +15,16 @@ import ShipReportDialog from './ShipReportDialog'
 import { payload_Shipment_Handler } from '../../../../utils/Helper'
 import ShipToDialoge from './ShipToDia'
 import { toast } from 'react-toastify'
-import { STAMPS_TOKEN } from '../../../../RTK/Reducers/Reducers'
+import { STAMPS_TOKEN, postInvoice, postShipment } from '../../../../RTK/Reducers/Reducers'
 import ShipFromPreview from './ShipFromPreview'
 import Actions, { ActionMenuItem } from '../reUseAbles/Actions'
+import { Toaster } from '../reUseAbles/Toasters'
 
 
 const ShippingQuote = () => {
-    const { stamps_token } = useSelector(store => store.mainReducer)
+    const { stamps_token, WH_SHIP_DETAILS } = useSelector(store => store.mainReducer)
     const navigate = useNavigate();
     const dispatch = useDispatch();
-
     const { saleOrderDetails, ship_from_location } = useSelector(store => store.mainReducer);
     const [drawerStateAddress, setdrawerStateAddress] = React.useState(false);
     const [drawerstateRate, setdrawerstateRate] = React.useState(false);
@@ -59,7 +59,6 @@ const ShippingQuote = () => {
     // for shipment labels recursiveCaller
     const recursiveCaller = (action, counter = 0) => {
         action.then(res => {
-            console.log("---labels----", res)
             if (!(res?.data?.error)) {
                 SetShipReport({
                     open: true,
@@ -128,7 +127,6 @@ const ShippingQuote = () => {
                                 );
                                 dispatch(STAMPS_TOKEN({ set: true, token: res.token, code: res.code }))
                             }
-                            console.log("res", res);
                         });
                 };
 
@@ -163,25 +161,33 @@ const ShippingQuote = () => {
     };
 
     const handlePostShipment = () => {
+        Toaster('loading', 'Loading ...')
         request_AccessToken_MICROSOFT()
             .then(decide => {
                 if (decide.success) {
-                    // dispatch(shipFromLocation({
-                    //     token: decide.token,
-                    //     locationCode: data.edcCustomers[0].locationCode,
-                    // }))
+                    dispatch(postShipment({
+                        token: decide.token,
+                        body: {
+                            "whseShipmentNo": WH_SHIP_DETAILS.shipNo,
+                            "postShipment": true
+                        },
+                    }))
                 }
             })
     };
 
     const handlePostInvoice = () => {
+        Toaster('loading', 'Loading ...')
         request_AccessToken_MICROSOFT()
             .then(decide => {
                 if (decide.success) {
-                    // dispatch(shipFromLocation({
-                    //     token: decide.token,
-                    //     locationCode: data.edcCustomers[0].locationCode,
-                    // }))
+                    dispatch(postInvoice({
+                        token: decide.token,
+                        body: {
+                            "orderNo": WH_SHIP_DETAILS.SNo,
+                            "postInvoice": true
+                        },
+                    }))
                 }
             })
     };
@@ -387,34 +393,32 @@ const ShippingQuote = () => {
 
 
                     {/* footer actions */}
-                    <Grid item container mt={.5}>
-                        <Grid item xs={4}>
-                            <Box>
+                    <Grid item container mt={2} alignItems='center' justifyContent='space-between'>
+                        <Grid item xs={5}>
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                <BackButton sx={{ padding: "0px 6px", }} onClick={() => navigate(-1)} /> &nbsp; &nbsp; &nbsp;
                                 <Button
-                                    style={{ background: "#4B5AD8", marginTop: "15px", padding: "0px 6px", color: "white" }}
+                                    style={{ background: "#4B5AD8", padding: "0px 6px", color: "white" }}
                                     onClick={toggleDrawer(true)}>Validate Address</Button>
 
-                                <Box sx={{ marginTop: "10px" }}>
-                                    <BackButton onClick={() => navigate(-1)} />
-                                </Box>
                             </Box>
                         </Grid>
-                        <Grid item xs={4}>
+                        <Grid item xs={3}>
                             <Box>
-                                <Actions id={'shipment-menu'}>
-                                    <ActionMenuItem click={handlePostShipment} label={'Post Shipment'} />
-                                    <ActionMenuItem click={handlePostInvoice} label={'Post Invoices'} last={true} />
+                                <Actions size='small' id={'shipment-menu'} btnProp={{ padding: "0px 6px" }}>
+                                    <ActionMenuItem disabled={(WH_SHIP_DETAILS.postShipment)} click={handlePostShipment} label={'Post Shipment'} />
+                                    <ActionMenuItem disabled={(WH_SHIP_DETAILS.postInvoice)} click={handlePostInvoice} label={'Post Invoices'} last={true} />
                                 </Actions>
                             </Box>
                         </Grid>
                         <Grid item xs={4}>
                             <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                                <Button style={{ background: "#4B5AD8", marginTop: "15px", padding: "2px 6px", color: "white" }} onClick={toggleDrawerRate(true)}>RATE QUOTE</Button>
+                                <Button style={{ background: "#4B5AD8", padding: "2px 6px", color: "white" }} onClick={toggleDrawerRate(true)}>RATE QUOTE</Button>
                                 <Button
                                     disabled={!allowShipment}
                                     type='submit'
                                     variant='contained'
-                                    sx={{ marginLeft: "6px", background: "#4B5AD8", marginTop: "15px", padding: "0px 6px", color: 'white' }}
+                                    sx={{ marginLeft: "6px", background: "#4B5AD8", padding: "0px 6px", color: 'white' }}
                                 > Ship </Button>
                             </Box>
                         </Grid>

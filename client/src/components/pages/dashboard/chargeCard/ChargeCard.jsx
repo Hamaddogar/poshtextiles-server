@@ -42,44 +42,21 @@ const ChargeCard = () => {
         setRows(copy.slice(((page - 1) * perPage), ((((page - 1) * perPage)) + perPage)))
     }
 
-    React.useLayoutEffect(() => { setRows(copy.slice(0, perPage)) }, [copy, perPage]);
-    React.useLayoutEffect(() => { setCopy(chargeCardData) }, [chargeCardData]);
-    React.useLayoutEffect(() => {
+    React.useEffect(() => { setRows(copy.slice(0, perPage)) }, [copy, perPage]);
+    React.useEffect(() => { setCopy(chargeCardData) }, [chargeCardData]);
+    React.useEffect(() => {
         if (orderType === "all") setRows(copy.filter(item => (item.name).toLocaleLowerCase().includes(searchIt)));
         else setRows(copy.filter(item => (item.name).toLocaleLowerCase().includes(searchIt) && item.st === orderType));
-        // const getSearched = setTimeout(() => {
-
-        //     if (copy.length > 0) {
-        //         alert()
-        //         if (orderType === "all") setRows(copy.filter(item => (item.name).toLocaleLowerCase().includes(searchIt)));
-        //         else setRows(copy.filter(item => (item.name).toLocaleLowerCase().includes(searchIt) && item.st === orderType));
-        //     }
-        //     // setCopy(allOrders.filter(item => item.st === orderType && (item.name).toLocaleLowerCase().includes(searchIt)))
-        //     // console.log(copy.filter(item => (item.name).toLocaleLowerCase().includes(searchIt)));
-        // }, 1000)
-        // return () => clearTimeout(getSearched)
-
         // eslint-disable-next-line
     }, [searchIt])
 
-
-
-
-
     const handleSearch = e => setSearchIt((e.target.value).toLocaleLowerCase());
-    // const handleSlectOrder = data => {
-    //     dispatch(SELECTED_SALE_ORDER_DATA(data))
-    //     navigate('sale-order')
-    // }SET_TITLE
 
     const handleChange = event => {
         setOrderType(event.target.value);
         if (event.target.value === "all") setCopy(chargeCardData);
         else setCopy(chargeCardData.filter(item => item.cst === event.target.value));
     };
-
-
-
 
 
     return (
@@ -159,11 +136,6 @@ const ChargeCard = () => {
                     </TableBody>
                 </Table>
             </TableContainer>
-            {/* {
-                rows.length === 0 && <Box mt={3} textAlign='center' >
-                    <Typography>No Record</Typography>
-                </Box>
-            } */}
             {
                 rows.length > 0 &&
                 <Stack direction='row' my={3} textAlign='right' mt={2} justifyContent='space-between' alignItems={'center'}>

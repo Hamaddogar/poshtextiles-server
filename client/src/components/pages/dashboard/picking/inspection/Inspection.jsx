@@ -19,7 +19,7 @@ const Inspection = () => {
     const [showSelectedProduct, setShowSelectedProduct] = React.useState(null);
     const [dropShipChecked, setDropShipChecked] = React.useState(false);
     const navigate = useNavigate();
-    React.useLayoutEffect(() => { setShowSelectedProduct(pickingSelectedProduct) }, [pickingSelectedProduct]);
+    React.useEffect(() => { setShowSelectedProduct(pickingSelectedProduct) }, [pickingSelectedProduct]);
 
     return (
         <div>

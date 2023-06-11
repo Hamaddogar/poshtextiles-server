@@ -5,7 +5,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { Stack, useMediaQuery, Grid, Typography } from '@mui/material';
+import { Stack, useMediaQuery, Grid } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import { useSelector } from 'react-redux';
 import { Button } from '@mui/material';
@@ -15,7 +15,6 @@ import Select from '@mui/material/Select';
 import SearchIcon from '@mui/icons-material/Search';
 import Pagination from 'react-responsive-pagination';
 import 'bootstrap/dist/css/bootstrap.css';
-import { Box } from '@mui/system';
 import { useNavigate } from 'react-router-dom';
 import BackArrow from '../../../assets/icons/back-arrow.png'
 import { Search, SearchIconWrapper, StyledInputBase, styleSlect } from '../reUseAbles/ReuseAbles';
@@ -36,52 +35,21 @@ const InventoryManagment = () => {
 
     const navigate = useNavigate();
 
-
-
     const handlePageChange = page => {
         setCurrentPage(page);
         setRows(copy.slice(((page - 1) * 20), ((((page - 1) * 20)) + 20)))
     }
 
-    React.useLayoutEffect(() => { setRows(copy.slice(0, 20)) }, [copy]);
-    React.useLayoutEffect(() => { setCopy(inventoryData) }, [inventoryData]);
-    React.useLayoutEffect(() => {
+    React.useEffect(() => { setRows(copy.slice(0, 20)) }, [copy]);
+    React.useEffect(() => { setCopy(inventoryData) }, [inventoryData]);
+    React.useEffect(() => {
         if (orderType === "all") setRows(copy.filter(item => (item.name).toLocaleLowerCase().includes(searchIt)));
         else setRows(copy.filter(item => (item.name).toLocaleLowerCase().includes(searchIt) && item.st === orderType));
-        // const getSearched = setTimeout(() => {
-
-        //     if (copy.length > 0) {
-        //         alert()
-        //         if (orderType === "all") setRows(copy.filter(item => (item.name).toLocaleLowerCase().includes(searchIt)));
-        //         else setRows(copy.filter(item => (item.name).toLocaleLowerCase().includes(searchIt) && item.st === orderType));
-        //     }
-        //     // setCopy(allOrders.filter(item => item.st === orderType && (item.name).toLocaleLowerCase().includes(searchIt)))
-        //     // console.log(copy.filter(item => (item.name).toLocaleLowerCase().includes(searchIt)));
-        // }, 1000)
-        // return () => clearTimeout(getSearched)
-        // 
         //eslint-disable-next-line
     }, [searchIt])
 
-
-
-
-
     const handleSearch = e => setSearchIt((e.target.value).toLocaleLowerCase());
-    // const handleSlectOrder = data => {
-    //     dispatch(SELECTED_SALE_ORDER_DATA(data))
-    //     navigate('sale-order')
-    // }
-
-    const handleChange = event => {
-        setOrderType(event.target.value);
-        // if (event.target.value === "all") setCopy(inventoryData);
-        // else setCopy(inventoryData.filter(item => item.st === event.target.value));
-    };
-
-
-
-
+    const handleChange = event => setOrderType(event.target.value);
 
     return (
         <div>
@@ -115,11 +83,7 @@ const InventoryManagment = () => {
                         />
                     </Search>
                 </Grid>
-
-
             </Grid>
-
-
             <TableContainer component={Paper} sx={{ padding: '0px 4%' }} className='table-Container'>
                 <Table sx={{ minWidth: 750 }} stickyHeader aria-label="table">
                     <TableHead>
@@ -138,13 +102,8 @@ const InventoryManagment = () => {
                         {rows && rows.length > 0 && rows.map((row, index) => (
                             <TableRow key={index} sx={{
                                 '&:last-child td, &:last-child th': { border: 0 }, 'td, th': { color: row.delay ? 'red' : 'inherit', fontSize: deskTopView ? "13px" : '11px', },
-                                // backgroundColor: row.delay ? 'rgb(211, 47, 47,.1)' : 'inherit'
                                 '&:hover': { backgroundColor: 'rgb(128, 128, 128,.1)', cursor: 'pointer', transition: '.3s' }
-                            }}
-
-                            // onClick={() => handleSlectOrder(row)}
-
-                            >
+                            }} >
                                 <TableCell> {row.name} </TableCell>
                                 <TableCell> {row.des} </TableCell>
                                 <TableCell>{row.hand}</TableCell>
@@ -158,11 +117,6 @@ const InventoryManagment = () => {
                     </TableBody>
                 </Table>
             </TableContainer>
-            {/* {
-                rows.length === 0 && <Box mt={3} textAlign='center' >
-                    <Typography>No Record</Typography>
-                </Box>
-            } */}
             {
                 rows.length > 0 &&
                 <Stack direction='row' my={3} textAlign='right' mt={2} justifyContent='space-between' alignItems={'center'}>

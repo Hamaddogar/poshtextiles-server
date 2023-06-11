@@ -4,7 +4,7 @@ import React from 'react'
 import { handleNoAction } from './ReuseAbles';
 
 
-const Actions = ({ id, children }) => {
+const Actions = ({ btnProp ,id, children }) => {
     // Actions UI-Reserved-S
     const [open, setOpen] = React.useState(false);
     const anchorRef = React.useRef(null);
@@ -28,7 +28,7 @@ const Actions = ({ id, children }) => {
         <div>
             <Button
                 variant='contained'
-                sx={{ backgroundColor: '#495BD6' }}
+                sx={{ backgroundColor: '#495BD6', ...btnProp }}
                 size='small'
                 ref={anchorRef}
                 id={id}
@@ -70,4 +70,4 @@ const Actions = ({ id, children }) => {
 }
 
 export default Actions;
-export const ActionMenuItem = ({ label, click = handleNoAction, last = false }) => <MenuItem sx={last ? { fontSize: '13px' } : { borderBottom: '1px solid white', fontSize: '13px' }} onClick={click}>{label}</MenuItem>
+export const ActionMenuItem = ({ label, click = handleNoAction, last = false, disabled=false }) => <MenuItem disabled={disabled} sx={last ? { fontSize: '13px' } : { borderBottom: '1px solid white', fontSize: '13px' }} onClick={click}>{label}</MenuItem>

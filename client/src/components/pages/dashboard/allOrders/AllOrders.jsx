@@ -44,7 +44,6 @@ const AllOrders = () => {
 
     React.useEffect(() => {
         if (sale_order_paking) {
-            alert('Cleaning up Shipment - Packing ')
             // 'Cleaning up Shipment - Packing '
             dispatch(PACKING_DETAILS_FUN(null));
             dispatch(WH_SHIP_DETAILS_FUN(null));
@@ -56,22 +55,22 @@ const AllOrders = () => {
     }, [sale_order_paking])
 
 
-    React.useLayoutEffect(() => {
+    React.useEffect(() => {
         if (orderTypeAllOrders === "all") setCopy(allOrders);
         else setCopy(allOrders.filter(item => item.status === orderTypeAllOrders));
         //eslint-disable-next-line
     }, [allOrders]);
-    React.useLayoutEffect(() => {
+    React.useEffect(() => {
         setRows(copy.slice(0, perPage));
         handlePageChange(currentPageAllOrders);
         //eslint-disable-next-line
     }, [copy, perPage]);
-    React.useLayoutEffect(() => {
+    React.useEffect(() => {
         if (one) setRows(copy.filter(item => (item[searchTo])?.toLocaleLowerCase().includes(searchIt)));
         else if (one) setRows(copy.filter(item => (item[searchTo])?.toLocaleLowerCase().includes(searchIt) && item.status === orderTypeAllOrders));
         //eslint-disable-next-line
     }, [searchIt]);
-    React.useLayoutEffect(() => {
+    React.useEffect(() => {
         setOne(true);
         const getSearched = setTimeout(() => {
             setSearchIt(searchItDebounce.toLocaleLowerCase());

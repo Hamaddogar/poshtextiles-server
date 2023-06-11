@@ -1,22 +1,17 @@
 import { Visibility } from '@mui/icons-material';
-import { Box, Button, Grid, InputAdornment, TextField, Typography } from '@mui/material'
-import { Stack } from '@mui/system';
+import { Box, Grid, InputAdornment, TextField, Typography } from '@mui/material'
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { ADD_NEW_INVENTORY_PRODUCT } from '../../../../RTK/Reducers/Reducers';
-import { subHeadInputStyle, Wrapper } from '../reUseAbles/ReuseAbles'
+import { handleNoAction, subHeadInputStyle, Wrapper } from '../reUseAbles/ReuseAbles'
 import NewLocationTransferTable from './NewLocationTransferTable';
+import CreateNewLineItem from '../reUseAbles/CreateNewLineItem';
 
 
 const NewLocationTransfer = () => {
-    const { pickingSelectedProduct, inventoryAdjustment, perPage } = useSelector(store => store.mainReducer);
+    const { inventoryAdjustment, perPage } = useSelector(store => store.mainReducer);
 
-    const [showSelectedProduct, setShowSelectedProduct] = React.useState(null);
     const dispatch = useDispatch();
-    React.useLayoutEffect(() => { setShowSelectedProduct(pickingSelectedProduct) }, [pickingSelectedProduct]);
-
-
-
     const handleSubmit = e => {
         e.preventDefault()
         dispatch(ADD_NEW_INVENTORY_PRODUCT({
@@ -71,7 +66,9 @@ const NewLocationTransfer = () => {
 
 
             <Box mb={1}>
-                <Box sx={{ transition: '.5s', border: '1px solid black', boxShadow: `1px 1px 2px 1px rgba(0, 0, 0, 0.25)`, display: 'flex', alignItems: 'flex-start', padding: showSelectedProduct ? '15px' : '0px' }}>
+                <CreateNewLineItem empty={true} handleSubmitLineItem={handleSubmit} handleCancel={handleNoAction} />
+
+                {/* <Box sx={{ transition: '.5s', border: '1px solid black', boxShadow: `1px 1px 2px 1px rgba(0, 0, 0, 0.25)`, display: 'flex', alignItems: 'flex-start', padding: showSelectedProduct ? '15px' : '0px' }}>
                     <Box sx={{ padding: '15px' }} >
                         <Box style={{ width: '100%', minWidth: '146px', maxWidth: '146px', cursor: 'pointer', backgroundColor: 'white', minHeight: '140px' }}></Box>
                     </Box>
@@ -115,7 +112,7 @@ const NewLocationTransfer = () => {
                         </Wrapper>
 
                     </Box>
-                </Box>
+                </Box> */}
 
                 {/* table */}
                 <Box>

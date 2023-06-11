@@ -1,0 +1,2 @@
+1 - utils -> authConfig.js -> __change redirectUri
+2 - utils -> table.js -> __remove var server

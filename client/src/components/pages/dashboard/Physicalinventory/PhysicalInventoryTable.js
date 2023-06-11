@@ -7,7 +7,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Pagination from 'react-responsive-pagination';
 import 'bootstrap/dist/css/bootstrap.css';
-import { Typography, useMediaQuery } from '@mui/material';
+import { useMediaQuery } from '@mui/material';
 import { Box, Stack } from '@mui/system';
 import { BackButton } from '../reUseAbles/ReuseAbles';
 import { useNavigate } from 'react-router-dom';
@@ -20,8 +20,8 @@ const PhysicalInventoryTable = ({ data, perPage }) => {
     const navigate = useNavigate();
     const deskTopView = useMediaQuery('(min-width:600px)');
 
-    React.useLayoutEffect(() => { setRows(copy.slice(0, perPage)) }, [copy, perPage]);
-    React.useLayoutEffect(() => { setCopy(data) }, [data]);
+    React.useEffect(() => { setRows(copy.slice(0, perPage)) }, [copy, perPage]);
+    React.useEffect(() => { setCopy(data) }, [data]);
     const handlePageChange = page => {
         setCurrentPage(page);
         setRows(copy.slice(((page - 1) * perPage), ((((page - 1) * perPage)) + perPage)))

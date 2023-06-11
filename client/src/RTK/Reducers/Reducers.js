@@ -162,7 +162,7 @@ export const postShipment = createAsyncThunk(
 export const postInvoice = createAsyncThunk(
   'mainSlice/postInvoice',
   async ({ token, body }) => {
-    const data = await axios.post(APIS.post_shipment_micro, { token, body })
+    const data = await axios.post(APIS.post_invoice_micro, { token, body })
     return data.data;
   }
 );
@@ -348,7 +348,6 @@ const mainSlice = createSlice({
         state.loadingCSV = false;
         if (payload.success) {
           state.csv_data_local = [];
-          console.log("-------------", payload);
           state.csv_data_responded = payload.data;
         }
       })
@@ -383,16 +382,12 @@ const mainSlice = createSlice({
       })
 
 
-      // postShipment
-      .addCase(postShipment.pending, (state) => {
-        Toaster('loading', 'Loading ...')
-        state.loading = true;
-      })
+      // postShipment 
       .addCase(postShipment.fulfilled, (state, { payload }) => {
         toast.dismiss();
-        if (payload.success) {
-          state.loading = false;
+        if (!payload.error) {
           state.WH_SHIP_DETAILS.postShipment = true;
+          Swal.fire({ icon: 'success', title: `Shipment Posted ${payload.postShipment.whseShipmentNo}`, text: payload.postShipment.responseMsg })
         }
       })
       .addCase(postShipment.rejected, (state, { error }) => {
@@ -401,16 +396,12 @@ const mainSlice = createSlice({
       })
 
 
-      // postInvoice
-      .addCase(postInvoice.pending, (state) => {
-        Toaster('loading', 'Loading ...')
-        state.loading = true;
-      })
+      // postInvoice 
       .addCase(postInvoice.fulfilled, (state, { payload }) => {
         toast.dismiss();
-        if (payload.success) {
-          state.loading = false;
+        if (!payload.error) {
           state.WH_SHIP_DETAILS.postInvoice = true;
+          Swal.fire({ icon: 'success', title: `Invoice Posted ${payload.postInvoice.no}`, text: payload.postInvoice.responseMsg })
         }
       })
       .addCase(postInvoice.rejected, (state, { error }) => {

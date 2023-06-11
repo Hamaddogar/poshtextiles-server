@@ -4,10 +4,26 @@ import { headInputStyle } from './ReuseAbles'
 import ThumbNailImageSVG from "../../../assets/images/thumbnail2.svg";
 
 
-const CreateNewLineItem = ({ handleSubmitLineItem, handleCancel }) => {
+const CreateNewLineItem = ({ handleSubmitLineItem, handleCancel, empty = false }) => {
 
-    const [data, setData] = React.useState({ qty: 1 })
+    const [data, setData] = React.useState({ qty: empty ? "" : 1 })
 
+    let defaults;
+    if (empty) {
+        defaults = {
+            type: '',
+            no: '',
+            lNo: "",
+
+        }
+    } else {
+        defaults = {
+            type: 'Item',
+            no: 'S10017-007',
+            lNo: 10000,
+
+        }
+    }
     const handleChange = (event) => {
         const value = Number(event.target.value)
         setData({
@@ -15,6 +31,7 @@ const CreateNewLineItem = ({ handleSubmitLineItem, handleCancel }) => {
             [event.target.name]: value
         })
     }
+
 
     return (
         <div>
@@ -29,12 +46,12 @@ const CreateNewLineItem = ({ handleSubmitLineItem, handleCancel }) => {
                         <Grid container alignItems='center' spacing={1}>
                             <Grid item xs={6} sm={6} md={3} >
                                 <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Item Type:</Typography>
-                                <TextField required sx={headInputStyle} fullWidth defaultValue={'Item'} name={"itemType"} size='small' />
+                                <TextField required sx={headInputStyle} fullWidth defaultValue={defaults.type} name={"itemType"} size='small' />
                             </Grid>
 
                             <Grid item xs={6} sm={6} md={3}>
                                 <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>No. </Typography>
-                                <TextField required sx={headInputStyle} fullWidth defaultValue={'S10017-007'} name={"simpleNo"} size='small' />
+                                <TextField required sx={headInputStyle} fullWidth defaultValue={defaults.no} name={"simpleNo"} size='small' />
                             </Grid>
 
                             <Grid item xs={6} sm={6} md={4}>
@@ -54,7 +71,7 @@ const CreateNewLineItem = ({ handleSubmitLineItem, handleCancel }) => {
 
                             <Grid item xs={6} sm={6} md={2}>
                                 <Typography component='span' sx={{ color: '#6D6D6D', fontSize: '14px' }}>Line Number: </Typography>
-                                <TextField required sx={headInputStyle} fullWidth defaultValue={10000} type='number' name={"itemNo"} size='small' />
+                                <TextField required sx={headInputStyle} fullWidth defaultValue={defaults.lNo} type='number' name={"itemNo"} size='small' />
                             </Grid>
 
 

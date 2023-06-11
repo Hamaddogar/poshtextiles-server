@@ -29,7 +29,7 @@ import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 
 
 const CSVOrders = () => {
-    const { perPage, csv_data_local, csv_data_responded, csv_fileName, loadingCSV } = useSelector(store => store.mainReducer);
+    const { perPage, csv_data_local, csv_data_responded, csv_fileName } = useSelector(store => store.mainReducer);
 
     const [loading, setLoading] = React.useState({ load: false, fileName: "" })
     const [copy, setCopy] = React.useState([]);
@@ -48,21 +48,21 @@ const CSVOrders = () => {
         setRows(copy.slice(((page - 1) * perPage), ((((page - 1) * perPage)) + perPage)))
     }
 
-    React.useLayoutEffect(() => { if (copy.length > 0) setRows(copy?.slice(0, perPage)) }, [copy, perPage]);
+    React.useEffect(() => { if (copy.length > 0) setRows(copy?.slice(0, perPage)) }, [copy, perPage]);
 
     React.useEffect(() => {
         if (csv_data_responded?.length > 0) setCopy(csv_data_responded)
         else if (csv_data_local?.length > 0) setCopy(csv_data_local)
         //eslint-disable-next-line
     }, [csv_data_local, csv_data_responded]);
-    React.useLayoutEffect(() => {
+    React.useEffect(() => {
         setRows(copy.filter(item => (item["SKU"])?.toLocaleLowerCase().includes(searchIt)));
         //eslint-disable-next-line
     }, [searchIt]);
 
 
 
-    React.useLayoutEffect(() => {
+    React.useEffect(() => {
         const getSearched = setTimeout(() => {
             setSearchIt(searchItDebounce.toLocaleLowerCase());
         }, 500);
@@ -173,7 +173,7 @@ const CSVOrders = () => {
 
 
 
-            <PreLoader loading={loading.load || loadingCSV}>
+            <PreLoader loading={loading.load}>
                 <TableContainer component={Paper} sx={{ padding: '0px 4%' }} className='table-Container'>
                     <Table sx={{ minWidth: 750 }} stickyHeader aria-label="sticky table">
                         <TableHead>
@@ -245,6 +245,7 @@ const CSVOrders = () => {
                     </Box>
                 </Stack>
             </PreLoader>
+
             <NoRecord backButton={true} size={rows.length} />
         </div>
     )

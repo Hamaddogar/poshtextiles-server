@@ -33,7 +33,7 @@ const WHShipmentModelView = ({ openCreateWHShip, setOpenCreateWHShip, SNO }) => 
         setMicroSoftToken(null);
     };
 
-    React.useLayoutEffect(() => {
+    React.useEffect(() => {
         if (openCreateWHShip) {
             request_AccessToken_MICROSOFT()
                 .then(decide => {
@@ -55,7 +55,6 @@ const WHShipmentModelView = ({ openCreateWHShip, setOpenCreateWHShip, SNO }) => 
 
             create_New_Shipment(microSoftToken, body)
                 .then(thisResponse => {
-                    console.log("---------", thisResponse);
                     const codeCheck = /SH\d{6}/;
                     if ("responseMsg" in thisResponse?.creation && (thisResponse.creation.responseMsg.match(codeCheck))) {
                         const code = thisResponse.creation.responseMsg.match(/SH\d+/)[0];
@@ -85,7 +84,6 @@ const WHShipmentModelView = ({ openCreateWHShip, setOpenCreateWHShip, SNO }) => 
         setResponsePick("loading")
         check_Pick_Details(microSoftToken, code || response.code)
             .then(thisResponse => {
-                console.log("----handlegetPickDetailsStatus-----", thisResponse);
                 if (thisResponse?.pickDetails?.value?.length === 0) {
                     setResponsePick({
                         error: false,
@@ -121,7 +119,6 @@ const WHShipmentModelView = ({ openCreateWHShip, setOpenCreateWHShip, SNO }) => 
         request_New_Pick(microSoftToken, { "whseShipNo": code || response.code })
             .then(thisResponse => {
                 setResponsePickWH(thisResponse?.requested)
-                console.log("<<<<<<<<handleRequestPick>>>>>>>>>>", thisResponse);
                 dispatch(saleOrderNoFilter({
                     token: microSoftToken,
                     toastPermission: false
@@ -134,7 +131,6 @@ const WHShipmentModelView = ({ openCreateWHShip, setOpenCreateWHShip, SNO }) => 
     const handleSuccessPickDetail = (code) => {
         dispatch(successPickDetails({ token: microSoftToken, pickCode: code || response.code }))
             .then(res => {
-                console.log("<<<<<<<<<<<<<handleSuccessPickDetail>>>>>>>>>>>>", res.payload);
                 if (res?.payload?.NOC?.value?.length > 0) {
                     setpickPageSender(true)
                     dispatch(WH_SHIP_DETAILS_FUN({

@@ -13,59 +13,57 @@ export const table = {
 };
 
 
-const server = "http://localhost:8080"
+// const server = "http://localhost:8080"
 
 
 export const APIS = {
-    token_fed: server + '/fedexp_token',
-    token_stamps: server + '/auth_stamps',
-    token_micro: server + '/token_microsoft',
-    inventory_micro: server + "/inventory",
-    token_refresh_stamps: server + '/refresh_stamps',
-
-
+    token_fed: '/fedexp_token',
+    token_stamps: '/auth_stamps',
+    token_micro: '/token_microsoft',
+    inventory_micro: "/inventory",
+    token_refresh_stamps: '/refresh_stamps',
 
     // fedexp 
-    create_shipment: server + '/shipment',
-    check_address_fedexp: server + '/address_validate_fedexp',
-    rate_list_fedexp: server + '/rate_list_fedexp',
+    create_shipment: '/shipment',
+    check_address_fedexp: '/address_validate_fedexp',
+    rate_list_fedexp: '/rate_list_fedexp',
 
     // ups
-    create_Shipment_UPS: server + '/ups_shipment',
-    check_address_ups: server + '/address_validate_ups',
-    rate_list_ups: server + '/rate_list_ups',
+    create_Shipment_UPS: '/ups_shipment',
+    check_address_ups: '/address_validate_ups',
+    rate_list_ups: '/rate_list_ups',
 
     // printer
-    printer: server + "/printer",
+    printer: "/printer",
 
     // stamps
-    funds_STAMP: server + "/funds_stamps",
-    create_shipment_stamps: server + '/stamps_shipment',
-    check_address_stamps: server + '/address_validate_stamps',
-    rate_list_stamps: server + '/rate_list_stamps',
+    funds_STAMP: "/funds_stamps",
+    create_shipment_stamps: '/stamps_shipment',
+    check_address_stamps: '/address_validate_stamps',
+    rate_list_stamps: '/rate_list_stamps',
 
     // authorise.net
-    auth_net_charge: server + "/charge_card",
+    auth_net_charge: "/charge_card",
 
     // microsoft
-    sale_orders_micro: server + '/sales',
-    history_micro: server + '/history',
-    new_order_micro: server + '/newOrder',
-    csv_order_micro: server + '/csv_orders',
-    customers_micro: server + '/customers',
-    shipFrom: server + '/shipfrom',
-    create_Shipment_micro: server + '/createShipment',
-    pick_details_micro: server + '/pickDetails',
-    request_pick_micro: server + '/requestPick',
-    successPick_micro: server + '/successPick',
-    pickingPage_micro: server + '/pickingPage',
-    createPaking_micro: server + '/create-packing',
-    registerPacking_micro: server + '/register-picking',
-    getPacking_micro: server + '/get-picking',
-    postPacking_micro: server + '/post-picking',
-    gets_lots_detail_micro: server + '/lots',
-    post_shipment_micro: server + '/post-shipment',
-    post_invoice_micro: server + '/post-invoice',
+    sale_orders_micro: '/sales',
+    history_micro: '/history',
+    new_order_micro: '/newOrder',
+    csv_order_micro: '/csv_orders',
+    customers_micro: '/customers',
+    shipFrom: '/shipfrom',
+    create_Shipment_micro: '/createShipment',
+    pick_details_micro: '/pickDetails',
+    request_pick_micro: '/requestPick',
+    successPick_micro: '/successPick',
+    pickingPage_micro: '/pickingPage',
+    createPaking_micro: '/create-packing',
+    registerPacking_micro: '/register-picking',
+    getPacking_micro: '/get-picking',
+    postPacking_micro: '/post-picking',
+    gets_lots_detail_micro: '/lots',
+    post_shipment_micro: '/post-shipment',
+    post_invoice_micro: '/post-invoice',
 
 
 }

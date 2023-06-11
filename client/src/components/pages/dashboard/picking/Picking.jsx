@@ -43,11 +43,6 @@ const Picking = () => {
         navigate('/sale-order');
     }
 
-
-
-
-
-
     const handleRegisterPickItem = () => {
         if (selected.id && selected.item.WHPickNo) {
             setGeneralModel(true);
@@ -57,11 +52,9 @@ const Picking = () => {
                     if (decide.success) {
                         registerPacking({ token: decide.token, pkCode: selected.item.WHPickNo })
                             .then(response => {
-                                console.log("<<<<<handleRegisterPickItem >>>>>>>", response);
                                 setRegistered({ response: response?.registerDetail, loading: false });
                             })
                             .catch(error => {
-                                console.log("<<<<<", error);
                                 // setLoading({ ...loading, load: false });
                             })
                     }
@@ -70,11 +63,6 @@ const Picking = () => {
             Toaster('warn', "Please Select an Item from Table")
         }
     };
-
-
-
-
-
 
 
     return (
@@ -160,7 +148,7 @@ const Picking = () => {
             </Box >}
             <Grid spacing={3} container direction='row' my={3} textAlign='right' mt={2} justifyContent={{ xs: 'center', md: 'space-between' }} alignItems={'center'}>
                 <Grid item>
-                    <Box>
+                    <Box sx={{display:'flex', alignItems:'center'}}>
                         <BackButton onClick={() => navigate('/sale-order')} />
                         &nbsp; &nbsp; &nbsp;
                         <Actions id='picking-menu'>

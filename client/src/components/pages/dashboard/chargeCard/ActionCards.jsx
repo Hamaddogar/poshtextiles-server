@@ -82,49 +82,18 @@ const ActionCards = () => {
     };
 
     const custerDealer = () => {
-        // instance
-        //     .acquireTokenSilent({
-        //         ...loginRequest,
-        //         account: accounts[0],
-        //     })
-        //     .then((response) => {
-        //         customers_Getter(response.accessToken)
-        //             .then(res => {
-        //                 setAllCustomer(res)
-        //                 console.log("---ressss----", res);
-        //             }).catch(error => {
-        //                 alert('errror')
-        //             })
-
-        //     })
-        //     .catch((e) => { console.log("-error ", e) });
-
-
         request_AccessToken_MICROSOFT()
             .then(decide => {
                 if (decide.success) {
                     customers_Getter(decide.token)
                         .then(res => {
                             setAllCustomer(res)
-                            console.log("---ressss----", res);
                         }).catch(error => {
-                            alert('errror')
+                            // alert('errror')
                         })
                 }
-            })
-
-
-
-
-
-
-
-
-    }
-
-
-
-
+            });
+    };
 
     const handleChargeAmount = () => {
         if (amount > 0 && selectCard.cvv && selectCustomer.no) {
@@ -134,7 +103,6 @@ const ActionCards = () => {
             chargeCard({ amount, cardNumber: selectCard.no, expirationDate: selectCard.exp, cvv: selectCard.cvv })
                 .then(response => {
                     setchargeCardLoading(false)
-                    // console.log(response.response.transactionResponse.accountType);
                     if (response.success) {
                         setchargeCardDone(true)
                         setchargeCardLoading(false)
@@ -143,12 +111,10 @@ const ActionCards = () => {
                         setSelectCustomer({ no: '' });
                         setAmount(0);
                     } else {
-                        // console.log(response);
                     }
 
                 }).catch(error => {
                     setchargeCardLoading(false)
-                    console.log(error);
                     toast.error(`error`, { position: "top-right", autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "light", });
 
                 })

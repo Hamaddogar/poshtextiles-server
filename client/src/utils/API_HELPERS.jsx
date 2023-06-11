@@ -71,7 +71,6 @@ export const request_AccessToken_STAMPS = async () => {
 export const funds_STAMPS = async (token) => {
     try {
         const response = await axios.post(APIS.funds_STAMP, { token })
-        console.log("balance", response.data);
         return response.data
     } catch (error) {
         return error

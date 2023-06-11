@@ -32,7 +32,6 @@ export default function AddressValidateDrawer({
                 setLoading({ loading: "reponded", valid: true })
             }
             else if ((response.error) && counter < 5) {
-                console.log(counter);
                 counter++;
                 recursiveCaller(func, counter);
             } else if (response.error && counter >= 5) {
@@ -97,7 +96,6 @@ export default function AddressValidateDrawer({
                                 );
                                 dispatch(STAMPS_TOKEN({ set: true, token: res.token, code: res.code }))
                             }
-                            console.log("res", res);
                         });
 
                 };

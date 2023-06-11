@@ -30,14 +30,12 @@ const PackingDrawer = ({ toggleDrawer, packingSideBar, handleShippingQuote }) =>
                     if (decide.success) {
                         getPacking({ token: decide.token, code: PACKING_DETAILS.pkNo })
                             .then(response => {
-                                console.log("<<<<<create----------Packing>>>>>>>", response);
                                 setLoading(pv => ({ ...pv, loading: false }));
                                 // response?.getPacking?.value
                                 if ("value" in response?.getPacking) dispatch(PACKING_BOXES_PREVIEW_FUN(response?.getPacking?.value))
                                 else Toaster('error', ``)
                             })
                             .catch(error => {
-                                console.log("<<<<<", error);
                                 setLoading(pv => ({ ...pv, loading: false }));
                             })
                     }
