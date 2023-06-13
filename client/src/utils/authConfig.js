@@ -8,6 +8,7 @@ export const msalConfig = {
         redirectUri: "http://localhost:3000/",
         // redirectUri: "http://localhost:8080/",
         // redirectUri: "https://silktex.com/",
+        // redirectUri: "https://posh-textiles.herokuapp.com/",
     },
     cache: {
         cacheLocation: "sessionStorage", // This configures where your cache will be stored
