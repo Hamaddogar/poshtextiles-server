@@ -64,6 +64,7 @@ export const APIS = {
     gets_lots_detail_micro: server + '/lots',
     post_shipment_micro: server + '/post-shipment',
     post_invoice_micro: server + '/post-invoice',
+    patchPicking_micro: server + '/patchDetails',
 
 
 }
