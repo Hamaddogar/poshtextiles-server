@@ -97,11 +97,9 @@ const PickingTable = ({ searchToBL, searchIt, selected, setSelected, data, setDa
             })
     };
 
-
     const handleSelectedLotNo = (lotDeails) => {
         setSelected(pv => ({ ...pv, item: { ...pv.item, lotNo: lotDeails.lotNo }, patch: true }));
         const newData = data.map(item => item.id === selected.id ? { ...item, lotNo: lotDeails.lotNo } : item)
-
         const patchedLotNoItems = WH_SHIP_DETAILS?.shipItems.map(item =>
             (item.systemId === selected.item.systemId &&
                 item.actionType === selected.item.actionType
@@ -114,8 +112,7 @@ const PickingTable = ({ searchToBL, searchIt, selected, setSelected, data, setDa
         setData(newData);
         setRows(newData);
         // console.log(data);
-        Toaster('success', 'Lot No Selected');
-        // Toaster('warn', 'Lot is Selected But how BCModel will be updated, reguarding this lot change ?');
+        Toaster('success', 'Lot No Selected. Patch Now!');
     };
 
 
