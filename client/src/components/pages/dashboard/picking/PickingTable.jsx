@@ -18,19 +18,17 @@ import GeneralModel from '../reUseAbles/GeneralModel';
 import { MoreVert } from '@mui/icons-material';
 import { Toaster } from '../reUseAbles/Toasters';
 
-const PickingTable = ({ searchToBL, searchIt, selected, setSelected }) => {
+const PickingTable = ({ searchToBL, searchIt, selected, setSelected, data, setData, rows, setRows }) => {
     const { WH_SHIP_DETAILS } = useSelector(store => store.mainReducer);
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [loading, setLoading] = React.useState(false);
-    const [data, setData] = React.useState([]);
-    const [rows, setRows] = React.useState([]);
     const [lots, setLots] = React.useState({ loading: false, data: [] });
     const [generalModel, setGeneralModel] = React.useState(false)
 
     React.useEffect(() => {
-        setLoading(true);
         if (WH_SHIP_DETAILS?.shipItems?.length) {
+            setLoading(true);
             request_AccessToken_MICROSOFT()
                 .then(decide => {
                     if (decide.success) {
@@ -74,7 +72,7 @@ const PickingTable = ({ searchToBL, searchIt, selected, setSelected }) => {
         navigate(NTO);
     }
 
-    const handleSelected = (indx, id, item) => setSelected({ id, item }); 
+    const handleSelected = (indx, id, item) => setSelected({ id, item });
 
     const handleLots = (item) => () => {
         setLots({ loading: true, data: [] })
@@ -101,24 +99,23 @@ const PickingTable = ({ searchToBL, searchIt, selected, setSelected }) => {
 
 
     const handleSelectedLotNo = (lotDeails) => {
-        setSelected(pv => ({ ...pv, item: { ...pv.item, lotNo: lotDeails.lotNo } }));
+        setSelected(pv => ({ ...pv, item: { ...pv.item, lotNo: lotDeails.lotNo }, patch: true }));
         const newData = data.map(item => item.id === selected.id ? { ...item, lotNo: lotDeails.lotNo } : item)
-        setData(newData);
-        setRows(newData);
 
         const patchedLotNoItems = WH_SHIP_DETAILS?.shipItems.map(item =>
-            (item.description === selected.item.name &&
-                item.WhseDocumentNo === selected.item.WhseDocumentNo &&
-                item.destinationNo === selected.item.destinationNo &&
-                item.locationCode === selected.item.locationCode
+            (item.systemId === selected.item.systemId &&
+                item.actionType === selected.item.actionType
             ) ? { ...item, lotNo: lotDeails.lotNo } : item);
 
         dispatch(WH_SHIP_DETAILS_FUN({
             ...WH_SHIP_DETAILS,
-            shipItems: patchedLotNoItems,
+            shipItems: patchedLotNoItems
         }))
+        setData(newData);
+        setRows(newData);
+        // console.log(data);
         Toaster('success', 'Lot No Selected');
-        Toaster('warn', 'Lot is Selected But how BCModel will be updated, reguarding this lot change ?');
+        // Toaster('warn', 'Lot is Selected But how BCModel will be updated, reguarding this lot change ?');
     };
 
 
@@ -175,16 +172,20 @@ const PickingTable = ({ searchToBL, searchIt, selected, setSelected }) => {
                                 <TableCell sx={{ border: '1px solid black', backgroundColor: '#E9EDF1' }}> BIN </TableCell>
                                 <TableCell sx={{ border: '1px solid black', backgroundColor: '#E9EDF1' }} >LOT</TableCell>
                                 <TableCell sx={{ border: '1px solid black', backgroundColor: '#E9EDF1' }} > Quantity </TableCell>
+                                <TableCell sx={{ border: '1px solid black', backgroundColor: '#E9EDF1' }} > Action Type </TableCell>
                                 <TableCell sx={{ borderBottom: 0, }}></TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {rows?.map((row, indx) => (
+                            {rows && rows?.map((row, indx) => (
                                 <TableRow key={indx} sx={{
                                     '&:last-child td, &:last-child th': { border: 0 },
                                     '&:hover': { backgroundColor: "rgb(233, 237, 241,.3)" },
                                     cursor: 'pointer',
-                                    backgroundColor: selected.id === row.id ? "rgb(233, 237, 241,.6)" : "none"
+                                    backgroundColor: row?.patched ?
+                                        "rgb(73, 214, 104,.25)"
+                                        :
+                                        selected.id === row.id ? "rgb(233, 237, 241,.6)" : "none"
                                 }}
                                     onClick={e => handleSelected(indx, row.id, row)}
                                 >
@@ -196,6 +197,7 @@ const PickingTable = ({ searchToBL, searchIt, selected, setSelected }) => {
                                         </Stack>
                                     </TableCell>
                                     <TableCell>{row?.quantityBase}</TableCell>
+                                    <TableCell>{row?.actionType}</TableCell>
 
                                     <TableCell align='right'>
                                         <Button variant='contained' startIcon={<img style={{ width: '20px' }} alt='scissors' src={inspectionBtn} />} sx={{ backgroundColor: '#49D668', fontSize: '11px' }}
