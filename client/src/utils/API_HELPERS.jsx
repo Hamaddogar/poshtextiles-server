@@ -377,6 +377,15 @@ export const postPacking = async ({ token, code }) => {
     }
 }
 
+// patchDetails
+export const patchPicking = async ({ token, sysID, body }) => {
+    try {
+        const data = await axios.post(APIS.patchPicking_micro, { token, sysID, body })
+        return data.data;
+    } catch (error) {
+        return error
+    }
+}
 // --------------------- Authorise Net --------------------- //
 // auth_net_charge :"/charge_card",
 export const chargeCard = async ({ amount, cardNumber, expirationDate, cvv }) => {
