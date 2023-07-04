@@ -19,6 +19,7 @@ import { useNavigate } from 'react-router-dom';
 import BackArrow from '../../../assets/icons/back-arrow.png'
 import { Search, SearchIconWrapper, StyledInputBase, styleSlect } from '../reUseAbles/ReuseAbles';
 import ActionCards from './ActionCards';
+import { chargeCardData } from '../../../../RTK/Reducers/fakeData';
 
 
 
@@ -28,8 +29,8 @@ import ActionCards from './ActionCards';
 
 
 const ChargeCard = () => {
-    const { chargeCardData, perPage } = useSelector(store => store.mainReducer);
-    const [copy, setCopy] = React.useState([]);
+    const { perPage } = useSelector(store => store.mainReducer);
+    const [copy, setCopy] = React.useState(chargeCardData);
     const [rows, setRows] = React.useState([]);
     const [currentPage, setCurrentPage] = React.useState(1);
     const [searchIt, setSearchIt] = React.useState("");
@@ -43,7 +44,7 @@ const ChargeCard = () => {
     }
 
     React.useEffect(() => { setRows(copy.slice(0, perPage)) }, [copy, perPage]);
-    React.useEffect(() => { setCopy(chargeCardData) }, [chargeCardData]);
+    // React.useEffect(() => { setCopy(chargeCardData) }, [chargeCardData]);
     React.useEffect(() => {
         if (orderType === "all") setRows(copy.filter(item => (item.name).toLocaleLowerCase().includes(searchIt)));
         else setRows(copy.filter(item => (item.name).toLocaleLowerCase().includes(searchIt) && item.st === orderType));
