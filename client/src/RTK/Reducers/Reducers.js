@@ -1,4 +1,4 @@
-import { chargeCard, inventoryAdjustment, stockDetails_Invoice, stockDetails_ledger, stockDetails_purchase } from './fakeData';
+import { inventoryAdjustment } from './fakeData';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
@@ -23,11 +23,6 @@ let initialState = {
   locationTransfer: [],
   historyData: [],
   // dummy data
-  chargeCardData: chargeCard,
-  stockDetails_saleOrder: [],
-  stockDetails_Invoice: stockDetails_Invoice,
-  stockDetails_purchase: stockDetails_purchase,
-  stockDetails_ledger: stockDetails_ledger,
   // app select and flow 
   saleOrderDetails: null,
   pickingSelectedProduct: null,
