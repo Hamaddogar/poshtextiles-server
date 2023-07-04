@@ -42,7 +42,6 @@ const Login = () => {
 
     React.useEffect(() => {
         if (accounts.length > 0 && !isAuthorised) {
-            
             instance
             .acquireTokenSilent({
                 ...loginRequest,
@@ -50,7 +49,6 @@ const Login = () => {
             })
             .then((response) => {
                 dispatch(LOG_IN(response.accessToken))
-                
             }).catch((e) => { console.log("-error ", e) });
         }
         //eslint-disable-next-line
@@ -100,15 +98,12 @@ const Login = () => {
                         }}>
                             posh textiles
                         </Typography>
-
                         <Stack sx={{ mt: 2, }} rowGap={6} alignItems={'center'} justifyContent='space-between' >
                             <Stack alignItems={'center'} justifyContent='center' spacing={3} sx={{ width: '100%' }} >
                                 <Button fullWidth sx={{ borderRadius: '0px', fontSize: '12px', textTransform: 'capitalize', color: '#1E1E1E' }} variant='outlined' startIcon={<img src={MCL} alt=" " style={{ width: '15px', }} />} color='primary' onClick={handleLogin}>Sign in with Microsoft</Button>
                             </Stack>
-
                             <Copyright mt={2} />
                         </Stack>
-
                     </Box>
                 </Grid>
             </Grid>
