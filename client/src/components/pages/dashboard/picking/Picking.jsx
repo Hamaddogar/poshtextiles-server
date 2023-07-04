@@ -12,7 +12,7 @@ import fabric from '../../../assets/icons/fabric.png';
 import shelf from '../../../assets/icons/shelf.png';
 import UpperHeader from '../reUseAbles/UpperHeader';
 import { SearchSharp } from '@mui/icons-material';
-import { MARK_DONE_CUTTING_GREEN_PACKING, WH_SHIP_DETAILS_FUN } from '../../../../RTK/Reducers/Reducers';
+import { MARK_DONE_CUTTING_GREEN_PACKING } from '../../../../RTK/Reducers/Reducers';
 import { patchPicking, registerPacking, request_AccessToken_MICROSOFT } from '../../../../utils/API_HELPERS';
 import GeneralModel from '../reUseAbles/GeneralModel';
 import { Toaster } from '../reUseAbles/Toasters';
@@ -46,9 +46,7 @@ const Picking = () => {
         navigate('/sale-order');
     }
 
-    // console.log('cWH_SHIP_DETAILS', WH_SHIP_DETAILS);
     const handleRegisterPickItem = () => {
-        // console.log('cWH_SHIP_DETAILS-inside', WH_SHIP_DETAILS);
         if (selected?.id && selected?.item?.WHPickNo) {
             setGeneralModel(true);
             setRegistered({ response: {}, loading: true });
@@ -57,11 +55,10 @@ const Picking = () => {
                     if (decide.success) {
                         registerPacking({ token: decide.token, pkCode: selected.item.WHPickNo })
                             .then(response => {
-                                // console.log('------',response);
                                 setRegistered({ response: response?.registerDetail, loading: false });
                             })
                             .catch(error => {
-                                // setLoading({ ...loading, load: false });
+                                setRegistered(pv => ({ ...pv, loading: false }))
                             })
                     }
                 })
@@ -69,7 +66,6 @@ const Picking = () => {
             Toaster('warn', "Please Select an Item from Table")
         }
     };
-
 
     const handlePatch = () => {
         Toaster('loading', 'Please Hold Patching ...')
@@ -107,8 +103,6 @@ const Picking = () => {
 
     }
 
-
-
     return (
         <div>
             <GeneralModel open={generalModel} setOpen={setGeneralModel} heading={registered.loading ? 'Register Pick' : 'Register Pick Response'}>
@@ -123,8 +117,7 @@ const Picking = () => {
                         {!(registered?.loading) && registered?.response?.responseMsg &&
                             <Typography color={registered?.response?.responseMsg === "Registered Successfully" ? "success" : 'error'}>
                                 {registered?.response?.responseMsg}
-                            </Typography>
-                        }
+                            </Typography>}
                     </Grid>
                 </Grid>
             </GeneralModel>
