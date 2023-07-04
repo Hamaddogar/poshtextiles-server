@@ -66,8 +66,8 @@ const NavMenu = ({ children }) => {
                 ].map((item, index) => (
                     <ListItem sx={{ margin: '15px 0px' }} key={index} disablePadding>
                         <Link style={lnk} to={item.linkTo}>
-                            <ListItemButton sx={{ padding: '0px 5px 0px 0px' }} >
-                                <ListItemIcon sx={{ justifyContent: 'center' }} >
+                            <ListItemButton disableRipple sx={{ padding: '0px 5px 0px 0px', '&:hover': { background: '#495BD6' } }} >
+                                <ListItemIcon disableRipple sx={{ justifyContent: 'center' }} >
                                     <img src={item.icon} alt={item.icon} style={{ maxWidth: '35px' }} />
                                 </ListItemIcon>
                             </ListItemButton>
