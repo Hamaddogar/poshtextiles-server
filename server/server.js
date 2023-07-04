@@ -99,6 +99,7 @@ const routeStrings = {
     ship_from_location_micro: '/shipfrom',
     create_shipment: '/createShipment',
     get_pick_details_micro: '/pickDetails',
+    patch_pick_details_micro: '/patchDetails',
     request_pick_micro: '/requestPick',
     success_pick_detail_micro: '/successPick',
     picking_page_detail_micro: '/pickingPage',
@@ -1201,11 +1202,8 @@ app.post(routeStrings.picking_page_detail_micro, async (req, res) => {
     const dataToSend = []
     const dataToSendRaw = []
     try {
-
-
         for (let index = 0; index < allPickingDetails.length; index++) {
             const item = allPickingDetails[index];
-
             const responseInventory = await axios.get(
                 API_MICROSOFT.inventory_pick_detail(item.itemNo, item.locationCode),
                 config
@@ -1218,6 +1216,9 @@ app.post(routeStrings.picking_page_detail_micro, async (req, res) => {
 
             dataToSendRaw.push({ inv: responseInventory?.data, bin: responseBin?.data })
             dataToSend.push({
+                actionType: item.actionType,
+                activityType: item.activityType,
+                systemId: item.systemId,
                 name: item.description,
                 WhseDocumentNo: item.WhseDocumentNo,
                 sourceNo: item.sourceNo,
@@ -1377,6 +1378,35 @@ app.post(routeStrings.post_wh_invoice_micro, async (req, res) => {
         res.status(error?.response?.status).send({
             code: error?.response?.status,
             message: error?.response?.data?.errors?.[0]?.error_message || error?.message,
+            error: true
+        })
+    }
+});
+
+
+// get_pick_details
+app.post(routeStrings.patch_pick_details_micro, async (req, res) => {
+    const config = {
+        headers: {
+            "Authorization": `Bearer ${req.body.token}`,
+            "Content-Type": "application/json",
+            "If-Match": "*"
+        }
+    };
+    try {
+        const response = await axios.patch(
+            API_MICROSOFT.patch_pick_details(req.body.sysID),
+            req.body.body,
+            config
+        );
+        res.send({ error: false, patchDetails: response.data, message: 'Successfully Patched' });
+
+    } catch (error) {
+        // console.log(error);
+        // console.log(error?.response?.data?.error?.[0]?.message);
+        res.send({
+            code: error?.response?.status,
+            message: error?.response?.data?.error?.message || error?.response?.data?.errors?.[0]?.error_message || error?.message,
             error: true
         })
     }
