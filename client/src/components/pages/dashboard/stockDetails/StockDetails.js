@@ -17,13 +17,13 @@ import { useSelector } from 'react-redux';
 import SaleOrderTable from './SaleOrderTable';
 import PurchaseInvoiceTable from './PurchaseInvoiceTable';
 import LedgerTable from './LedgerTable';
+import { stockDetails_Invoice, stockDetails_ledger } from '../../../../RTK/Reducers/fakeData';
 
 
 const tabStyle = { borderTopRightRadius: "10px", borderTopLeftRadius: "10px", background: "#D9D9D9", marginRight: "15px", color: '#000000' }
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
-
     return (
         <div
             role="tabpanel"
@@ -49,7 +49,7 @@ function a11yProps(index) {
 }
 
 export default function StockDetails() {
-    const { perPage, stockDetails_saleOrder, stockDetails_Invoice, stockDetails_purchase, stockDetails_ledger, } = useSelector(store => store.mainReducer);
+    const { perPage, stockDetails_purchase, } = useSelector(store => store.mainReducer);
     const theme = useTheme();
     const [tabs, setTabs] = React.useState(1);
     const handleChange = (event, newTab) => setTabs(newTab);
@@ -59,14 +59,11 @@ export default function StockDetails() {
 
     return (
         <Box>
-            {/* Top Content */}
             <Topcontent />
-            {/* Search Box */}
             <Box style={{ padding: "0px 30px 20px 0px", display: "flex", justifyContent: "flex-end", alignItems: 'center' }}>
                 <SearchIcon sx={{ marginTop: "8px", fontSize: '16px' }} />
                 <TextField size='small' sx={{ ...subHeadInputStyle, minWidth: '15rem', maxWidth: '15rem' }} />
             </Box>
-
             {/* Main Content */}
             <Box sx={{ bgcolor: 'background.paper', width: '100%' }}>
                 <AppBar position="static">
@@ -115,7 +112,7 @@ export default function StockDetails() {
                     onChangeIndex={handleChangeIndex}
                 >
                     <TabPanel value={tabs} index={0} dir={theme.direction}>
-                        <SaleOrderTable data={stockDetails_saleOrder} perPage={perPage} />
+                        <SaleOrderTable data={[]} perPage={perPage} />
                     </TabPanel>
                     <TabPanel value={tabs} index={1}>
                         <SaleInvoiceTable data={stockDetails_Invoice} perPage={perPage} />
