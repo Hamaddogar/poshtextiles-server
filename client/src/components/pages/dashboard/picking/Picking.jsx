@@ -12,8 +12,8 @@ import fabric from '../../../assets/icons/fabric.png';
 import shelf from '../../../assets/icons/shelf.png';
 import UpperHeader from '../reUseAbles/UpperHeader';
 import { SearchSharp } from '@mui/icons-material';
-import { MARK_DONE_CUTTING_GREEN_PACKING } from '../../../../RTK/Reducers/Reducers';
-import { registerPacking, request_AccessToken_MICROSOFT } from '../../../../utils/API_HELPERS';
+import { MARK_DONE_CUTTING_GREEN_PACKING, WH_SHIP_DETAILS_FUN } from '../../../../RTK/Reducers/Reducers';
+import { patchPicking, registerPacking, request_AccessToken_MICROSOFT } from '../../../../utils/API_HELPERS';
 import GeneralModel from '../reUseAbles/GeneralModel';
 import { Toaster } from '../reUseAbles/Toasters';
 import Actions, { ActionMenuItem } from '../reUseAbles/Actions';
@@ -24,11 +24,14 @@ import Actions, { ActionMenuItem } from '../reUseAbles/Actions';
 
 const Picking = () => {
 
-    const { saleOrderDetails } = useSelector(store => store.mainReducer);
+    const { saleOrderDetails, WH_SHIP_DETAILS } = useSelector(store => store.mainReducer);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const [selected, setSelected] = React.useState({ id: "", item: {} })
+
+    const [data, setData] = React.useState([]);
+    const [rows, setRows] = React.useState([]);
+    const [selected, setSelected] = React.useState({ id: "", item: {}, patch: false })
     const [registered, setRegistered] = React.useState({ response: {}, loading: false })
     const [searchIt, setSearchIt] = React.useState("");
     const [searchToBL, setSearchToBL] = React.useState('lot');
@@ -43,8 +46,10 @@ const Picking = () => {
         navigate('/sale-order');
     }
 
+    // console.log('cWH_SHIP_DETAILS', WH_SHIP_DETAILS);
     const handleRegisterPickItem = () => {
-        if (selected.id && selected.item.WHPickNo) {
+        // console.log('cWH_SHIP_DETAILS-inside', WH_SHIP_DETAILS);
+        if (selected?.id && selected?.item?.WHPickNo) {
             setGeneralModel(true);
             setRegistered({ response: {}, loading: true });
             request_AccessToken_MICROSOFT()
@@ -52,6 +57,7 @@ const Picking = () => {
                     if (decide.success) {
                         registerPacking({ token: decide.token, pkCode: selected.item.WHPickNo })
                             .then(response => {
+                                // console.log('------',response);
                                 setRegistered({ response: response?.registerDetail, loading: false });
                             })
                             .catch(error => {
@@ -65,9 +71,47 @@ const Picking = () => {
     };
 
 
+    const handlePatch = () => {
+        Toaster('loading', 'Please Hold Patching ...')
+        const [itemToPatch] = WH_SHIP_DETAILS?.shipItems?.filter(item => item.lotNo && item.systemId === selected?.item?.systemId)
+        // console.log(itemToPatch);
+
+        if (itemToPatch) {
+            request_AccessToken_MICROSOFT()
+                .then(decide => {
+                    if (decide.success) {
+                        patchPicking({
+                            token: decide.token,
+                            sysID: itemToPatch.systemId,
+                            body: { "lotNo": itemToPatch.lotNo },
+                        }).then(res => {
+                            // console.log('---patch---', res);
+                            if (!(res.error)) {
+                                const newData = data?.map(item =>
+                                    item.systemId === res?.patchDetails?.systemId ? { ...item, patched: true } : item
+                                )
+                                console.log('newData', newData);
+                                setData(newData);
+                                setRows(newData);
+                                Toaster('success', res.message)
+                            } else {
+                                Toaster('error', `${res.message}`)
+                            }
+                        })
+                    }
+                })
+        } else {
+            Toaster('warn', 'No Item Found ...')
+        }
+
+
+    }
+
+
+
     return (
         <div>
-            <GeneralModel open={generalModel} setOpen={setGeneralModel} heading={'Register Pick'}>
+            <GeneralModel open={generalModel} setOpen={setGeneralModel} heading={registered.loading ? 'Register Pick' : 'Register Pick Response'}>
                 <Box sx={{ width: '400px' }}></Box>
                 <Grid container alignItems={'center'} justifyContent={'space-between'} spacing={2}>
                     <Grid item xs={12}>
@@ -77,7 +121,7 @@ const Picking = () => {
                     </Grid>
                     <Grid item xs={12}>
                         {!(registered?.loading) && registered?.response?.responseMsg &&
-                            <Typography color={registered?.response?.responseMsg === "Created" ? "success" : 'error'}>
+                            <Typography color={registered?.response?.responseMsg === "Registered Successfully" ? "success" : 'error'}>
                                 {registered?.response?.responseMsg}
                             </Typography>
                         }
@@ -138,9 +182,12 @@ const Picking = () => {
                                     setSelected={setSelected}
                                     searchToBL={searchToBL}
                                     searchIt={searchIt}
+                                    data={data}
+                                    setData={setData}
+                                    rows={rows}
+                                    setRows={setRows}
                                 />
                             </Box>
-
                         </Box>
                     </Box >
                 </Box>
@@ -148,13 +195,15 @@ const Picking = () => {
             </Box >}
             <Grid spacing={3} container direction='row' my={3} textAlign='right' mt={2} justifyContent={{ xs: 'center', md: 'space-between' }} alignItems={'center'}>
                 <Grid item>
-                    <Box sx={{display:'flex', alignItems:'center'}}>
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <BackButton onClick={() => navigate('/sale-order')} />
                         &nbsp; &nbsp; &nbsp;
                         <Actions id='picking-menu'>
                             <ActionMenuItem click={handleRegisterPickItem} label={'Register Pick Now'} />
                             <ActionMenuItem click={handleCompleteHere} label={'Complete Picking'} last={true} />
                         </Actions>
+                        &nbsp; &nbsp; &nbsp;
+                        <Button onClick={handlePatch} disabled={!(selected?.patch)} size='small' sx={{ fontSize: '12px', paddingX: 2.4, backgrounnd: '#495BD6' }} variant='contained'>Patch Now</Button>
                     </Box>
                 </Grid>
             </Grid>
