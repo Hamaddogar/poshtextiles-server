@@ -5,9 +5,9 @@ export const msalConfig = {
     auth: {
         clientId: MICROSOFT_CLIENT_ID,
         authority: MICROSOFT_AUTHORITY,
-        // redirectUri: "http://localhost:3000/",
+        redirectUri: "http://localhost:3000/",
         // redirectUri: "http://localhost:8080/",
-        redirectUri: "https://silktex.com/",
+        // redirectUri: "https://silktex.com/",
         // redirectUri: "https://posh-textiles.herokuapp.com/",
     },
     cache: {
