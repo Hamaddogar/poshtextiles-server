@@ -3,11 +3,15 @@
 email :hamad@silk-crafts.com
 pass : Vatu18733
 
+# Heroku deployment 
+https://posh-textiles.herokuapp.com/
 
 
 
 
-
+# To create a build Change to
+1 - utils -> authConfig.js -> __change redirectUri
+2 - utils -> table.js -> __remove var server
 
 
 
